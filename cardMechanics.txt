@@ -6,16 +6,32 @@ Standard Projects:
   Greenery     - place greenery (-> raise oxygen)
   City         - place city
                - MegaCredit generation
-  
+
   Trade heat to raise temperature
   Trade plants to place greenery
 
 Cards not included:
   Cards that place special tiles
-  Cards that place a city on Ganymede or Phobos (Ganymede Colony and )
+  Cards that place a city on Ganymede or Phobos (Ganymede Colony and Phobos Space Haven)
   Search for Life (reveal and discard a card, if it has a microbe tag, add a science resource here. Worth 3 VPs if you have at least one science resource here)
   Flooding (place an ocean tile, you may remove 4 M€ from a player owning a tile next to it)
   Special Design and Adaptation Technology (global parameter requirements are +/- 2)
+
+Cards that maybe should not be included:
+  -  Noctis City: reserved city tile
+  ++ Urbanized Area: place a city tile adjacent to at least 2 other city tiles
+  +  Insulation: decrease your heat production any number of steps an d increase your M€ production the same number of steps
+  +  Artifical Photosynthesis: choose between increasing two of your productions
+
+  +  Cards where you need to choose between gaining different things: Artifical Photosynthesis, Large Convoy, Imported Hydrogen, Local Heat Trapping, almost all Microbe cards
+  +  Cards that add resources to another card when played: Imported Hydrogen, Imported Nitrogen, Aerobraked Ammonia Asteroid, Large Convoy, Local Heat Trapping, Eos Chasma National Park
+  +  Action cards that add/remove/steel resources from other cards: Symbiotic Fungus, Extreme-Cold Fungus, Ants, Predators
+  ++ Cards that place an ocean on a non-ocean tile or vice versa: Protected Valley, Artifical Lake, Mangrove
+  +  Spend M€ to place ocean, you can pay with steel/titanium: Aquifer Pumping, Water Import from Europa
+  -  Spend M€ actions: Space Mirrors, Underground Detonations
+     Aura cards: - Pets - animals may not be removed from this card
+                   Shuttles - space cards cost 2 less
+                 + Research Outpost - cards cost 1 M€ less, place a city tile next to no other tile
 
 Number of cards
 
@@ -24,6 +40,7 @@ Mechanics:
     Min temperature
     Max temperature
     Min oceans
+    Max oceans
     Min oxygen
     Max oxygen
     Power tag(s)
@@ -32,7 +49,7 @@ Mechanics:
     Plant tag(s)
     Microbe tag(s)
     Animal tag(s)
-  
+
   Tags
     Building
     Space
@@ -45,42 +62,40 @@ Mechanics:
     Animal
     City
     Event
-    
+
   Sell cards
   Draw cards
-  
+
   Raise TR (Terraform Rating)
   Gain VPs
   Lose VPs
   Gain VPs / something
-  
+
   Raise temperature
   Place ocean
   Raise oxygen
-  
+
   Place greenery  (-> raise oxygen)
   Place city
-  
+
   Place city on reserved area
   Place ocean on non-ocean tile
   Place greenery on ocean tile
-  
-  Place city on reserved
-  
+
   Gain resource
     Steel
     Titanium
     Plants
     Heat
-    
+
     Plants / City
-  
+
   Lose resource
     Plants
-  
+
   Destroy resource (enemy's)
     Plants
-  
+
   Gain resource generation
     MegaCredit
     Steel
@@ -88,27 +103,30 @@ Mechanics:
     Plants
     Energy
     Heat
-    
+
     MegaCredit / City
     Energy / City
     Energy / Power tag
-  
+    Plants / Microbe tag
+    plant tags >= 3 ? 4 Plants : 1 Plants
+
   Lose resource generation
     MegaCredit
     Power
-  
+
   Destroy resource generation (enemy's)
     Plants
     Heat
-  
+
   Gain resource onto another card
     Microbe
     Animal
-  
+
 Action cards
   Add 1 animal to this card.
   Gain 1 plant or add 2 microbes to ANOTHER card.
-  Pay 12M€ to place an ocean tile. TITANIUM MAY BE USED as if playing a space card.
+  Spend 8 M€ to place 1 ocean tile. STEEL MAY BE USED as if you were playing a building card.
+  Pay 12 M€ to place an ocean tile. TITANIUM MAY BE USED as if playing a space card.
   Add a microbe to ANOTHER card.
   Remove 1 microbe from any card to add 1 to this card.
   Spend 4 energy to gain 1 steel and increase oxygen 1 step.
@@ -118,17 +136,24 @@ Action cards
   Spend 10 M€ to increase your heat production 2 steps.
   Add 1 microbe to this card, or remove 3 microbes to increase your TR 1 step.
   Add 1 microbe to this card, or remove 2 microbes from this card to raise oxygen level 1 step.
+  Spend 7 M€ to increase your energy production 1 step.
 
 Effect cards
-  When you play a space event, you gain 3 M€ and 3 heat
+  When you play a space event, you gain 3 M€ and 3 heat.
   Each time a city is placed, including this, increase your M€ production 1 step.
   When any city tile is placed, gain 2 M€.
   When anyone places an ocean tile, gain 2 plants.
-  
+  When you place a greenery tile, add an animal to this card.
+  When you play an animal, plant, or microbe tag, including this, add a microbe to this card.
+  When any city tile is placed, add an animal to this card.
+  When you play a card, you pay 1 M€ less for it.
+  When you play a space card, you pay 2 M€ less for it.
+
 Gain X or Y (or Z)
 
 Event cards
-  
-Microbe cards
 
-Animal cards
+Special card types:
+  Microbe cards
+  Animal cards
+  Card that put resources on other cards
