@@ -9,9 +9,7 @@
 
 namespace model::board
 {
-ConcreteBoard::~ConcreteBoard() noexcept {}
-
-bool ConcreteBoard::CanPlaceTile( int q, int r, Player* player, TileType type ) const {
+bool ConcreteBoard::CanPlaceTile( int q, int r, const Player* player, TileType type ) const {
     const Tile& tile = this->operator()( q, r );
 
     if ( tile.get_type() == TileType::NONE ) {
@@ -42,12 +40,24 @@ bool ConcreteBoard::CanPlaceTile( int q, int r, Player* player, TileType type ) 
 
 void ConcreteBoard::PlaceTile( int q, int r, Player* player, TileType type ) {
     if ( !CanPlaceTile( q, r, player, type ) )
-        throw std::logic_error( "ConcreteBoard: PlaceTile called while tile cannot be placed!" );
+        throw std::logic_error( "ConcreteBoard::PlaceTile: PlaceTile called while tile cannot be placed!" );
 
     Tile& tile = get_tile( q, r );
     tile.set_type( type );
     tile.set_owner( player );
     tile.ApplyPlacementBonuses();
+}
+
+int ConcreteBoard::NeighbouringTiles( int q, int r ) const {
+    std::vector<std::reference_wrapper<const Tile>> neighbours = GetNeighbours( q, r );
+
+    int count = 0;
+    for ( const Tile& neighbour : neighbours ) {
+        if ( neighbour.get_type() >= TileType::EMPTY_MIN && neighbour.get_type() <= TileType::EMPTY_MAX )
+            ++count;
+    }
+
+    return count;
 }
 
 int ConcreteBoard::NeighbouringTilesOfType( int q, int r, TileType type ) const {
@@ -61,6 +71,10 @@ int ConcreteBoard::NeighbouringTilesOfType( int q, int r, TileType type ) const 
 
     return count;
 }
+
+ConcreteBoard::ConcreteBoard() noexcept {}
+ConcreteBoard::~ConcreteBoard() noexcept {}
+
 
 const std::function<void( Player* )> ConcreteBoard::_noop              = []( Player* player ) {};
 const std::function<void( Player* )> ConcreteBoard::_draw_one_card     = []( Player* player ) { player->DrawCard(); };

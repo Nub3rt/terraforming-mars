@@ -15,13 +15,17 @@ public:
 
     virtual const Tile& operator()( int q, int r ) const noexcept = 0;
 
-    bool CanPlaceTile( int q, int r, Player* player, TileType type ) const;
+    bool CanPlaceTile( int q, int r, const Player* player, TileType type ) const;
     void PlaceTile( int q, int r, Player* player, TileType type );
+    int NeighbouringTiles( int q, int r ) const;
+    int NeighbouringTilesOfType( int q, int r, TileType type ) const;
+
 protected:
+    ConcreteBoard() noexcept;
+
     virtual Tile& get_tile( int q, int r ) noexcept = 0;
 
     virtual std::vector<std::reference_wrapper<const Tile>> GetNeighbours( int q, int r ) const = 0;
-    int NeighbouringTilesOfType( int q, int r, TileType type ) const;
 
     static const std::function<void( Player* )> _noop;
     static const std::function<void( Player* )> _draw_one_card;

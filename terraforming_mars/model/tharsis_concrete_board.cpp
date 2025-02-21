@@ -92,7 +92,7 @@ const std::array<std::array<Tile, 9>, 9> TharsisConcreteBoard::_starting_board =
     {{
         Tile( _gain_two_plants, EMPTY ),
         Tile( _gain_two_plants, EMPTY ),
-        Tile( _gain_two_plants, EMPTY ),
+        Tile( _gain_two_plants, RESERVED_FOR_NOCTIS ),
         Tile( _gain_two_plants, RESERVED_FOR_OCEAN ),
         Tile( _gain_two_plants, RESERVED_FOR_OCEAN ),
         Tile( _gain_two_plants, RESERVED_FOR_OCEAN ),

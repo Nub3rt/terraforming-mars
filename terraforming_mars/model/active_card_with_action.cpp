@@ -1,0 +1,37 @@
+#include "active_card_with_action.h"
+
+#include <stdexcept>
+
+#include "active_card.h"
+#include "availability.h"
+
+namespace model::decks
+{
+ActiveCardWithAction::ActiveCardWithAction() noexcept : ActiveCard(), _used_this_generation( false ) {}
+ActiveCardWithAction::~ActiveCardWithAction() noexcept {}
+
+bool ActiveCardWithAction::IsActiveWithAction() const noexcept { return true; }
+
+Availability ActiveCardWithAction::Availability() const {
+    if ( _owner == nullptr )
+        throw std::logic_error( "ActiveCardWithAction::Availability: called without having an owner!" );
+
+    if ( _used_this_generation )
+        return Availability::USED;
+
+    if ( CanBeUsed() )
+        return Availability::CAN_BE_USED;
+    else
+        return Availability::NOT_USABLE;
+}
+
+void ActiveCardWithAction::UseAction() {
+    if ( Availability() != Availability::CAN_BE_USED )
+        throw std::logic_error( "ActiveCardWithAction::UseAction: card cannot be used at this time!" );
+
+    DoUseAction();
+    _used_this_generation = true;
+}
+
+inline void ActiveCardWithAction::NextGenerationStarted() noexcept { _used_this_generation = false; }
+}

@@ -8,6 +8,9 @@
     <Filter Include="board">
       <UniqueIdentifier>{ec6fe095-ae62-458e-8978-4611eeb48981}</UniqueIdentifier>
     </Filter>
+    <Filter Include="decks">
+      <UniqueIdentifier>{e79286f2-9dee-45fc-9909-7546e4f23664}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="board.h">
@@ -26,6 +29,39 @@
     <ClInclude Include="tharsis_concrete_board.h">
       <Filter>board</Filter>
     </ClInclude>
+    <ClInclude Include="tag.h">
+      <Filter>decks</Filter>
+    </ClInclude>
+    <ClInclude Include="card.h">
+      <Filter>decks</Filter>
+    </ClInclude>
+    <ClInclude Include="card_id.h">
+      <Filter>decks</Filter>
+    </ClInclude>
+    <ClInclude Include="player.fwd.h" />
+    <ClInclude Include="card.fwd.h">
+      <Filter>decks</Filter>
+    </ClInclude>
+    <ClInclude Include="game_model.h" />
+    <ClInclude Include="game_model.fwd.h" />
+    <ClInclude Include="event_card.h">
+      <Filter>decks</Filter>
+    </ClInclude>
+    <ClInclude Include="automated_card.h">
+      <Filter>decks</Filter>
+    </ClInclude>
+    <ClInclude Include="active_card.h">
+      <Filter>decks</Filter>
+    </ClInclude>
+    <ClInclude Include="active_card_with_action.h">
+      <Filter>decks</Filter>
+    </ClInclude>
+    <ClInclude Include="availability.h">
+      <Filter>decks</Filter>
+    </ClInclude>
+    <ClInclude Include="active_card_with_effect.h">
+      <Filter>decks</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="player.cpp" />
@@ -43,6 +79,25 @@
     </ClCompile>
     <ClCompile Include="concrete_board.cpp">
       <Filter>board</Filter>
+    </ClCompile>
+    <ClCompile Include="card.cpp">
+      <Filter>decks</Filter>
+    </ClCompile>
+    <ClCompile Include="game_model.cpp" />
+    <ClCompile Include="event_card.cpp">
+      <Filter>decks</Filter>
+    </ClCompile>
+    <ClCompile Include="automated_card.cpp">
+      <Filter>decks</Filter>
+    </ClCompile>
+    <ClCompile Include="active_card.cpp">
+      <Filter>decks</Filter>
+    </ClCompile>
+    <ClCompile Include="active_card_with_action.cpp">
+      <Filter>decks</Filter>
+    </ClCompile>
+    <ClCompile Include="active_card_with_effect.cpp">
+      <Filter>decks</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

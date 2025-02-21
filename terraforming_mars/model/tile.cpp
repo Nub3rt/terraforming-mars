@@ -17,7 +17,7 @@ inline void Tile::set_owner( Player* owner ) noexcept { _owner = owner; }
 
 void Tile::ApplyPlacementBonuses() {
     if ( _owner == nullptr )
-        throw std::logic_error( "Tile: cannot apply placement bonuses without owner" );
+        throw std::logic_error( "Tile::ApplyPlacementBonuses: cannot apply placement bonuses without owner!" );
 
     _apply_placement_bonuses( _owner );
 }

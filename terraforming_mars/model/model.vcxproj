@@ -128,17 +128,37 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="active_card.h" />
+    <ClInclude Include="active_card_with_action.h" />
+    <ClInclude Include="active_card_with_effect.h" />
+    <ClInclude Include="automated_card.h" />
+    <ClInclude Include="availability.h" />
+    <ClInclude Include="card.fwd.h" />
+    <ClInclude Include="card.h" />
+    <ClInclude Include="card_id.h" />
+    <ClInclude Include="event_card.h" />
     <ClInclude Include="hexagonal_grid.h" />
     <ClInclude Include="board.h" />
     <ClInclude Include="concrete_board.h" />
+    <ClInclude Include="player.fwd.h" />
     <ClInclude Include="player.h" />
+    <ClInclude Include="game_model.fwd.h" />
+    <ClInclude Include="game_model.h" />
+    <ClInclude Include="tag.h" />
     <ClInclude Include="tharsis_concrete_board.h" />
     <ClInclude Include="tile.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="active_card.cpp" />
+    <ClCompile Include="active_card_with_action.cpp" />
+    <ClCompile Include="active_card_with_effect.cpp" />
+    <ClCompile Include="automated_card.cpp" />
     <ClCompile Include="board.cpp" />
+    <ClCompile Include="card.cpp" />
     <ClCompile Include="concrete_board.cpp" />
+    <ClCompile Include="event_card.cpp" />
     <ClCompile Include="player.cpp" />
+    <ClCompile Include="game_model.cpp" />
     <ClCompile Include="tharsis_concrete_board.cpp" />
     <ClCompile Include="tile.cpp" />
     <ClCompile Include="tile_type.h" />
