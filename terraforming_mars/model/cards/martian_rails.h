@@ -8,7 +8,7 @@ namespace model::decks::cards
 class MartianRails : public ActiveCardWithAction
 {
 public:
-    MartianRails() noexcept;
+    MartianRails( const GameModel& model ) noexcept;
     ~MartianRails() noexcept;
 
 protected:

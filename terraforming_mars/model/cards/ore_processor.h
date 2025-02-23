@@ -8,7 +8,7 @@ namespace model::decks::cards
 class OreProcessor : public ActiveCardWithAction
 {
 public:
-    OreProcessor() noexcept;
+    OreProcessor( const GameModel& model ) noexcept;
     ~OreProcessor() noexcept;
 
 protected:

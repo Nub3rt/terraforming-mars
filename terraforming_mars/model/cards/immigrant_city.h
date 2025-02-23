@@ -8,7 +8,7 @@ namespace model::decks::cards
 class ImmigrantCity : public ActiveCardWithEffect
 {
 public:
-    ImmigrantCity() noexcept;
+    ImmigrantCity( const GameModel& model ) noexcept;
     ~ImmigrantCity() noexcept;
 
 protected:

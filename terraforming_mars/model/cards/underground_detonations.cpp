@@ -8,8 +8,8 @@
 
 namespace model::decks::cards
 {
-UndergroundDetonations::UndergroundDetonations() noexcept :
-    ActiveCardWithAction( CardID::UNDERGROUND_DETONATIONS, 6, true, false ), _action_credit_cost( 10 ) {
+UndergroundDetonations::UndergroundDetonations( const GameModel& model ) noexcept :
+    ActiveCardWithAction( model, CardID::UNDERGROUND_DETONATIONS, 6, true, false ), _action_credit_cost( 10 ) {
     AddTag( Tag::BUILDING );
 }
 

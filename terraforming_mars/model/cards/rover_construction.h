@@ -8,7 +8,7 @@ namespace model::decks::cards
 class RoverConstruction : public ActiveCardWithEffect
 {
 public:
-    RoverConstruction() noexcept;
+    RoverConstruction( const GameModel& model ) noexcept;
     ~RoverConstruction() noexcept;
 
 protected:

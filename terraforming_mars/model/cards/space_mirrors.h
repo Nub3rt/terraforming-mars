@@ -8,7 +8,7 @@ namespace model::decks::cards
 class SpaceMirrors : public ActiveCardWithAction
 {
 public:
-    SpaceMirrors() noexcept;
+    SpaceMirrors( const GameModel& model ) noexcept;
     ~SpaceMirrors() noexcept;
 
 protected:

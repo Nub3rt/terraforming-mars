@@ -8,7 +8,7 @@ namespace model::decks::cards
 class NoctisCity : public AutomatedCard
 {
 public:
-    NoctisCity() noexcept;
+    NoctisCity( const GameModel& model ) noexcept;
     ~NoctisCity() noexcept;
 
 protected:

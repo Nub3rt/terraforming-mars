@@ -8,8 +8,8 @@
 
 namespace model::decks::cards
 {
-Shuttles::Shuttles() noexcept :
-    ActiveCardWithEffect( CardID::SHUTTLES, 10, false, true ) {
+Shuttles::Shuttles( const GameModel& model ) noexcept :
+    ActiveCardWithEffect( model, CardID::SHUTTLES, 10, false, true ) {
     AddTag( Tag::SPACE );
 }
 

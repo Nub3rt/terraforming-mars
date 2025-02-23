@@ -8,7 +8,7 @@ namespace model::decks::cards
 class Shuttles : public ActiveCardWithEffect
 {
 public:
-    Shuttles() noexcept;
+    Shuttles( const GameModel& model ) noexcept;
     ~Shuttles() noexcept;
 
 protected:

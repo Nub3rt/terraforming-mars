@@ -8,7 +8,7 @@ namespace model::decks::cards
 class ImmigrationShuttles : public AutomatedCard
 {
 public:
-    ImmigrationShuttles() noexcept;
+    ImmigrationShuttles( const GameModel& model ) noexcept;
     ~ImmigrationShuttles() noexcept;
 
 protected:

@@ -8,8 +8,8 @@
 
 namespace model::decks::cards
 {
-ImmigrationShuttles::ImmigrationShuttles() noexcept :
-    AutomatedCard( CardID::IMMIGRATION_SHUTTLES, 31, false, true ) {
+ImmigrationShuttles::ImmigrationShuttles( const GameModel& model ) noexcept :
+    AutomatedCard( model, CardID::IMMIGRATION_SHUTTLES, 31, false, true ) {
     AddTag( Tag::SPACE );
     AddTag( Tag::EARTH );
 }

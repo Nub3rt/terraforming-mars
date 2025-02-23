@@ -8,8 +8,8 @@
 
 namespace model::decks::cards
 {
-ArcticAlgae::ArcticAlgae() noexcept :
-    ActiveCardWithEffect( CardID::ARCTIC_ALGAE, 12, false, false ) {
+ArcticAlgae::ArcticAlgae( const GameModel& model ) noexcept :
+    ActiveCardWithEffect( model, CardID::ARCTIC_ALGAE, 12, false, false ) {
     AddTag( Tag::PLANT );
 }
 

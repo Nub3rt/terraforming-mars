@@ -8,8 +8,8 @@
 
 namespace model::decks::cards
 {
-Insulation::Insulation() noexcept :
-    AutomatedCard( CardID::INSULATION, 2, false, false ) {}
+Insulation::Insulation( const GameModel& model ) noexcept :
+    AutomatedCard( model, CardID::INSULATION, 2, false, false ) {}
 
 Insulation::~Insulation() noexcept {}
 

@@ -8,8 +8,8 @@
 
 namespace model::decks::cards
 {
-ImmigrantCity::ImmigrantCity() noexcept :
-    ActiveCardWithEffect( CardID::IMMIGRANT_CITY, 13, true, false ) {
+ImmigrantCity::ImmigrantCity( const GameModel& model ) noexcept :
+    ActiveCardWithEffect( model, CardID::IMMIGRANT_CITY, 13, true, false ) {
     AddTag( Tag::BUILDING );
     AddTag( Tag::CITY );
 }

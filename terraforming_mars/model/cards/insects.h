@@ -8,7 +8,7 @@ namespace model::decks::cards
 class Insects : public AutomatedCard
 {
 public:
-    Insects() noexcept;
+    Insects( const GameModel& model ) noexcept;
     ~Insects() noexcept;
 
 protected:

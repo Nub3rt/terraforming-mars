@@ -8,7 +8,7 @@ namespace model::decks::cards
 class PowerGrid : public AutomatedCard
 {
 public:
-    PowerGrid() noexcept;
+    PowerGrid( const GameModel& model ) noexcept;
     ~PowerGrid() noexcept;
 
 protected:

@@ -8,7 +8,7 @@ namespace model::decks::cards
 class EquatorialMagnetizer : public ActiveCardWithAction
 {
 public:
-    EquatorialMagnetizer() noexcept;
+    EquatorialMagnetizer( const GameModel& model ) noexcept;
     ~EquatorialMagnetizer() noexcept;
 
 protected:

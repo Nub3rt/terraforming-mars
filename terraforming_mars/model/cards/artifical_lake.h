@@ -8,7 +8,7 @@ namespace model::decks::cards
 class ArtificalLake : public AutomatedCard
 {
 public:
-    ArtificalLake() noexcept;
+    ArtificalLake( const GameModel& model ) noexcept;
     ~ArtificalLake() noexcept;
 
 protected:

@@ -8,8 +8,8 @@
 
 namespace model::decks::cards
 {
-OreProcessor::OreProcessor() noexcept :
-    ActiveCardWithAction( CardID::ORE_PROCESSOR, 13, true, false ), _action_energy_cost( 4 ) {
+OreProcessor::OreProcessor( const GameModel& model ) noexcept :
+    ActiveCardWithAction( model, CardID::ORE_PROCESSOR, 13, true, false ), _action_energy_cost( 4 ) {
     AddTag( Tag::BUILDING );
 }
 

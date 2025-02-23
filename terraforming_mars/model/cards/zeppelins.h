@@ -8,7 +8,7 @@ namespace model::decks::cards
 class Zeppelins : public AutomatedCard
 {
 public:
-    Zeppelins() noexcept;
+    Zeppelins( const GameModel& model ) noexcept;
     ~Zeppelins() noexcept;
 
 protected:

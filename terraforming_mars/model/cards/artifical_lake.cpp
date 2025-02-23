@@ -8,8 +8,8 @@
 
 namespace model::decks::cards
 {
-ArtificalLake::ArtificalLake() noexcept :
-    AutomatedCard( CardID::ARTIFICAL_LAKE, 15, true, false ) {
+ArtificalLake::ArtificalLake( const GameModel& model ) noexcept :
+    AutomatedCard( model, CardID::ARTIFICAL_LAKE, 15, true, false ) {
     AddTag( Tag::BUILDING );
 }
 

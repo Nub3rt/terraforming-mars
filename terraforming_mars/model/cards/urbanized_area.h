@@ -8,7 +8,7 @@ namespace model::decks::cards
 class UrbanizedArea : public AutomatedCard
 {
 public:
-    UrbanizedArea() noexcept;
+    UrbanizedArea( const GameModel& model ) noexcept;
     ~UrbanizedArea() noexcept;
 
 protected:

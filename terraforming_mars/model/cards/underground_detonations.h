@@ -8,7 +8,7 @@ namespace model::decks::cards
 class UndergroundDetonations : public ActiveCardWithAction
 {
 public:
-    UndergroundDetonations() noexcept;
+    UndergroundDetonations( const GameModel& model ) noexcept;
     ~UndergroundDetonations() noexcept;
 
 protected:

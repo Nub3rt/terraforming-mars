@@ -8,8 +8,8 @@
 
 namespace model::decks::cards
 {
-WaterSplittingPlant::WaterSplittingPlant() noexcept :
-    ActiveCardWithAction( CardID::WATER_SPLITTING_PLANT, 12, true, false ), _action_energy_cost( 3 ) {
+WaterSplittingPlant::WaterSplittingPlant( const GameModel& model ) noexcept :
+    ActiveCardWithAction( model, CardID::WATER_SPLITTING_PLANT, 12, true, false ), _action_energy_cost( 3 ) {
     AddTag( Tag::BUILDING );
 }
 

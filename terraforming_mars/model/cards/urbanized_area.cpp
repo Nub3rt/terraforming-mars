@@ -9,8 +9,8 @@
 
 namespace model::decks::cards
 {
-UrbanizedArea::UrbanizedArea() noexcept :
-    AutomatedCard( CardID::URBANIZED_AREA, 10, true, false ) {
+UrbanizedArea::UrbanizedArea( const GameModel& model ) noexcept :
+    AutomatedCard( model, CardID::URBANIZED_AREA, 10, true, false ) {
     AddTag( Tag::BUILDING );
     AddTag( Tag::CITY );
 }

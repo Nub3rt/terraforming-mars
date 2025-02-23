@@ -8,8 +8,8 @@
 
 namespace model::decks::cards
 {
-RoverConstruction::RoverConstruction() noexcept :
-    ActiveCardWithEffect( CardID::ROVER_CONSTRUCTION, 8, true, false ) {
+RoverConstruction::RoverConstruction( const GameModel& model ) noexcept :
+    ActiveCardWithEffect( model, CardID::ROVER_CONSTRUCTION, 8, true, false ) {
     AddTag( Tag::BUILDING );
 }
 

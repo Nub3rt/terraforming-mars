@@ -8,7 +8,7 @@ namespace model::decks::cards
 class Greenhouses : public AutomatedCard
 {
 public:
-    Greenhouses() noexcept;
+    Greenhouses( const GameModel& model ) noexcept;
     ~Greenhouses() noexcept;
 
 protected:

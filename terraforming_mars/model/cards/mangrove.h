@@ -8,7 +8,7 @@ namespace model::decks::cards
 class Mangrove : public AutomatedCard
 {
 public:
-    Mangrove() noexcept;
+    Mangrove( const GameModel& model ) noexcept;
     ~Mangrove() noexcept;
 
 protected:

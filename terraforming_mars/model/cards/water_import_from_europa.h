@@ -8,7 +8,7 @@ namespace model::decks::cards
 class WaterImportFromEuropa : public ActiveCardWithAction
 {
 public:
-    WaterImportFromEuropa() noexcept;
+    WaterImportFromEuropa( const GameModel& model ) noexcept;
     ~WaterImportFromEuropa() noexcept;
 
 protected:

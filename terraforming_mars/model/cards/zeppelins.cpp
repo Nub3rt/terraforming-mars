@@ -8,8 +8,8 @@
 
 namespace model::decks::cards
 {
-Zeppelins::Zeppelins() noexcept :
-    AutomatedCard( CardID::ZEPPELINS, 13, false, false ) {}
+Zeppelins::Zeppelins( const GameModel& model ) noexcept :
+    AutomatedCard( model, CardID::ZEPPELINS, 13, false, false ) {}
 
 Zeppelins::~Zeppelins() noexcept {}
 

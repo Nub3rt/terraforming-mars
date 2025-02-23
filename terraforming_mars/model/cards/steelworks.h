@@ -8,7 +8,7 @@ namespace model::decks::cards
 class Steelworks : public ActiveCardWithAction
 {
 public:
-    Steelworks() noexcept;
+    Steelworks( const GameModel& model ) noexcept;
     ~Steelworks() noexcept;
 
 protected:

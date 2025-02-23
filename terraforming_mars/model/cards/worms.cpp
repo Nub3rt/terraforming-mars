@@ -8,8 +8,8 @@
 
 namespace model::decks::cards
 {
-Worms::Worms() noexcept :
-    AutomatedCard( CardID::WORMS, 8, false, false ) {
+Worms::Worms( const GameModel& model ) noexcept :
+    AutomatedCard( model, CardID::WORMS, 8, false, false ) {
     AddTag( Tag::MICROBE );
 }
 

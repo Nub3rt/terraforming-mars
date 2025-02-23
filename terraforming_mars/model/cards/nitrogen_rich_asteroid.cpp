@@ -7,8 +7,8 @@
 
 namespace model::decks::cards
 {
-NitrogenRichAsteroid::NitrogenRichAsteroid() noexcept :
-    EventCard( CardID::NITROGEN_RICH_ASTEROID, 31, false, true ) {
+NitrogenRichAsteroid::NitrogenRichAsteroid( const GameModel& model ) noexcept :
+    EventCard( model, CardID::NITROGEN_RICH_ASTEROID, 31, false, true ) {
     AddTag( Tag::SPACE );
     AddTag( Tag::EVENT );
 }

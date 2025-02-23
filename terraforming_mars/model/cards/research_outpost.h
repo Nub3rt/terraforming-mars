@@ -9,7 +9,7 @@ namespace model::decks::cards
 class ResearchOutpost : public ActiveCardWithEffect
 {
 public:
-    ResearchOutpost() noexcept;
+    ResearchOutpost( const GameModel& model ) noexcept;
     ~ResearchOutpost() noexcept;
 
 protected:

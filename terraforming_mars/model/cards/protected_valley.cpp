@@ -8,8 +8,8 @@
 
 namespace model::decks::cards
 {
-ProtectedValley::ProtectedValley() noexcept :
-    AutomatedCard( CardID::PROTECTED_VALLEY, 23, true, false ) {
+ProtectedValley::ProtectedValley( const GameModel& model ) noexcept :
+    AutomatedCard( model, CardID::PROTECTED_VALLEY, 23, true, false ) {
     AddTag( Tag::BUILDING );
     AddTag( Tag::PLANT );
 }

@@ -8,8 +8,8 @@
 
 namespace model::decks::cards
 {
-NoctisCity::NoctisCity() noexcept :
-    AutomatedCard( CardID::NOCTIS_CITY, 18, true, false ) {
+NoctisCity::NoctisCity( const GameModel& model ) noexcept :
+    AutomatedCard( model, CardID::NOCTIS_CITY, 18, true, false ) {
     AddTag( Tag::BUILDING );
     AddTag( Tag::CITY );
 }

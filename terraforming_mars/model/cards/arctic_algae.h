@@ -8,7 +8,7 @@ namespace model::decks::cards
 class ArcticAlgae : public ActiveCardWithEffect
 {
 public:
-    ArcticAlgae() noexcept;
+    ArcticAlgae( const GameModel& model ) noexcept;
     ~ArcticAlgae() noexcept;
 
 protected:

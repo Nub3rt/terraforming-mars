@@ -8,7 +8,7 @@ namespace model::decks::cards
 class WaterSplittingPlant : public ActiveCardWithAction
 {
 public:
-    WaterSplittingPlant() noexcept;
+    WaterSplittingPlant( const GameModel& model ) noexcept;
     ~WaterSplittingPlant() noexcept;
 
 protected:
