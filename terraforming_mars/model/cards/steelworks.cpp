@@ -19,7 +19,7 @@ bool Steelworks::CanBeUsed() const {
     return _owner->get_energy() >= _action_energy_cost;
 }
 
-void Steelworks::DoUseAction( const GameModel& model ) {
+void Steelworks::DoUseAction( const GameModel& _model ) {
     _owner->GainSteel( 2 );
     _owner->RaiseOxygen();
 }

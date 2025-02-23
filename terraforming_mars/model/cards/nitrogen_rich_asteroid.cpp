@@ -15,7 +15,7 @@ NitrogenRichAsteroid::NitrogenRichAsteroid() noexcept :
 
 NitrogenRichAsteroid::~NitrogenRichAsteroid() noexcept {}
 
-void NitrogenRichAsteroid::ApplyImmediateEffects( const GameModel& model ) {
+void NitrogenRichAsteroid::ApplyImmediateEffects( const GameModel& _model ) {
     _owner->RaiseTR( 2 );
     _owner->RaiseTemperature();
     if ( _owner->GetTagCount( Tag::PLANT ) >= 3 )

@@ -42,7 +42,7 @@ void Card::Sell() {
     _holder = nullptr;
 }
 
-bool Card::CanBePlayed( const GameModel& model ) const {
+bool Card::CanBePlayed( const GameModel& _model ) const {
     if ( _holder == nullptr )
         throw std::logic_error( "Card::CanBePlayed: card has no holder!" );
 
@@ -57,16 +57,16 @@ bool Card::CanBePlayed( const GameModel& model ) const {
     else
         max_pay_amount = _holder->get_credit();
 
-    return max_pay_amount >= GetCost() && SatisfiesRequirements( model );
+    return max_pay_amount >= GetCost() && SatisfiesRequirements( _model );
 }
 
-void Card::Play( const GameModel& model ) {
-    if ( !CanBePlayed( model ) )
+void Card::Play( const GameModel& _model ) {
+    if ( !CanBePlayed( _model ) )
         throw std::logic_error( "Card::Play: card cannot be played!" );
 
     _owner = _holder;
     _owner->PlayCard( this );
-    ApplyImmediateEffects( model );
+    ApplyImmediateEffects( _model );
 }
 
 int Card::TagsOfType( Tag tag ) const {
@@ -80,11 +80,11 @@ int Card::TagsOfType( Tag tag ) const {
     return count;
 }
 
-int Card::CountVPs( const GameModel& model ) const {
+int Card::CountVPs( const GameModel& _model ) const {
     if ( _owner == nullptr )
         throw std::logic_error( "Card::CountVPs: card has no owner!" );
 
-    return DoCountVPs( model );
+    return DoCountVPs( _model );
 }
 
 void Card::AddTag( Tag tag ) {
@@ -98,9 +98,9 @@ int Card::GetCost() const {
     return _holder->CalculateCardCost( _base_cost );
 }
 
-bool Card::SatisfiesRequirements( const GameModel& model ) const { return true; }
+bool Card::SatisfiesRequirements( const GameModel& _model ) const { return true; }
 
-void Card::ApplyImmediateEffects( const GameModel& model ) {}
+void Card::ApplyImmediateEffects( const GameModel& _model ) {}
 
-int Card::DoCountVPs( const GameModel& model ) const { return 0; }
+int Card::DoCountVPs( const GameModel& _model ) const { return 0; }
 }

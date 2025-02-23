@@ -13,8 +13,8 @@ public:
     ~ResearchOutpost() noexcept;
 
 protected:
-    bool SatisfiesRequirements( const GameModel& model ) const override;
-    void ApplyImmediateEffects( const GameModel& model ) override;
+    bool SatisfiesRequirements( const GameModel& _model ) const override;
+    void ApplyImmediateEffects( const GameModel& _model ) override;
 
     int DoModifyCardCost( int cost, const Card* card ) override;
 };

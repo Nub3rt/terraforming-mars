@@ -22,11 +22,11 @@ bool WaterImportFromEuropa::CanBeUsed() const {
     return _owner->GetMaxPayAmountForSpace() >= _action_credit_cost;
 }
 
-void WaterImportFromEuropa::DoUseAction( const GameModel& model ) {
+void WaterImportFromEuropa::DoUseAction( const GameModel& _model ) {
     _owner->ConfirmTitaniumPayment( _action_credit_cost, [ this ]() { _owner->PlaceOcean(); } );
 }
 
-int WaterImportFromEuropa::DoCountVPs( const GameModel& model ) const {
+int WaterImportFromEuropa::DoCountVPs( const GameModel& _model ) const {
     return _owner->GetTagCount( Tag::JOVIAN );
 }
 }

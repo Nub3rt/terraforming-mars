@@ -16,11 +16,11 @@ ImmigrantCity::ImmigrantCity() noexcept :
 
 ImmigrantCity::~ImmigrantCity() noexcept {}
 
-bool ImmigrantCity::SatisfiesRequirements( const GameModel& model ) const {
-    return _owner->get_credit_production() >= 2 && _owner->get_energy_production() >= 1 && model.IsCityPlaceable();
+bool ImmigrantCity::SatisfiesRequirements( const GameModel& _model ) const {
+    return _owner->get_credit_production() >= 2 && _owner->get_energy_production() >= 1 && _model.IsCityPlaceable();
 }
 
-void ImmigrantCity::ApplyImmediateEffects( const GameModel& model ) {
+void ImmigrantCity::ApplyImmediateEffects( const GameModel& _model ) {
     _owner->LoseCreditProduction( 2 );
     _owner->LoseEnergyProduction( 1 );
 

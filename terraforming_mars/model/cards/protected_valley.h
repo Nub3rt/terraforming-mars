@@ -12,6 +12,6 @@ public:
     ~ProtectedValley() noexcept;
 
 protected:
-    void ApplyImmediateEffects( const GameModel& model ) override;
+    void ApplyImmediateEffects( const GameModel& _model ) override;
 };
 }

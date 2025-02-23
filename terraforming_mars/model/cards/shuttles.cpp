@@ -15,17 +15,17 @@ Shuttles::Shuttles() noexcept :
 
 Shuttles::~Shuttles() noexcept {}
 
-bool Shuttles::SatisfiesRequirements( const GameModel& model ) const {
-    return model.Oxygen() >= 5 && _owner->get_energy_production() >= 1;
+bool Shuttles::SatisfiesRequirements( const GameModel& _model ) const {
+    return _model.Oxygen() >= 5 && _owner->get_energy_production() >= 1;
 }
 
-void Shuttles::ApplyImmediateEffects( const GameModel& model ) {
+void Shuttles::ApplyImmediateEffects( const GameModel& _model ) {
     _owner->LoseEnergyProduction( 1 );
 
     _owner->GainCreditProduction( 2 );
 }
 
-int Shuttles::DoCountVPs( const GameModel& model ) const {
+int Shuttles::DoCountVPs( const GameModel& _model ) const {
     return 1;
 }
 

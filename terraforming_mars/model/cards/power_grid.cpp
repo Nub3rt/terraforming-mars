@@ -15,7 +15,7 @@ PowerGrid::PowerGrid() noexcept :
 
 PowerGrid::~PowerGrid() noexcept {}
 
-void PowerGrid::ApplyImmediateEffects( const GameModel& model ) {
+void PowerGrid::ApplyImmediateEffects( const GameModel& _model ) {
     _owner->GainEnergyProduction( _owner->GetTagCount( Tag::POWER ) );
 }
 }

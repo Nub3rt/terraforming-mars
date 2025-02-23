@@ -15,11 +15,11 @@ Worms::Worms() noexcept :
 
 Worms::~Worms() noexcept {}
 
-bool Worms::SatisfiesRequirements( const GameModel& model ) const {
-    return model.Oxygen() >= 4;
+bool Worms::SatisfiesRequirements( const GameModel& _model ) const {
+    return _model.Oxygen() >= 4;
 }
 
-void Worms::ApplyImmediateEffects( const GameModel& model ) {
+void Worms::ApplyImmediateEffects( const GameModel& _model ) {
     _owner->GainPlantsProduction( _owner->GetTagCount( Tag::MICROBE ) / 2 );
 }
 }

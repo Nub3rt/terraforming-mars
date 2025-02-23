@@ -21,7 +21,7 @@ bool SpaceMirrors::CanBeUsed() const {
     return _owner->get_credit() >= _action_credit_cost;
 }
 
-void SpaceMirrors::DoUseAction( const GameModel& model ) {
+void SpaceMirrors::DoUseAction( const GameModel& _model ) {
     _owner->GainEnergyProduction( 1 );
 }
 }

@@ -17,7 +17,7 @@ Greenhouses::Greenhouses() noexcept :
 
 Greenhouses::~Greenhouses() noexcept {}
 
-void Greenhouses::ApplyImmediateEffects( const GameModel& model ) {
-    _owner->GainPlants( model.CityCount() );
+void Greenhouses::ApplyImmediateEffects( const GameModel& _model ) {
+    _owner->GainPlants( _model.CityCount() );
 }
 }

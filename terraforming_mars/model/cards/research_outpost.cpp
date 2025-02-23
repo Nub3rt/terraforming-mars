@@ -17,11 +17,11 @@ ResearchOutpost::ResearchOutpost() noexcept :
 
 ResearchOutpost::~ResearchOutpost() noexcept {}
 
-bool ResearchOutpost::SatisfiesRequirements( const GameModel& model ) const {
-    return model.IsAvailableLonelyTile();
+bool ResearchOutpost::SatisfiesRequirements( const GameModel& _model ) const {
+    return _model.IsAvailableLonelyTile();
 }
 
-void ResearchOutpost::ApplyImmediateEffects( const GameModel& model ) {
+void ResearchOutpost::ApplyImmediateEffects( const GameModel& _model ) {
     _owner->PlaceLonelyCity();
 }
 

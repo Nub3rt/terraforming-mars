@@ -15,7 +15,7 @@ RoverConstruction::RoverConstruction() noexcept :
 
 RoverConstruction::~RoverConstruction() noexcept {}
 
-int RoverConstruction::DoCountVPs( const GameModel& model ) const { return 1; }
+int RoverConstruction::DoCountVPs( const GameModel& _model ) const { return 1; }
 
 void RoverConstruction::DoAfterAnyonePlacesCity() {
     _owner->GainCredit( 2 );

@@ -19,7 +19,7 @@ bool UndergroundDetonations::CanBeUsed() const {
     return _owner->get_credit() >= _action_credit_cost;
 }
 
-void UndergroundDetonations::DoUseAction( const GameModel& model ) {
+void UndergroundDetonations::DoUseAction( const GameModel& _model ) {
     _owner->LoseCredit( _action_credit_cost );
 
     _owner->GainHeatProduction( 2 );

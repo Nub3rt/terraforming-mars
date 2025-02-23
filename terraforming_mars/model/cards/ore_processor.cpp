@@ -19,7 +19,7 @@ bool OreProcessor::CanBeUsed() const {
     return _owner->get_energy() >= _action_energy_cost;
 }
 
-void OreProcessor::DoUseAction( const GameModel& model ) {
+void OreProcessor::DoUseAction( const GameModel& _model ) {
     _owner->GainTitanium( 1 );
     _owner->RaiseOxygen();
 }

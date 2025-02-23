@@ -15,11 +15,11 @@ ArcticAlgae::ArcticAlgae() noexcept :
 
 ArcticAlgae::~ArcticAlgae() noexcept {}
 
-bool ArcticAlgae::SatisfiesRequirements( const GameModel& model ) const {
-    return model.Temperature() <= -12;
+bool ArcticAlgae::SatisfiesRequirements( const GameModel& _model ) const {
+    return _model.Temperature() <= -12;
 }
 
-void ArcticAlgae::ApplyImmediateEffects( const GameModel& model ) {
+void ArcticAlgae::ApplyImmediateEffects( const GameModel& _model ) {
     _owner->GainPlants( 1 );
 }
 

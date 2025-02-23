@@ -15,6 +15,6 @@ protected:
     int _action_credit_cost;
 
     bool CanBeUsed() const override;
-    void DoUseAction( const GameModel& model ) override;
+    void DoUseAction( const GameModel& _model ) override;
 };
 }

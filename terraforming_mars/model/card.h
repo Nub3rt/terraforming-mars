@@ -48,9 +48,9 @@ protected:
 
     void AddTag( Tag tag );
     int GetCost() const;
-    virtual bool SatisfiesRequirements( const GameModel& model ) const;
-    virtual void ApplyImmediateEffects( const GameModel& model );
-    virtual int DoCountVPs( const GameModel& model ) const;
+    virtual bool SatisfiesRequirements( const GameModel& _model ) const;
+    virtual void ApplyImmediateEffects( const GameModel& _model );
+    virtual int DoCountVPs( const GameModel& _model ) const;
 
 private:
     std::array<Tag, 3> _tags;

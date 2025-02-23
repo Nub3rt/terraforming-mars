@@ -14,7 +14,7 @@ public:
     bool IsActiveWithAction() const noexcept override;
 
     Availability Availability() const;
-    void UseAction( const GameModel& model );
+    void UseAction( const GameModel& _model );
     inline void NextGenerationStarted() noexcept;
 
 protected:
@@ -23,6 +23,6 @@ protected:
     bool _used_this_generation;
 
     virtual bool CanBeUsed() const = 0;
-    virtual void DoUseAction( const GameModel& model ) = 0;
+    virtual void DoUseAction( const GameModel& _model ) = 0;
 };
 }

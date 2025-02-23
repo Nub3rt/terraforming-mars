@@ -15,15 +15,15 @@ ArtificalLake::ArtificalLake() noexcept :
 
 ArtificalLake::~ArtificalLake() noexcept {}
 
-bool ArtificalLake::SatisfiesRequirements( const GameModel& model ) const {
-    return model.Temperature() >= -6 && model.IsTilePlaceable();
+bool ArtificalLake::SatisfiesRequirements( const GameModel& _model ) const {
+    return _model.Temperature() >= -6 && _model.IsTilePlaceable();
 }
 
-void ArtificalLake::ApplyImmediateEffects( const GameModel& model ) {
+void ArtificalLake::ApplyImmediateEffects( const GameModel& _model ) {
     _owner->PlaceOceanOnNonOcean();
 }
 
-int ArtificalLake::DoCountVPs( const GameModel& model ) const {
+int ArtificalLake::DoCountVPs( const GameModel& _model ) const {
     return 1;
 }
 }

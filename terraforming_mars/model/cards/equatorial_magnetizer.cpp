@@ -19,7 +19,7 @@ bool EquatorialMagnetizer::CanBeUsed() const {
     return _owner->get_energy_production() >= _action_energy_production_cost;
 }
 
-void EquatorialMagnetizer::DoUseAction( const GameModel& model ) {
+void EquatorialMagnetizer::DoUseAction( const GameModel& _model ) {
     _owner->LoseEnergyProduction( _action_energy_production_cost );
 
     _owner->RaiseTR( 1 );

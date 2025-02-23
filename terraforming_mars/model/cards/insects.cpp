@@ -15,11 +15,11 @@ Insects::Insects() noexcept :
 
 Insects::~Insects() noexcept {}
 
-bool Insects::SatisfiesRequirements( const GameModel& model ) const {
-    return model.Oxygen() >= 6;
+bool Insects::SatisfiesRequirements( const GameModel& _model ) const {
+    return _model.Oxygen() >= 6;
 }
 
-void Insects::ApplyImmediateEffects( const GameModel& model ) {
+void Insects::ApplyImmediateEffects( const GameModel& _model ) {
     _owner->GainPlantsProduction( _owner->GetTagCount( Tag::PLANT ) );
 }
 }

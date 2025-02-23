@@ -19,9 +19,9 @@ bool MartianRails::CanBeUsed() const {
     return _owner->get_energy() >= _action_energy_cost;
 }
 
-void MartianRails::DoUseAction( const GameModel& model ) {
+void MartianRails::DoUseAction( const GameModel& _model ) {
     _owner->LoseEnergy( _action_energy_cost );
 
-    _owner->GainCredit( model.CityCount() );
+    _owner->GainCredit( _model.CityCount() );
 }
 }
