@@ -7,8 +7,8 @@
 
 namespace model::decks
 {
-ActiveCardWithEffect::ActiveCardWithEffect( CardID card_id, int base_cost, bool is_building, bool is_space ) noexcept :
-    ActiveCard( card_id, base_cost, is_building, is_space ) {
+ActiveCardWithEffect::ActiveCardWithEffect( const GameModel& model, CardID card_id, int base_cost, bool is_building, bool is_space ) noexcept :
+    ActiveCard( model, card_id, base_cost, is_building, is_space ) {
 }
 
 ActiveCardWithEffect::~ActiveCardWithEffect() noexcept {}

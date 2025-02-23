@@ -7,9 +7,9 @@
 
 namespace model::decks
 {
-Card::Card( CardID card_id, int base_cost, bool is_building, bool is_space ) noexcept :
+Card::Card( const GameModel& model, CardID card_id, int base_cost, bool is_building, bool is_space ) noexcept :
     _card_id( card_id ), _base_cost( base_cost ), _is_building( is_building ), _is_space( is_space ),
-    _tags(), _tag_count( 0 ),
+    _tags(), _tag_count( 0 ), _model( model ),
     _holder( nullptr ), _owner( nullptr ) {
 }
 

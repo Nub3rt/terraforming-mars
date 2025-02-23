@@ -13,6 +13,6 @@ public:
     bool IsAutomated() const noexcept override;
 
 protected:
-    AutomatedCard( CardID card_id, int base_cost, bool is_building, bool is_space ) noexcept;
+    AutomatedCard( const GameModel& model, CardID card_id, int base_cost, bool is_building, bool is_space ) noexcept;
 };
 }

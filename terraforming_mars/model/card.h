@@ -36,12 +36,14 @@ public:
     int CountVPs( const GameModel& model ) const;
 
 protected:
-    Card( CardID card_id, int base_cost, bool is_building, bool is_space ) noexcept;
+    Card( const GameModel& model, CardID card_id, int base_cost, bool is_building, bool is_space ) noexcept;
 
     const CardID _card_id;
     const int _base_cost;
     const bool _is_building;
     const bool _is_space;
+
+    const GameModel& _model;
 
     Player* _holder;
     Player* _owner;
