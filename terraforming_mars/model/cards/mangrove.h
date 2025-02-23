@@ -8,12 +8,12 @@ namespace model::decks::cards
 class Mangrove : public AutomatedCard
 {
 public:
-    Mangrove() noexcept;
+    Mangrove( const GameModel& model ) noexcept;
     ~Mangrove() noexcept;
 
 protected:
-    bool SatisfiesRequirements( const GameModel& model ) const override;
-    void ApplyImmediateEffects( const GameModel& model ) override;
-    int DoCountVPs( const GameModel& model ) const override;
+    bool SatisfiesRequirements() const override;
+    void ApplyImmediateEffects() override;
+    int DoCountVPs() const override;
 };
 }

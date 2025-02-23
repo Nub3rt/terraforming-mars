@@ -13,6 +13,6 @@ public:
     bool IsEvent() const noexcept override;
 
 protected:
-    EventCard( CardID card_id, int base_cost, bool is_building, bool is_space ) noexcept;
+    EventCard( const GameModel& model, CardID card_id, int base_cost, bool is_building, bool is_space ) noexcept;
 };
 }

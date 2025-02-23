@@ -8,13 +8,13 @@ namespace model::decks::cards
 class Steelworks : public ActiveCardWithAction
 {
 public:
-    Steelworks() noexcept;
+    Steelworks( const GameModel& model ) noexcept;
     ~Steelworks() noexcept;
 
 protected:
     int _action_energy_cost;
 
     bool CanBeUsed() const override;
-    void DoUseAction( const GameModel& model ) override;
+    void DoUseAction() override;
 };
 }

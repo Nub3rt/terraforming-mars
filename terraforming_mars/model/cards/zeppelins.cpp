@@ -8,20 +8,20 @@
 
 namespace model::decks::cards
 {
-Zeppelins::Zeppelins() noexcept :
-    AutomatedCard( CardID::ZEPPELINS, 13, false, false ) {}
+Zeppelins::Zeppelins( const GameModel& model ) noexcept :
+    AutomatedCard( model, CardID::ZEPPELINS, 13, false, false ) {}
 
 Zeppelins::~Zeppelins() noexcept {}
 
-bool Zeppelins::SatisfiesRequirements( const GameModel& model ) const {
-    return model.Oxygen() >= 5;
+bool Zeppelins::SatisfiesRequirements() const {
+    return _model.Oxygen() >= 5;
 }
 
-void Zeppelins::ApplyImmediateEffects( const GameModel& model ) {
-    _owner->GainCreditProduction( model.CityCount() );
+void Zeppelins::ApplyImmediateEffects() {
+    _owner->GainCreditProduction( _model.CityCount() );
 }
 
-int Zeppelins::DoCountVPs( const GameModel& model ) const {
+int Zeppelins::DoCountVPs() const {
     return 1;
 }
 }

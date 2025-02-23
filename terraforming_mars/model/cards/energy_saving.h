@@ -8,10 +8,10 @@ namespace model::decks::cards
 class EnergySaving : public AutomatedCard
 {
 public:
-    EnergySaving() noexcept;
+    EnergySaving( const GameModel& model ) noexcept;
     ~EnergySaving() noexcept;
 
 protected:
-    void ApplyImmediateEffects( const GameModel& model ) override;
+    void ApplyImmediateEffects() override;
 };
 }

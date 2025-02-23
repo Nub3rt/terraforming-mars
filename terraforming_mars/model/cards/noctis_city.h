@@ -8,11 +8,11 @@ namespace model::decks::cards
 class NoctisCity : public AutomatedCard
 {
 public:
-    NoctisCity() noexcept;
+    NoctisCity( const GameModel& model ) noexcept;
     ~NoctisCity() noexcept;
 
 protected:
-    bool SatisfiesRequirements( const GameModel& model ) const override;
-    void ApplyImmediateEffects( const GameModel& model ) override;
+    bool SatisfiesRequirements() const override;
+    void ApplyImmediateEffects() override;
 };
 }

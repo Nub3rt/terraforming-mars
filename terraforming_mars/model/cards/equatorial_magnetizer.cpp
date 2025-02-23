@@ -8,8 +8,8 @@
 
 namespace model::decks::cards
 {
-EquatorialMagnetizer::EquatorialMagnetizer() noexcept :
-    ActiveCardWithAction( CardID::EQUATORIAL_MAGNETIZER, 11, true, false ), _action_energy_production_cost( 1 ) {
+EquatorialMagnetizer::EquatorialMagnetizer( const GameModel& model ) noexcept :
+    ActiveCardWithAction( model, CardID::EQUATORIAL_MAGNETIZER, 11, true, false ), _action_energy_production_cost( 1 ) {
     AddTag( Tag::BUILDING );
 }
 
@@ -19,7 +19,7 @@ bool EquatorialMagnetizer::CanBeUsed() const {
     return _owner->get_energy_production() >= _action_energy_production_cost;
 }
 
-void EquatorialMagnetizer::DoUseAction( const GameModel& model ) {
+void EquatorialMagnetizer::DoUseAction() {
     _owner->LoseEnergyProduction( _action_energy_production_cost );
 
     _owner->RaiseTR( 1 );

@@ -8,18 +8,18 @@
 
 namespace model::decks::cards
 {
-Worms::Worms() noexcept :
-    AutomatedCard( CardID::WORMS, 8, false, false ) {
+Worms::Worms( const GameModel& model ) noexcept :
+    AutomatedCard( model, CardID::WORMS, 8, false, false ) {
     AddTag( Tag::MICROBE );
 }
 
 Worms::~Worms() noexcept {}
 
-bool Worms::SatisfiesRequirements( const GameModel& model ) const {
-    return model.Oxygen() >= 4;
+bool Worms::SatisfiesRequirements() const {
+    return _model.Oxygen() >= 4;
 }
 
-void Worms::ApplyImmediateEffects( const GameModel& model ) {
+void Worms::ApplyImmediateEffects() {
     _owner->GainPlantsProduction( _owner->GetTagCount( Tag::MICROBE ) / 2 );
 }
 }

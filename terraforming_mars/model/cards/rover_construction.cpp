@@ -8,14 +8,14 @@
 
 namespace model::decks::cards
 {
-RoverConstruction::RoverConstruction() noexcept :
-    ActiveCardWithEffect( CardID::ROVER_CONSTRUCTION, 8, true, false ) {
+RoverConstruction::RoverConstruction( const GameModel& model ) noexcept :
+    ActiveCardWithEffect( model, CardID::ROVER_CONSTRUCTION, 8, true, false ) {
     AddTag( Tag::BUILDING );
 }
 
 RoverConstruction::~RoverConstruction() noexcept {}
 
-int RoverConstruction::DoCountVPs( const GameModel& model ) const { return 1; }
+int RoverConstruction::DoCountVPs() const { return 1; }
 
 void RoverConstruction::DoAfterAnyonePlacesCity() {
     _owner->GainCredit( 2 );

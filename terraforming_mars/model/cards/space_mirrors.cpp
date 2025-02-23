@@ -9,8 +9,8 @@
 
 namespace model::decks::cards
 {
-SpaceMirrors::SpaceMirrors() noexcept :
-    ActiveCardWithAction( CardID::SPACE_MIRRORS, 3, false, true ), _action_credit_cost( 7 ) {
+SpaceMirrors::SpaceMirrors( const GameModel& model ) noexcept :
+    ActiveCardWithAction( model, CardID::SPACE_MIRRORS, 3, false, true ), _action_credit_cost( 7 ) {
     AddTag( Tag::SPACE );
     AddTag( Tag::POWER );
 }
@@ -21,7 +21,7 @@ bool SpaceMirrors::CanBeUsed() const {
     return _owner->get_credit() >= _action_credit_cost;
 }
 
-void SpaceMirrors::DoUseAction( const GameModel& model ) {
+void SpaceMirrors::DoUseAction() {
     _owner->GainEnergyProduction( 1 );
 }
 }

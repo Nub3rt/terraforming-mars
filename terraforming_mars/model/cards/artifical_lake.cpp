@@ -8,22 +8,22 @@
 
 namespace model::decks::cards
 {
-ArtificalLake::ArtificalLake() noexcept :
-    AutomatedCard( CardID::ARTIFICAL_LAKE, 15, true, false ) {
+ArtificalLake::ArtificalLake( const GameModel& model ) noexcept :
+    AutomatedCard( model, CardID::ARTIFICAL_LAKE, 15, true, false ) {
     AddTag( Tag::BUILDING );
 }
 
 ArtificalLake::~ArtificalLake() noexcept {}
 
-bool ArtificalLake::SatisfiesRequirements( const GameModel& model ) const {
-    return model.Temperature() >= -6 && model.IsTilePlaceable();
+bool ArtificalLake::SatisfiesRequirements() const {
+    return _model.Temperature() >= -6 && _model.IsTilePlaceable();
 }
 
-void ArtificalLake::ApplyImmediateEffects( const GameModel& model ) {
+void ArtificalLake::ApplyImmediateEffects() {
     _owner->PlaceOceanOnNonOcean();
 }
 
-int ArtificalLake::DoCountVPs( const GameModel& model ) const {
+int ArtificalLake::DoCountVPs() const {
     return 1;
 }
 }

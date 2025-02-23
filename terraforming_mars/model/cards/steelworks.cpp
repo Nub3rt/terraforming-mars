@@ -8,8 +8,8 @@
 
 namespace model::decks::cards
 {
-Steelworks::Steelworks() noexcept :
-    ActiveCardWithAction( CardID::STEELWORKS, 15, true, false ), _action_energy_cost( 4 ) {
+Steelworks::Steelworks( const GameModel& model ) noexcept :
+    ActiveCardWithAction( model, CardID::STEELWORKS, 15, true, false ), _action_energy_cost( 4 ) {
     AddTag( Tag::BUILDING );
 }
 
@@ -19,7 +19,7 @@ bool Steelworks::CanBeUsed() const {
     return _owner->get_energy() >= _action_energy_cost;
 }
 
-void Steelworks::DoUseAction( const GameModel& model ) {
+void Steelworks::DoUseAction() {
     _owner->GainSteel( 2 );
     _owner->RaiseOxygen();
 }

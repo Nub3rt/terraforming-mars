@@ -8,12 +8,12 @@ namespace model::decks::cards
 class Zeppelins : public AutomatedCard
 {
 public:
-    Zeppelins() noexcept;
+    Zeppelins( const GameModel& model ) noexcept;
     ~Zeppelins() noexcept;
 
 protected:
-    bool SatisfiesRequirements( const GameModel& model ) const override;
-    void ApplyImmediateEffects( const GameModel& model ) override;
-    int DoCountVPs( const GameModel& model ) const override;
+    bool SatisfiesRequirements() const override;
+    void ApplyImmediateEffects() override;
+    int DoCountVPs() const override;
 };
 }

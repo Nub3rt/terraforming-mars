@@ -8,19 +8,19 @@
 
 namespace model::decks::cards
 {
-ImmigrationShuttles::ImmigrationShuttles() noexcept :
-    AutomatedCard( CardID::IMMIGRATION_SHUTTLES, 31, false, true ) {
+ImmigrationShuttles::ImmigrationShuttles( const GameModel& model ) noexcept :
+    AutomatedCard( model, CardID::IMMIGRATION_SHUTTLES, 31, false, true ) {
     AddTag( Tag::SPACE );
     AddTag( Tag::EARTH );
 }
 
 ImmigrationShuttles::~ImmigrationShuttles() noexcept {}
 
-void ImmigrationShuttles::ApplyImmediateEffects( const GameModel& model ) {
+void ImmigrationShuttles::ApplyImmediateEffects() {
     _owner->GainCreditProduction( 5 );
 }
 
-int ImmigrationShuttles::DoCountVPs( const GameModel& model ) const {
-    return model.CityCount() / 3;
+int ImmigrationShuttles::DoCountVPs() const {
+    return _model.CityCount() / 3;
 }
 }

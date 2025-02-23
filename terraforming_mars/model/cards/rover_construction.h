@@ -8,11 +8,11 @@ namespace model::decks::cards
 class RoverConstruction : public ActiveCardWithEffect
 {
 public:
-    RoverConstruction() noexcept;
+    RoverConstruction( const GameModel& model ) noexcept;
     ~RoverConstruction() noexcept;
 
 protected:
-    int DoCountVPs( const GameModel& model ) const override;
+    int DoCountVPs() const override;
 
     void DoAfterAnyonePlacesCity() override;
 };

@@ -8,8 +8,8 @@
 
 namespace model::decks::cards
 {
-ResearchOutpost::ResearchOutpost() noexcept :
-    ActiveCardWithEffect( CardID::RESEARCH_OUTPOST, 18, true, false ) {
+ResearchOutpost::ResearchOutpost( const GameModel& model ) noexcept :
+    ActiveCardWithEffect( model, CardID::RESEARCH_OUTPOST, 18, true, false ) {
     AddTag( Tag::BUILDING );
     AddTag( Tag::SCIENCE );
     AddTag( Tag::CITY );
@@ -17,11 +17,11 @@ ResearchOutpost::ResearchOutpost() noexcept :
 
 ResearchOutpost::~ResearchOutpost() noexcept {}
 
-bool ResearchOutpost::SatisfiesRequirements( const GameModel& model ) const {
-    return model.IsAvailableLonelyTile();
+bool ResearchOutpost::SatisfiesRequirements() const {
+    return _model.IsAvailableLonelyTile();
 }
 
-void ResearchOutpost::ApplyImmediateEffects( const GameModel& model ) {
+void ResearchOutpost::ApplyImmediateEffects() {
     _owner->PlaceLonelyCity();
 }
 

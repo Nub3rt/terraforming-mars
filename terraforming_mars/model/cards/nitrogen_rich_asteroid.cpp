@@ -7,15 +7,15 @@
 
 namespace model::decks::cards
 {
-NitrogenRichAsteroid::NitrogenRichAsteroid() noexcept :
-    EventCard( CardID::NITROGEN_RICH_ASTEROID, 31, false, true ) {
+NitrogenRichAsteroid::NitrogenRichAsteroid( const GameModel& model ) noexcept :
+    EventCard( model, CardID::NITROGEN_RICH_ASTEROID, 31, false, true ) {
     AddTag( Tag::SPACE );
     AddTag( Tag::EVENT );
 }
 
 NitrogenRichAsteroid::~NitrogenRichAsteroid() noexcept {}
 
-void NitrogenRichAsteroid::ApplyImmediateEffects( const GameModel& model ) {
+void NitrogenRichAsteroid::ApplyImmediateEffects() {
     _owner->RaiseTR( 2 );
     _owner->RaiseTemperature();
     if ( _owner->GetTagCount( Tag::PLANT ) >= 3 )

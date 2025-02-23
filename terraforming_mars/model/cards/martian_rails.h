@@ -8,13 +8,13 @@ namespace model::decks::cards
 class MartianRails : public ActiveCardWithAction
 {
 public:
-    MartianRails() noexcept;
+    MartianRails( const GameModel& model ) noexcept;
     ~MartianRails() noexcept;
 
 protected:
     int _action_energy_cost;
 
     bool CanBeUsed() const override;
-    void DoUseAction( const GameModel& model ) override;
+    void DoUseAction() override;
 };
 }

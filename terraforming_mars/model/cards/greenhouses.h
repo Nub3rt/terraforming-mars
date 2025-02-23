@@ -8,10 +8,10 @@ namespace model::decks::cards
 class Greenhouses : public AutomatedCard
 {
 public:
-    Greenhouses() noexcept;
+    Greenhouses( const GameModel& model ) noexcept;
     ~Greenhouses() noexcept;
 
 protected:
-    void ApplyImmediateEffects( const GameModel& model ) override;
+    void ApplyImmediateEffects() override;
 };
 }

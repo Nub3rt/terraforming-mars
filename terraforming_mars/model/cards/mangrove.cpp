@@ -8,20 +8,20 @@
 
 namespace model::decks::cards
 {
-Mangrove::Mangrove() noexcept :
-    AutomatedCard( CardID::MANGROVE, 12, false, false ) {
+Mangrove::Mangrove( const GameModel& model ) noexcept :
+    AutomatedCard( model, CardID::MANGROVE, 12, false, false ) {
     AddTag( Tag::PLANT );
 }
 
 Mangrove::~Mangrove() noexcept {}
 
-bool Mangrove::SatisfiesRequirements( const GameModel& model ) const {
-    return model.Temperature() >= 4;
+bool Mangrove::SatisfiesRequirements() const {
+    return _model.Temperature() >= 4;
 }
 
-void Mangrove::ApplyImmediateEffects( const GameModel& model ) {
+void Mangrove::ApplyImmediateEffects() {
     _owner->PlaceGreeneryOnOcean();
 }
 
-int Mangrove::DoCountVPs( const GameModel& model ) const { return 1; }
+int Mangrove::DoCountVPs() const { return 1; }
 }

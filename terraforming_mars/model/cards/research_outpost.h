@@ -9,12 +9,12 @@ namespace model::decks::cards
 class ResearchOutpost : public ActiveCardWithEffect
 {
 public:
-    ResearchOutpost() noexcept;
+    ResearchOutpost( const GameModel& model ) noexcept;
     ~ResearchOutpost() noexcept;
 
 protected:
-    bool SatisfiesRequirements( const GameModel& model ) const override;
-    void ApplyImmediateEffects( const GameModel& model ) override;
+    bool SatisfiesRequirements() const override;
+    void ApplyImmediateEffects() override;
 
     int DoModifyCardCost( int cost, const Card* card ) override;
 };

@@ -8,12 +8,12 @@ namespace model::decks::cards
 class ImmigrantCity : public ActiveCardWithEffect
 {
 public:
-    ImmigrantCity() noexcept;
+    ImmigrantCity( const GameModel& model ) noexcept;
     ~ImmigrantCity() noexcept;
 
 protected:
-    bool SatisfiesRequirements( const GameModel& model ) const override;
-    void ApplyImmediateEffects( const GameModel& model ) override;
+    bool SatisfiesRequirements() const override;
+    void ApplyImmediateEffects() override;
 
     void DoAfterAnyonePlacesCity() override;
 };

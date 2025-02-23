@@ -8,10 +8,10 @@ namespace model::decks::cards
 class ProtectedValley : public AutomatedCard
 {
 public:
-    ProtectedValley() noexcept;
+    ProtectedValley( const GameModel& model ) noexcept;
     ~ProtectedValley() noexcept;
 
 protected:
-    void ApplyImmediateEffects( const GameModel& model ) override;
+    void ApplyImmediateEffects() override;
 };
 }

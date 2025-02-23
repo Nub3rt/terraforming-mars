@@ -8,8 +8,8 @@
 
 namespace model::decks::cards
 {
-OreProcessor::OreProcessor() noexcept :
-    ActiveCardWithAction( CardID::ORE_PROCESSOR, 13, true, false ), _action_energy_cost( 4 ) {
+OreProcessor::OreProcessor( const GameModel& model ) noexcept :
+    ActiveCardWithAction( model, CardID::ORE_PROCESSOR, 13, true, false ), _action_energy_cost( 4 ) {
     AddTag( Tag::BUILDING );
 }
 
@@ -19,7 +19,7 @@ bool OreProcessor::CanBeUsed() const {
     return _owner->get_energy() >= _action_energy_cost;
 }
 
-void OreProcessor::DoUseAction( const GameModel& model ) {
+void OreProcessor::DoUseAction() {
     _owner->GainTitanium( 1 );
     _owner->RaiseOxygen();
 }

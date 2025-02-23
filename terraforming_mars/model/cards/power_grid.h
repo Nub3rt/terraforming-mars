@@ -8,10 +8,10 @@ namespace model::decks::cards
 class PowerGrid : public AutomatedCard
 {
 public:
-    PowerGrid() noexcept;
+    PowerGrid( const GameModel& model ) noexcept;
     ~PowerGrid() noexcept;
 
 protected:
-    void ApplyImmediateEffects( const GameModel& model ) override;
+    void ApplyImmediateEffects() override;
 };
 }

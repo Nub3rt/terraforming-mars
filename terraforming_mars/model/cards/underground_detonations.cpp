@@ -8,8 +8,8 @@
 
 namespace model::decks::cards
 {
-UndergroundDetonations::UndergroundDetonations() noexcept :
-    ActiveCardWithAction( CardID::UNDERGROUND_DETONATIONS, 6, true, false ), _action_credit_cost( 10 ) {
+UndergroundDetonations::UndergroundDetonations( const GameModel& model ) noexcept :
+    ActiveCardWithAction( model, CardID::UNDERGROUND_DETONATIONS, 6, true, false ), _action_credit_cost( 10 ) {
     AddTag( Tag::BUILDING );
 }
 
@@ -19,7 +19,7 @@ bool UndergroundDetonations::CanBeUsed() const {
     return _owner->get_credit() >= _action_credit_cost;
 }
 
-void UndergroundDetonations::DoUseAction( const GameModel& model ) {
+void UndergroundDetonations::DoUseAction() {
     _owner->LoseCredit( _action_credit_cost );
 
     _owner->GainHeatProduction( 2 );

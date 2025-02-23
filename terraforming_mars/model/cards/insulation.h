@@ -8,10 +8,10 @@ namespace model::decks::cards
 class Insulation : public AutomatedCard
 {
 public:
-    Insulation() noexcept;
+    Insulation( const GameModel& model ) noexcept;
     ~Insulation() noexcept;
 
 protected:
-    void ApplyImmediateEffects( const GameModel& model ) override;
+    void ApplyImmediateEffects() override;
 };
 }

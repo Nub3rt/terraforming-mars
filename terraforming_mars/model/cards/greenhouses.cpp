@@ -9,15 +9,15 @@
 
 namespace model::decks::cards
 {
-Greenhouses::Greenhouses() noexcept :
-    AutomatedCard( CardID::GREENHOUSES, 6, true, false ) {
+Greenhouses::Greenhouses( const GameModel& model ) noexcept :
+    AutomatedCard( model, CardID::GREENHOUSES, 6, true, false ) {
     AddTag( Tag::BUILDING );
     AddTag( Tag::PLANT );
 }
 
 Greenhouses::~Greenhouses() noexcept {}
 
-void Greenhouses::ApplyImmediateEffects( const GameModel& model ) {
-    _owner->GainPlants( model.CityCount() );
+void Greenhouses::ApplyImmediateEffects() {
+    _owner->GainPlants( _model.CityCount() );
 }
 }

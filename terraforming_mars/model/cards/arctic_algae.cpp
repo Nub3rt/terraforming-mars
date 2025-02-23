@@ -8,18 +8,18 @@
 
 namespace model::decks::cards
 {
-ArcticAlgae::ArcticAlgae() noexcept :
-    ActiveCardWithEffect( CardID::ARCTIC_ALGAE, 12, false, false ) {
+ArcticAlgae::ArcticAlgae( const GameModel& model ) noexcept :
+    ActiveCardWithEffect( model, CardID::ARCTIC_ALGAE, 12, false, false ) {
     AddTag( Tag::PLANT );
 }
 
 ArcticAlgae::~ArcticAlgae() noexcept {}
 
-bool ArcticAlgae::SatisfiesRequirements( const GameModel& model ) const {
-    return model.Temperature() <= -12;
+bool ArcticAlgae::SatisfiesRequirements() const {
+    return _model.Temperature() <= -12;
 }
 
-void ArcticAlgae::ApplyImmediateEffects( const GameModel& model ) {
+void ArcticAlgae::ApplyImmediateEffects() {
     _owner->GainPlants( 1 );
 }
 

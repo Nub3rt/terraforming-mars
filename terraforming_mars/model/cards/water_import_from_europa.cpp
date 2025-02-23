@@ -10,8 +10,8 @@
 
 namespace model::decks::cards
 {
-WaterImportFromEuropa::WaterImportFromEuropa() noexcept :
-    ActiveCardWithAction( CardID::WATER_IMPORT_FROM_EUROPA, 25, false, true ), _action_credit_cost( 12 ) {
+WaterImportFromEuropa::WaterImportFromEuropa( const GameModel& model ) noexcept :
+    ActiveCardWithAction( model, CardID::WATER_IMPORT_FROM_EUROPA, 25, false, true ), _action_credit_cost( 12 ) {
     AddTag( Tag::SPACE );
     AddTag( Tag::JOVIAN );
 }
@@ -22,11 +22,11 @@ bool WaterImportFromEuropa::CanBeUsed() const {
     return _owner->GetMaxPayAmountForSpace() >= _action_credit_cost;
 }
 
-void WaterImportFromEuropa::DoUseAction( const GameModel& model ) {
+void WaterImportFromEuropa::DoUseAction() {
     _owner->ConfirmTitaniumPayment( _action_credit_cost, [ this ]() { _owner->PlaceOcean(); } );
 }
 
-int WaterImportFromEuropa::DoCountVPs( const GameModel& model ) const {
+int WaterImportFromEuropa::DoCountVPs() const {
     return _owner->GetTagCount( Tag::JOVIAN );
 }
 }

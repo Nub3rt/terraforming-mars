@@ -8,19 +8,19 @@
 
 namespace model::decks::cards
 {
-NoctisCity::NoctisCity() noexcept :
-    AutomatedCard( CardID::NOCTIS_CITY, 18, true, false ) {
+NoctisCity::NoctisCity( const GameModel& model ) noexcept :
+    AutomatedCard( model, CardID::NOCTIS_CITY, 18, true, false ) {
     AddTag( Tag::BUILDING );
     AddTag( Tag::CITY );
 }
 
 NoctisCity::~NoctisCity() noexcept {}
 
-bool NoctisCity::SatisfiesRequirements( const GameModel& model ) const {
+bool NoctisCity::SatisfiesRequirements() const {
     return _owner->get_energy_production() >= 1;
 }
 
-void NoctisCity::ApplyImmediateEffects( const GameModel& model ) {
+void NoctisCity::ApplyImmediateEffects() {
     _owner->LoseEnergyProduction( 1 );
 
     _owner->GainCreditProduction( 3 );

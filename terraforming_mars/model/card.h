@@ -30,27 +30,29 @@ public:
 
     void Buy( Player* player );
     void Sell();
-    bool CanBePlayed( const GameModel& model ) const;
-    void Play( const GameModel& model );
+    bool CanBePlayed() const;
+    void Play();
     int TagsOfType( Tag tag ) const;
-    int CountVPs( const GameModel& model ) const;
+    int CountVPs() const;
 
 protected:
-    Card( CardID card_id, int base_cost, bool is_building, bool is_space ) noexcept;
+    Card( const GameModel& model, CardID card_id, int base_cost, bool is_building, bool is_space ) noexcept;
 
     const CardID _card_id;
     const int _base_cost;
     const bool _is_building;
     const bool _is_space;
 
+    const GameModel& _model;
+
     Player* _holder;
     Player* _owner;
 
     void AddTag( Tag tag );
     int GetCost() const;
-    virtual bool SatisfiesRequirements( const GameModel& model ) const;
-    virtual void ApplyImmediateEffects( const GameModel& model );
-    virtual int DoCountVPs( const GameModel& model ) const;
+    virtual bool SatisfiesRequirements() const;
+    virtual void ApplyImmediateEffects();
+    virtual int DoCountVPs() const;
 
 private:
     std::array<Tag, 3> _tags;

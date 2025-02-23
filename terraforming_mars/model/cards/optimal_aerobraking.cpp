@@ -7,8 +7,8 @@
 
 namespace model::decks::cards
 {
-OptimalAerobraking::OptimalAerobraking() noexcept :
-    ActiveCardWithEffect( CardID::OPTIMAL_AEROBRAKING, 7, false, true ) {
+OptimalAerobraking::OptimalAerobraking( const GameModel& model ) noexcept :
+    ActiveCardWithEffect( model, CardID::OPTIMAL_AEROBRAKING, 7, false, true ) {
     AddTag( Tag::SPACE );
 }
 

@@ -8,11 +8,11 @@ namespace model::decks::cards
 class UrbanizedArea : public AutomatedCard
 {
 public:
-    UrbanizedArea() noexcept;
+    UrbanizedArea( const GameModel& model ) noexcept;
     ~UrbanizedArea() noexcept;
 
 protected:
-    bool SatisfiesRequirements( const GameModel& model ) const override;
-    void ApplyImmediateEffects( const GameModel& model ) override;
+    bool SatisfiesRequirements() const override;
+    void ApplyImmediateEffects() override;
 };
 }

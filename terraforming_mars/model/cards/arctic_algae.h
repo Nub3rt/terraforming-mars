@@ -8,12 +8,12 @@ namespace model::decks::cards
 class ArcticAlgae : public ActiveCardWithEffect
 {
 public:
-    ArcticAlgae() noexcept;
+    ArcticAlgae( const GameModel& model ) noexcept;
     ~ArcticAlgae() noexcept;
 
 protected:
-    bool SatisfiesRequirements( const GameModel& model ) const override;
-    void ApplyImmediateEffects( const GameModel& model ) override;
+    bool SatisfiesRequirements() const override;
+    void ApplyImmediateEffects() override;
 
     void DoAfterAnyonePlacesOcean() override;
 };

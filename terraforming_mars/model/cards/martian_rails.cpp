@@ -8,8 +8,8 @@
 
 namespace model::decks::cards
 {
-MartianRails::MartianRails() noexcept :
-    ActiveCardWithAction( CardID::MARTIAN_RAILS, 13, true, false ), _action_energy_cost( 1 ) {
+MartianRails::MartianRails( const GameModel& model ) noexcept :
+    ActiveCardWithAction( model, CardID::MARTIAN_RAILS, 13, true, false ), _action_energy_cost( 1 ) {
     AddTag( Tag::BUILDING );
 }
 
@@ -19,9 +19,9 @@ bool MartianRails::CanBeUsed() const {
     return _owner->get_energy() >= _action_energy_cost;
 }
 
-void MartianRails::DoUseAction( const GameModel& model ) {
+void MartianRails::DoUseAction() {
     _owner->LoseEnergy( _action_energy_cost );
 
-    _owner->GainCredit( model.CityCount() );
+    _owner->GainCredit( _model.CityCount() );
 }
 }

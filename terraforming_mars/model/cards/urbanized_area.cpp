@@ -9,19 +9,19 @@
 
 namespace model::decks::cards
 {
-UrbanizedArea::UrbanizedArea() noexcept :
-    AutomatedCard( CardID::URBANIZED_AREA, 10, true, false ) {
+UrbanizedArea::UrbanizedArea( const GameModel& model ) noexcept :
+    AutomatedCard( model, CardID::URBANIZED_AREA, 10, true, false ) {
     AddTag( Tag::BUILDING );
     AddTag( Tag::CITY );
 }
 
 UrbanizedArea::~UrbanizedArea() noexcept {}
 
-bool UrbanizedArea::SatisfiesRequirements( const GameModel& model ) const {
-    return _owner->get_energy_production() >= 1 && model.IsUrbanizedAreaPlaceable();
+bool UrbanizedArea::SatisfiesRequirements() const {
+    return _owner->get_energy_production() >= 1 && _model.IsUrbanizedAreaPlaceable();
 }
 
-void UrbanizedArea::ApplyImmediateEffects( const GameModel& model ) {
+void UrbanizedArea::ApplyImmediateEffects() {
     _owner->LoseEnergyProduction( 1 );
 
     _owner->GainCreditProduction( 2 );

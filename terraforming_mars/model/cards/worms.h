@@ -8,11 +8,11 @@ namespace model::decks::cards
 class Worms : public AutomatedCard
 {
 public:
-    Worms() noexcept;
+    Worms( const GameModel& model ) noexcept;
     ~Worms() noexcept;
 
 protected:
-    bool SatisfiesRequirements( const GameModel& model ) const override;
-    void ApplyImmediateEffects( const GameModel& model ) override;
+    bool SatisfiesRequirements() const override;
+    void ApplyImmediateEffects() override;
 };
 }

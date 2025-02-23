@@ -8,12 +8,12 @@
 
 namespace model::decks::cards
 {
-Insulation::Insulation() noexcept :
-    AutomatedCard( CardID::INSULATION, 2, false, false ) {}
+Insulation::Insulation( const GameModel& model ) noexcept :
+    AutomatedCard( model, CardID::INSULATION, 2, false, false ) {}
 
 Insulation::~Insulation() noexcept {}
 
-void Insulation::ApplyImmediateEffects( const GameModel& model ) {
+void Insulation::ApplyImmediateEffects() {
     int heat_production = _owner->get_heat_production();
 
     _owner->LoseHeatProduction( heat_production );

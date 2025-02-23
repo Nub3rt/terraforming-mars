@@ -8,13 +8,13 @@ namespace model::decks::cards
 class Shuttles : public ActiveCardWithEffect
 {
 public:
-    Shuttles() noexcept;
+    Shuttles( const GameModel& model ) noexcept;
     ~Shuttles() noexcept;
 
 protected:
-    bool SatisfiesRequirements( const GameModel& model ) const override;
-    void ApplyImmediateEffects( const GameModel& model ) override;
-    int DoCountVPs( const GameModel& model ) const override;
+    bool SatisfiesRequirements() const override;
+    void ApplyImmediateEffects() override;
+    int DoCountVPs() const override;
 
     int DoModifyCardCost( int cost, const Card* card ) override;
 };

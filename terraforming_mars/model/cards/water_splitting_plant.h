@@ -8,15 +8,15 @@ namespace model::decks::cards
 class WaterSplittingPlant : public ActiveCardWithAction
 {
 public:
-    WaterSplittingPlant() noexcept;
+    WaterSplittingPlant( const GameModel& model ) noexcept;
     ~WaterSplittingPlant() noexcept;
 
 protected:
     int _action_energy_cost;
 
-    bool SatisfiesRequirements( const GameModel& model ) const override;
+    bool SatisfiesRequirements() const override;
 
     bool CanBeUsed() const override;
-    void DoUseAction( const GameModel& model ) override;
+    void DoUseAction() override;
 };
 }

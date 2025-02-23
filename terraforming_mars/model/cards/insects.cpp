@@ -8,18 +8,18 @@
 
 namespace model::decks::cards
 {
-Insects::Insects() noexcept :
-    AutomatedCard( CardID::INSECTS, 9, false, false ) {
+Insects::Insects( const GameModel& model ) noexcept :
+    AutomatedCard( model, CardID::INSECTS, 9, false, false ) {
     AddTag( Tag::MICROBE );
 }
 
 Insects::~Insects() noexcept {}
 
-bool Insects::SatisfiesRequirements( const GameModel& model ) const {
-    return model.Oxygen() >= 6;
+bool Insects::SatisfiesRequirements() const {
+    return _model.Oxygen() >= 6;
 }
 
-void Insects::ApplyImmediateEffects( const GameModel& model ) {
+void Insects::ApplyImmediateEffects() {
     _owner->GainPlantsProduction( _owner->GetTagCount( Tag::PLANT ) );
 }
 }

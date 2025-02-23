@@ -8,14 +8,14 @@
 
 namespace model::decks::cards
 {
-EnergySaving::EnergySaving() noexcept :
-    AutomatedCard( CardID::ENERGY_SAVING, 15, false, false ) {
+EnergySaving::EnergySaving( const GameModel& model ) noexcept :
+    AutomatedCard( model, CardID::ENERGY_SAVING, 15, false, false ) {
     AddTag( Tag::POWER );
 }
 
 EnergySaving::~EnergySaving() noexcept {}
 
-void EnergySaving::ApplyImmediateEffects( const GameModel& model ) {
-    _owner->GainEnergyProduction( model.CityCount() );
+void EnergySaving::ApplyImmediateEffects() {
+    _owner->GainEnergyProduction( _model.CityCount() );
 }
 }
