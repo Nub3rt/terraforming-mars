@@ -1,0 +1,518 @@
+[
+    {
+        "id": 19,
+        "name": "Imported Hydrogen",
+        "type": "event",
+        "cost": 16,
+        "tags": [
+            "space",
+            "earth",
+            "event"
+        ],
+        "place_ocean": 1,
+        "gain_multiple_choice": {
+            "plants": 3,
+            "microbe": 3,
+            "animal": 2
+        },
+        "special_card_types": [
+            "puts resources on other cards when played",
+            "may not be included"
+        ]
+    },
+    {
+        "id": 24,
+        "name": "Predators",
+        "type": "active",
+        "cost": 14,
+        "tags": [
+            "animal"
+        ],
+        "requirements": {
+            "min_oxygen": 11
+        },
+        "gain_vps_special": {
+            "amount": 1,
+            "condition": "per 1 animal here"
+        },
+        "actions": [
+            {
+                "cost": {
+                    "animal from any": 1
+                },
+                "then": {
+                    "animal ": 1
+                }
+            }
+        ],
+        "special_card_types": [
+            "animal",
+            "add/steel resources from other cards",
+            "may not be included"
+        ]
+    },
+    {
+        "id": 33,
+        "name": "Regolith Eaters",
+        "type": "active",
+        "cost": 13,
+        "tags": [
+            "science",
+            "microbe"
+        ],
+        "actions": [
+            {
+                "cost": {},
+                "then": {
+                    "microbe": 1
+                }
+            },
+            {
+                "cost": {
+                    "microbe": 2
+                },
+                "then": {
+                    "oxygen": 1
+                }
+            }
+        ],
+        "special_card_types": [
+            "microbe"
+        ]
+    },
+    {
+        "id": 34,
+        "name": "GHG Producing Bacteria",
+        "type": "active",
+        "cost": 8,
+        "tags": [
+            "science",
+            "microbe"
+        ],
+        "requirements": {
+            "min_oxygen": 4
+        },
+        "actions": [
+            {
+                "cost": {},
+                "then": {
+                    "microbe": 1
+                }
+            },
+            {
+                "cost": {
+                    "microbe": 2
+                },
+                "then": {
+                    "temperature": 1
+                }
+            }
+        ],
+        "special_card_types": [
+            "microbe"
+        ]
+    },
+    {
+        "id": 35,
+        "name": "Ants",
+        "type": "active",
+        "cost": 9,
+        "tags": [
+            "microbe"
+        ],
+        "requirements": {
+            "min_oxygen": 4
+        },
+        "gain_vps_special": {
+            "amount": 1,
+            "condition": "per 2 microbes here"
+        },
+        "actions": [
+            {
+                "cost": {
+                    "microbe from any": 1
+                },
+                "then": {
+                    "microbe": 1
+                }
+            }
+        ],
+        "special_card_types": [
+            "microbe",
+            "add/steel resources from other cards",
+            "may not be included"
+        ]
+    },
+    {
+        "id": 52,
+        "name": "Fish",
+        "type": "active",
+        "cost": 9,
+        "tags": [
+            "animal"
+        ],
+        "requirements": {
+            "min_temperature": 2
+        },
+        "gain_vps_special": {
+            "amount": 1,
+            "condition": "per 1 animal here"
+        },
+        "destroy_resource_production": {
+            "plants": 1
+        },
+        "actions": [
+            {
+                "cost": {},
+                "then": {
+                    "animal": 1
+                }
+            }
+        ],
+        "special_card_types": [
+            "animal"
+        ]
+    },
+    {
+        "id": 54,
+        "name": "Small Animals",
+        "type": "active",
+        "cost": 6,
+        "tags": [
+            "animal"
+        ],
+        "requirements": {
+            "min_oxygen": 6
+        },
+        "gain_vps_special": {
+            "amount": 1,
+            "condition": "per 2 animals here"
+        },
+        "destroy_resource_production": {
+            "plants": 1
+        },
+        "actions": [
+            {
+                "cost": {},
+                "then": {
+                    "animal": 1
+                }
+            }
+        ],
+        "special_card_types": [
+            "animal"
+        ]
+    },
+    {
+        "id": 72,
+        "name": "Birds",
+        "type": "active",
+        "cost": 10,
+        "tags": [
+            "animal"
+        ],
+        "requirements": {
+            "min_oxygen": 13
+        },
+        "gain_vps_special": {
+            "amount": 1,
+            "condition": "per 1 animal here"
+        },
+        "destroy_resource_production": {
+            "plants": 2
+        },
+        "actions": [
+            {
+                "cost": {},
+                "then": {
+                    "animal": 1
+                }
+            }
+        ],
+        "special_card_types": [
+            "animal"
+        ]
+    },
+    {
+        "id": 115,
+        "name": "Artifical Photosynthesis",
+        "type": "automated",
+        "cost": 12,
+        "tags": [
+            "science"
+        ],
+        "gain_multiple_choice": {
+            "plants production": 1,
+            "energy production": 2
+        },
+        "special_card_types": [
+            "may not be included"
+        ]
+    },
+    {
+        "id": 131,
+        "name": "Decomposers",
+        "type": "active",
+        "cost": 5,
+        "tags": [
+            "microbe"
+        ],
+        "requirements": {
+            "min_oxygen": 3
+        },
+        "gain_vps_special": {
+            "amount": 1,
+            "condition": "per 3 microbes here"
+        },
+        "effect": {
+            "when": [
+                "you",
+                "play",
+                "animal",
+                "or",
+                "plant",
+                "or",
+                "microbe",
+                "tag"
+            ],
+            "then": {
+                "microbe": 1
+            }
+        },
+        "special_card_types": [
+            "microbe"
+        ]
+    },
+    {
+        "id": 133,
+        "name": "Symbiotic Fungus",
+        "type": "active",
+        "cost": 4,
+        "tags": [
+            "microbe"
+        ],
+        "requirements": {
+            "min_temperature": -14
+        },
+        "actions": [
+            {
+                "cost": {},
+                "then": {
+                    "microbe to any": 1
+                }
+            }
+        ],
+        "special_card_types": [
+            "add/steel resources from other cards",
+            "microbe",
+            "may not be included"
+        ]
+    },
+    {
+        "id": 134,
+        "name": "Extreme-Cold Fungus",
+        "type": "active",
+        "cost": 13,
+        "tags": [
+            "microbe"
+        ],
+        "requirements": {
+            "max_temperature": -10
+        },
+        "actions": [
+            {
+                "cost": {},
+                "then": {
+                    "plants": 1
+                }
+            },
+            {
+                "cost": {},
+                "then": {
+                    "microbes to any": 2
+                }
+            }
+        ],
+        "special_card_types": [
+            "add/steel resources from other cards",
+            "microbe",
+            "may not be included"
+        ]
+    },
+    {
+        "id": 143,
+        "name": "Large Convoy",
+        "type": "event",
+        "cost": 36,
+        "tags": [
+            "space",
+            "earth",
+            "event"
+        ],
+        "draw_cards": 2,
+        "gain_vps": 2,
+        "place_ocean": 1,
+        "gain_multiple_choice": {
+            "plants": 5,
+            "animal": 4
+        },
+        "special_card_types": [
+            "puts resources on other cards when played",
+            "may not be included"
+        ]
+    },
+    {
+        "id": 147,
+        "name": "Herbivores",
+        "type": "active",
+        "cost": 12,
+        "tags": [
+            "animal"
+        ],
+        "requirements": {
+            "min_oxygen": 8
+        },
+        "gain_vps_special": {
+            "amount": 1,
+            "condition": "per 2 animals here"
+        },
+        "destroy_resource_production": {
+            "plants": 1
+        },
+        "gain_resource": {
+            "animal": 1
+        },
+        "effect": {
+            "when": [
+                "you",
+                "place",
+                "greenery"
+            ],
+            "then": {
+                "animal": 1
+            }
+        },
+        "special_card_types": [
+            "animal"
+        ]
+    },
+    {
+        "id": 157,
+        "name": "Nitrite Reducing Bacteria",
+        "type": "active",
+        "cost": 11,
+        "tags": [
+            "microbe"
+        ],
+        "gain_resource": {
+            "microbe": 3
+        },
+        "actions": [
+            {
+                "cost": {},
+                "then": {
+                    "microbe": 1
+                }
+            },
+            {
+                "cost": {
+                    "microbe": 3
+                },
+                "then": {
+                    "tr": 1
+                }
+            }
+        ],
+        "special_card_types": [
+            "microbe"
+        ]
+    },
+    {
+        "id": 172,
+        "name": "Pets",
+        "type": "active",
+        "cost": 10,
+        "tags": [
+            "earth",
+            "animal"
+        ],
+        "gain_vps_special": {
+            "amount": 1,
+            "condition": "per 2 animals here"
+        },
+        "gain_resource": {
+            "animal": 1
+        },
+        "effect": {
+            "when": [
+                "anyone",
+                "place",
+                "city"
+            ],
+            "then": {
+                "animal": 1
+            }
+        },
+        "special": [
+            "animals may not be removed from this card"
+        ],
+        "special_card_types": [
+            "animal",
+            "aura",
+            "may not be included"
+        ]
+    },
+    {
+        "id": 184,
+        "name": "Livestock",
+        "type": "active",
+        "cost": 13,
+        "tags": [
+            "animal"
+        ],
+        "requirements": {
+            "min_oxygen": 9
+        },
+        "gain_vps_special": {
+            "amount": 1,
+            "condition": "per 1 animal here"
+        },
+        "lose_resource_production": {
+            "plants": 1
+        },
+        "gain_resource_production": {
+            "credit": 2
+        },
+        "actions": [
+            {
+                "cost": {},
+                "then": {
+                    "animal": 1
+                }
+            }
+        ],
+        "special_card_types": [
+            "animal"
+        ]
+    },
+    {
+        "id": 190,
+        "name": "Local Heat Trapping",
+        "type": "event",
+        "cost": 1,
+        "tags": [
+            "event"
+        ],
+        "lose_resource": {
+            "heat": 5
+        },
+        "gain_multiple_choice": {
+            "plants": 4,
+            "animal": 2
+        },
+        "special_card_types": [
+            "puts resources on other cards when played",
+            "may not be included"
+        ]
+    }
+]

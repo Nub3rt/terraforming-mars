@@ -46,25 +46,6 @@
         }
     },
     {
-        "id": 7,
-        "name": "Martian Rails",
-        "type": "active",
-        "cost": 13,
-        "tags": [
-            "building"
-        ],
-        "actions": [
-            {
-                "cost": {
-                    "energy": 1
-                },
-                "then": {
-                    "credit per citys": 1
-                }
-            }
-        ]
-    },
-    {
         "id": 9,
         "name": "Asteroid",
         "type": "event",
@@ -114,55 +95,6 @@
         }
     },
     {
-        "id": 12,
-        "name": "Water Import from Europa",
-        "type": "active",
-        "cost": 25,
-        "tags": [
-            "space",
-            "jovian"
-        ],
-        "gain_vps_special": {
-            "amount": 1,
-            "condition": "per 1 jovian tag"
-        },
-        "actions": [
-            {
-                "cost": {
-                    "credit": 12
-                },
-                "then": {
-                    "ocean": 1
-                }
-            }
-        ],
-        "special": [
-            "titanium may be used for the action"
-        ],
-        "special_card_types": [
-            "may not be included"
-        ]
-    },
-    {
-        "id": 15,
-        "name": "Equatorial Magnetizer",
-        "type": "active",
-        "cost": 11,
-        "tags": [
-            "building"
-        ],
-        "actions": [
-            {
-                "cost": {
-                    "energy production": 1
-                },
-                "then": {
-                    "tr": 1
-                }
-            }
-        ]
-    },
-    {
         "id": 16,
         "name": "Domed Crater",
         "type": "automated",
@@ -187,27 +119,6 @@
         }
     },
     {
-        "id": 17,
-        "name": "Noctis City",
-        "type": "automated",
-        "cost": 18,
-        "tags": [
-            "building",
-            "city"
-        ],
-        "place_city": 1,
-        "place_city_special": "on the reserved area",
-        "lose_resource_production": {
-            "energy": 1
-        },
-        "gain_resource_production": {
-            "credit": 3
-        },
-        "special_card_types": [
-            "may not be included"
-        ]
-    },
-    {
         "id": 18,
         "name": "Methane from Titan",
         "type": "automated",
@@ -226,47 +137,6 @@
         }
     },
     {
-        "id": 19,
-        "name": "Imported Hydrogen",
-        "type": "event",
-        "cost": 16,
-        "tags": [
-            "space",
-            "earth",
-            "event"
-        ],
-        "place_ocean": 1,
-        "gain_multiple_choice": {
-            "plants": 3,
-            "microbe": 3,
-            "animal": 2
-        },
-        "special_card_types": [
-            "puts resources on other cards when played",
-            "may not be included"
-        ]
-    },
-    {
-        "id": 20,
-        "name": "Research Outpost",
-        "type": "active",
-        "cost": 18,
-        "tags": [
-            "building",
-            "science",
-            "city"
-        ],
-        "place_city": 1,
-        "place_city_special": "next to no other tile",
-        "special": [
-            "when you play a card, you pay 1 less"
-        ],
-        "special_card_types": [
-            "aura",
-            "may not be included"
-        ]
-    },
-    {
         "id": 22,
         "name": "Black Polar Dust",
         "type": "automated",
@@ -278,62 +148,6 @@
         "gain_resource_production": {
             "heat": 3
         }
-    },
-    {
-        "id": 23,
-        "name": "Arctic Algae",
-        "type": "active",
-        "cost": 12,
-        "tags": [
-            "plant"
-        ],
-        "requirements": {
-            "max_temperature": -12
-        },
-        "gain_resource": {
-            "plants": 1
-        },
-        "effect": {
-            "when": [
-                "anyone",
-                "place",
-                "ocean"
-            ],
-            "then": {
-                "plants": 2
-            }
-        }
-    },
-    {
-        "id": 24,
-        "name": "Predators",
-        "type": "active",
-        "cost": 14,
-        "tags": [
-            "animal"
-        ],
-        "requirements": {
-            "min_oxygen": 11
-        },
-        "gain_vps_special": {
-            "amount": 1,
-            "condition": "per 1 animal here"
-        },
-        "actions": [
-            {
-                "cost": {
-                    "animal from any": 1
-                },
-                "then": {
-                    "animal ": 1
-                }
-            }
-        ],
-        "special_card_types": [
-            "animal",
-            "add/steel resources from other cards",
-            "may not be included"
-        ]
     },
     {
         "id": 26,
@@ -400,27 +214,6 @@
         }
     },
     {
-        "id": 31,
-        "name": "Optimal Aerobraking",
-        "type": "active",
-        "cost": 7,
-        "tags": [
-            "space"
-        ],
-        "effect": {
-            "when": [
-                "you",
-                "play",
-                "space",
-                "event"
-            ],
-            "then": {
-                "credit": 3,
-                "heat": 3
-            }
-        }
-    },
-    {
         "id": 32,
         "name": "Underground City",
         "type": "automated",
@@ -438,98 +231,6 @@
         }
     },
     {
-        "id": 33,
-        "name": "Regolith Eaters",
-        "type": "active",
-        "cost": 13,
-        "tags": [
-            "science",
-            "microbe"
-        ],
-        "actions": [
-            {
-                "cost": {},
-                "then": {
-                    "microbe": 1
-                }
-            },
-            {
-                "cost": {
-                    "microbe": 2
-                },
-                "then": {
-                    "oxygen": 1
-                }
-            }
-        ],
-        "special_card_types": [
-            "microbe"
-        ]
-    },
-    {
-        "id": 34,
-        "name": "GHG Producing Bacteria",
-        "type": "active",
-        "cost": 8,
-        "tags": [
-            "science",
-            "microbe"
-        ],
-        "requirements": {
-            "min_oxygen": 4
-        },
-        "actions": [
-            {
-                "cost": {},
-                "then": {
-                    "microbe": 1
-                }
-            },
-            {
-                "cost": {
-                    "microbe": 2
-                },
-                "then": {
-                    "temperature": 1
-                }
-            }
-        ],
-        "special_card_types": [
-            "microbe"
-        ]
-    },
-    {
-        "id": 35,
-        "name": "Ants",
-        "type": "active",
-        "cost": 9,
-        "tags": [
-            "microbe"
-        ],
-        "requirements": {
-            "min_oxygen": 4
-        },
-        "gain_vps_special": {
-            "amount": 1,
-            "condition": "per 2 microbes here"
-        },
-        "actions": [
-            {
-                "cost": {
-                    "microbe from any": 1
-                },
-                "then": {
-                    "microbe": 1
-                }
-            }
-        ],
-        "special_card_types": [
-            "microbe",
-            "add/steel resources from other cards",
-            "may not be included"
-        ]
-    },
-    {
         "id": 36,
         "name": "Release of Inert Gases",
         "type": "event",
@@ -538,41 +239,6 @@
             "event"
         ],
         "raise_tr": 2
-    },
-    {
-        "id": 37,
-        "name": "Nitrogen-Rich Asteroid",
-        "type": "event",
-        "cost": 31,
-        "tags": [
-            "space",
-            "event"
-        ],
-        "raise_tr": 2,
-        "raise_temp": 1,
-        "special": [
-            "Increase your plant production 1 step, or 4 steps if you have 3 plant tags."
-        ]
-    },
-    {
-        "id": 38,
-        "name": "Rover Construction",
-        "type": "active",
-        "cost": 8,
-        "tags": [
-            "building"
-        ],
-        "gain_vps": 1,
-        "effect": {
-            "when": [
-                "anyone",
-                "place",
-                "city"
-            ],
-            "then": {
-                "credit": 2
-            }
-        }
     },
     {
         "id": 39,
@@ -698,36 +364,6 @@
         }
     },
     {
-        "id": 52,
-        "name": "Fish",
-        "type": "active",
-        "cost": 9,
-        "tags": [
-            "animal"
-        ],
-        "requirements": {
-            "min_temperature": 2
-        },
-        "gain_vps_special": {
-            "amount": 1,
-            "condition": "per 1 animal here"
-        },
-        "destroy_resource_production": {
-            "plants": 1
-        },
-        "actions": [
-            {
-                "cost": {},
-                "then": {
-                    "animal": 1
-                }
-            }
-        ],
-        "special_card_types": [
-            "animal"
-        ]
-    },
-    {
         "id": 53,
         "name": "Lake Marineris",
         "type": "automated",
@@ -737,36 +373,6 @@
         },
         "gain_vps": 2,
         "place_ocean": 2
-    },
-    {
-        "id": 54,
-        "name": "Small Animals",
-        "type": "active",
-        "cost": 6,
-        "tags": [
-            "animal"
-        ],
-        "requirements": {
-            "min_oxygen": 6
-        },
-        "gain_vps_special": {
-            "amount": 1,
-            "condition": "per 2 animals here"
-        },
-        "destroy_resource_production": {
-            "plants": 1
-        },
-        "actions": [
-            {
-                "cost": {},
-                "then": {
-                    "animal": 1
-                }
-            }
-        ],
-        "special_card_types": [
-            "animal"
-        ]
     },
     {
         "id": 55,
@@ -810,24 +416,6 @@
         }
     },
     {
-        "id": 59,
-        "name": "Mangrove",
-        "type": "automated",
-        "cost": 12,
-        "tags": [
-            "plant"
-        ],
-        "requirements": {
-            "min_temperature": 4
-        },
-        "gain_vps": 1,
-        "place_greenery": 1,
-        "place_greenery_special": "on an area reserved for oceans",
-        "special_card_types": [
-            "may not be included"
-        ]
-    },
-    {
         "id": 60,
         "name": "Trees",
         "type": "automated",
@@ -863,36 +451,6 @@
         }
     },
     {
-        "id": 72,
-        "name": "Birds",
-        "type": "active",
-        "cost": 10,
-        "tags": [
-            "animal"
-        ],
-        "requirements": {
-            "min_oxygen": 13
-        },
-        "gain_vps_special": {
-            "amount": 1,
-            "condition": "per 1 animal here"
-        },
-        "destroy_resource_production": {
-            "plants": 2
-        },
-        "actions": [
-            {
-                "cost": {},
-                "then": {
-                    "animal": 1
-                }
-            }
-        ],
-        "special_card_types": [
-            "animal"
-        ]
-    },
-    {
         "id": 75,
         "name": "Towing a Comet",
         "type": "event",
@@ -906,29 +464,6 @@
         },
         "place_ocean": 1,
         "raise_oxygen": 1
-    },
-    {
-        "id": 76,
-        "name": "Space Mirrors",
-        "type": "active",
-        "cost": 3,
-        "tags": [
-            "space",
-            "power"
-        ],
-        "actions": [
-            {
-                "cost": {
-                    "credit": 7
-                },
-                "then": {
-                    "energy production": 1
-                }
-            }
-        ],
-        "special_card_types": [
-            "may not be included"
-        ]
     },
     {
         "id": 77,
@@ -1057,21 +592,6 @@
         }
     },
     {
-        "id": 96,
-        "name": "Greenhouses",
-        "type": "automated",
-        "cost": 6,
-        "tags": [
-            "building",
-            "plant"
-        ],
-        "gain_resource_special": {
-            "resource": "plants",
-            "amount": 1,
-            "condition": "per 1 city"
-        }
-    },
-    {
         "id": 100,
         "name": "Fueled Generators",
         "type": "automated",
@@ -1086,80 +606,6 @@
         "gain_resource_production": {
             "energy": 1
         }
-    },
-    {
-        "id": 101,
-        "name": "Ironworks",
-        "type": "active",
-        "cost": 11,
-        "tags": [
-            "building"
-        ],
-        "actions": [
-            {
-                "cost": {
-                    "energy": 4
-                },
-                "then": {
-                    "steel": 1,
-                    "oxygen": 1
-                }
-            }
-        ]
-    },
-    {
-        "id": 102,
-        "name": "Power Grid",
-        "type": "automated",
-        "cost": 18,
-        "tags": [
-            "power"
-        ],
-        "gain_resource_production_special": {
-            "resource": "energy",
-            "amount": 1,
-            "condition": "per 1 power tag"
-        }
-    },
-    {
-        "id": 103,
-        "name": "Steelworks",
-        "type": "active",
-        "cost": 15,
-        "tags": [
-            "building"
-        ],
-        "actions": [
-            {
-                "cost": {
-                    "energy": 4
-                },
-                "then": {
-                    "steel": 2,
-                    "oxygen": 1
-                }
-            }
-        ]
-    },
-    {
-        "id": 104,
-        "name": "Ore Processor",
-        "type": "active",
-        "cost": 13,
-        "tags": [
-            "building"
-        ],
-        "actions": [
-            {
-                "cost": {
-                    "energy": 4
-                },
-                "then": {
-                    "titanium": 1,
-                    "oxygen": 1
-                }
-            }
-        ]
     },
     {
         "id": 108,
@@ -1213,40 +659,6 @@
         "gain_vps": 2
     },
     {
-        "id": 115,
-        "name": "Artifical Photosynthesis",
-        "type": "automated",
-        "cost": 12,
-        "tags": [
-            "science"
-        ],
-        "gain_multiple_choice": {
-            "plants production": 1,
-            "energy production": 2
-        },
-        "special_card_types": [
-            "may not be included"
-        ]
-    },
-    {
-        "id": 116,
-        "name": "Artifical Lake",
-        "type": "automated",
-        "cost": 15,
-        "tags": [
-            "building"
-        ],
-        "requirements": {
-            "min_temperature": -6
-        },
-        "gain_vps": 1,
-        "place_ocean": 1,
-        "place_ocean_special": "on an area not reserved for oceans",
-        "special_card_types": [
-            "may not be included"
-        ]
-    },
-    {
         "id": 117,
         "name": "Geothermal Power",
         "type": "automated",
@@ -1288,27 +700,6 @@
             "max_oceans": 3
         },
         "gain_vps": 1
-    },
-    {
-        "id": 120,
-        "name": "Urbanized Area",
-        "type": "automated",
-        "cost": 10,
-        "tags": [
-            "building",
-            "city"
-        ],
-        "place_city": 1,
-        "place_city_special": "adjacent to at least two other citys",
-        "lose_resource_production": {
-            "energy": 1
-        },
-        "gain_resource_production": {
-            "credit": 2
-        },
-        "special_card_types": [
-            "may not be included"
-        ]
     },
     {
         "id": 122,
@@ -1354,72 +745,6 @@
         "place_ocean": 1
     },
     {
-        "id": 129,
-        "name": "Zeppelins",
-        "type": "automated",
-        "cost": 13,
-        "requirements": {
-            "min_oxygen": 5
-        },
-        "gain_vps": 1,
-        "gain_resource_production_special": {
-            "resource": "credit",
-            "amount": 1,
-            "condition": "per 1 city"
-        }
-    },
-    {
-        "id": 130,
-        "name": "Worms",
-        "type": "automated",
-        "cost": 8,
-        "tags": [
-            "microbe"
-        ],
-        "requirements": {
-            "min_oxygen": 4
-        },
-        "gain_resource_production_special": {
-            "resource": "plants",
-            "amount": 1,
-            "condition": "per 2 microbe tags"
-        }
-    },
-    {
-        "id": 131,
-        "name": "Decomposers",
-        "type": "active",
-        "cost": 5,
-        "tags": [
-            "microbe"
-        ],
-        "requirements": {
-            "min_oxygen": 3
-        },
-        "gain_vps_special": {
-            "amount": 1,
-            "condition": "per 3 microbes here"
-        },
-        "effect": {
-            "when": [
-                "you",
-                "play",
-                "animal",
-                "or",
-                "plant",
-                "or",
-                "microbe",
-                "tag"
-            ],
-            "then": {
-                "microbe": 1
-            }
-        },
-        "special_card_types": [
-            "microbe"
-        ]
-    },
-    {
         "id": 132,
         "name": "Fusion Power",
         "type": "automated",
@@ -1437,62 +762,6 @@
         "gain_resource_production": {
             "energy": 3
         }
-    },
-    {
-        "id": 133,
-        "name": "Symbiotic Fungus",
-        "type": "active",
-        "cost": 4,
-        "tags": [
-            "microbe"
-        ],
-        "requirements": {
-            "min_temperature": -14
-        },
-        "actions": [
-            {
-                "cost": {},
-                "then": {
-                    "microbe to any": 1
-                }
-            }
-        ],
-        "special_card_types": [
-            "add/steel resources from other cards",
-            "microbe",
-            "may not be included"
-        ]
-    },
-    {
-        "id": 134,
-        "name": "Extreme-Cold Fungus",
-        "type": "active",
-        "cost": 13,
-        "tags": [
-            "microbe"
-        ],
-        "requirements": {
-            "max_temperature": -10
-        },
-        "actions": [
-            {
-                "cost": {},
-                "then": {
-                    "plants": 1
-                }
-            },
-            {
-                "cost": {},
-                "then": {
-                    "microbes to any": 2
-                }
-            }
-        ],
-        "special_card_types": [
-            "add/steel resources from other cards",
-            "microbe",
-            "may not be included"
-        ]
     },
     {
         "id": 135,
@@ -1577,28 +846,6 @@
         }
     },
     {
-        "id": 143,
-        "name": "Large Convoy",
-        "type": "event",
-        "cost": 36,
-        "tags": [
-            "space",
-            "earth",
-            "event"
-        ],
-        "draw_cards": 2,
-        "gain_vps": 2,
-        "place_ocean": 1,
-        "gain_multiple_choice": {
-            "plants": 5,
-            "animal": 4
-        },
-        "special_card_types": [
-            "puts resources on other cards when played",
-            "may not be included"
-        ]
-    },
-    {
         "id": 145,
         "name": "Tectonic Stress Power",
         "type": "automated",
@@ -1636,70 +883,6 @@
         }
     },
     {
-        "id": 147,
-        "name": "Herbivores",
-        "type": "active",
-        "cost": 12,
-        "tags": [
-            "animal"
-        ],
-        "requirements": {
-            "min_oxygen": 8
-        },
-        "gain_vps_special": {
-            "amount": 1,
-            "condition": "per 2 animals here"
-        },
-        "destroy_resource_production": {
-            "plants": 1
-        },
-        "gain_resource": {
-            "animal": 1
-        },
-        "effect": {
-            "when": [
-                "you",
-                "place",
-                "greenery"
-            ],
-            "then": {
-                "animal": 1
-            }
-        },
-        "special_card_types": [
-            "animal"
-        ]
-    },
-    {
-        "id": 148,
-        "name": "Insects",
-        "type": "automated",
-        "cost": 9,
-        "tags": [
-            "microbe"
-        ],
-        "requirements": {
-            "min_oxygen": 6
-        },
-        "gain_resource_production_special": {
-            "resource": "plants",
-            "amount": 1,
-            "condition": "per 1 plant tag"
-        }
-    },
-    {
-        "id": 152,
-        "name": "Insulation",
-        "type": "automated",
-        "cost": 2,
-        "special": [
-            "lose any number of heat production to gain as many credit production"
-        ],
-        "special_card_types": [
-            "may not be included"
-        ]
-    },
-    {
         "id": 155,
         "name": "Designed Microorganisms",
         "type": "automated",
@@ -1714,37 +897,6 @@
         "gain_resource_production": {
             "plants": 2
         }
-    },
-    {
-        "id": 157,
-        "name": "Nitrite Reducing Bacteria",
-        "type": "active",
-        "cost": 11,
-        "tags": [
-            "microbe"
-        ],
-        "gain_resource": {
-            "microbe": 3
-        },
-        "actions": [
-            {
-                "cost": {},
-                "then": {
-                    "microbe": 1
-                }
-            },
-            {
-                "cost": {
-                    "microbe": 3
-                },
-                "then": {
-                    "tr": 1
-                }
-            }
-        ],
-        "special_card_types": [
-            "microbe"
-        ]
     },
     {
         "id": 158,
@@ -1853,32 +1005,6 @@
         }
     },
     {
-        "id": 166,
-        "name": "Shuttles",
-        "type": "active",
-        "cost": 10,
-        "tags": [
-            "space"
-        ],
-        "requirements": {
-            "min_oxygen": 5
-        },
-        "gain_vps": 1,
-        "lose_resource_production": {
-            "energy": 1
-        },
-        "gain_resource_production": {
-            "credit": 2
-        },
-        "special": [
-            "when you play a space card, you pay 2 less"
-        ],
-        "special_card_types": [
-            "aura",
-            "may not be included"
-        ]
-    },
-    {
         "id": 167,
         "name": "Import of Advanced GHG",
         "type": "event",
@@ -1967,59 +1093,6 @@
         }
     },
     {
-        "id": 172,
-        "name": "Pets",
-        "type": "active",
-        "cost": 10,
-        "tags": [
-            "earth",
-            "animal"
-        ],
-        "gain_vps_special": {
-            "amount": 1,
-            "condition": "per 2 animals here"
-        },
-        "gain_resource": {
-            "animal": 1
-        },
-        "effect": {
-            "when": [
-                "anyone",
-                "place",
-                "city"
-            ],
-            "then": {
-                "animal": 1
-            }
-        },
-        "special": [
-            "animals may not be removed from this card"
-        ],
-        "special_card_types": [
-            "animal",
-            "aura",
-            "may not be included"
-        ]
-    },
-    {
-        "id": 174,
-        "name": "Protected Valley",
-        "type": "automated",
-        "cost": 23,
-        "tags": [
-            "building",
-            "plant"
-        ],
-        "place_greenery": 1,
-        "place_greenery_special": "on an area reserved for oceans",
-        "gain_resource_production": {
-            "credit": 2
-        },
-        "special_card_types": [
-            "may not be included"
-        ]
-    },
-    {
         "id": 176,
         "name": "Noctis Farming",
         "type": "automated",
@@ -2038,28 +1111,6 @@
         "gain_resource_production": {
             "credit": 1
         }
-    },
-    {
-        "id": 177,
-        "name": "Water Splitting Plant",
-        "type": "active",
-        "cost": 12,
-        "tags": [
-            "building"
-        ],
-        "requirements": {
-            "min_oceans": 2
-        },
-        "actions": [
-            {
-                "cost": {
-                    "energy": 3
-                },
-                "then": {
-                    "oxygen": 1
-                }
-            }
-        ]
     },
     {
         "id": 178,
@@ -2128,98 +1179,6 @@
         }
     },
     {
-        "id": 184,
-        "name": "Livestock",
-        "type": "active",
-        "cost": 13,
-        "tags": [
-            "animal"
-        ],
-        "requirements": {
-            "min_oxygen": 9
-        },
-        "gain_vps_special": {
-            "amount": 1,
-            "condition": "per 1 animal here"
-        },
-        "lose_resource_production": {
-            "plants": 1
-        },
-        "gain_resource_production": {
-            "credit": 2
-        },
-        "actions": [
-            {
-                "cost": {},
-                "then": {
-                    "animal": 1
-                }
-            }
-        ],
-        "special_card_types": [
-            "animal"
-        ]
-    },
-    {
-        "id": 187,
-        "name": "Aquifer Pumping",
-        "type": "active",
-        "cost": 18,
-        "tags": [
-            "building"
-        ],
-        "actions": [
-            {
-                "cost": {
-                    "credit": 8
-                },
-                "then": {
-                    "ocean": 1
-                }
-            }
-        ],
-        "special": [
-            "steel may be used for the action"
-        ],
-        "special_card_types": [
-            "may not be included"
-        ]
-    },
-    {
-        "id": 189,
-        "name": "Energy Saving",
-        "type": "automated",
-        "cost": 15,
-        "tags": [
-            "power"
-        ],
-        "gain_resource_production_special": {
-            "resource": "energy",
-            "amount": 1,
-            "condition": "per 1 city"
-        }
-    },
-    {
-        "id": 190,
-        "name": "Local Heat Trapping",
-        "type": "event",
-        "cost": 1,
-        "tags": [
-            "event"
-        ],
-        "lose_resource": {
-            "heat": 5
-        },
-        "gain_multiple_choice": {
-            "plants": 4,
-            "animal": 2
-        },
-        "special_card_types": [
-            "puts resources on other cards when played",
-            "may not be included"
-        ]
-    },
-    {
         "id": 191,
         "name": "Permafrost Extraction",
         "type": "event",
@@ -2246,70 +1205,6 @@
             }
         },
         "place_greenery": 1
-    },
-    {
-        "id": 198,
-        "name": "Immigration Shuttles",
-        "type": "automated",
-        "cost": 31,
-        "tags": [
-            "space",
-            "earth"
-        ],
-        "gain_vps_special": {
-            "amount": 1,
-            "condition": "per 3 citys"
-        },
-        "gain_resource_production": {
-            "credit": 5
-        }
-    },
-    {
-        "id": 200,
-        "name": "Immigrant City",
-        "type": "active",
-        "cost": 13,
-        "tags": [
-            "building",
-            "city"
-        ],
-        "place_city": 1,
-        "lose_resource_production": {
-            "credit": 2,
-            "energy": 1
-        },
-        "effect": {
-            "when": [
-                "anyone",
-                "place",
-                "city"
-            ],
-            "then": {
-                "credit production": 1
-            }
-        }
-    },
-    {
-        "id": 202,
-        "name": "Underground Detonations",
-        "type": "active",
-        "cost": 6,
-        "tags": [
-            "building"
-        ],
-        "actions": [
-            {
-                "cost": {
-                    "credit": 10
-                },
-                "then": {
-                    "heat production": 2
-                }
-            }
-        ],
-        "special_card_types": [
-            "may not be included"
-        ]
     },
     {
         "id": 203,
