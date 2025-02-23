@@ -24,30 +24,36 @@ public:
     virtual bool IsActiveWithAction() const noexcept;
     virtual bool IsActiveWithEffect() const noexcept;
 
-    inline virtual CardID get_card_id() const noexcept = 0;
-    inline virtual const std::string& get_name() const noexcept = 0;
+    inline CardID get_card_id() const noexcept;
+    inline const std::array<Tag, 3>& get_tags() const noexcept;
+    inline int get_tag_count() const noexcept;
 
     void Buy( Player* player );
     void Sell();
     bool CanBePlayed( const GameModel& model ) const;
     void Play( const GameModel& model );
     int TagsOfType( Tag tag ) const;
+    int CountVPs( const GameModel& model ) const;
 
 protected:
-    Card() noexcept;
+    Card( CardID card_id, int base_cost, bool is_building, bool is_space ) noexcept;
 
-    bool _is_building;
-    bool _is_space;
+    const CardID _card_id;
+    const int _base_cost;
+    const bool _is_building;
+    const bool _is_space;
 
     Player* _holder;
     Player* _owner;
 
-    virtual int get_base_cost() const noexcept = 0;
-    inline virtual int get_tag_count() const noexcept = 0;
-    inline virtual const std::array<Tag, 3>& get_tags() const noexcept = 0;
-
+    void AddTag( Tag tag );
     int GetCost() const;
-    virtual bool SatisfiesRequirements( const GameModel& model ) const = 0;
-    virtual void ApplyImmediateEffects() = 0;
+    virtual bool SatisfiesRequirements( const GameModel& model ) const;
+    virtual void ApplyImmediateEffects( const GameModel& model );
+    virtual int DoCountVPs( const GameModel& model ) const;
+
+private:
+    std::array<Tag, 3> _tags;
+    int _tag_count;
 };
 }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "active_card.h"
+#include "card_id.h"
 
 namespace model::decks
 {
@@ -11,13 +12,17 @@ public:
 
     bool IsActiveWithEffect() const noexcept override;
 
-    virtual void AfterAnyonePlacesCity();
-    virtual void AfterAnyonePlacecOcean();
-    virtual void AfterYouPlaySpaceEvent();
-    virtual int ModifyCardCost( int cost );
+    void AfterAnyonePlacesCity();
+    void AfterAnyonePlacesOcean();
+    void AfterYouPlaySpaceEvent();
+    int ModifyCardCost( int cost, const Card* card );
 
 protected:
-    ActiveCardWithEffect() noexcept;
+    ActiveCardWithEffect( CardID card_id, int base_cost, bool is_building, bool is_space ) noexcept;
 
+    virtual void DoAfterAnyonePlacesCity();
+    virtual void DoAfterAnyonePlacesOcean();
+    virtual void DoAfterYouPlaySpaceEvent();
+    virtual int DoModifyCardCost( int cost, const Card* card );
 };
 }

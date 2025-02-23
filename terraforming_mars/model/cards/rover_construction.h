@@ -1,0 +1,19 @@
+#pragma once
+
+#include "../active_card_with_effect.h"
+#include "../game_model.h"
+
+namespace model::decks::cards
+{
+class RoverConstruction : public ActiveCardWithEffect
+{
+public:
+    RoverConstruction() noexcept;
+    ~RoverConstruction() noexcept;
+
+protected:
+    int DoCountVPs( const GameModel& model ) const override;
+
+    void DoAfterAnyonePlacesCity() override;
+};
+}

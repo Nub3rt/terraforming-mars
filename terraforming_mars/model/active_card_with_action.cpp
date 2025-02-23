@@ -4,10 +4,14 @@
 
 #include "active_card.h"
 #include "availability.h"
+#include "card_id.h"
 
 namespace model::decks
 {
-ActiveCardWithAction::ActiveCardWithAction() noexcept : ActiveCard(), _used_this_generation( false ) {}
+ActiveCardWithAction::ActiveCardWithAction( CardID card_id, int base_cost, bool is_building, bool is_space ) noexcept :
+    ActiveCard( card_id, base_cost, is_building, is_space ), _used_this_generation( false ) {
+}
+
 ActiveCardWithAction::~ActiveCardWithAction() noexcept {}
 
 bool ActiveCardWithAction::IsActiveWithAction() const noexcept { return true; }
@@ -25,11 +29,11 @@ Availability ActiveCardWithAction::Availability() const {
         return Availability::NOT_USABLE;
 }
 
-void ActiveCardWithAction::UseAction() {
+void ActiveCardWithAction::UseAction( const GameModel& model ) {
     if ( Availability() != Availability::CAN_BE_USED )
         throw std::logic_error( "ActiveCardWithAction::UseAction: card cannot be used at this time!" );
 
-    DoUseAction();
+    DoUseAction( model );
     _used_this_generation = true;
 }
 

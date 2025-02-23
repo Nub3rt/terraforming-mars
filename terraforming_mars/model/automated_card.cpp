@@ -1,10 +1,14 @@
 #include "automated_card.h"
 
 #include "card.h"
+#include "card_id.h"
 
 namespace model::decks
 {
-AutomatedCard::AutomatedCard() noexcept : Card() {}
+AutomatedCard::AutomatedCard( CardID card_id, int base_cost, bool is_building, bool is_space ) noexcept :
+    Card( card_id, base_cost, is_building, is_space ) {
+}
+
 AutomatedCard::~AutomatedCard() noexcept {}
 
 bool AutomatedCard::IsAutomated() const noexcept { return true; }

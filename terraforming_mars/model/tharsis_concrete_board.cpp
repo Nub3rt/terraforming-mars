@@ -42,8 +42,6 @@ std::vector<std::reference_wrapper<const Tile>> model::board::TharsisConcreteBoa
     return neighbours;
 }
 
-using namespace model::board;
-
 const std::array<std::array<Tile, 9>, 9> TharsisConcreteBoard::_starting_board = {{
     {{
         Tile( _warn_bad_index ),

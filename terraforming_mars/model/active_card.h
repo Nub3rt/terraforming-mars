@@ -1,6 +1,7 @@
 #pragma once
 
 #include "card.h"
+#include "card_id.h"
 
 namespace model::decks
 {
@@ -12,6 +13,6 @@ public:
     bool IsActive() const noexcept override;
 
 protected:
-    ActiveCard() noexcept;
+    ActiveCard( CardID card_id, int base_cost, bool is_building, bool is_space ) noexcept;
 };
 }

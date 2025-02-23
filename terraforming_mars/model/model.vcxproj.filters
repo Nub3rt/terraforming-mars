@@ -11,6 +11,9 @@
     <Filter Include="decks">
       <UniqueIdentifier>{e79286f2-9dee-45fc-9909-7546e4f23664}</UniqueIdentifier>
     </Filter>
+    <Filter Include="decks\cards">
+      <UniqueIdentifier>{8441c461-9b20-4847-9124-78b7d92256ff}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="board.h">
@@ -62,6 +65,87 @@
     <ClInclude Include="active_card_with_effect.h">
       <Filter>decks</Filter>
     </ClInclude>
+    <ClInclude Include="cards\martian_rails.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\_cards.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\water_import_from_europa.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\equatorial_magnetizer.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\noctis_city.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\research_outpost.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\arctic_algae.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\optimal_aerobraking.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\nitrogen_rich_asteroid.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\rover_construction.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\mangrove.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\space_mirrors.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\greenhouses.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\ironworks.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\power_grid.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\steelworks.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\ore_processor.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\urbanized_area.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\zeppelins.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\worms.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\insects.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\artifical_lake.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\insulation.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\shuttles.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\protected_valley.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\water_splitting_plant.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\aquifer_pumping.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="player.cpp" />
@@ -98,6 +182,84 @@
     </ClCompile>
     <ClCompile Include="active_card_with_effect.cpp">
       <Filter>decks</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\martian_rails.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\water_import_from_europa.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\equatorial_magnetizer.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\noctis_city.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\research_outpost.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\arctic_algae.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\optimal_aerobraking.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\nitrogen_rich_asteroid.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\rover_construction.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\mangrove.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\space_mirrors.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\greenhouses.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\ironworks.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\power_grid.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\steelworks.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\ore_processor.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\urbanized_area.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\zeppelins.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\worms.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\insects.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\artifical_lake.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\insulation.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\shuttles.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\protected_valley.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\water_splitting_plant.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\aquifer_pumping.cpp">
+      <Filter>decks\cards</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
