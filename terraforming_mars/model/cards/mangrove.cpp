@@ -15,13 +15,13 @@ Mangrove::Mangrove( const GameModel& model ) noexcept :
 
 Mangrove::~Mangrove() noexcept {}
 
-bool Mangrove::SatisfiesRequirements( const GameModel& _model ) const {
+bool Mangrove::SatisfiesRequirements() const {
     return _model.Temperature() >= 4;
 }
 
-void Mangrove::ApplyImmediateEffects( const GameModel& _model ) {
+void Mangrove::ApplyImmediateEffects() {
     _owner->PlaceGreeneryOnOcean();
 }
 
-int Mangrove::DoCountVPs( const GameModel& _model ) const { return 1; }
+int Mangrove::DoCountVPs() const { return 1; }
 }

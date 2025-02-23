@@ -13,15 +13,15 @@ Zeppelins::Zeppelins( const GameModel& model ) noexcept :
 
 Zeppelins::~Zeppelins() noexcept {}
 
-bool Zeppelins::SatisfiesRequirements( const GameModel& _model ) const {
+bool Zeppelins::SatisfiesRequirements() const {
     return _model.Oxygen() >= 5;
 }
 
-void Zeppelins::ApplyImmediateEffects( const GameModel& _model ) {
+void Zeppelins::ApplyImmediateEffects() {
     _owner->GainCreditProduction( _model.CityCount() );
 }
 
-int Zeppelins::DoCountVPs( const GameModel& _model ) const {
+int Zeppelins::DoCountVPs() const {
     return 1;
 }
 }

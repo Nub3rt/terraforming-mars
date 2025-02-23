@@ -12,8 +12,8 @@ public:
     ~ImmigrantCity() noexcept;
 
 protected:
-    bool SatisfiesRequirements( const GameModel& _model ) const override;
-    void ApplyImmediateEffects( const GameModel& _model ) override;
+    bool SatisfiesRequirements() const override;
+    void ApplyImmediateEffects() override;
 
     void DoAfterAnyonePlacesCity() override;
 };

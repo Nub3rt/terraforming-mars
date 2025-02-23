@@ -12,9 +12,9 @@ public:
     ~Shuttles() noexcept;
 
 protected:
-    bool SatisfiesRequirements( const GameModel& _model ) const override;
-    void ApplyImmediateEffects( const GameModel& _model ) override;
-    int DoCountVPs( const GameModel& _model ) const override;
+    bool SatisfiesRequirements() const override;
+    void ApplyImmediateEffects() override;
+    int DoCountVPs() const override;
 
     int DoModifyCardCost( int cost, const Card* card ) override;
 };

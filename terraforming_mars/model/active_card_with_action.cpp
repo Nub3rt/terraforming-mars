@@ -29,11 +29,11 @@ Availability ActiveCardWithAction::Availability() const {
         return Availability::NOT_USABLE;
 }
 
-void ActiveCardWithAction::UseAction( const GameModel& _model ) {
+void ActiveCardWithAction::UseAction() {
     if ( Availability() != Availability::CAN_BE_USED )
         throw std::logic_error( "ActiveCardWithAction::UseAction: card cannot be used at this time!" );
 
-    DoUseAction( _model );
+    DoUseAction();
     _used_this_generation = true;
 }
 

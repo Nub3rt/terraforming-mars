@@ -15,7 +15,7 @@ EnergySaving::EnergySaving( const GameModel& model ) noexcept :
 
 EnergySaving::~EnergySaving() noexcept {}
 
-void EnergySaving::ApplyImmediateEffects( const GameModel& _model ) {
+void EnergySaving::ApplyImmediateEffects() {
     _owner->GainEnergyProduction( _model.CityCount() );
 }
 }

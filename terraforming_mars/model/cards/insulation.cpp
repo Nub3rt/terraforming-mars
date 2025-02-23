@@ -13,7 +13,7 @@ Insulation::Insulation( const GameModel& model ) noexcept :
 
 Insulation::~Insulation() noexcept {}
 
-void Insulation::ApplyImmediateEffects( const GameModel& _model ) {
+void Insulation::ApplyImmediateEffects() {
     int heat_production = _owner->get_heat_production();
 
     _owner->LoseHeatProduction( heat_production );

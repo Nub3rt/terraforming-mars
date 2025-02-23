@@ -16,11 +16,11 @@ ImmigrationShuttles::ImmigrationShuttles( const GameModel& model ) noexcept :
 
 ImmigrationShuttles::~ImmigrationShuttles() noexcept {}
 
-void ImmigrationShuttles::ApplyImmediateEffects( const GameModel& _model ) {
+void ImmigrationShuttles::ApplyImmediateEffects() {
     _owner->GainCreditProduction( 5 );
 }
 
-int ImmigrationShuttles::DoCountVPs( const GameModel& _model ) const {
+int ImmigrationShuttles::DoCountVPs() const {
     return _model.CityCount() / 3;
 }
 }

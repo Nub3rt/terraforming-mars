@@ -14,9 +14,9 @@ public:
 protected:
     int _action_credit_cost;
 
-    int DoCountVPs( const GameModel& _model ) const override;
+    int DoCountVPs() const override;
 
     bool CanBeUsed() const override;
-    void DoUseAction( const GameModel& _model ) override;
+    void DoUseAction() override;
 };
 }

@@ -19,7 +19,7 @@ bool Ironworks::CanBeUsed() const {
     return _owner->get_energy() >= _action_energy_cost;
 }
 
-void Ironworks::DoUseAction( const GameModel& _model ) {
+void Ironworks::DoUseAction() {
     _owner->GainSteel( 1 );
     _owner->RaiseOxygen();
 }

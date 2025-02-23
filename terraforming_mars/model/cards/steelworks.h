@@ -15,6 +15,6 @@ protected:
     int _action_energy_cost;
 
     bool CanBeUsed() const override;
-    void DoUseAction( const GameModel& _model ) override;
+    void DoUseAction() override;
 };
 }

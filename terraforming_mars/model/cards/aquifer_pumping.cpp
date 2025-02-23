@@ -21,7 +21,7 @@ bool AquiferPumping::CanBeUsed() const {
     return _owner->GetMaxPayAmountForBuilding() >= _action_credit_cost;
 }
 
-void AquiferPumping::DoUseAction( const GameModel& _model ) {
+void AquiferPumping::DoUseAction() {
     _owner->ConfirmSteelPayment( _action_credit_cost, [ this ]() { _owner->PlaceOcean(); } );
 }
 }

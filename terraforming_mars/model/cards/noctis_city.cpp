@@ -16,11 +16,11 @@ NoctisCity::NoctisCity( const GameModel& model ) noexcept :
 
 NoctisCity::~NoctisCity() noexcept {}
 
-bool NoctisCity::SatisfiesRequirements( const GameModel& _model ) const {
+bool NoctisCity::SatisfiesRequirements() const {
     return _owner->get_energy_production() >= 1;
 }
 
-void NoctisCity::ApplyImmediateEffects( const GameModel& _model ) {
+void NoctisCity::ApplyImmediateEffects() {
     _owner->LoseEnergyProduction( 1 );
 
     _owner->GainCreditProduction( 3 );

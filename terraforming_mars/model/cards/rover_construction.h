@@ -12,7 +12,7 @@ public:
     ~RoverConstruction() noexcept;
 
 protected:
-    int DoCountVPs( const GameModel& _model ) const override;
+    int DoCountVPs() const override;
 
     void DoAfterAnyonePlacesCity() override;
 };

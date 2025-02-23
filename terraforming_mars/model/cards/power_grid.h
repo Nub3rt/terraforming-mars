@@ -12,6 +12,6 @@ public:
     ~PowerGrid() noexcept;
 
 protected:
-    void ApplyImmediateEffects( const GameModel& _model ) override;
+    void ApplyImmediateEffects() override;
 };
 }

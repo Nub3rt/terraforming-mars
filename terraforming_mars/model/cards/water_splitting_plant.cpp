@@ -15,7 +15,7 @@ WaterSplittingPlant::WaterSplittingPlant( const GameModel& model ) noexcept :
 
 WaterSplittingPlant::~WaterSplittingPlant() noexcept {}
 
-bool WaterSplittingPlant::SatisfiesRequirements( const GameModel& _model ) const {
+bool WaterSplittingPlant::SatisfiesRequirements() const {
     return _model.OceanCount() >= 2;
 }
 
@@ -23,7 +23,7 @@ bool WaterSplittingPlant::CanBeUsed() const {
     return _owner->get_energy() >= _action_energy_cost;
 }
 
-void WaterSplittingPlant::DoUseAction( const GameModel& _model ) {
+void WaterSplittingPlant::DoUseAction() {
     _owner->LoseEnergy( _action_energy_cost );
 
     _owner->RaiseOxygen();

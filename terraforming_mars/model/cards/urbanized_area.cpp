@@ -17,11 +17,11 @@ UrbanizedArea::UrbanizedArea( const GameModel& model ) noexcept :
 
 UrbanizedArea::~UrbanizedArea() noexcept {}
 
-bool UrbanizedArea::SatisfiesRequirements( const GameModel& _model ) const {
+bool UrbanizedArea::SatisfiesRequirements() const {
     return _owner->get_energy_production() >= 1 && _model.IsUrbanizedAreaPlaceable();
 }
 
-void UrbanizedArea::ApplyImmediateEffects( const GameModel& _model ) {
+void UrbanizedArea::ApplyImmediateEffects() {
     _owner->LoseEnergyProduction( 1 );
 
     _owner->GainCreditProduction( 2 );

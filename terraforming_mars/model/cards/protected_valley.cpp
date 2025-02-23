@@ -16,7 +16,7 @@ ProtectedValley::ProtectedValley( const GameModel& model ) noexcept :
 
 ProtectedValley::~ProtectedValley() noexcept {}
 
-void ProtectedValley::ApplyImmediateEffects( const GameModel& _model ) {
+void ProtectedValley::ApplyImmediateEffects() {
     _owner->GainCreditProduction( 2 );
 
     _owner->PlaceGreeneryOnOcean();
