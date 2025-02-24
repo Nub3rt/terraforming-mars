@@ -159,7 +159,7 @@ sample_card = {
     'actions': [
         {'cost': {}, 'then': {'microbe': 1}},
         {'cost': {'microbe': 3}, 'then': {'oxygen': 1}},
-        {'cost': {'credit': 7, 'power': 4}, 'then': {'energy production': 1}},
+        {'cost': {'credit': 7, 'energy': 4}, 'then': {'energy production': 1}},
     ],
     'effect': {'when': ['you', 'place', 'greenery'], 'then': {'animal': 1}},
             # {'when': ['anyone', 'place', 'city'], 'then': {'credit production': 1}},

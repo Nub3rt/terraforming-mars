@@ -157,6 +157,234 @@
     </ClInclude>
     <ClInclude Include="tag.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="cards\adapted_lichen.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\advanced_ecosystems.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\aerobraked_ammonia_asteroid.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\algae.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\archaebacteria.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\asteroid.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\asteroid_mining.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\beam_from_a_thorium_asteroid.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\big_asteroid.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\biomass_combustors.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\black_polar_dust.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\breathing_filters.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\bushes.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\carbonate_processing.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\cloud_seeding.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\colonizer_training_camp.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\comet.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\convoy_from_europa.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\deep_well_heating.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\deimos_down.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\designed_microorganisms.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\dust_seals.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\eos_chasma_national_park.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\farming.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\food_factory.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\fueled_generators.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\fusion_power.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\geothermal_power.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\ghg_factories.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\giant_ice_asteroid.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\giant_space_mirror.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\grass.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\great_dam.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\heat_trappers.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\heather.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\ice_asteroid.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\ice_cap_melting.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\import_of_advanced_ghg.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\imported_ghg.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\imported_nitrogen.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\industrial_microbes.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\kelp_farming.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\lake_marineris.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\lichen.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\lunar_beam.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\magnetic_field_dome.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\magnetic_field_generators.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\methane_from_titan.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\micro_mills.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\mining_expedition.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\moss.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\nitrophilic_moss.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\noctis_farming.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\nuclear_power.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\permafrost_extraction.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\peroxide_power.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\plantation.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\power_plant.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\rad_chem_factory.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\release_of_inert_gases.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\soil_factory.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\solar_power.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\solar_wind_power.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\soletta.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\strip_mine.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\subterranean_reservoir.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\tectonic_stress_power.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\towing_a_comet.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\trees.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\tundra_farming.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\wave_power.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\windmills.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\cupola_city.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\domed_crater.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\open_city.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\underground_city.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="player.cpp" />
@@ -282,6 +510,234 @@
       <Filter>decks\cards</Filter>
     </ClCompile>
     <ClCompile Include="cards\underground_detonations.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\adapted_lichen.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\advanced_ecosystems.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\aerobraked_ammonia_asteroid.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\algae.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\archaebacteria.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\asteroid.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\asteroid_mining.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\beam_from_a_thorium_asteroid.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\big_asteroid.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\biomass_combustors.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\black_polar_dust.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\breathing_filters.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\bushes.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\carbonate_processing.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\cloud_seeding.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\colonizer_training_camp.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\comet.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\convoy_from_europa.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\deep_well_heating.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\deimos_down.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\designed_microorganisms.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\dust_seals.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\eos_chasma_national_park.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\farming.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\food_factory.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\fueled_generators.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\fusion_power.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\geothermal_power.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\ghg_factories.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\giant_ice_asteroid.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\giant_space_mirror.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\grass.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\great_dam.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\heat_trappers.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\heather.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\ice_asteroid.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\ice_cap_melting.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\import_of_advanced_ghg.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\imported_ghg.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\imported_nitrogen.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\industrial_microbes.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\kelp_farming.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\lake_marineris.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\lichen.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\lunar_beam.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\magnetic_field_dome.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\magnetic_field_generators.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\methane_from_titan.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\micro_mills.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\mining_expedition.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\moss.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\nitrophilic_moss.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\noctis_farming.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\nuclear_power.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\permafrost_extraction.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\peroxide_power.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\plantation.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\power_plant.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\rad_chem_factory.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\release_of_inert_gases.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\soil_factory.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\solar_power.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\solar_wind_power.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\soletta.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\strip_mine.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\subterranean_reservoir.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\tectonic_stress_power.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\towing_a_comet.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\trees.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\tundra_farming.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\wave_power.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\windmills.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\cupola_city.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\domed_crater.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\open_city.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\underground_city.cpp">
       <Filter>decks\cards</Filter>
     </ClCompile>
   </ItemGroup>

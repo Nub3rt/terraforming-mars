@@ -18,7 +18,7 @@ public:
 
     int GetResource( Resource resource ) const;
     int GetResourceProduction( Resource resource) const;
-    
+
     void GainResource( Resource resource, int amount );
     void GainResourceProduction( Resource resource, int amount );
 
