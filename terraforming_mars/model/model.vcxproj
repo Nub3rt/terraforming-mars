@@ -177,6 +177,7 @@
     <ClInclude Include="player.h" />
     <ClInclude Include="game_model.fwd.h" />
     <ClInclude Include="game_model.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="tag.h" />
     <ClInclude Include="tharsis_concrete_board.h" />
     <ClInclude Include="tile.h" />

@@ -4,6 +4,7 @@
 #include "../card_id.h"
 #include "../game_model.h"
 #include "../player.h"
+#include "../resource.h"
 #include "../tag.h"
 
 namespace model::decks::cards
@@ -17,7 +18,7 @@ ProtectedValley::ProtectedValley( const GameModel& model ) noexcept :
 ProtectedValley::~ProtectedValley() noexcept {}
 
 void ProtectedValley::ApplyImmediateEffects() {
-    _owner->GainCreditProduction( 2 );
+    _owner->GainResourceProduction( Resource::CREDIT, 2 );
 
     _owner->PlaceGreeneryOnOcean();
 }

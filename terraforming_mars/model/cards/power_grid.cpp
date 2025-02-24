@@ -4,6 +4,7 @@
 #include "../card_id.h"
 #include "../game_model.h"
 #include "../player.h"
+#include "../resource.h"
 #include "../tag.h"
 
 namespace model::decks::cards
@@ -16,6 +17,6 @@ PowerGrid::PowerGrid( const GameModel& model ) noexcept :
 PowerGrid::~PowerGrid() noexcept {}
 
 void PowerGrid::ApplyImmediateEffects() {
-    _owner->GainEnergyProduction( _owner->GetTagCount( Tag::POWER ) );
+    _owner->GainResourceProduction( Resource::ENERGY, _owner->GetTagCount( Tag::POWER ) );
 }
 }

@@ -4,6 +4,7 @@
 #include "../card_id.h"
 #include "../game_model.h"
 #include "../player.h"
+#include "../resource.h"
 #include "../tag.h"
 
 namespace model::decks::cards
@@ -20,10 +21,10 @@ bool ArcticAlgae::SatisfiesRequirements() const {
 }
 
 void ArcticAlgae::ApplyImmediateEffects() {
-    _owner->GainPlants( 1 );
+    _owner->GainResource( Resource::PLANTS, 1 );
 }
 
 void ArcticAlgae::DoAfterAnyonePlacesOcean() {
-    _owner->GainPlants( 2 );
+    _owner->GainResource( Resource::PLANTS, 2 );
 }
 }

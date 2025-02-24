@@ -2,7 +2,7 @@
 
 namespace model::decks
 {
-enum CardID
+enum class CardID
 {
     COLONIZER_TRAINING_CAMP = 1,
     DEEP_WELL_HEATING = 3,

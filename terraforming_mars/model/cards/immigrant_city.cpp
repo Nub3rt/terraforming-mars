@@ -4,6 +4,7 @@
 #include "../card_id.h"
 #include "../game_model.h"
 #include "../player.h"
+#include "../resource.h"
 #include "../tag.h"
 
 namespace model::decks::cards
@@ -17,17 +18,17 @@ ImmigrantCity::ImmigrantCity( const GameModel& model ) noexcept :
 ImmigrantCity::~ImmigrantCity() noexcept {}
 
 bool ImmigrantCity::SatisfiesRequirements() const {
-    return _owner->get_credit_production() >= 2 && _owner->get_energy_production() >= 1 && _model.IsCityPlaceable();
+    return _owner->GetResourceProduction( Resource::CREDIT ) >= 2 && _owner->GetResourceProduction( Resource::ENERGY ) >= 1 && _model.IsCityPlaceable();
 }
 
 void ImmigrantCity::ApplyImmediateEffects() {
-    _owner->LoseCreditProduction( 2 );
-    _owner->LoseEnergyProduction( 1 );
+    _owner->LoseResourceProduction( Resource::CREDIT, 2 );
+    _owner->LoseResourceProduction( Resource::ENERGY, 1 );
 
     _owner->PlaceCity();
 }
 
 void ImmigrantCity::DoAfterAnyonePlacesCity() {
-    _owner->GainCreditProduction( 1 );
+    _owner->GainResourceProduction( Resource::CREDIT, 1 );
 }
 }

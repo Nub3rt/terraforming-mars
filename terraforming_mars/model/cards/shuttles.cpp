@@ -4,6 +4,7 @@
 #include "../card_id.h"
 #include "../game_model.h"
 #include "../player.h"
+#include "../resource.h"
 #include "../tag.h"
 
 namespace model::decks::cards
@@ -16,13 +17,13 @@ Shuttles::Shuttles( const GameModel& model ) noexcept :
 Shuttles::~Shuttles() noexcept {}
 
 bool Shuttles::SatisfiesRequirements() const {
-    return _model.Oxygen() >= 5 && _owner->get_energy_production() >= 1;
+    return _model.Oxygen() >= 5 && _owner->GetResourceProduction( Resource::ENERGY ) >= 1;
 }
 
 void Shuttles::ApplyImmediateEffects() {
-    _owner->LoseEnergyProduction( 1 );
+    _owner->LoseResourceProduction( Resource::ENERGY, 1 );
 
-    _owner->GainCreditProduction( 2 );
+    _owner->GainResourceProduction( Resource::CREDIT, 2 );
 }
 
 int Shuttles::DoCountVPs() const {

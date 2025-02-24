@@ -5,6 +5,8 @@
 #include <functional>
 #include <stdexcept>
 
+#include "player.h"
+#include "resource.h"
 #include "tile_type.h"
 
 namespace model::board
@@ -79,14 +81,15 @@ ConcreteBoard::~ConcreteBoard() noexcept {}
 const std::function<void( Player* )> ConcreteBoard::_noop              = []( Player* player ) {};
 const std::function<void( Player* )> ConcreteBoard::_draw_one_card     = []( Player* player ) { player->DrawCard(); };
 const std::function<void( Player* )> ConcreteBoard::_draw_two_cards    = []( Player* player ) { player->DrawCard(); player->DrawCard(); };
-const std::function<void( Player* )> ConcreteBoard::_gain_one_steel    = []( Player* player ) { player->GainSteel   ( 1 ); };
-const std::function<void( Player* )> ConcreteBoard::_gain_two_steel    = []( Player* player ) { player->GainSteel   ( 2 ); };
-const std::function<void( Player* )> ConcreteBoard::_gain_one_titanium = []( Player* player ) { player->GainTitanium( 1 ); };
-const std::function<void( Player* )> ConcreteBoard::_gain_two_titanium = []( Player* player ) { player->GainTitanium( 2 ); };
-const std::function<void( Player* )> ConcreteBoard::_gain_one_plants   = []( Player* player ) { player->GainPlants  ( 1 ); };
-const std::function<void( Player* )> ConcreteBoard::_gain_two_plants   = []( Player* player ) { player->GainPlants  ( 2 ); };
+const std::function<void( Player* )> ConcreteBoard::_gain_one_steel    = []( Player* player ) { player->GainResource( Resource::STEEL,    1 ); };
+const std::function<void( Player* )> ConcreteBoard::_gain_two_steel    = []( Player* player ) { player->GainResource( Resource::STEEL,    2 ); };
+const std::function<void( Player* )> ConcreteBoard::_gain_one_titanium = []( Player* player ) { player->GainResource( Resource::TITANIUM, 1 ); };
+const std::function<void( Player* )> ConcreteBoard::_gain_two_titanium = []( Player* player ) { player->GainResource( Resource::TITANIUM, 2 ); };
+const std::function<void( Player* )> ConcreteBoard::_gain_one_plants   = []( Player* player ) { player->GainResource( Resource::PLANTS,   1 ); };
+const std::function<void( Player* )> ConcreteBoard::_gain_two_plants   = []( Player* player ) { player->GainResource( Resource::PLANTS,   2 ); };
 
-const std::function<void( Player* )> ConcreteBoard::_gain_titanium_and_plants = []( Player* player ) { player->GainTitanium( 1 ); player->GainPlants( 1 ); };
+const std::function<void( Player* )> ConcreteBoard::_gain_titanium_and_plants =
+    []( Player* player ) { player->GainResource( Resource::TITANIUM, 1 ); player->GainResource( Resource::PLANTS, 1 ); };
 
 const std::function<void( Player* )> ConcreteBoard::_warn_bad_index = []( Player* player ) { std::cerr << "ConcreteBoard was indexed on an invalid tile\n"; };
 }

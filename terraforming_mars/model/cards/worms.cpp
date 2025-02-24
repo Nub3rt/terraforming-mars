@@ -4,6 +4,7 @@
 #include "../card_id.h"
 #include "../game_model.h"
 #include "../player.h"
+#include "../resource.h"
 #include "../tag.h"
 
 namespace model::decks::cards
@@ -20,6 +21,6 @@ bool Worms::SatisfiesRequirements() const {
 }
 
 void Worms::ApplyImmediateEffects() {
-    _owner->GainPlantsProduction( _owner->GetTagCount( Tag::MICROBE ) / 2 );
+    _owner->GainResourceProduction( Resource::PLANTS, _owner->GetTagCount( Tag::MICROBE ) / 2 );
 }
 }

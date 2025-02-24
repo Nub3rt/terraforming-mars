@@ -4,6 +4,7 @@
 #include "../card_id.h"
 #include "../game_model.h"
 #include "../player.h"
+#include "../resource.h"
 #include "../tag.h"
 
 namespace model::decks::cards
@@ -16,12 +17,12 @@ UndergroundDetonations::UndergroundDetonations( const GameModel& model ) noexcep
 UndergroundDetonations::~UndergroundDetonations() noexcept {}
 
 bool UndergroundDetonations::CanBeUsed() const {
-    return _owner->get_credit() >= _action_credit_cost;
+    return _owner->GetResource( Resource::CREDIT ) >= _action_credit_cost;
 }
 
 void UndergroundDetonations::DoUseAction() {
-    _owner->LoseCredit( _action_credit_cost );
+    _owner->LoseResource( Resource::CREDIT, _action_credit_cost );
 
-    _owner->GainHeatProduction( 2 );
+    _owner->GainResourceProduction( Resource::HEAT, 2 );
 }
 }

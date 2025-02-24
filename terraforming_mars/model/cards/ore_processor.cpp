@@ -4,6 +4,7 @@
 #include "../card_id.h"
 #include "../game_model.h"
 #include "../player.h"
+#include "../resource.h"
 #include "../tag.h"
 
 namespace model::decks::cards
@@ -16,11 +17,11 @@ OreProcessor::OreProcessor( const GameModel& model ) noexcept :
 OreProcessor::~OreProcessor() noexcept {}
 
 bool OreProcessor::CanBeUsed() const {
-    return _owner->get_energy() >= _action_energy_cost;
+    return _owner->GetResource( Resource::ENERGY ) >= _action_energy_cost;
 }
 
 void OreProcessor::DoUseAction() {
-    _owner->GainTitanium( 1 );
+    _owner->GainResource( Resource::TITANIUM, 1 );
     _owner->RaiseOxygen();
 }
 }

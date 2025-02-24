@@ -4,6 +4,7 @@
 #include "../card_id.h"
 #include "../game_model.h"
 #include "../player.h"
+#include "../resource.h"
 #include "../tag.h"
 
 namespace model::decks::cards
@@ -18,6 +19,6 @@ RoverConstruction::~RoverConstruction() noexcept {}
 int RoverConstruction::DoCountVPs() const { return 1; }
 
 void RoverConstruction::DoAfterAnyonePlacesCity() {
-    _owner->GainCredit( 2 );
+    _owner->GainResource( Resource::CREDIT, 2 );
 }
 }

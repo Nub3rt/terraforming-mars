@@ -15,7 +15,7 @@ OptimalAerobraking::OptimalAerobraking( const GameModel& model ) noexcept :
 OptimalAerobraking::~OptimalAerobraking() noexcept {}
 
 void OptimalAerobraking::DoAfterYouPlaySpaceEvent() {
-    _owner->GainCredit( 3 );
-    _owner->GainHeat( 3 );
+    _owner->GainResource( Resource::CREDIT, 3 );
+    _owner->GainResource( Resource::HEAT, 3 );
 }
 }

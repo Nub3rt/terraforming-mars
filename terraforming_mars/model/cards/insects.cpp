@@ -4,6 +4,7 @@
 #include "../card_id.h"
 #include "../game_model.h"
 #include "../player.h"
+#include "../resource.h"
 #include "../tag.h"
 
 namespace model::decks::cards
@@ -20,6 +21,6 @@ bool Insects::SatisfiesRequirements() const {
 }
 
 void Insects::ApplyImmediateEffects() {
-    _owner->GainPlantsProduction( _owner->GetTagCount( Tag::PLANT ) );
+    _owner->GainResourceProduction( Resource::PLANTS, _owner->GetTagCount( Tag::PLANT ) );
 }
 }

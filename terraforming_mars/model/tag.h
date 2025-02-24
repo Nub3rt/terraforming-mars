@@ -1,8 +1,8 @@
 #pragma once
 
-namespace model::decks
+namespace model
 {
-enum Tag
+enum class Tag
 {
     BUILDING = 1,
     SPACE,
@@ -15,6 +15,6 @@ enum Tag
     ANIMAL,
     CITY,
     EVENT,
-    MAX = EVENT,
+    MAX = EVENT
 };
 }

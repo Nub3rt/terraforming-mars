@@ -4,6 +4,7 @@
 #include "../card_id.h"
 #include "../game_model.h"
 #include "../player.h"
+#include "../resource.h"
 #include "../tag.h"
 #include "space_mirrors.h"
 
@@ -18,10 +19,10 @@ SpaceMirrors::SpaceMirrors( const GameModel& model ) noexcept :
 SpaceMirrors::~SpaceMirrors() noexcept {}
 
 bool SpaceMirrors::CanBeUsed() const {
-    return _owner->get_credit() >= _action_credit_cost;
+    return _owner->GetResource( Resource::CREDIT ) >= _action_credit_cost;
 }
 
 void SpaceMirrors::DoUseAction() {
-    _owner->GainEnergyProduction( 1 );
+    _owner->GainResourceProduction( Resource::ENERGY, 1 );
 }
 }

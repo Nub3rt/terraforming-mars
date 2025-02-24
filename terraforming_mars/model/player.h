@@ -5,6 +5,7 @@
 
 #include <functional>
 
+#include "resource.h"
 #include "tag.h"
 
 namespace model
@@ -15,61 +16,17 @@ public:
     Player();
     ~Player();
 
-    int get_credit() const;
-    int get_steel() const;
-    int get_titanium() const;
-    int get_plants() const;
-    int get_energy() const;
-    int get_heat() const;
+    int GetResource( Resource resource ) const;
+    int GetResourceProduction( Resource resource) const;
+    
+    void GainResource( Resource resource, int amount );
+    void GainResourceProduction( Resource resource, int amount );
 
-    int get_credit_production() const;
-    int get_steel_production() const;
-    int get_titanium_production() const;
-    int get_plants_production() const;
-    int get_energy_production() const;
-    int get_heat_production() const;
+    void LoseResource( Resource resource, int amount );
+    void LoseResourceProduction( Resource resource, int amount );
 
-    void GainCredit( int amount );
-    void GainSteel( int amount );
-    void GainTitanium( int amount );
-    void GainPlants( int amount );
-    void GainEnergy( int amount );
-    void GainHeat( int amount );
-
-    void GainCreditProduction( int amount );
-    void GainSteelProduction( int amount );
-    void GainTitaniumProduction( int amount );
-    void GainPlantsProduction( int amount );
-    void GainEnergyProduction( int amount );
-    void GainHeatProduction( int amount );
-
-    void LoseCredit( int amount );
-    void LoseSteel( int amount );
-    void LoseTitanium( int amount );
-    void LosePlants( int amount );
-    void LoseEnergy( int amount );
-    void LoseHeat( int amount );
-
-    void LoseCreditProduction( int amount );
-    void LoseSteelProduction( int amount );
-    void LoseTitaniumProduction( int amount );
-    void LosePlantsProduction( int amount );
-    void LoseEnergyProduction( int amount );
-    void LoseHeatProduction( int amount );
-
-    void DestroyCredit( int amount );
-    void DestroySteel( int amount );
-    void DestroyTitanium( int amount );
-    void DestroyPlants( int amount );
-    void DestroyEnergy( int amount );
-    void DestroyHeat( int amount );
-
-    void DestroyCreditProduction( int amount );
-    void DestroySteelProduction( int amount );
-    void DestroyTitaniumProduction( int amount );
-    void DestroyPlantsProduction( int amount );
-    void DestroyEnergyProduction( int amount );
-    void DestroyHeatProduction( int amount );
+    void DestroyResource( Resource resource, int amount );
+    void DestroyResourceProduction( Resource resource, int amount );
 
     void DrawCard();
 
@@ -87,7 +44,7 @@ public:
     void PlaceLonelyCity();
     void PlaceUrbanizedArea();
 
-    int GetTagCount( decks::Tag tag );
+    int GetTagCount( Tag tag );
 
     int GetMaxPayAmountForBuilding() const;
     int GetMaxPayAmountForSpace() const;

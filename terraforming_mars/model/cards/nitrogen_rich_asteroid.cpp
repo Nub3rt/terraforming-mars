@@ -2,7 +2,9 @@
 
 #include "../event_card.h"
 #include "../card_id.h"
+#include "../game_model.h"
 #include "../player.h"
+#include "../resource.h"
 #include "../tag.h"
 
 namespace model::decks::cards
@@ -19,8 +21,8 @@ void NitrogenRichAsteroid::ApplyImmediateEffects() {
     _owner->RaiseTR( 2 );
     _owner->RaiseTemperature();
     if ( _owner->GetTagCount( Tag::PLANT ) >= 3 )
-        _owner->GainPlantsProduction( 4 );
+        _owner->GainResourceProduction( Resource::PLANTS, 4 );
     else
-        _owner->GainPlantsProduction( 1 );
+        _owner->GainResourceProduction( Resource::PLANTS, 1 );
 }
 }

@@ -4,6 +4,7 @@
 #include "../card_id.h"
 #include "../game_model.h"
 #include "../player.h"
+#include "../resource.h"
 #include "../tag.h"
 #include "greenhouses.h"
 
@@ -18,6 +19,6 @@ Greenhouses::Greenhouses( const GameModel& model ) noexcept :
 Greenhouses::~Greenhouses() noexcept {}
 
 void Greenhouses::ApplyImmediateEffects() {
-    _owner->GainPlants( _model.CityCount() );
+    _owner->GainResource( Resource::PLANTS, _model.CityCount() );
 }
 }

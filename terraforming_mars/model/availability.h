@@ -2,7 +2,7 @@
 
 namespace model::decks
 {
-enum Availability
+enum class Availability
 {
     USED,
     CAN_BE_USED,

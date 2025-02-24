@@ -4,6 +4,7 @@
 #include "../card_id.h"
 #include "../game_model.h"
 #include "../player.h"
+#include "../resource.h"
 #include "../tag.h"
 
 namespace model::decks::cards
@@ -16,6 +17,6 @@ EnergySaving::EnergySaving( const GameModel& model ) noexcept :
 EnergySaving::~EnergySaving() noexcept {}
 
 void EnergySaving::ApplyImmediateEffects() {
-    _owner->GainEnergyProduction( _model.CityCount() );
+    _owner->GainResourceProduction( Resource::ENERGY, _model.CityCount() );
 }
 }

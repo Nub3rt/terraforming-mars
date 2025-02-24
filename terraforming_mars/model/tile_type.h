@@ -2,7 +2,7 @@
 
 namespace model::board
 {
-enum TileType
+enum class TileType
 {
     NONE = 0,
 

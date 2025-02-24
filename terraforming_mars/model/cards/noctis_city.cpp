@@ -4,6 +4,7 @@
 #include "../card_id.h"
 #include "../game_model.h"
 #include "../player.h"
+#include "../resource.h"
 #include "../tag.h"
 
 namespace model::decks::cards
@@ -17,13 +18,13 @@ NoctisCity::NoctisCity( const GameModel& model ) noexcept :
 NoctisCity::~NoctisCity() noexcept {}
 
 bool NoctisCity::SatisfiesRequirements() const {
-    return _owner->get_energy_production() >= 1;
+    return _owner->GetResourceProduction( Resource::ENERGY ) >= 1;
 }
 
 void NoctisCity::ApplyImmediateEffects() {
-    _owner->LoseEnergyProduction( 1 );
+    _owner->LoseResourceProduction( Resource::ENERGY, 1 );
 
-    _owner->GainCreditProduction( 3 );
+    _owner->GainResourceProduction( Resource::CREDIT, 3 );
 
     _owner->PlaceNoctisCity();
 }

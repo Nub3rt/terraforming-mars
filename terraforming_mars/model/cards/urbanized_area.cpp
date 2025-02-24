@@ -4,6 +4,7 @@
 #include "../card_id.h"
 #include "../game_model.h"
 #include "../player.h"
+#include "../resource.h"
 #include "../tag.h"
 #include "urbanized_area.h"
 
@@ -18,13 +19,13 @@ UrbanizedArea::UrbanizedArea( const GameModel& model ) noexcept :
 UrbanizedArea::~UrbanizedArea() noexcept {}
 
 bool UrbanizedArea::SatisfiesRequirements() const {
-    return _owner->get_energy_production() >= 1 && _model.IsUrbanizedAreaPlaceable();
+    return _owner->GetResourceProduction( Resource::ENERGY ) >= 1 && _model.IsUrbanizedAreaPlaceable();
 }
 
 void UrbanizedArea::ApplyImmediateEffects() {
-    _owner->LoseEnergyProduction( 1 );
+    _owner->LoseResourceProduction( Resource::ENERGY, 1 );
 
-    _owner->GainCreditProduction( 2 );
+    _owner->GainResourceProduction( Resource::CREDIT, 2 );
 
     _owner->PlaceUrbanizedArea();
 }

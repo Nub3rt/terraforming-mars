@@ -4,6 +4,7 @@
 #include "../card_id.h"
 #include "../game_model.h"
 #include "../player.h"
+#include "../resource.h"
 #include "../tag.h"
 
 namespace model::decks::cards
@@ -14,10 +15,10 @@ Insulation::Insulation( const GameModel& model ) noexcept :
 Insulation::~Insulation() noexcept {}
 
 void Insulation::ApplyImmediateEffects() {
-    int heat_production = _owner->get_heat_production();
+    int heat_production = _owner->GetResourceProduction( Resource::HEAT );
 
-    _owner->LoseHeatProduction( heat_production );
+    _owner->LoseResourceProduction( Resource::HEAT, heat_production );
 
-    _owner->GainCreditProduction( heat_production );
+    _owner->GainResourceProduction( Resource::CREDIT, heat_production );
 }
 }

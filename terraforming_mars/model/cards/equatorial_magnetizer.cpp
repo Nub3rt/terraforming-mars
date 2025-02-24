@@ -4,6 +4,7 @@
 #include "../card_id.h"
 #include "../game_model.h"
 #include "../player.h"
+#include "../resource.h"
 #include "../tag.h"
 
 namespace model::decks::cards
@@ -16,11 +17,11 @@ EquatorialMagnetizer::EquatorialMagnetizer( const GameModel& model ) noexcept :
 EquatorialMagnetizer::~EquatorialMagnetizer() noexcept {}
 
 bool EquatorialMagnetizer::CanBeUsed() const {
-    return _owner->get_energy_production() >= _action_energy_production_cost;
+    return _owner->GetResourceProduction( Resource::ENERGY ) >= _action_energy_production_cost;
 }
 
 void EquatorialMagnetizer::DoUseAction() {
-    _owner->LoseEnergyProduction( _action_energy_production_cost );
+    _owner->LoseResourceProduction( Resource::ENERGY, _action_energy_production_cost );
 
     _owner->RaiseTR( 1 );
 }

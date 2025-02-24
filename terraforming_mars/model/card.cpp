@@ -55,7 +55,7 @@ bool Card::CanBePlayed() const {
     else if ( _is_space )
         max_pay_amount = _holder->GetMaxPayAmountForSpace();
     else
-        max_pay_amount = _holder->get_credit();
+        max_pay_amount = _holder->GetResource( Resource::CREDIT );
 
     return max_pay_amount >= GetCost() && SatisfiesRequirements();
 }

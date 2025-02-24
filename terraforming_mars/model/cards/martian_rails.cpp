@@ -4,6 +4,7 @@
 #include "../card_id.h"
 #include "../game_model.h"
 #include "../player.h"
+#include "../resource.h"
 #include "../tag.h"
 
 namespace model::decks::cards
@@ -16,12 +17,12 @@ MartianRails::MartianRails( const GameModel& model ) noexcept :
 MartianRails::~MartianRails() noexcept {}
 
 bool MartianRails::CanBeUsed() const {
-    return _owner->get_energy() >= _action_energy_cost;
+    return _owner->GetResource( Resource::ENERGY ) >= _action_energy_cost;
 }
 
 void MartianRails::DoUseAction() {
-    _owner->LoseEnergy( _action_energy_cost );
+    _owner->LoseResource( Resource::ENERGY, _action_energy_cost );
 
-    _owner->GainCredit( _model.CityCount() );
+    _owner->GainResource( Resource::CREDIT, _model.CityCount() );
 }
 }

@@ -32,9 +32,6 @@
     <ClInclude Include="tharsis_concrete_board.h">
       <Filter>board</Filter>
     </ClInclude>
-    <ClInclude Include="tag.h">
-      <Filter>decks</Filter>
-    </ClInclude>
     <ClInclude Include="card.h">
       <Filter>decks</Filter>
     </ClInclude>
@@ -146,6 +143,20 @@
     <ClInclude Include="cards\aquifer_pumping.h">
       <Filter>decks\cards</Filter>
     </ClInclude>
+    <ClInclude Include="cards\energy_saving.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\immigrant_city.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\immigration_shuttles.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="cards\underground_detonations.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
+    <ClInclude Include="tag.h" />
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="player.cpp" />
@@ -259,6 +270,18 @@
       <Filter>decks\cards</Filter>
     </ClCompile>
     <ClCompile Include="cards\aquifer_pumping.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\energy_saving.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\immigrant_city.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\immigration_shuttles.cpp">
+      <Filter>decks\cards</Filter>
+    </ClCompile>
+    <ClCompile Include="cards\underground_detonations.cpp">
       <Filter>decks\cards</Filter>
     </ClCompile>
   </ItemGroup>
