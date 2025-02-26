@@ -10,7 +10,7 @@
 namespace model::decks::cards
 {
 SoilFactory::SoilFactory( const GameModel& model ) noexcept :
-    AutomatedCard( model, CardID::SOIL_FACTORY, 9, true, false ) {
+    AutomatedCard( model, CardID::SOIL_FACTORY, 9 ) {
     AddTag( Tag::BUILDING );
 }
 

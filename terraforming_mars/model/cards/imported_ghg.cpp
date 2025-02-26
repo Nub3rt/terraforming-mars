@@ -10,7 +10,7 @@
 namespace model::decks::cards
 {
 ImportedGhg::ImportedGhg( const GameModel& model ) noexcept :
-    EventCard( model, CardID::IMPORTED_GHG, 7, false, true ) {
+    EventCard( model, CardID::IMPORTED_GHG, 7 ) {
     AddTag( Tag::SPACE );
     AddTag( Tag::EARTH );
     AddTag( Tag::EVENT );

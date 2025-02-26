@@ -10,7 +10,7 @@
 namespace model::decks::cards
 {
 Lichen::Lichen( const GameModel& model ) noexcept :
-    AutomatedCard( model, CardID::LICHEN, 7, false, false ) {
+    AutomatedCard( model, CardID::LICHEN, 7 ) {
     AddTag( Tag::PLANT );
 }
 

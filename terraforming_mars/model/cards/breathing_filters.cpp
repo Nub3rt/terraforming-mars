@@ -10,7 +10,7 @@
 namespace model::decks::cards
 {
 BreathingFilters::BreathingFilters( const GameModel& model ) noexcept :
-    AutomatedCard( model, CardID::BREATHING_FILTERS, 11, false, false ) {
+    AutomatedCard( model, CardID::BREATHING_FILTERS, 11 ) {
     AddTag( Tag::SCIENCE );
 }
 

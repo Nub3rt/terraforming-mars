@@ -10,7 +10,7 @@
 namespace model::decks::cards
 {
 NitrophilicMoss::NitrophilicMoss( const GameModel& model ) noexcept :
-    AutomatedCard( model, CardID::NITROPHILIC_MOSS, 8, false, false ) {
+    AutomatedCard( model, CardID::NITROPHILIC_MOSS, 8 ) {
     AddTag( Tag::PLANT );
 }
 

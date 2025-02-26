@@ -10,7 +10,7 @@
 namespace model::decks::cards
 {
 GiantIceAsteroid::GiantIceAsteroid( const GameModel& model ) noexcept :
-    EventCard( model, CardID::GIANT_ICE_ASTEROID, 36, false, true ) {
+    EventCard( model, CardID::GIANT_ICE_ASTEROID, 36 ) {
     AddTag( Tag::SPACE );
     AddTag( Tag::EVENT );
 }

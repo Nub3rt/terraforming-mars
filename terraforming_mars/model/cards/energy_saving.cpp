@@ -10,7 +10,7 @@
 namespace model::decks::cards
 {
 EnergySaving::EnergySaving( const GameModel& model ) noexcept :
-    AutomatedCard( model, CardID::ENERGY_SAVING, 15, false, false ) {
+    AutomatedCard( model, CardID::ENERGY_SAVING, 15 ) {
     AddTag( Tag::POWER );
 }
 

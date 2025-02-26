@@ -10,7 +10,7 @@
 namespace model::decks::cards
 {
 ImportedNitrogen::ImportedNitrogen( const GameModel& model ) noexcept :
-    EventCard( model, CardID::IMPORTED_NITROGEN, 23, false, true ) {
+    EventCard( model, CardID::IMPORTED_NITROGEN, 23 ) {
     AddTag( Tag::SPACE );
     AddTag( Tag::EARTH );
     AddTag( Tag::EVENT );

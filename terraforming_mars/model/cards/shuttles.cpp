@@ -10,7 +10,7 @@
 namespace model::decks::cards
 {
 Shuttles::Shuttles( const GameModel& model ) noexcept :
-    ActiveCardWithEffect( model, CardID::SHUTTLES, 10, false, true ) {
+    ActiveCardWithEffect( model, CardID::SHUTTLES, 10 ) {
     AddTag( Tag::SPACE );
 }
 
@@ -31,7 +31,7 @@ int Shuttles::DoCountVPs() const {
 }
 
 int Shuttles::DoModifyCardCost( const Card* card, int cost ) {
-    if ( card->TagsOfType( Tag::SPACE ) > 0 )
+    if ( card->HasTag( Tag::SPACE) > 0 )
         return cost - 2;
     else
         return cost;

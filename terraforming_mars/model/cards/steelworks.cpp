@@ -10,7 +10,7 @@
 namespace model::decks::cards
 {
 Steelworks::Steelworks( const GameModel& model ) noexcept :
-    ActiveCardWithAction( model, CardID::STEELWORKS, 15, true, false ), _action_energy_cost( 4 ) {
+    ActiveCardWithAction( model, CardID::STEELWORKS, 15 ), _action_energy_cost( 4 ) {
     AddTag( Tag::BUILDING );
 }
 

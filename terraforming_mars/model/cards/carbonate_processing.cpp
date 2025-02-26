@@ -10,7 +10,7 @@
 namespace model::decks::cards
 {
 CarbonateProcessing::CarbonateProcessing( const GameModel& model ) noexcept :
-    AutomatedCard( model, CardID::CARBONATE_PROCESSING, 6, true, false ) {
+    AutomatedCard( model, CardID::CARBONATE_PROCESSING, 6 ) {
     AddTag( Tag::BUILDING );
 }
 

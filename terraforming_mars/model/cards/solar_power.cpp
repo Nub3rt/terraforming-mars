@@ -10,7 +10,7 @@
 namespace model::decks::cards
 {
 SolarPower::SolarPower( const GameModel& model ) noexcept :
-    AutomatedCard( model, CardID::SOLAR_POWER, 11, true, false ) {
+    AutomatedCard( model, CardID::SOLAR_POWER, 11 ) {
     AddTag( Tag::BUILDING );
     AddTag( Tag::POWER );
 }

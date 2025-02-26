@@ -25,26 +25,22 @@ public:
     virtual bool IsActiveWithEffect() const noexcept;
 
     inline CardID get_card_id() const noexcept;
-    inline const std::array<Tag, 3>& get_tags() const noexcept;
-    inline int get_tag_count() const noexcept;
-    inline bool get_is_building() const noexcept;
-    inline bool get_is_space() const noexcept;
+
+    inline bool HasTag( Tag tag ) const noexcept;
+    inline int GetTagCount( Tag tag ) const noexcept;
 
     void Buy( Player* player );
     void Sell();
     int GetCost() const;
     bool CanBePlayed() const;
     void Play();
-    int TagsOfType( Tag tag ) const;
     int CountVPs() const;
 
 protected:
-    Card( const GameModel& model, CardID card_id, int base_cost, bool is_building, bool is_space ) noexcept;
+    Card( const GameModel& model, CardID card_id, int base_cost ) noexcept;
 
     const CardID _card_id;
     const int _base_cost;
-    const bool _is_building;
-    const bool _is_space;
 
     const GameModel& _model;
 
@@ -57,7 +53,6 @@ protected:
     virtual int DoCountVPs() const;
 
 private:
-    std::array<Tag, 3> _tags;
-    int _tag_count;
+    std::array<int, +Tag::MAX + 1> _tags;
 };
 }

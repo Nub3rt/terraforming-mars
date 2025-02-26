@@ -10,7 +10,7 @@
 namespace model::decks::cards
 {
 GhgFactories::GhgFactories( const GameModel& model ) noexcept :
-    AutomatedCard( model, CardID::GHG_FACTORIES, 11, true, false ) {
+    AutomatedCard( model, CardID::GHG_FACTORIES, 11 ) {
     AddTag( Tag::BUILDING );
 }
 

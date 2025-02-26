@@ -10,7 +10,7 @@
 namespace model::decks::cards
 {
 GeothermalPower::GeothermalPower( const GameModel& model ) noexcept :
-    AutomatedCard( model, CardID::GEOTHERMAL_POWER, 11, true, false ) {
+    AutomatedCard( model, CardID::GEOTHERMAL_POWER, 11 ) {
     AddTag( Tag::BUILDING );
     AddTag( Tag::POWER );
 }

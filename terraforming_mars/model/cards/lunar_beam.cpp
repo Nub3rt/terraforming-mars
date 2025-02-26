@@ -10,7 +10,7 @@
 namespace model::decks::cards
 {
 LunarBeam::LunarBeam( const GameModel& model ) noexcept :
-    AutomatedCard( model, CardID::LUNAR_BEAM, 13, false, false ) {
+    AutomatedCard( model, CardID::LUNAR_BEAM, 13 ) {
     AddTag( Tag::POWER );
     AddTag( Tag::EARTH );
 }

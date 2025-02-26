@@ -10,7 +10,7 @@
 namespace model::decks::cards
 {
 PermafrostExtraction::PermafrostExtraction( const GameModel& model ) noexcept :
-    EventCard( model, CardID::PERMAFROST_EXTRACTION, 8, false, false ) {
+    EventCard( model, CardID::PERMAFROST_EXTRACTION, 8 ) {
     AddTag( Tag::EVENT );
 }
 

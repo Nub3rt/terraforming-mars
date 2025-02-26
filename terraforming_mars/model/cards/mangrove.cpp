@@ -10,7 +10,7 @@
 namespace model::decks::cards
 {
 Mangrove::Mangrove( const GameModel& model ) noexcept :
-    AutomatedCard( model, CardID::MANGROVE, 12, false, false ) {
+    AutomatedCard( model, CardID::MANGROVE, 12 ) {
     AddTag( Tag::PLANT );
 }
 

@@ -10,7 +10,7 @@
 namespace model::decks::cards
 {
 BiomassCombustors::BiomassCombustors( const GameModel& model ) noexcept :
-    AutomatedCard( model, CardID::BIOMASS_COMBUSTORS, 4, true, false ) {
+    AutomatedCard( model, CardID::BIOMASS_COMBUSTORS, 4 ) {
     AddTag( Tag::BUILDING );
     AddTag( Tag::POWER );
 }

@@ -10,7 +10,7 @@
 namespace model::decks::cards
 {
 ConvoyFromEuropa::ConvoyFromEuropa( const GameModel& model ) noexcept :
-    EventCard( model, CardID::CONVOY_FROM_EUROPA, 15, false, true ) {
+    EventCard( model, CardID::CONVOY_FROM_EUROPA, 15 ) {
     AddTag( Tag::SPACE );
     AddTag( Tag::EVENT );
 }

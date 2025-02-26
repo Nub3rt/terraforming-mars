@@ -10,7 +10,7 @@
 namespace model::decks::cards
 {
 FueledGenerators::FueledGenerators( const GameModel& model ) noexcept :
-    AutomatedCard( model, CardID::FUELED_GENERATORS, 1, true, false ) {
+    AutomatedCard( model, CardID::FUELED_GENERATORS, 1 ) {
     AddTag( Tag::BUILDING );
     AddTag( Tag::POWER );
 }

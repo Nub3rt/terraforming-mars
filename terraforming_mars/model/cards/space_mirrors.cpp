@@ -11,7 +11,7 @@
 namespace model::decks::cards
 {
 SpaceMirrors::SpaceMirrors( const GameModel& model ) noexcept :
-    ActiveCardWithAction( model, CardID::SPACE_MIRRORS, 3, false, true ), _action_credit_cost( 7 ) {
+    ActiveCardWithAction( model, CardID::SPACE_MIRRORS, 3 ), _action_credit_cost( 7 ) {
     AddTag( Tag::SPACE );
     AddTag( Tag::POWER );
 }

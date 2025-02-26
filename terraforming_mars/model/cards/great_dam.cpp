@@ -10,7 +10,7 @@
 namespace model::decks::cards
 {
 GreatDam::GreatDam( const GameModel& model ) noexcept :
-    AutomatedCard( model, CardID::GREAT_DAM, 12, true, false ) {
+    AutomatedCard( model, CardID::GREAT_DAM, 12 ) {
     AddTag( Tag::BUILDING );
     AddTag( Tag::POWER );
 }

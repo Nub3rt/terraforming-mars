@@ -10,7 +10,7 @@
 namespace model::decks::cards
 {
 FusionPower::FusionPower( const GameModel& model ) noexcept :
-    AutomatedCard( model, CardID::FUSION_POWER, 14, true, false ) {
+    AutomatedCard( model, CardID::FUSION_POWER, 14 ) {
     AddTag( Tag::BUILDING );
     AddTag( Tag::POWER );
     AddTag( Tag::SCIENCE );

@@ -10,7 +10,7 @@
 namespace model::decks::cards
 {
 DomedCrater::DomedCrater( const GameModel& model ) noexcept :
-    AutomatedCard( model, CardID::DOMED_CRATER, 24, true, false ) {
+    AutomatedCard( model, CardID::DOMED_CRATER, 24 ) {
     AddTag( Tag::BUILDING );
     AddTag( Tag::CITY );
 }

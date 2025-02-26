@@ -10,7 +10,7 @@
 namespace model::decks::cards
 {
 Algae::Algae( const GameModel& model ) noexcept :
-    AutomatedCard( model, CardID::ALGAE, 10, false, false ) {
+    AutomatedCard( model, CardID::ALGAE, 10 ) {
     AddTag( Tag::PLANT );
 }
 

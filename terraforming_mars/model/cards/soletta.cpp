@@ -10,7 +10,7 @@
 namespace model::decks::cards
 {
 Soletta::Soletta( const GameModel& model ) noexcept :
-    AutomatedCard( model, CardID::SOLETTA, 35, false, true ) {
+    AutomatedCard( model, CardID::SOLETTA, 35 ) {
     AddTag( Tag::SPACE );
 }
 

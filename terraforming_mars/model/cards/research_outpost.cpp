@@ -10,7 +10,7 @@
 namespace model::decks::cards
 {
 ResearchOutpost::ResearchOutpost( const GameModel& model ) noexcept :
-    ActiveCardWithEffect( model, CardID::RESEARCH_OUTPOST, 18, true, false ) {
+    ActiveCardWithEffect( model, CardID::RESEARCH_OUTPOST, 18 ) {
     AddTag( Tag::BUILDING );
     AddTag( Tag::SCIENCE );
     AddTag( Tag::CITY );

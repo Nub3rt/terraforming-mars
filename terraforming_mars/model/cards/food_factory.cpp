@@ -10,7 +10,7 @@
 namespace model::decks::cards
 {
 FoodFactory::FoodFactory( const GameModel& model ) noexcept :
-    AutomatedCard( model, CardID::FOOD_FACTORY, 12, true, false ) {
+    AutomatedCard( model, CardID::FOOD_FACTORY, 12 ) {
     AddTag( Tag::BUILDING );
 }
 

@@ -10,7 +10,7 @@
 namespace model::decks::cards
 {
 GiantSpaceMirror::GiantSpaceMirror( const GameModel& model ) noexcept :
-    AutomatedCard( model, CardID::GIANT_SPACE_MIRROR, 17, false, true ) {
+    AutomatedCard( model, CardID::GIANT_SPACE_MIRROR, 17 ) {
     AddTag( Tag::SPACE );
     AddTag( Tag::POWER );
 }

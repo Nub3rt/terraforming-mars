@@ -5,8 +5,8 @@
 
 namespace model::decks
 {
-ActiveCard::ActiveCard( const GameModel& model, CardID card_id, int base_cost, bool is_building, bool is_space ) noexcept :
-    Card( model, card_id, base_cost, is_building, is_space ) {
+ActiveCard::ActiveCard( const GameModel& model, CardID card_id, int base_cost ) noexcept :
+    Card( model, card_id, base_cost ) {
 }
 
 ActiveCard::~ActiveCard() noexcept {}

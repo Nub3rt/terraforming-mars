@@ -10,7 +10,7 @@
 namespace model::decks::cards
 {
 LakeMarineris::LakeMarineris( const GameModel& model ) noexcept :
-    AutomatedCard( model, CardID::LAKE_MARINERIS, 18, false, false ) {}
+    AutomatedCard( model, CardID::LAKE_MARINERIS, 18 ) {}
 
 LakeMarineris::~LakeMarineris() noexcept {}
 

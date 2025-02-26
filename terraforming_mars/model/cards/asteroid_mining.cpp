@@ -10,7 +10,7 @@
 namespace model::decks::cards
 {
 AsteroidMining::AsteroidMining( const GameModel& model ) noexcept :
-    AutomatedCard( model, CardID::ASTEROID_MINING, 30, false, true ) {
+    AutomatedCard( model, CardID::ASTEROID_MINING, 30 ) {
     AddTag( Tag::SPACE );
     AddTag( Tag::JOVIAN );
 }

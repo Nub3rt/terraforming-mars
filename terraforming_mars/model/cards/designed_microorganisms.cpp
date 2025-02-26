@@ -10,7 +10,7 @@
 namespace model::decks::cards
 {
 DesignedMicroorganisms::DesignedMicroorganisms( const GameModel& model ) noexcept :
-    AutomatedCard( model, CardID::DESIGNED_MICROORGANISMS, 16, false, false ) {
+    AutomatedCard( model, CardID::DESIGNED_MICROORGANISMS, 16 ) {
     AddTag( Tag::SCIENCE );
     AddTag( Tag::MICROBE );
 }

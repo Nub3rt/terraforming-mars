@@ -10,7 +10,7 @@
 namespace model::decks::cards
 {
 Windmills::Windmills( const GameModel& model ) noexcept :
-    AutomatedCard( model, CardID::WINDMILLS, 6, true, false ) {
+    AutomatedCard( model, CardID::WINDMILLS, 6 ) {
     AddTag( Tag::BUILDING );
     AddTag( Tag::POWER );
 }

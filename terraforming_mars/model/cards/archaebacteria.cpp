@@ -10,7 +10,7 @@
 namespace model::decks::cards
 {
 Archaebacteria::Archaebacteria( const GameModel& model ) noexcept :
-    AutomatedCard( model, CardID::ARCHAEBACTERIA, 6, false, false ) {
+    AutomatedCard( model, CardID::ARCHAEBACTERIA, 6 ) {
     AddTag( Tag::MICROBE );
 }
 

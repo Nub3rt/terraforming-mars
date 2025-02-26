@@ -10,7 +10,7 @@
 namespace model::decks::cards
 {
 CloudSeeding::CloudSeeding( const GameModel& model ) noexcept :
-    AutomatedCard( model, CardID::CLOUD_SEEDING, 11, false, false ) {}
+    AutomatedCard( model, CardID::CLOUD_SEEDING, 11 ) {}
 
 CloudSeeding::~CloudSeeding() noexcept {}
 

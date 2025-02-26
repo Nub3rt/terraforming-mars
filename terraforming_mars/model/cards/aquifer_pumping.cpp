@@ -12,7 +12,7 @@
 namespace model::decks::cards
 {
 AquiferPumping::AquiferPumping( const GameModel& model ) noexcept :
-    ActiveCardWithAction( model, CardID::AQUIFER_PUMPING, 18, true, false ), _action_credit_cost( 8 ) {
+    ActiveCardWithAction( model, CardID::AQUIFER_PUMPING, 18 ), _action_credit_cost( 8 ) {
     AddTag( Tag::BUILDING );
 }
 

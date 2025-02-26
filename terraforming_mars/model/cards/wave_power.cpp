@@ -10,7 +10,7 @@
 namespace model::decks::cards
 {
 WavePower::WavePower( const GameModel& model ) noexcept :
-    AutomatedCard( model, CardID::WAVE_POWER, 8, false, false ) {
+    AutomatedCard( model, CardID::WAVE_POWER, 8 ) {
     AddTag( Tag::POWER );
 }
 

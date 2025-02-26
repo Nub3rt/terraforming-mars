@@ -10,7 +10,7 @@
 namespace model::decks::cards
 {
 ReleaseOfInertGases::ReleaseOfInertGases( const GameModel& model ) noexcept :
-    EventCard( model, CardID::RELEASE_OF_INERT_GASES, 14, false, false ) {
+    EventCard( model, CardID::RELEASE_OF_INERT_GASES, 14 ) {
     AddTag( Tag::EVENT );
 }
 

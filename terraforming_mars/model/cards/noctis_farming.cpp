@@ -10,7 +10,7 @@
 namespace model::decks::cards
 {
 NoctisFarming::NoctisFarming( const GameModel& model ) noexcept :
-    AutomatedCard( model, CardID::NOCTIS_FARMING, 10, true, false ) {
+    AutomatedCard( model, CardID::NOCTIS_FARMING, 10 ) {
     AddTag( Tag::BUILDING );
     AddTag( Tag::PLANT );
 }

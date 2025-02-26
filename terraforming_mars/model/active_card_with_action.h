@@ -18,7 +18,7 @@ public:
     inline void NextGenerationStarted() noexcept;
 
 protected:
-    ActiveCardWithAction( const GameModel& model, CardID card_id, int base_cost, bool is_building, bool is_space ) noexcept;
+    ActiveCardWithAction( const GameModel& model, CardID card_id, int base_cost ) noexcept;
 
     bool _used_this_generation;
 

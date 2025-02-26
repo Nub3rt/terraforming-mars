@@ -10,7 +10,7 @@
 namespace model::decks::cards
 {
 ImportOfAdvancedGhg::ImportOfAdvancedGhg( const GameModel& model ) noexcept :
-    EventCard( model, CardID::IMPORT_OF_ADVANCED_GHG, 9, false, true ) {
+    EventCard( model, CardID::IMPORT_OF_ADVANCED_GHG, 9 ) {
     AddTag( Tag::SPACE );
     AddTag( Tag::EARTH );
     AddTag( Tag::EVENT );

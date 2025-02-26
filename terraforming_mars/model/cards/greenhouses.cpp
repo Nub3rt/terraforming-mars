@@ -11,7 +11,7 @@
 namespace model::decks::cards
 {
 Greenhouses::Greenhouses( const GameModel& model ) noexcept :
-    AutomatedCard( model, CardID::GREENHOUSES, 6, true, false ) {
+    AutomatedCard( model, CardID::GREENHOUSES, 6 ) {
     AddTag( Tag::BUILDING );
     AddTag( Tag::PLANT );
 }

@@ -10,7 +10,7 @@
 namespace model::decks::cards
 {
 Insects::Insects( const GameModel& model ) noexcept :
-    AutomatedCard( model, CardID::INSECTS, 9, false, false ) {
+    AutomatedCard( model, CardID::INSECTS, 9 ) {
     AddTag( Tag::MICROBE );
 }
 

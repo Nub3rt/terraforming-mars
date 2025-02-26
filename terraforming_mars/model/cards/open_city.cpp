@@ -10,7 +10,7 @@
 namespace model::decks::cards
 {
 OpenCity::OpenCity( const GameModel& model ) noexcept :
-    AutomatedCard( model, CardID::OPEN_CITY, 23, true, false ) {
+    AutomatedCard( model, CardID::OPEN_CITY, 23 ) {
     AddTag( Tag::BUILDING );
     AddTag( Tag::CITY );
 }

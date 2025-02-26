@@ -10,7 +10,7 @@
 namespace model::decks::cards
 {
 MethaneFromTitan::MethaneFromTitan( const GameModel& model ) noexcept :
-    AutomatedCard( model, CardID::METHANE_FROM_TITAN, 28, false, true ) {
+    AutomatedCard( model, CardID::METHANE_FROM_TITAN, 28 ) {
     AddTag( Tag::SPACE );
     AddTag( Tag::JOVIAN );
 }

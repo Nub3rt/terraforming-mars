@@ -10,7 +10,7 @@
 namespace model::decks::cards
 {
 IndustrialMicrobes::IndustrialMicrobes( const GameModel& model ) noexcept :
-    AutomatedCard( model, CardID::INDUSTRIAL_MICROBES, 12, true, false ) {
+    AutomatedCard( model, CardID::INDUSTRIAL_MICROBES, 12 ) {
     AddTag( Tag::BUILDING );
     AddTag( Tag::MICROBE );
 }

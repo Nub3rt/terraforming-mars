@@ -10,7 +10,7 @@
 namespace model::decks::cards
 {
 Comet::Comet( const GameModel& model ) noexcept :
-    EventCard( model, CardID::COMET, 21, false, true ) {
+    EventCard( model, CardID::COMET, 21 ) {
     AddTag( Tag::SPACE );
     AddTag( Tag::EVENT );
 }

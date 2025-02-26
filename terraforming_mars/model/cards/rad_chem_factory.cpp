@@ -10,7 +10,7 @@
 namespace model::decks::cards
 {
 RadChemFactory::RadChemFactory( const GameModel& model ) noexcept :
-    AutomatedCard( model, CardID::RAD_CHEM_FACTORY, 8, true, false ) {
+    AutomatedCard( model, CardID::RAD_CHEM_FACTORY, 8 ) {
     AddTag( Tag::BUILDING );
 }
 

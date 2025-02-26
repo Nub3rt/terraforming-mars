@@ -10,7 +10,7 @@
 namespace model::decks::cards
 {
 BlackPolarDust::BlackPolarDust( const GameModel& model ) noexcept :
-    AutomatedCard( model, CardID::BLACK_POLAR_DUST, 15, false, false ) {}
+    AutomatedCard( model, CardID::BLACK_POLAR_DUST, 15 ) {}
 
 BlackPolarDust::~BlackPolarDust() noexcept {}
 

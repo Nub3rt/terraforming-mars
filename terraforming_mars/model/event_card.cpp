@@ -5,8 +5,8 @@
 
 namespace model::decks
 {
-EventCard::EventCard( const GameModel& model, CardID card_id, int base_cost, bool is_building, bool is_space ) noexcept :
-    Card( model, card_id, base_cost, is_building, is_space ) {
+EventCard::EventCard( const GameModel& model, CardID card_id, int base_cost ) noexcept :
+    Card( model, card_id, base_cost ) {
 }
 
 EventCard::~EventCard() noexcept {}

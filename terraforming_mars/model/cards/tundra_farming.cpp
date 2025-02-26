@@ -10,7 +10,7 @@
 namespace model::decks::cards
 {
 TundraFarming::TundraFarming( const GameModel& model ) noexcept :
-    AutomatedCard( model, CardID::TUNDRA_FARMING, 16, false, false ) {
+    AutomatedCard( model, CardID::TUNDRA_FARMING, 16 ) {
     AddTag( Tag::PLANT );
 }
 

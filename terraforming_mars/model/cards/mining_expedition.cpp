@@ -10,7 +10,7 @@
 namespace model::decks::cards
 {
 MiningExpedition::MiningExpedition( const GameModel& model ) noexcept :
-    EventCard( model, CardID::MINING_EXPEDITION, 12, false, false ) {
+    EventCard( model, CardID::MINING_EXPEDITION, 12 ) {
     AddTag( Tag::EVENT );
 }
 

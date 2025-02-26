@@ -10,7 +10,7 @@
 namespace model::decks::cards
 {
 TowingAComet::TowingAComet( const GameModel& model ) noexcept :
-    EventCard( model, CardID::TOWING_A_COMET, 23, false, true ) {
+    EventCard( model, CardID::TOWING_A_COMET, 23 ) {
     AddTag( Tag::SPACE );
     AddTag( Tag::EVENT );
 }

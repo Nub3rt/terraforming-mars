@@ -10,7 +10,7 @@
 namespace model::decks::cards
 {
 PowerPlant::PowerPlant( const GameModel& model ) noexcept :
-    AutomatedCard( model, CardID::POWER_PLANT, 4, true, false ) {
+    AutomatedCard( model, CardID::POWER_PLANT, 4 ) {
     AddTag( Tag::BUILDING );
     AddTag( Tag::POWER );
 }

@@ -10,7 +10,7 @@
 namespace model::decks::cards
 {
 UndergroundCity::UndergroundCity( const GameModel& model ) noexcept :
-    AutomatedCard( model, CardID::UNDERGROUND_CITY, 18, true, false ) {
+    AutomatedCard( model, CardID::UNDERGROUND_CITY, 18 ) {
     AddTag( Tag::BUILDING );
     AddTag( Tag::CITY );
 }

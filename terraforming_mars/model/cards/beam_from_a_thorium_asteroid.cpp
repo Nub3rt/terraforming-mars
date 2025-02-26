@@ -10,7 +10,7 @@
 namespace model::decks::cards
 {
 BeamFromAThoriumAsteroid::BeamFromAThoriumAsteroid( const GameModel& model ) noexcept :
-    AutomatedCard( model, CardID::BEAM_FROM_A_THORIUM_ASTEROID, 32, false, true ) {
+    AutomatedCard( model, CardID::BEAM_FROM_A_THORIUM_ASTEROID, 32 ) {
     AddTag( Tag::SPACE );
     AddTag( Tag::POWER );
     AddTag( Tag::JOVIAN );

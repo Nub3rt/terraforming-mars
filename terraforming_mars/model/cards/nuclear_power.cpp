@@ -10,7 +10,7 @@
 namespace model::decks::cards
 {
 NuclearPower::NuclearPower( const GameModel& model ) noexcept :
-    AutomatedCard( model, CardID::NUCLEAR_POWER, 10, true, false ) {
+    AutomatedCard( model, CardID::NUCLEAR_POWER, 10 ) {
     AddTag( Tag::BUILDING );
     AddTag( Tag::POWER );
 }

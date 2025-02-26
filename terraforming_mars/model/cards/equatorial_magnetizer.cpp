@@ -10,7 +10,7 @@
 namespace model::decks::cards
 {
 EquatorialMagnetizer::EquatorialMagnetizer( const GameModel& model ) noexcept :
-    ActiveCardWithAction( model, CardID::EQUATORIAL_MAGNETIZER, 11, true, false ), _action_energy_production_cost( 1 ) {
+    ActiveCardWithAction( model, CardID::EQUATORIAL_MAGNETIZER, 11 ), _action_energy_production_cost( 1 ) {
     AddTag( Tag::BUILDING );
 }
 

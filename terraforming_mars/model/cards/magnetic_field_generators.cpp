@@ -10,7 +10,7 @@
 namespace model::decks::cards
 {
 MagneticFieldGenerators::MagneticFieldGenerators( const GameModel& model ) noexcept :
-    AutomatedCard( model, CardID::MAGNETIC_FIELD_GENERATORS, 20, true, false ) {
+    AutomatedCard( model, CardID::MAGNETIC_FIELD_GENERATORS, 20 ) {
     AddTag( Tag::BUILDING );
 }
 

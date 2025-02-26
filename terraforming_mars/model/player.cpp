@@ -109,12 +109,12 @@ void Player::PlayCard( decks::Card* card ) {
     if ( !card->CanBePlayed() )
         throw std::logic_error( "Player::PlayCard: card can not be played!" );
 
-    if ( card->get_is_building() && _resources[ +Resource::STEEL ] > 0 ) {
+    if ( card->HasTag( Tag::BUILDING ) && _resources[ +Resource::STEEL ] > 0 ) {
         ConfirmSteelPayment( card->GetCost(), std::bind( &Player::DoPlayCard, this, card ) );
         return;
     }
 
-    if ( card->get_is_space() && _resources[ +Resource::TITANIUM ] > 0 ) {
+    if ( card->HasTag( Tag::SPACE ) && _resources[ +Resource::TITANIUM ] > 0 ) {
         ConfirmTitaniumPayment( card->GetCost(), std::bind( &Player::DoPlayCard, this, card ) );
         return;
     }
@@ -163,14 +163,14 @@ void Player::DoPlayCard( decks::Card* card ) {
         _event_cards.push_back( static_cast<decks::EventCard*>( card ) );
         card->Play();
 
-        if ( card->get_is_space() )
+        if ( card->HasTag( Tag::SPACE ) )
             OnEffect( &decks::ActiveCardWithEffect::AfterYouPlaySpaceEvent );
 
         return;
     }
 
-    for ( int i = 0; i < card->get_tag_count(); ++i )
-        _tags[ +card->get_tags()[ i ] ] += 1;
+    for ( int i = 0; i < +Tag::MAX; ++i )
+        _tags[ i ] += card->GetTagCount( static_cast<Tag>( i ) );
 
     if ( card->IsAutomated() ) {
         _automated_cards.push_back( static_cast<decks::AutomatedCard*>( card ) );

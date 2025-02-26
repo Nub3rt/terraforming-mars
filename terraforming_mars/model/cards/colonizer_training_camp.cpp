@@ -10,7 +10,7 @@
 namespace model::decks::cards
 {
 ColonizerTrainingCamp::ColonizerTrainingCamp( const GameModel& model ) noexcept :
-    AutomatedCard( model, CardID::COLONIZER_TRAINING_CAMP, 8, true, false ) {
+    AutomatedCard( model, CardID::COLONIZER_TRAINING_CAMP, 8 ) {
     AddTag( Tag::BUILDING );
     AddTag( Tag::JOVIAN );
 }

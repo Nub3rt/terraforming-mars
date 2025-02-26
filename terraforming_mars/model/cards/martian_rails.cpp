@@ -10,7 +10,7 @@
 namespace model::decks::cards
 {
 MartianRails::MartianRails( const GameModel& model ) noexcept :
-    ActiveCardWithAction( model, CardID::MARTIAN_RAILS, 13, true, false ), _action_energy_cost( 1 ) {
+    ActiveCardWithAction( model, CardID::MARTIAN_RAILS, 13 ), _action_energy_cost( 1 ) {
     AddTag( Tag::BUILDING );
 }
 

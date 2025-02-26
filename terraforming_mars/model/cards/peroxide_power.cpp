@@ -10,7 +10,7 @@
 namespace model::decks::cards
 {
 PeroxidePower::PeroxidePower( const GameModel& model ) noexcept :
-    AutomatedCard( model, CardID::PEROXIDE_POWER, 7, true, false ) {
+    AutomatedCard( model, CardID::PEROXIDE_POWER, 7 ) {
     AddTag( Tag::BUILDING );
     AddTag( Tag::POWER );
 }

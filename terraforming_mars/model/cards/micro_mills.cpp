@@ -10,7 +10,7 @@
 namespace model::decks::cards
 {
 MicroMills::MicroMills( const GameModel& model ) noexcept :
-    AutomatedCard( model, CardID::MICRO_MILLS, 3, false, false ) {}
+    AutomatedCard( model, CardID::MICRO_MILLS, 3 ) {}
 
 MicroMills::~MicroMills() noexcept {}
 

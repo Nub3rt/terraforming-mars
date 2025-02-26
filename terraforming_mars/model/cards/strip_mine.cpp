@@ -10,7 +10,7 @@
 namespace model::decks::cards
 {
 StripMine::StripMine( const GameModel& model ) noexcept :
-    AutomatedCard( model, CardID::STRIP_MINE, 25, true, false ) {
+    AutomatedCard( model, CardID::STRIP_MINE, 25 ) {
     AddTag( Tag::BUILDING );
 }
 

@@ -10,7 +10,7 @@
 namespace model::decks::cards
 {
 KelpFarming::KelpFarming( const GameModel& model ) noexcept :
-    AutomatedCard( model, CardID::KELP_FARMING, 17, false, false ) {
+    AutomatedCard( model, CardID::KELP_FARMING, 17 ) {
     AddTag( Tag::PLANT );
 }
 

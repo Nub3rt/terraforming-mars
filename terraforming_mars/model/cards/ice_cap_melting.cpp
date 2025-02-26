@@ -10,7 +10,7 @@
 namespace model::decks::cards
 {
 IceCapMelting::IceCapMelting( const GameModel& model ) noexcept :
-    EventCard( model, CardID::ICE_CAP_MELTING, 5, false, false ) {
+    EventCard( model, CardID::ICE_CAP_MELTING, 5 ) {
     AddTag( Tag::EVENT );
 }
 

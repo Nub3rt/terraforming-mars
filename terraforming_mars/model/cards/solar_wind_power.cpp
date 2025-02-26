@@ -10,7 +10,7 @@
 namespace model::decks::cards
 {
 SolarWindPower::SolarWindPower( const GameModel& model ) noexcept :
-    AutomatedCard( model, CardID::SOLAR_WIND_POWER, 11, false, true ) {
+    AutomatedCard( model, CardID::SOLAR_WIND_POWER, 11 ) {
     AddTag( Tag::SPACE );
     AddTag( Tag::POWER );
     AddTag( Tag::SCIENCE );

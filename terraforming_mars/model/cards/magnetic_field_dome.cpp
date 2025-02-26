@@ -10,7 +10,7 @@
 namespace model::decks::cards
 {
 MagneticFieldDome::MagneticFieldDome( const GameModel& model ) noexcept :
-    AutomatedCard( model, CardID::MAGNETIC_FIELD_DOME, 5, true, false ) {
+    AutomatedCard( model, CardID::MAGNETIC_FIELD_DOME, 5 ) {
     AddTag( Tag::BUILDING );
 }
 

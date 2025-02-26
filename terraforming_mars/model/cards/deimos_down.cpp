@@ -10,7 +10,7 @@
 namespace model::decks::cards
 {
 DeimosDown::DeimosDown( const GameModel& model ) noexcept :
-    EventCard( model, CardID::DEIMOS_DOWN, 31, false, true ) {
+    EventCard( model, CardID::DEIMOS_DOWN, 31 ) {
     AddTag( Tag::SPACE );
     AddTag( Tag::EVENT );
 }

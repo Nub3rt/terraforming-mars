@@ -10,7 +10,7 @@
 namespace model::decks::cards
 {
 Heather::Heather( const GameModel& model ) noexcept :
-    AutomatedCard( model, CardID::HEATHER, 6, false, false ) {
+    AutomatedCard( model, CardID::HEATHER, 6 ) {
     AddTag( Tag::PLANT );
 }
 

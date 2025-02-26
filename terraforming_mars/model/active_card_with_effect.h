@@ -18,7 +18,7 @@ public:
     int ModifyCardCost( const Card* card, int cost );
 
 protected:
-    ActiveCardWithEffect( const GameModel& model, CardID card_id, int base_cost, bool is_building, bool is_space ) noexcept;
+    ActiveCardWithEffect( const GameModel& model, CardID card_id, int base_cost ) noexcept;
 
     virtual void DoAfterAnyonePlacesCity();
     virtual void DoAfterAnyonePlacesOcean();

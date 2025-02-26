@@ -10,7 +10,7 @@
 namespace model::decks::cards
 {
 Zeppelins::Zeppelins( const GameModel& model ) noexcept :
-    AutomatedCard( model, CardID::ZEPPELINS, 13, false, false ) {}
+    AutomatedCard( model, CardID::ZEPPELINS, 13 ) {}
 
 Zeppelins::~Zeppelins() noexcept {}
 

@@ -13,6 +13,6 @@ public:
     bool IsActive() const noexcept override;
 
 protected:
-    ActiveCard( const GameModel& model, CardID card_id, int base_cost, bool is_building, bool is_space ) noexcept;
+    ActiveCard( const GameModel& model, CardID card_id, int base_cost ) noexcept;
 };
 }

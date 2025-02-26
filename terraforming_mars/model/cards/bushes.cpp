@@ -10,7 +10,7 @@
 namespace model::decks::cards
 {
 Bushes::Bushes( const GameModel& model ) noexcept :
-    AutomatedCard( model, CardID::BUSHES, 10, false, false ) {
+    AutomatedCard( model, CardID::BUSHES, 10 ) {
     AddTag( Tag::PLANT );
 }
 

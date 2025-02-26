@@ -10,7 +10,7 @@
 namespace model::decks::cards
 {
 DeepWellHeating::DeepWellHeating( const GameModel& model ) noexcept :
-    AutomatedCard( model, CardID::DEEP_WELL_HEATING, 13, true, false ) {
+    AutomatedCard( model, CardID::DEEP_WELL_HEATING, 13 ) {
     AddTag( Tag::BUILDING );
     AddTag( Tag::POWER );
 }

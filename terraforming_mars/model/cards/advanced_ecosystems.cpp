@@ -10,7 +10,7 @@
 namespace model::decks::cards
 {
 AdvancedEcosystems::AdvancedEcosystems( const GameModel& model ) noexcept :
-    AutomatedCard( model, CardID::ADVANCED_ECOSYSTEMS, 11, false, false ) {
+    AutomatedCard( model, CardID::ADVANCED_ECOSYSTEMS, 11 ) {
     AddTag( Tag::PLANT );
     AddTag( Tag::MICROBE );
     AddTag( Tag::ANIMAL );

@@ -10,7 +10,7 @@
 namespace model::decks::cards
 {
 CupolaCity::CupolaCity( const GameModel& model ) noexcept :
-    AutomatedCard( model, CardID::CUPOLA_CITY, 16, true, false ) {
+    AutomatedCard( model, CardID::CUPOLA_CITY, 16 ) {
     AddTag( Tag::BUILDING );
     AddTag( Tag::CITY );
 }

@@ -10,7 +10,7 @@
 namespace model::decks::cards
 {
 TectonicStressPower::TectonicStressPower( const GameModel& model ) noexcept :
-    AutomatedCard( model, CardID::TECTONIC_STRESS_POWER, 18, true, false ) {
+    AutomatedCard( model, CardID::TECTONIC_STRESS_POWER, 18 ) {
     AddTag( Tag::BUILDING );
     AddTag( Tag::POWER );
 }

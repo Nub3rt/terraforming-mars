@@ -10,7 +10,7 @@
 namespace model::decks::cards
 {
 SubterraneanReservoir::SubterraneanReservoir( const GameModel& model ) noexcept :
-    EventCard( model, CardID::SUBTERRANEAN_RESERVOIR, 11, false, false ) {
+    EventCard( model, CardID::SUBTERRANEAN_RESERVOIR, 11 ) {
     AddTag( Tag::EVENT );
 }
 

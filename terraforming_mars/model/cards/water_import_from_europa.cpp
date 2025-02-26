@@ -12,7 +12,7 @@
 namespace model::decks::cards
 {
 WaterImportFromEuropa::WaterImportFromEuropa( const GameModel& model ) noexcept :
-    ActiveCardWithAction( model, CardID::WATER_IMPORT_FROM_EUROPA, 25, false, true ), _action_credit_cost( 12 ) {
+    ActiveCardWithAction( model, CardID::WATER_IMPORT_FROM_EUROPA, 25 ), _action_credit_cost( 12 ) {
     AddTag( Tag::SPACE );
     AddTag( Tag::JOVIAN );
 }

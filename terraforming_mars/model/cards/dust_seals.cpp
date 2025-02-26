@@ -10,7 +10,7 @@
 namespace model::decks::cards
 {
 DustSeals::DustSeals( const GameModel& model ) noexcept :
-    AutomatedCard( model, CardID::DUST_SEALS, 2, false, false ) {}
+    AutomatedCard( model, CardID::DUST_SEALS, 2 ) {}
 
 DustSeals::~DustSeals() noexcept {}
 

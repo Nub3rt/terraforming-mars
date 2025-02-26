@@ -10,7 +10,7 @@
 namespace model::decks::cards
 {
 AerobrakedAmmoniaAsteroid::AerobrakedAmmoniaAsteroid( const GameModel& model ) noexcept :
-    EventCard( model, CardID::AEROBRAKED_AMMONIA_ASTEROID, 26, false, true ) {
+    EventCard( model, CardID::AEROBRAKED_AMMONIA_ASTEROID, 26 ) {
     AddTag( Tag::SPACE );
     AddTag( Tag::EVENT );
 }

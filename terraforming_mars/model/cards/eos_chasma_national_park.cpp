@@ -10,7 +10,7 @@
 namespace model::decks::cards
 {
 EosChasmaNationalPark::EosChasmaNationalPark( const GameModel& model ) noexcept :
-    AutomatedCard( model, CardID::EOS_CHASMA_NATIONAL_PARK, 16, true, false ) {
+    AutomatedCard( model, CardID::EOS_CHASMA_NATIONAL_PARK, 16 ) {
     AddTag( Tag::BUILDING );
     AddTag( Tag::PLANT );
 }

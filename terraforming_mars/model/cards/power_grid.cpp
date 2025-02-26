@@ -10,7 +10,7 @@
 namespace model::decks::cards
 {
 PowerGrid::PowerGrid( const GameModel& model ) noexcept :
-    AutomatedCard( model, CardID::POWER_GRID, 18, false, false ) {
+    AutomatedCard( model, CardID::POWER_GRID, 18 ) {
     AddTag( Tag::POWER );
 }
 
