@@ -24,6 +24,8 @@ bool Card::IsActiveWithEffect() const noexcept { return false; }
 inline CardID Card::get_card_id() const noexcept { return _card_id; }
 inline const std::array<Tag, 3>& Card::get_tags() const noexcept { return _tags; }
 inline int Card::get_tag_count() const noexcept { return _tag_count; }
+inline bool Card::get_is_building() const noexcept { return _is_building; }
+inline bool Card::get_is_space() const noexcept { return _is_space; }
 
 void Card::Buy( Player* player ) { 
     if ( _holder != nullptr || _owner != nullptr )
@@ -40,6 +42,13 @@ void Card::Sell() {
         throw std::logic_error( "Card::Sell: card was already played!" );
 
     _holder = nullptr;
+}
+
+int Card::GetCost() const {
+    if ( _holder == nullptr )
+        throw std::logic_error( "Card::GetCost was called without a holder!" );
+
+    return _holder->CalculateCardCost( this, _base_cost );
 }
 
 bool Card::CanBePlayed() const {
@@ -65,7 +74,6 @@ void Card::Play() {
         throw std::logic_error( "Card::Play: card cannot be played!" );
 
     _owner = _holder;
-    _owner->PlayCard( this );
     ApplyImmediateEffects();
 }
 
@@ -89,13 +97,6 @@ int Card::CountVPs() const {
 
 void Card::AddTag( Tag tag ) {
     _tags[ _tag_count++ ] = tag;
-}
-
-int Card::GetCost() const {
-    if ( _holder == nullptr )
-        throw std::logic_error( "Card::GetCost was called without a holder!" );
-
-    return _holder->CalculateCardCost( _base_cost );
 }
 
 bool Card::SatisfiesRequirements() const { return true; }

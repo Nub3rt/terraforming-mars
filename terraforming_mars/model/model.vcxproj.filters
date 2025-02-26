@@ -394,6 +394,9 @@
     <ClInclude Include="reduced_basic_deck_provider.h">
       <Filter>decks</Filter>
     </ClInclude>
+    <ClInclude Include="event.h">
+      <Filter>decks\cards</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="player.cpp" />

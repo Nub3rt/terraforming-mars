@@ -16,6 +16,6 @@ protected:
     void ApplyImmediateEffects() override;
     int DoCountVPs() const override;
 
-    int DoModifyCardCost( int cost, const Card* card ) override;
+    int DoModifyCardCost( const Card* card, int cost ) override;
 };
 }

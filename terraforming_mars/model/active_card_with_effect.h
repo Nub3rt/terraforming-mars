@@ -15,7 +15,7 @@ public:
     void AfterAnyonePlacesCity();
     void AfterAnyonePlacesOcean();
     void AfterYouPlaySpaceEvent();
-    int ModifyCardCost( int cost, const Card* card );
+    int ModifyCardCost( const Card* card, int cost );
 
 protected:
     ActiveCardWithEffect( const GameModel& model, CardID card_id, int base_cost, bool is_building, bool is_space ) noexcept;
@@ -23,6 +23,6 @@ protected:
     virtual void DoAfterAnyonePlacesCity();
     virtual void DoAfterAnyonePlacesOcean();
     virtual void DoAfterYouPlaySpaceEvent();
-    virtual int DoModifyCardCost( int cost, const Card* card );
+    virtual int DoModifyCardCost( const Card* card, int cost );
 };
 }

@@ -3,8 +3,17 @@
 #include "player.fwd.h"
 #include "card.fwd.h"
 
+#include <array>
 #include <functional>
+#include <vector>
 
+#include "card.h"
+#include "active_card.h"
+#include "active_card_with_action.h"
+#include "active_card_with_effect.h"
+#include "automated_card.h"
+#include "event.h"
+#include "event_card.h"
 #include "resource.h"
 #include "tag.h"
 
@@ -13,36 +22,42 @@ namespace model
 class Player
 {
 public:
+    template<typename... Args>
+    using Callback = std::function<void( Player*, Args... )>;
+
     Player();
     ~Player();
 
-    int GetResource( Resource resource ) const;
-    int GetResourceProduction( Resource resource) const;
+    inline void DrawCard();
 
-    void GainResource( Resource resource, int amount );
-    void GainResourceProduction( Resource resource, int amount );
+    inline void RaiseTR( int amount );
 
-    void LoseResource( Resource resource, int amount );
-    void LoseResourceProduction( Resource resource, int amount );
+    inline void RaiseTemperature();
+    inline void PlaceOcean();
+    inline void PlaceOceanOnNonOcean();
+    inline void RaiseOxygen();
 
-    void DestroyResource( Resource resource, int amount );
-    void DestroyResourceProduction( Resource resource, int amount );
+    inline void PlaceGreenery();
+    inline void PlaceGreeneryOnOcean();
+    inline void PlaceCity();
+    inline void PlaceNoctisCity();
+    inline void PlaceLonelyCity();
+    inline void PlaceUrbanizedArea();
 
-    void DrawCard();
+    inline int GetResource( Resource resource ) const;
+    inline int GetResourceProduction( Resource resource ) const;
 
-    void RaiseTR( int amount );
+    inline void GainResource( Resource resource, int amount );
+    inline void GainResourceProduction( Resource resource, int amount );
 
-    void RaiseTemperature();
-    void PlaceOcean();
-    void PlaceOceanOnNonOcean();
-    void RaiseOxygen();
+    inline void LoseResource( Resource resource, int amount );
+    inline void LoseResourceProduction( Resource resource, int amount );
 
-    void PlaceGreenery();
-    void PlaceGreeneryOnOcean();
-    void PlaceCity();
-    void PlaceNoctisCity();
-    void PlaceLonelyCity();
-    void PlaceUrbanizedArea();
+    inline void DestroyResource( Resource resource, int amount );
+    inline void DestroyResourceProduction( Resource resource, int amount );
+
+    // void AddResouce( ... );
+
 
     int GetTagCount( Tag tag );
 
@@ -51,10 +66,72 @@ public:
     void ConfirmSteelPayment( int cost, std::function<void()> after_payment );
     void ConfirmTitaniumPayment( int cost, std::function<void()> after_payment );
 
-    void PlayCard( decks::Card* card ); // this gets called in Card
-    int CalculateCardCost( int base_cost );
+    void GetCard( decks::Card* card );
+    void DiscardCard( decks::Card* card );
+    void PlayCard( decks::Card* card );
+    int CalculateCardCost( const decks::Card* card, int base_cost ) const;
+
+    void OnEffect( std::function<void( decks::ActiveCardWithEffect* )> effect );
+
+
+    inline void SetOnDrawCardCallback( Callback<> callback );
+
+    inline void SetOnRaiseTRCallback( Callback<int> callback );
+
+    inline void SetOnRaiseTemperatureCallback( Callback<> callback );
+    inline void SetOnPlaceOceanCallback( Callback<> callback );
+    inline void SetOnPlaceOceanOnNonOceanCallback( Callback<> callback );
+    inline void SetOnRaiseOxygenCallback( Callback<> callback );
+
+    inline void SetOnPlaceGreeneryCallback( Callback<> callback );
+    inline void SetOnPlaceGreeneryOnOceanCallback( Callback<> callback );
+    inline void SetOnPlaceCityCallback( Callback<> callback );
+    inline void SetOnPlaceNoctisCityCallback( Callback<> callback );
+    inline void SetOnPlaceLonelyCityCallback( Callback<> callback );
+    inline void SetOnPlaceUrbanizedAreaCallback( Callback<> callback );
+
+    inline void SetOnResourceAmountChangedCallback( Callback<Resource, int> callback );
+    inline void SetOnResourceProductionAmountChangedCallback( Callback<Resource, int> callback );
+    inline void SetOnDestroyResource( Callback<Resource, int> callback );
+    inline void SetOnDestroyResourceProduction( Callback<Resource, int> callback );
 
 private:
-    // void AddTag( decks::Tag tag );
+    std::array<int, +Tag::MAX + 1> _tags;
+    std::array<int, +Resource::MAX + 1> _resources;
+    std::array<int, +Resource::MAX + 1> _resource_productions;
+
+    std::vector<decks::Card*> _hand;
+    std::vector<decks::EventCard*> _event_cards;
+    std::vector<decks::AutomatedCard*> _automated_cards;
+    std::vector<decks::ActiveCard*> _active_cards;
+    std::vector<decks::ActiveCardWithAction*> _action_cards;
+    std::vector<decks::ActiveCardWithEffect*> _effect_cards;
+
+    int _steel_value = 2;
+    int _titanium_value = 3;
+
+    Event<Player*> _on_draw_card;
+    Event<Player*, int> _on_raise_tr;
+    Event<Player*> _on_raise_temperature;
+    Event<Player*> _on_place_ocean;
+    Event<Player*> _on_place_ocean_on_non_ocean;
+    Event<Player*> _on_raise_oxygen;
+    Event<Player*> _on_place_greenery;
+    Event<Player*> _on_place_greenery_on_ocean;
+    Event<Player*> _on_place_city;
+    Event<Player*> _on_place_noctis_city;
+    Event<Player*> _on_place_lonely_city;
+    Event<Player*> _on_place_urbanized_area;
+    Event<Player*, Resource, int> _on_resource_amount_changed;
+    Event<Player*, Resource, int> _on_resource_production_amount_changed;
+    Event<Player*, Resource, int> _on_destroy_resource;
+    Event<Player*, Resource, int> _on_destroy_resource_production;
+    Event<Player*, int, std::function<void()>> _on_confirm_steel_payment;
+    Event<Player*, int, std::function<void()>> _on_confirm_titanium_payment;
+
+
+    void DoPlayCard( decks::Card* card );
+
+
 };
 }

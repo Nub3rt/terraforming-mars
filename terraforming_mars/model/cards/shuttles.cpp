@@ -30,7 +30,7 @@ int Shuttles::DoCountVPs() const {
     return 1;
 }
 
-int Shuttles::DoModifyCardCost( int cost, const Card* card ) {
+int Shuttles::DoModifyCardCost( const Card* card, int cost ) {
     if ( card->TagsOfType( Tag::SPACE ) > 0 )
         return cost - 2;
     else

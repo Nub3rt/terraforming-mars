@@ -245,6 +245,7 @@
     <ClInclude Include="card_id.h" />
     <ClInclude Include="deck.h" />
     <ClInclude Include="deck_provider.h" />
+    <ClInclude Include="event.h" />
     <ClInclude Include="event_card.h" />
     <ClInclude Include="hexagonal_grid.h" />
     <ClInclude Include="board.h" />

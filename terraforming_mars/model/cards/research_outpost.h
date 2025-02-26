@@ -16,6 +16,6 @@ protected:
     bool SatisfiesRequirements() const override;
     void ApplyImmediateEffects() override;
 
-    int DoModifyCardCost( int cost, const Card* card ) override;
+    int DoModifyCardCost( const Card* card, int cost ) override;
 };
 }

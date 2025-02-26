@@ -27,9 +27,12 @@ public:
     inline CardID get_card_id() const noexcept;
     inline const std::array<Tag, 3>& get_tags() const noexcept;
     inline int get_tag_count() const noexcept;
+    inline bool get_is_building() const noexcept;
+    inline bool get_is_space() const noexcept;
 
     void Buy( Player* player );
     void Sell();
+    int GetCost() const;
     bool CanBePlayed() const;
     void Play();
     int TagsOfType( Tag tag ) const;
@@ -49,7 +52,6 @@ protected:
     Player* _owner;
 
     void AddTag( Tag tag );
-    int GetCost() const;
     virtual bool SatisfiesRequirements() const;
     virtual void ApplyImmediateEffects();
     virtual int DoCountVPs() const;

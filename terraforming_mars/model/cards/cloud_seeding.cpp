@@ -15,7 +15,7 @@ CloudSeeding::CloudSeeding( const GameModel& model ) noexcept :
 CloudSeeding::~CloudSeeding() noexcept {}
 
 bool CloudSeeding::SatisfiesRequirements() const {
-    return _model.OceanCount() >= 3 && _owner->GetResourceProduction( Resource::CREDIT ) >= 1;
+    return _model.OceanCount() >= 3 && _owner->GetResourceProduction( Resource::CREDIT ) >= 1 - 5;
 }
 
 void CloudSeeding::ApplyImmediateEffects() {

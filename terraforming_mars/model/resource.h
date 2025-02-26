@@ -12,4 +12,8 @@ enum class Resource
     HEAT,
     MAX = HEAT
 };
+
+constexpr inline int operator +( Resource tag ) {
+    return static_cast<int>(tag);
+}
 }

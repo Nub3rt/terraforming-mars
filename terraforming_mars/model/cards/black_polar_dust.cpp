@@ -15,7 +15,7 @@ BlackPolarDust::BlackPolarDust( const GameModel& model ) noexcept :
 BlackPolarDust::~BlackPolarDust() noexcept {}
 
 bool BlackPolarDust::SatisfiesRequirements() const {
-    return _owner->GetResourceProduction( Resource::CREDIT ) >= 2;
+    return _owner->GetResourceProduction( Resource::CREDIT ) >= 2 - 5;
 }
 
 void BlackPolarDust::ApplyImmediateEffects() {

@@ -18,7 +18,7 @@ NuclearPower::NuclearPower( const GameModel& model ) noexcept :
 NuclearPower::~NuclearPower() noexcept {}
 
 bool NuclearPower::SatisfiesRequirements() const {
-    return _owner->GetResourceProduction( Resource::CREDIT ) >= 2;
+    return _owner->GetResourceProduction( Resource::CREDIT ) >= 2 - 5;
 }
 
 void NuclearPower::ApplyImmediateEffects() {

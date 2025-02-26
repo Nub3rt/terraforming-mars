@@ -26,7 +26,7 @@ void ResearchOutpost::ApplyImmediateEffects() {
     _owner->PlaceLonelyCity();
 }
 
-int ResearchOutpost::DoModifyCardCost( int cost, const Card* card ) {
+int ResearchOutpost::DoModifyCardCost( const Card* card, int cost ) {
     return cost - 1;
 }
 }

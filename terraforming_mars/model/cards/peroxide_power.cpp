@@ -18,7 +18,7 @@ PeroxidePower::PeroxidePower( const GameModel& model ) noexcept :
 PeroxidePower::~PeroxidePower() noexcept {}
 
 bool PeroxidePower::SatisfiesRequirements() const {
-    return _owner->GetResourceProduction( Resource::CREDIT ) >= 1;
+    return _owner->GetResourceProduction( Resource::CREDIT ) >= 1 - 5;
 }
 
 void PeroxidePower::ApplyImmediateEffects() {

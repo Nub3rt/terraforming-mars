@@ -17,4 +17,8 @@ enum class Tag
     EVENT,
     MAX = EVENT
 };
+
+constexpr inline int operator +( Tag tag ) {
+    return static_cast<int>( tag );
+}
 }

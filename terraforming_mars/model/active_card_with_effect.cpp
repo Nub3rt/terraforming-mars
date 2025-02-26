@@ -36,15 +36,15 @@ void ActiveCardWithEffect::AfterYouPlaySpaceEvent() {
     DoAfterYouPlaySpaceEvent();
 }
 
-int ActiveCardWithEffect::ModifyCardCost( int cost, const Card* card ) {
+int ActiveCardWithEffect::ModifyCardCost( const Card* card, int cost ) {
     if ( _owner == nullptr )
         throw std::logic_error( "ActiveCardWithEffect::ModifyCardCost: card has no owner!" );
 
-    return DoModifyCardCost( cost, card );
+    return DoModifyCardCost( card, cost );
 }
 
 void ActiveCardWithEffect::DoAfterAnyonePlacesCity() {}
 void ActiveCardWithEffect::DoAfterAnyonePlacesOcean() {}
 void ActiveCardWithEffect::DoAfterYouPlaySpaceEvent() {}
-int ActiveCardWithEffect::DoModifyCardCost( int cost, const Card* card ) { return cost; }
+int ActiveCardWithEffect::DoModifyCardCost( const Card* card, int cost ) { return cost; }
 }
