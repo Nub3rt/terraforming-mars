@@ -56,6 +56,9 @@
 
 #pragma once
 
+#include <utility>
+#include <vector>
+
 #include "concrete_board.h"
 #include "player.h"
 #include "tile.h"
@@ -66,14 +69,26 @@ namespace model::board
 class Board
 {
 public:
+    using pii = std::pair<int, int>;
+
     Board( ConcreteBoard* board ) noexcept;
     ~Board() noexcept;
+    Board( const Board& other ) = delete;
+    Board( Board&& other ) = delete;
+    Board& operator=( const Board& other ) = delete;
+    Board& operator=( Board&& other ) = delete;
 
     inline const Tile& operator()( int q, int r ) const noexcept;
-    inline bool CanPlaceTile( int q, int r, const Player* player, TileType type ) const;
+
+    inline std::vector<pii> GetNeighbouringTiles( int q, int r ) const;
+    inline std::vector<pii> GetNeighbouringTilesOfType( int q, int r, TileType type ) const;
+    inline std::vector<pii> GetNeighbouringTilesOfTypeRange( int q, int r, TileType min, TileType max ) const;
+
     inline void PlaceTile( int q, int r, Player* player, TileType type );
-    int NeighbouringTiles( int q, int r ) const;
-    int NeighbouringTilesOfType( int q, int r, TileType type ) const;
+    inline void SetOwner( int q, int r, Player* player );
+    inline void SetTileType( int q, int r, TileType type );
+
+    inline void SetOnTilePlacedCallback( std::function<void( int, int, const Tile& )> callback );
 
 private:
     ConcreteBoard* _concrete_board;

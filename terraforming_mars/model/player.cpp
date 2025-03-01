@@ -34,6 +34,14 @@ Player::~Player() {
         delete card;
 }
 
+inline const auto& Player::get_resources() const noexcept { return _resources; }
+inline const auto& Player::get_resource_productions() const noexcept { return _resource_productions; }
+inline const std::vector<decks::Card*>& Player::get_hand() const noexcept { return _hand; }
+inline const std::vector<decks::EventCard*>& Player::get_event_cards() const noexcept { return _event_cards; }
+inline const std::vector<decks::AutomatedCard*>& Player::get_automated_cards() const noexcept { return _automated_cards; }
+inline const std::vector<decks::ActiveCardWithAction*>& Player::get_action_cards() const noexcept { return _action_cards; }
+inline const std::vector<decks::ActiveCardWithEffect*>& Player::get_effect_cards() const noexcept { return _effect_cards; }
+
 void Player::DrawCard() { _on_draw_card.Trigger( this ); }
 void Player::RaiseTR( int amount ) { _on_raise_tr.Trigger( this, amount ); }
 void Player::RaiseTemperature() { _on_raise_temperature.Trigger( this ); }
@@ -100,6 +108,19 @@ void Player::ConfirmTitaniumPayment( int cost, std::function<void()> after_payme
     }
 
     _on_confirm_titanium_payment.Trigger( this, cost, after_payment );
+}
+
+void Player::GetCard( decks::Card* card ) {
+    _hand.push_back( card );
+}
+
+void Player::DiscardCard( decks::Card* card ) {
+    auto it_to_card = std::find( _hand.cbegin(), _hand.cend(), card );
+
+    if ( it_to_card == _hand.cend() )
+        throw std::logic_error( "Player::DiscardCard: card was not in hand!" );
+
+    _hand.erase( it_to_card );
 }
 
 void Player::PlayCard( decks::Card* card ) {

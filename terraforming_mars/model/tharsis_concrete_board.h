@@ -13,16 +13,20 @@ namespace model::board
 class TharsisConcreteBoard : public ConcreteBoard
 {
 public:
+    using pii = std::pair<int, int>;
+
     TharsisConcreteBoard() noexcept;
     ~TharsisConcreteBoard() noexcept;
 
-    inline const Tile& operator()( int q, int r ) const noexcept override;
+    inline Tile& get_tile( int q, int r ) noexcept;
+
+    std::vector<pii> GetNeighbouringTiles( int q, int r ) const override;
+
+    void PlaceTile( int q, int r, Player* player, TileType type ) override;
+    void SetOwner( int q, int r, Player* player ) override;
+    void SetTileType( int q, int r, TileType type ) override;
 
 protected:
-    inline Tile& get_tile( int q, int r ) noexcept override;
-    std::vector<std::reference_wrapper<const Tile>> GetNeighbours( int q, int r ) const noexcept override;
-
-private:
     std::array<std::array<Tile, 9>, 9> _board;
 
     static const std::array<std::array<Tile, 9>, 9> _starting_board;

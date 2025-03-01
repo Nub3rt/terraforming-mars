@@ -18,4 +18,8 @@ enum class TileType
     PLACED_MIN = OCEAN,
     PLACED_MAX = CITY,
 };
+
+constexpr inline int operator+( TileType type ) {
+    return static_cast<int>( type );
+}
 }

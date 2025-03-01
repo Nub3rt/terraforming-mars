@@ -2,6 +2,7 @@
 
 #include <array>
 #include <functional>
+#include <stdexcept>
 
 #include "concrete_board.h"
 #include "hexagonal_grid.h"
@@ -10,37 +11,67 @@
 
 namespace model::board
 {
+using pii = std::pair<int, int>;
+
 TharsisConcreteBoard::TharsisConcreteBoard() noexcept : _board( _starting_board ) {}
 
 TharsisConcreteBoard::~TharsisConcreteBoard() noexcept {}
 
-const Tile& TharsisConcreteBoard::operator()( int q, int r ) const noexcept {
+inline Tile& TharsisConcreteBoard::get_tile( int q, int r ) noexcept {
     return _board[ r ][ q ];
 }
 
-Tile& TharsisConcreteBoard::get_tile( int q, int r ) noexcept {
-    return _board[ r ][ q ];
-}
+std::vector<pii> TharsisConcreteBoard::GetNeighbouringTiles( int q, int r ) const {
+    std::vector<pii> neighbours;
 
-std::vector<std::reference_wrapper<const Tile>> model::board::TharsisConcreteBoard::GetNeighbours( int q, int r ) const noexcept {
-    std::vector<std::reference_wrapper<const Tile>> neighbours;
-
-    int s = -q-r;
+    int s = -q - r;
     if ( r > 0 && q < 8 )
-        neighbours.push_back( _board[ r - 1 ][ q + 1 ] );
+        neighbours.emplace_back( q + 1, r - 1);
     if ( q < 8 && s > -12 )
-        neighbours.push_back( _board[ r ][ q + 1 ] );
+        neighbours.emplace_back( q + 1, r    );
     if ( s > -12 && r < 8 )
-        neighbours.push_back( _board[ r + 1 ][ q ] );
+        neighbours.emplace_back( q    , r + 1);
     if ( r < 8 && q > 0 )
-        neighbours.push_back( _board[ r + 1 ][ q - 1 ] );
+        neighbours.emplace_back( q - 1, r + 1);
     if ( q > 0 && s < -4 )
-        neighbours.push_back( _board[ r ][ q - 1 ] );
+        neighbours.emplace_back( q - 1, r    );
     if ( s < -4 && r > 0 )
-        neighbours.push_back( _board[ r - 1 ][ q ] );
+        neighbours.emplace_back( q    , r - 1);
 
     return neighbours;
 }
+
+void TharsisConcreteBoard::PlaceTile( int q, int r, Player* player, TileType type ) {
+    Tile& tile = get_tile( q, r );
+
+    if ( tile.get_type() == TileType::NONE )
+        throw std::logic_error( "TharsisConcreteBoard::PlaceTile: tried to access invalid tyle (TileType::NONE)!" );
+
+    if ( +tile.get_type() < +TileType::EMPTY_MIN || +tile.get_type() > +TileType::EMPTY_MAX )
+        throw std::logic_error( "TharsisConcreteBoard::PlaceTile: tile was already placed here!" );
+
+    if ( tile.get_owner() != nullptr && tile.get_owner() != player )
+        throw std::logic_error( "TharsisConcreteBoard::PlaceTile: tile has another owner!" );
+
+    tile.set_owner( player );
+    tile.set_type( type );
+    _on_tile_placed.Trigger( q, r, tile );
+    tile.ApplyPlacementBonuses();
+}
+
+void TharsisConcreteBoard::SetOwner( int q, int r, Player* player ) {
+    Tile& tile = get_tile( q, r );
+
+    if ( tile.get_owner() != nullptr && tile.get_owner() != player )
+        throw std::logic_error( "TharsisConcreteBoard::SetOwner: tile has another owner!" );
+
+    tile.set_owner( player );
+}
+
+void TharsisConcreteBoard::SetTileType( int q, int r, TileType type ) {
+    get_tile( q, r ).set_type( type );
+}
+
 
 const std::array<std::array<Tile, 9>, 9> TharsisConcreteBoard::_starting_board = {{
     {{

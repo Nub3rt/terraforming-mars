@@ -27,6 +27,19 @@ public:
 
     Player();
     ~Player();
+    Player( const Player& other ) = delete;
+    Player( Player&& other ) = delete;
+    Player& operator=( const Player& other ) = delete;
+    Player& operator=( Player&& other ) = delete;
+
+    inline const auto& get_resources() const noexcept;
+    inline const auto& get_resource_productions() const noexcept;
+
+    inline const std::vector<decks::Card*>& get_hand() const noexcept;
+    inline const std::vector<decks::EventCard*>& get_event_cards() const noexcept;
+    inline const std::vector<decks::AutomatedCard*>& get_automated_cards() const noexcept;
+    inline const std::vector<decks::ActiveCardWithAction*>& get_action_cards() const noexcept;
+    inline const std::vector<decks::ActiveCardWithEffect*>& get_effect_cards() const noexcept;
 
     inline void DrawCard();
 
@@ -129,9 +142,6 @@ private:
     Event<Player*, int, std::function<void()>> _on_confirm_steel_payment;
     Event<Player*, int, std::function<void()>> _on_confirm_titanium_payment;
 
-
     void DoPlayCard( decks::Card* card );
-
-
 };
 }

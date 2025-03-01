@@ -14,6 +14,10 @@ class Deck
 public:
     Deck( const GameModel& model, DeckProvider* deck_provider, int seed );
     ~Deck();
+    Deck( const Deck& other ) = delete;
+    Deck( Deck&& other ) = delete;
+    Deck& operator=( const Deck& other ) = delete;
+    Deck& operator=( Deck&& other ) = delete;
 
     Card* DrawCard();
     void DiscardCard( Card* card );

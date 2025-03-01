@@ -1,7 +1,8 @@
 #pragma once
 
-#include <vector>
 #include <functional>
+#include <utility>
+#include <vector>
 
 #include "player.h"
 #include "tile.h"
@@ -11,21 +12,27 @@ namespace model::board
 class ConcreteBoard
 {
 public:
+    using pii = std::pair<int, int>;
+
     virtual ~ConcreteBoard() noexcept;
 
-    virtual const Tile& operator()( int q, int r ) const noexcept = 0;
+    virtual const Tile& get_tile( int q, int r ) const noexcept = 0;
 
-    bool CanPlaceTile( int q, int r, const Player* player, TileType type ) const;
-    void PlaceTile( int q, int r, Player* player, TileType type );
-    int NeighbouringTiles( int q, int r ) const;
-    int NeighbouringTilesOfType( int q, int r, TileType type ) const;
+    virtual std::vector<pii> GetNeighbouringTiles( int q, int r ) const = 0;
+    virtual std::vector<pii> GetNeighbouringTilesOfType( int q, int r, TileType type ) const;
+    virtual std::vector<pii> GetNeighbouringTilesOfTypeRange( int q, int r, TileType min, TileType max ) const;
+
+    virtual void PlaceTile( int q, int r, Player* player, TileType type ) = 0;
+    virtual void SetOwner( int q, int r, Player* player ) = 0;
+    virtual void SetTileType( int q, int r, TileType type ) = 0;
+
+    inline void SetOnTilePlacedCallback( std::function<void( int, int, const Tile& )> callback );
 
 protected:
     ConcreteBoard() noexcept;
 
-    virtual Tile& get_tile( int q, int r ) noexcept = 0;
+    Event<int, int, const Tile&> _on_tile_placed;
 
-    virtual std::vector<std::reference_wrapper<const Tile>> GetNeighbours( int q, int r ) const = 0;
 
     static const std::function<void( Player* )> _noop;
     static const std::function<void( Player* )> _draw_one_card;
