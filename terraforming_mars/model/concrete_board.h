@@ -21,6 +21,7 @@ public:
     virtual std::vector<pii> GetNeighbouringTiles( int q, int r ) const = 0;
     virtual std::vector<pii> GetNeighbouringTilesOfType( int q, int r, TileType type ) const;
     virtual std::vector<pii> GetNeighbouringTilesOfTypeRange( int q, int r, TileType min, TileType max ) const;
+    virtual const pii* NoctisCityIndex() const;
 
     virtual void PlaceTile( int q, int r, Player* player, TileType type ) = 0;
     virtual void SetOwner( int q, int r, Player* player ) = 0;
@@ -46,6 +47,6 @@ protected:
 
     static const std::function<void( Player* )> _gain_titanium_and_plants;
 
-    static const std::function<void( Player* )> _warn_bad_index;
+    static const std::function<void( Player* )> _bad_index;
 };
 }

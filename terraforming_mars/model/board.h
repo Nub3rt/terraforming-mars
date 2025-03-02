@@ -83,6 +83,13 @@ public:
     inline std::vector<pii> GetNeighbouringTiles( int q, int r ) const;
     inline std::vector<pii> GetNeighbouringTilesOfType( int q, int r, TileType type ) const;
     inline std::vector<pii> GetNeighbouringTilesOfTypeRange( int q, int r, TileType min, TileType max ) const;
+    std::vector<pii> GetEmptyTiles() const;
+    std::vector<pii> GetValidOceanTiles() const;
+    std::vector<pii> GetValidGreeneryTiles( Player* player ) const;
+    std::vector<pii> GetValidCityTiles() const;
+    std::vector<pii> GetValidNoctisCityTiles() const;
+    std::vector<pii> GetValidLonelyCityTiles() const;
+    std::vector<pii> GetValidUrbanizedAreaTiles() const;
 
     inline void PlaceTile( int q, int r, Player* player, TileType type );
     inline void SetOwner( int q, int r, Player* player );

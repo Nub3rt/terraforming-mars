@@ -41,6 +41,10 @@ std::vector<pii> TharsisConcreteBoard::GetNeighbouringTiles( int q, int r ) cons
     return neighbours;
 }
 
+const pii* TharsisConcreteBoard::NoctisCityIndex() const {
+    return &_noctis_city_index;
+}
+
 void TharsisConcreteBoard::PlaceTile( int q, int r, Player* player, TileType type ) {
     Tile& tile = get_tile( q, r );
 
@@ -72,13 +76,14 @@ void TharsisConcreteBoard::SetTileType( int q, int r, TileType type ) {
     get_tile( q, r ).set_type( type );
 }
 
+constexpr pii TharsisConcreteBoard::_noctis_city_index = pii( 2, 4 );
 
 const std::array<std::array<Tile, 9>, 9> TharsisConcreteBoard::_starting_board = {{
     {{
-        Tile( _warn_bad_index ),
-        Tile( _warn_bad_index ),
-        Tile( _warn_bad_index ),
-        Tile( _warn_bad_index ),
+        Tile( _bad_index ),
+        Tile( _bad_index ),
+        Tile( _bad_index ),
+        Tile( _bad_index ),
         Tile( _gain_two_steel, TileType::EMPTY ),
         Tile( _gain_two_steel, TileType::RESERVED_FOR_OCEAN ),
         Tile( _noop, TileType::EMPTY ),
@@ -86,9 +91,9 @@ const std::array<std::array<Tile, 9>, 9> TharsisConcreteBoard::_starting_board =
         Tile( _noop, TileType::RESERVED_FOR_OCEAN ),
     }}, // first row
     {{
-        Tile( _warn_bad_index ),
-        Tile( _warn_bad_index ),
-        Tile( _warn_bad_index ),
+        Tile( _bad_index ),
+        Tile( _bad_index ),
+        Tile( _bad_index ),
         Tile( _noop, TileType::EMPTY ),
         Tile( _gain_one_steel, TileType::EMPTY ),
         Tile( _noop, TileType::EMPTY ),
@@ -97,8 +102,8 @@ const std::array<std::array<Tile, 9>, 9> TharsisConcreteBoard::_starting_board =
         Tile( _draw_two_cards, TileType::RESERVED_FOR_OCEAN ),
     }}, // second row
     {{
-        Tile( _warn_bad_index ),
-        Tile( _warn_bad_index ),
+        Tile( _bad_index ),
+        Tile( _bad_index ),
         Tile( _draw_one_card, TileType::EMPTY ),
         Tile( _noop, TileType::EMPTY ),
         Tile( _noop, TileType::EMPTY ),
@@ -108,7 +113,7 @@ const std::array<std::array<Tile, 9>, 9> TharsisConcreteBoard::_starting_board =
         Tile( _gain_one_steel, TileType::EMPTY ),
     }}, // third row
     {{
-        Tile( _warn_bad_index ),
+        Tile( _bad_index ),
         Tile( _gain_titanium_and_plants, TileType::EMPTY),
         Tile( _gain_one_plants, TileType::EMPTY ),
         Tile( _gain_one_plants, TileType::EMPTY ),
@@ -138,7 +143,7 @@ const std::array<std::array<Tile, 9>, 9> TharsisConcreteBoard::_starting_board =
         Tile( _gain_one_plants, TileType::RESERVED_FOR_OCEAN ),
         Tile( _gain_one_plants, TileType::RESERVED_FOR_OCEAN ),
         Tile( _gain_one_plants, TileType::RESERVED_FOR_OCEAN ),
-        Tile( _warn_bad_index ),
+        Tile( _bad_index ),
     }}, // sixth row
     {{
         Tile( _noop, TileType::EMPTY ),
@@ -148,8 +153,8 @@ const std::array<std::array<Tile, 9>, 9> TharsisConcreteBoard::_starting_board =
         Tile( _noop, TileType::EMPTY ),
         Tile( _gain_one_plants, TileType::EMPTY ),
         Tile( _noop, TileType::EMPTY ),
-        Tile( _warn_bad_index ),
-        Tile( _warn_bad_index ),
+        Tile( _bad_index ),
+        Tile( _bad_index ),
     }}, // seventh row
     {{
         Tile( _gain_two_steel, TileType::EMPTY ),
@@ -158,9 +163,9 @@ const std::array<std::array<Tile, 9>, 9> TharsisConcreteBoard::_starting_board =
         Tile( _draw_one_card, TileType::EMPTY ),
         Tile( _noop, TileType::EMPTY ),
         Tile( _gain_one_titanium, TileType::EMPTY ),
-        Tile( _warn_bad_index ),
-        Tile( _warn_bad_index ),
-        Tile( _warn_bad_index ),
+        Tile( _bad_index ),
+        Tile( _bad_index ),
+        Tile( _bad_index ),
     }}, // eighth row
     {{
         Tile( _gain_one_steel, TileType::EMPTY ),
@@ -168,10 +173,10 @@ const std::array<std::array<Tile, 9>, 9> TharsisConcreteBoard::_starting_board =
         Tile( _noop, TileType::EMPTY ),
         Tile( _noop, TileType::EMPTY ),
         Tile( _gain_two_titanium, TileType::RESERVED_FOR_OCEAN ),
-        Tile( _warn_bad_index ),
-        Tile( _warn_bad_index ),
-        Tile( _warn_bad_index ),
-        Tile( _warn_bad_index ),
+        Tile( _bad_index ),
+        Tile( _bad_index ),
+        Tile( _bad_index ),
+        Tile( _bad_index ),
     }}, // ninth row
 }};
 }

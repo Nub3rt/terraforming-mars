@@ -29,6 +29,34 @@ inline std::vector<pii> Board::GetNeighbouringTilesOfTypeRange( int q, int r, Ti
     return _concrete_board->GetNeighbouringTilesOfTypeRange( q, r, min, max );
 }
 
+std::vector<pii> Board::GetEmptyTiles() const {
+    return std::vector<pii>();
+}
+
+std::vector<pii> Board::GetValidOceanTiles() const {
+    return std::vector<pii>();
+}
+
+std::vector<pii> Board::GetValidGreeneryTiles( Player* player ) const {
+    return std::vector<pii>();
+}
+
+std::vector<pii> Board::GetValidCityTiles() const {
+    return std::vector<pii>();
+}
+
+std::vector<pii> Board::GetValidNoctisCityTiles() const {
+    return std::vector<pii>();
+}
+
+std::vector<pii> Board::GetValidLonelyCityTiles() const {
+    return std::vector<pii>();
+}
+
+std::vector<pii> Board::GetValidUrbanizedAreaTiles() const {
+    return std::vector<pii>();
+}
+
 inline void Board::PlaceTile( int q, int r, Player* player, TileType type ) {
     _concrete_board->PlaceTile( q, r, player, type );
 }
@@ -40,6 +68,7 @@ inline void Board::SetOwner( int q, int r, Player* player ) {
 inline void Board::SetTileType( int q, int r, TileType type ) {
     _concrete_board->SetTileType( q, r, type );
 }
+
 inline void Board::SetOnTilePlacedCallback( std::function<void( int, int, const Tile& )> callback ) {
     _concrete_board->SetOnTilePlacedCallback( callback );
 }

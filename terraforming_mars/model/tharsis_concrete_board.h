@@ -21,6 +21,7 @@ public:
     inline Tile& get_tile( int q, int r ) noexcept;
 
     std::vector<pii> GetNeighbouringTiles( int q, int r ) const override;
+    const pii* NoctisCityIndex() const override;
 
     void PlaceTile( int q, int r, Player* player, TileType type ) override;
     void SetOwner( int q, int r, Player* player ) override;
@@ -29,6 +30,7 @@ public:
 protected:
     std::array<std::array<Tile, 9>, 9> _board;
 
+    static const pii _noctis_city_index;
     static const std::array<std::array<Tile, 9>, 9> _starting_board;
 };
 }
