@@ -72,4 +72,12 @@ inline void Board::SetTileType( int q, int r, TileType type ) {
 inline void Board::SetOnTilePlacedCallback( std::function<void( int, int, const Tile& )> callback ) {
     _concrete_board->SetOnTilePlacedCallback( callback );
 }
+
+inline ConcreteBoard::IteratorWrapper Board::begin() const {
+    return _concrete_board->begin();
+}
+
+inline ConcreteBoard::IteratorWrapper Board::end() const {
+    return _concrete_board->end();
+}
 }

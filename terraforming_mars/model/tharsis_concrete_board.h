@@ -32,5 +32,34 @@ protected:
 
     static const pii _noctis_city_index;
     static const std::array<std::array<Tile, 9>, 9> _starting_board;
+
+public:
+    class TharsisIterator : public ConcreteBoard::Iterator
+    {
+    public:
+        TharsisIterator();
+        TharsisIterator( pointer ptr, int q, int r );
+        ~TharsisIterator() override;
+
+        reference operator*() const override;
+        pointer operator->() const override;
+
+        Iterator& operator++() override;
+
+        bool operator==( const Iterator& other ) const override;
+        bool operator!=( const Iterator& other ) const override;
+
+        inline pii GetIndices() const override;
+
+        void PointerOneUp();
+
+    private:
+        pointer _ptr;
+        int _q;
+        int _r;
+    };
+
+    IteratorWrapper begin() const override;
+    IteratorWrapper end() const override;
 };
 }

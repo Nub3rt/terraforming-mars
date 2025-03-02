@@ -179,4 +179,61 @@ const std::array<std::array<Tile, 9>, 9> TharsisConcreteBoard::_starting_board =
         Tile( _bad_index ),
     }}, // ninth row
 }};
+
+
+TharsisConcreteBoard::TharsisIterator::TharsisIterator() :
+    _ptr( nullptr ), _q( 0 ), _r( 0 ) {}
+
+TharsisConcreteBoard::TharsisIterator::TharsisIterator( pointer ptr, int q, int r ) :
+    _ptr( ptr ), _q( q ), _r( r ) {}
+
+TharsisConcreteBoard::TharsisIterator::~TharsisIterator() {}
+
+ConcreteBoard::Iterator::reference TharsisConcreteBoard::TharsisIterator::operator*() const {
+    return *_ptr;
+}
+
+ConcreteBoard::Iterator::pointer TharsisConcreteBoard::TharsisIterator::operator->() const {
+    return _ptr;
+}
+
+ConcreteBoard::Iterator& TharsisConcreteBoard::TharsisIterator::operator++() {
+    PointerOneUp();
+
+    while ( _r < 9 && _ptr->get_type() == TileType::NONE )
+        PointerOneUp();
+
+    return *this;
+}
+
+bool TharsisConcreteBoard::TharsisIterator::operator==( const Iterator& other ) const {
+    const TharsisIterator* other_iterator = dynamic_cast<const TharsisIterator*>( &other );
+    return other_iterator && _ptr == other_iterator->_ptr;
+}
+
+bool TharsisConcreteBoard::TharsisIterator::operator!=( const Iterator& other ) const {
+    return !(*this == other);
+}
+
+inline pii TharsisConcreteBoard::TharsisIterator::GetIndices() const {
+    return pii( _q, _r );
+}
+
+void TharsisConcreteBoard::TharsisIterator::PointerOneUp() {
+    ++_ptr;
+
+    if ( _q == 8 ) {
+        _q = 0;
+        ++_r;
+    } else
+        ++_q;
+}
+
+ConcreteBoard::IteratorWrapper TharsisConcreteBoard::begin() const {
+    return new TharsisIterator( &_board[ 0 ][ 4 ], 4, 0 );
+}
+
+ConcreteBoard::IteratorWrapper TharsisConcreteBoard::end() const {
+    return new TharsisIterator( &_board[ 8 ][ 5 ], 5, 8 );
+}
 }

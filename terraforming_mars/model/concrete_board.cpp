@@ -60,4 +60,39 @@ const std::function<void( Player* )> ConcreteBoard::_gain_titanium_and_plants =
     []( Player* player ) { player->GainResource( Resource::TITANIUM, 1 ); player->GainResource( Resource::PLANTS, 1 ); };
 
 const std::function<void( Player* )> ConcreteBoard::_bad_index = []( Player* player ) { throw std::logic_error( "ConcreteBoard was indexed on an invalid tile!" ); };
+
+
+ConcreteBoard::Iterator::Iterator() {}
+ConcreteBoard::Iterator::~Iterator() {}
+
+ConcreteBoard::IteratorWrapper::IteratorWrapper( Iterator* iterator ) : _iterator( iterator ){}
+
+ConcreteBoard::IteratorWrapper::~IteratorWrapper() {
+    delete _iterator;
+}
+
+ConcreteBoard::IteratorWrapper::reference ConcreteBoard::IteratorWrapper::operator*() const {
+    return _iterator->operator*();;
+}
+
+ConcreteBoard::IteratorWrapper::pointer ConcreteBoard::IteratorWrapper::operator->() const {
+    return _iterator->operator->();
+}
+
+ConcreteBoard::IteratorWrapper::Iterator& ConcreteBoard::IteratorWrapper::operator++() {
+    return _iterator->operator++();
+}
+
+bool ConcreteBoard::IteratorWrapper::operator==( const Iterator& other ) const {
+    const IteratorWrapper* other_wrapper = dynamic_cast<const IteratorWrapper*>( &other );
+    return other_wrapper && _iterator == other_wrapper->_iterator;
+}
+
+bool ConcreteBoard::IteratorWrapper::operator!=( const Iterator& other ) const {
+    return !(*this == other);
+}
+
+pii ConcreteBoard::IteratorWrapper::GetIndices() const {
+    return _iterator->GetIndices();
+}
 }

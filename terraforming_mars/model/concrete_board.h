@@ -48,5 +48,52 @@ protected:
     static const std::function<void( Player* )> _gain_titanium_and_plants;
 
     static const std::function<void( Player* )> _bad_index;
+
+public:
+    class Iterator
+    {
+    public:
+        using iterator_category = std::forward_iterator_tag;
+        using value_type = Tile;
+        using difference_type = std::ptrdiff_t;
+        using pointer = const value_type*;
+        using reference = const value_type&;
+
+        Iterator();
+        virtual ~Iterator();
+
+        virtual reference operator*() const = 0;
+        virtual pointer operator->() const = 0;
+
+        virtual Iterator& operator++() = 0;
+
+        virtual bool operator==( const Iterator& other ) const = 0;
+        virtual bool operator!=( const Iterator& other ) const = 0;
+
+        virtual pii GetIndices() const = 0;
+    };
+
+    class IteratorWrapper : public Iterator
+    {
+    public:
+        IteratorWrapper( Iterator* iterator );
+        ~IteratorWrapper();
+
+        reference operator*() const override;
+        pointer operator->() const override;
+
+        Iterator& operator++() override;
+        bool operator==( const Iterator& other ) const override;
+        bool operator!=( const Iterator& other ) const override;
+
+        pii GetIndices() const override;
+
+    private:
+        Iterator* const _iterator;
+
+    };
+
+    virtual IteratorWrapper begin() const = 0;
+    virtual IteratorWrapper end() const = 0;
 };
 }

@@ -97,6 +97,9 @@ public:
 
     inline void SetOnTilePlacedCallback( std::function<void( int, int, const Tile& )> callback );
 
+    inline ConcreteBoard::IteratorWrapper begin() const;
+    inline ConcreteBoard::IteratorWrapper end() const;
+
 private:
     ConcreteBoard* _concrete_board;
 };
