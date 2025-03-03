@@ -243,10 +243,13 @@
     <ClInclude Include="cards\zeppelins.h" />
     <ClInclude Include="cards\_cards.h" />
     <ClInclude Include="card_id.h" />
+    <ClInclude Include="deck.fwd.h" />
     <ClInclude Include="deck.h" />
     <ClInclude Include="deck_provider.h" />
     <ClInclude Include="event.h" />
     <ClInclude Include="event_card.h" />
+    <ClInclude Include="game_model_state.fwd.h" />
+    <ClInclude Include="game_model_state.h" />
     <ClInclude Include="hexagonal_grid.h" />
     <ClInclude Include="board.h" />
     <ClInclude Include="concrete_board.h" />
@@ -377,6 +380,7 @@
     <ClCompile Include="deck.cpp" />
     <ClCompile Include="deck_provider.cpp" />
     <ClCompile Include="event_card.cpp" />
+    <ClCompile Include="game_model_state.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="game_model.cpp" />
     <ClCompile Include="reduced_basic_deck_provider.cpp" />

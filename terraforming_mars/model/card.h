@@ -1,8 +1,8 @@
 #pragma once
 
 #include "card.fwd.h"
-#include "player.fwd.h"
 #include "game_model.fwd.h"
+#include "player.fwd.h"
 
 #include <array>
 #include <string>

@@ -1,13 +1,12 @@
 #pragma once
 
-#include "player.fwd.h"
 #include "card.fwd.h"
+#include "player.fwd.h"
 
 #include <array>
 #include <functional>
 #include <vector>
 
-#include "card.h"
 #include "active_card.h"
 #include "active_card_with_action.h"
 #include "active_card_with_effect.h"
@@ -25,7 +24,7 @@ public:
     template<typename... Args>
     using Callback = std::function<void( Player*, Args... )>;
 
-    Player();
+    Player( int starting_resource_production_amount );
     ~Player();
     Player( const Player& other ) = delete;
     Player( Player&& other ) = delete;
@@ -34,6 +33,9 @@ public:
 
     inline const auto& get_resources() const noexcept;
     inline const auto& get_resource_productions() const noexcept;
+
+    inline int get_steel_value() const noexcept;
+    inline int get_titanium_value() const noexcept;
 
     inline const std::vector<decks::Card*>& get_hand() const noexcept;
     inline const std::vector<decks::EventCard*>& get_event_cards() const noexcept;
@@ -105,8 +107,8 @@ public:
 
     inline void SetOnResourceAmountChangedCallback( Callback<Resource, int> callback );
     inline void SetOnResourceProductionAmountChangedCallback( Callback<Resource, int> callback );
-    inline void SetOnDestroyResource( Callback<Resource, int> callback );
-    inline void SetOnDestroyResourceProduction( Callback<Resource, int> callback );
+    inline void SetOnDestroyResourceCallback( Callback<Resource, int> callback );
+    inline void SetOnDestroyResourceProductionCallback( Callback<Resource, int> callback );
 
 private:
     std::array<int, +Tag::MAX + 1> _tags;

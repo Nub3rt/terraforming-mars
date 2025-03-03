@@ -1,11 +1,12 @@
 #pragma once
 
+#include "deck.h"
+
 #include <algorithm>
 #include <vector>
 #include <random>
 
 #include "card.h"
-#include "deck.h"
 #include "game_model.h"
 
 namespace model::decks

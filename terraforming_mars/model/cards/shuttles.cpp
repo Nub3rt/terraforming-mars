@@ -31,7 +31,7 @@ int Shuttles::DoCountVPs() const {
 }
 
 int Shuttles::DoModifyCardCost( const Card* card, int cost ) {
-    if ( card->HasTag( Tag::SPACE) > 0 )
+    if ( card->HasTag( Tag::SPACE ) )
         return cost - 2;
     else
         return cost;

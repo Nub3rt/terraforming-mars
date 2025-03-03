@@ -1,11 +1,13 @@
 #pragma once
 
+#include "deck.fwd.h"
+#include "game_model.fwd.h"
+
 #include <vector>
 #include <random>
 
 #include "card.h"
 #include "deck_provider.h"
-#include "game_model.h"
 
 namespace model::decks
 {

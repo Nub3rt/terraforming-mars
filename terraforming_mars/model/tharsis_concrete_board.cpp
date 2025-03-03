@@ -198,10 +198,13 @@ ConcreteBoard::Iterator::pointer TharsisConcreteBoard::TharsisIterator::operator
 }
 
 ConcreteBoard::Iterator& TharsisConcreteBoard::TharsisIterator::operator++() {
+    if ( _r == 8 && _q == 5 )
+        return *this;
+
     PointerOneUp();
 
-    while ( _r < 9 && _ptr->get_type() == TileType::NONE )
-        PointerOneUp();
+    if ( _ptr->get_type() == TileType::NONE )
+        return ++(*this);
 
     return *this;
 }

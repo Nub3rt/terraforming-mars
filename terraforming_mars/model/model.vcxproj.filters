@@ -1,10 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
     <Filter Include="board">
       <UniqueIdentifier>{ec6fe095-ae62-458e-8978-4611eeb48981}</UniqueIdentifier>
     </Filter>
@@ -395,6 +391,11 @@
       <Filter>decks</Filter>
     </ClInclude>
     <ClInclude Include="event.h" />
+    <ClInclude Include="game_model_state.fwd.h" />
+    <ClInclude Include="game_model_state.h" />
+    <ClInclude Include="deck.fwd.h">
+      <Filter>decks</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="player.cpp" />
@@ -759,5 +760,6 @@
     <ClCompile Include="reduced_basic_deck_provider.cpp">
       <Filter>decks</Filter>
     </ClCompile>
+    <ClCompile Include="game_model_state.cpp" />
   </ItemGroup>
 </Project>

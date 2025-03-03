@@ -17,7 +17,9 @@
 
 namespace model
 {
-Player::Player() : _tags(), _resources(), _resource_productions() {
+Player::Player( int starting_resource_production_amount ) : _tags(), _resources(), _resource_productions() {
+    for ( int& resource_production : _resource_productions )
+        resource_production = starting_resource_production_amount;
 }
 
 Player::~Player() {
@@ -36,6 +38,8 @@ Player::~Player() {
 
 inline const auto& Player::get_resources() const noexcept { return _resources; }
 inline const auto& Player::get_resource_productions() const noexcept { return _resource_productions; }
+inline int Player::get_steel_value() const noexcept { return _steel_value; }
+inline int Player::get_titanium_value() const noexcept { return _titanium_value; }
 inline const std::vector<decks::Card*>& Player::get_hand() const noexcept { return _hand; }
 inline const std::vector<decks::EventCard*>& Player::get_event_cards() const noexcept { return _event_cards; }
 inline const std::vector<decks::AutomatedCard*>& Player::get_automated_cards() const noexcept { return _automated_cards; }
@@ -169,8 +173,8 @@ void Player::SetOnPlaceLonelyCityCallback( Callback<> callback ) { _on_place_lon
 void Player::SetOnPlaceUrbanizedAreaCallback( Callback<> callback ) { _on_place_urbanized_area.SetCallback( callback ); }
 void Player::SetOnResourceAmountChangedCallback( Callback<Resource, int> callback ) { _on_resource_amount_changed.SetCallback( callback ); }
 void Player::SetOnResourceProductionAmountChangedCallback( Callback<Resource, int> callback ) { _on_resource_production_amount_changed.SetCallback( callback ); }
-void Player::SetOnDestroyResource( Callback<Resource, int> callback ) { _on_destroy_resource.SetCallback( callback ); }
-void Player::SetOnDestroyResourceProduction( Callback<Resource, int> callback ) { _on_destroy_resource_production.SetCallback( callback ); }
+void Player::SetOnDestroyResourceCallback( Callback<Resource, int> callback ) { _on_destroy_resource.SetCallback( callback ); }
+void Player::SetOnDestroyResourceProductionCallback( Callback<Resource, int> callback ) { _on_destroy_resource_production.SetCallback( callback ); }
 
 
 void Player::DoPlayCard( decks::Card* card ) {
