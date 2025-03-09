@@ -18,7 +18,7 @@ OpenCity::OpenCity( const GameModel& model ) noexcept :
 OpenCity::~OpenCity() noexcept {}
 
 bool OpenCity::SatisfiesRequirements() const {
-    return _model.Oxygen() >= 12 && _model.IsCityPlaceable() && _owner->GetResourceProduction( Resource::ENERGY ) >= 1;
+    return _model.Oxygen() >= 12 && _model.IsCityPlaceable( _holder ) && _owner->GetResourceProduction( Resource::ENERGY ) >= 1;
 }
 
 void OpenCity::ApplyImmediateEffects() {

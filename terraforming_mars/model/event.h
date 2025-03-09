@@ -13,7 +13,7 @@ public:
     inline void SetCallback( Callback callback ) { _callback = callback; }
     void ClearCallback() { _callback = Callback(); }
 
-    void Trigger( Args... params ) const {
+    void Invoke( Args... params ) const {
         if ( _callback )
             _callback( params... );
     }

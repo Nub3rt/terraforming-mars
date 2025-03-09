@@ -84,14 +84,15 @@ public:
     inline std::vector<pii> GetNeighbouringTiles( int q, int r ) const;
     inline std::vector<pii> GetNeighbouringTilesOfType( int q, int r, TileType type ) const;
     inline std::vector<pii> GetNeighbouringTilesOfTypeRange( int q, int r, TileType min, TileType max ) const;
-    std::vector<pii> GetTilesOfType( Player* player, TileType type ) const;
-    std::vector<pii> GetEmptyTiles( Player* player ) const;
-    std::vector<pii> GetValidOceanTiles( Player* player) const;
-    std::vector<pii> GetValidGreeneryTiles( Player* player ) const;
-    std::vector<pii> GetValidCityTiles( Player* player ) const;
-    std::vector<pii> GetValidNoctisCityTiles( Player* player ) const;
-    std::vector<pii> GetValidLonelyCityTiles( Player* player ) const;
-    std::vector<pii> GetValidUrbanizedAreaTiles( Player* player ) const;
+    std::vector<pii> GetTilesOfType( TileType type ) const;
+    std::vector<pii> GetPlaceableTilesOfType( const Player* player, TileType type ) const;
+    std::vector<pii> GetEmptyTiles( const Player* player ) const;
+    std::vector<pii> GetValidOceanTiles( const Player* player) const;
+    std::vector<pii> GetValidGreeneryTiles( const Player* player ) const;
+    std::vector<pii> GetValidCityTiles( const Player* player ) const;
+    std::vector<pii> GetValidNoctisCityTiles( const Player* player ) const;
+    std::vector<pii> GetValidLonelyCityTiles( const Player* player ) const;
+    std::vector<pii> GetValidUrbanizedAreaTiles( const Player* player ) const;
 
     inline void PlaceTile( int q, int r, Player* player, TileType type );
     inline void SetOwner( int q, int r, Player* player );

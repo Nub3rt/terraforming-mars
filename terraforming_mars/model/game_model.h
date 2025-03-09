@@ -8,6 +8,7 @@
 
 #include <functional>
 #include <queue>
+#include <random>
 #include <utility>
 
 #include "board.h"
@@ -19,9 +20,13 @@ namespace model
 {
 class GameModel
 {
-friend class GameModelState;
+    friend class GameModelState;
+    friend class IdleState;
+    friend class PlacementConfirmationState;
+    friend class PaymentConfirmationState;
 
-class Request;
+protected:
+    class Request;
 
 public:
     using pii = std::pair<int, int>;
@@ -36,41 +41,47 @@ public:
     inline const board::Board* get_board() const;
     inline const Player* get_local_player() const;
 
-    int Temperature() const;
-    int OceanCount() const;
-    int Oxygen() const;
-    int CityCount() const;
+    inline int Temperature() const;
+    inline int OceanCount() const;
+    inline int Oxygen() const;
+    inline int CityCount() const;
 
-    bool IsTilePlaceable() const;
-    bool IsCityPlaceable() const;
-    bool IsUrbanizedAreaPlaceable() const;
-    bool IsAvailableLonelyTile() const;
+    bool IsTilePlaceable( const Player* player ) const;
+    bool IsCityPlaceable( const Player* player ) const;
+    bool IsUrbanizedAreaPlaceable( const Player* player ) const;
+    bool IsAvailableLonelyTile( const Player* player ) const;
 
-    bool AreGlobalParametersFulfilled() const;
+    virtual bool AreGlobalParametersFulfilled() const;
 
-    bool CanUsePowerPlantSP() const;
-    bool CanUseAsteroidSP() const;
-    bool CanUseAquiferSP() const;
-    bool CanUseGreenerySP() const;
-    bool CanUseCitySP() const;
+    inline bool CanUsePowerPlantSP() const;
+    inline bool CanUseAsteroidSP() const;
+    inline bool CanUseAquiferSP() const;
+    inline bool CanUseGreenerySP() const;
+    inline bool CanUseCitySP() const;
+    inline bool CanConvertPlantsToGreenery() const;
+    inline bool CanConvertHeatToTemperature() const;
 
-    void SellCardSP( decks::Card* card );
-    void UsePowerPlantSP();
-    void UseAsteroidSP();
-    void UseAquiferSP();
-    void UseGreenerySP();
-    void UseCitySP();
+    inline bool InIdleState() const; // can play cards, can use actions;
+    inline bool CanPlayCards() const;
+    inline bool CanUseActions() const;
 
-    void PlayCard( decks::Card* card );
-    void UseAction( decks::Card* card );
-    void ConvertPlantsToGreenery();
-    void ConvertHeatToTemperature();
+    inline void SellCardSP( decks::Card* card );
+    inline void UsePowerPlantSP();
+    inline void UseAsteroidSP();
+    inline void UseAquiferSP();
+    inline void UseGreenerySP();
+    inline void UseCitySP();
 
-    void TilePlacementConfirmed( int q, int r );
+    inline void PlayCard( decks::Card* card );
+    inline void UseAction( decks::Card* card );
+    inline void ConvertPlantsToGreenery();
+    inline void ConvertHeatToTemperature();
 
-    void PaymentConfirmed( int credit, int resource );
+    inline void TilePlacementConfirmed( int q, int r );
 
-    void EndGeneration();
+    inline void PaymentConfirmed( int credit, int resource );
+
+    inline void EndTurn();
 
 
     inline void SetOnDrawCard( Callback<> callback );
@@ -79,12 +90,18 @@ public:
     inline void SetOnRaiseOxygen( Callback<> callback );
     inline void SetOnResourceAmountChanged( Callback <Resource, int> callback );
     inline void SetOnResourceProductionAmountChanged( Callback <Resource, int> callback );
-
     inline void SetOnConfirmPayment( Callback<int, Resource, int> callback );
-    inline void SetOnConfirmPlacement( Callback <board::TileType, const std::vector<pii>> callback );
+    inline void SetOnConfirmPlacement( Callback <board::TileType, std::vector<pii>> callback );
+
+    static const int STARTING_TEMPTERATURE = -30;
+    static const int STARTING_OCEAN_COUNT = 0;
+    static const int STARTING_OXYGEN_LEVEL = 0;
+    static const int MAX_TEMPTERATURE = 8;
+    static const int MAX_OCEAN_COUNT = 9;
+    static const int MAX_OXYGEN_LEVEL = 14;
 
 protected:
-    GameModel();
+    GameModel( int seed );
 
     bool _initialized = false;
 
@@ -100,6 +117,9 @@ protected:
 
     decks::Deck* _deck = nullptr;
 
+    std::queue<Request*> _queued_request;
+
+    std::mt19937 _random;
 
     Event<> _on_draw_card;
     Event<int> _on_raise_tr;
@@ -109,37 +129,31 @@ protected:
     Event<Resource, int> _on_resource_production_amount_changed;
 
     Event<int, Resource, int> _on_confirm_payment;
-    Event<board::TileType, const std::vector<pii>> _on_confirm_placement;
+    Event<board::TileType, std::vector<pii>> _on_confirm_placement;
 
-    std::queue<Request*> _queued_request;
 
     virtual Player* CreateLocalPlayer() = 0;
 
     void SubscribeCallbacksOnPlayer( Player* player );
 
-    void OnDrawCard( Player* player );
-    void OnRaiseTR( Player* player, int amount );
-    void OnRaiseTemperature( Player* player );
-    void OnPlaceOcean( Player* player );
-    void OnPlaceOceanOnNonOcean( Player* player );
-    void OnRaiseOxygen( Player* player );
-    void OnPlaceGreenery( Player* player );
-    void OnPlaceGreeneryOnOcean( Player* player );
-    void OnPlaceCity( Player* player );
-    void OnPlaceNoctisCity( Player* player );
-    void OnPlaceLonelyCity( Player* player );
-    void OnPlaceUrbanizedArea( Player* player );
-    void OnResourceAmountChanged( Player* player, Resource resource, int amount );
-    void OnResourceProductionAmountChanged( Player* player, Resource resource, int amount );
-    void OnDestroyResource( Player* player, Resource resource, int amount );
-    void OnDestroyResourceProduction( Player* player, Resource resource, int amount );
-
-    static const int STARTING_TEMPTERATURE = -30;
-    static const int STARTING_OCEAN_COUNT = 0;
-    static const int STARTING_OXYGEN_LEVEL = 0;
-    static const int MAX_TEMPTERATURE = 8;
-    static const int MAX_OCEAN_COUNT = 9;
-    static const int MAX_OXYGEN_LEVEL = 14;
+    inline void Player_OnDrawCard( Player* player );
+    inline void Player_OnRaiseTR( Player* player, int amount );
+    inline void Player_OnRaiseTemperature( Player* player );
+    inline void Player_OnPlaceOcean( Player* player );
+    inline void Player_OnPlaceOceanOnNonOcean( Player* player );
+    inline void Player_OnRaiseOxygen( Player* player );
+    inline void Player_OnPlaceGreenery( Player* player );
+    inline void Player_OnPlaceGreeneryOnOcean( Player* player );
+    inline void Player_OnPlaceCity( Player* player );
+    inline void Player_OnPlaceNoctisCity( Player* player );
+    inline void Player_OnPlaceLonelyCity( Player* player );
+    inline void Player_OnPlaceUrbanizedArea( Player* player );
+    inline void Player_OnResourceAmountChanged( Player* player, Resource resource, int amount );
+    inline void Player_OnResourceProductionAmountChanged( Player* player, Resource resource, int amount );
+    inline void Player_OnDestroyResource( Player* player, Resource resource, int amount );
+    inline void Player_OnDestroyResourceProduction( Player* player, Resource resource, int amount );
+    inline void Player_OnConfirmSteelPayment( Player* player, int cost, std::function<void()> after_payment );
+    inline void Player_OnConfirmTitaniumPayment( Player* player, int cost, std::function<void()> after_payment );
 
     class Request
     {
@@ -155,8 +169,8 @@ protected:
     public:
         PlacementRequest( board::TileType type, std::vector<pii> valid_positions );
 
-        const board::TileType type;
-        const std::vector<pii> valid_positions;
+        board::TileType type;
+        std::vector<pii> valid_positions;
 
         void Perform( GameModelState* state ) override;
     };
@@ -166,9 +180,9 @@ protected:
     public:
         PaymentRequest( int cost, Resource resource, int resource_value );
 
-        const int cost;
-        const Resource resource;
-        const int resource_value;
+        int cost;
+        Resource resource;
+        int resource_value;
 
         void Perform( GameModelState* state ) override;
     };

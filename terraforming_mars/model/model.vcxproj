@@ -259,6 +259,7 @@
     <ClInclude Include="game_model.h" />
     <ClInclude Include="reduced_basic_deck_provider.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="solo_game_model.h" />
     <ClInclude Include="tag.h" />
     <ClInclude Include="tharsis_concrete_board.h" />
     <ClInclude Include="tile.h" />
@@ -384,6 +385,7 @@
     <ClCompile Include="player.cpp" />
     <ClCompile Include="game_model.cpp" />
     <ClCompile Include="reduced_basic_deck_provider.cpp" />
+    <ClCompile Include="solo_game_model.cpp" />
     <ClCompile Include="tharsis_concrete_board.cpp" />
     <ClCompile Include="tile.cpp" />
     <ClCompile Include="tile_type.h" />

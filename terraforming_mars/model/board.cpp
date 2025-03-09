@@ -33,7 +33,18 @@ inline std::vector<pii> Board::GetNeighbouringTilesOfTypeRange( int q, int r, Ti
     return _concrete_board->GetNeighbouringTilesOfTypeRange( q, r, min, max );
 }
 
-std::vector<pii> Board::GetTilesOfType( Player* player, TileType type ) const {
+std::vector<pii> Board::GetTilesOfType( TileType type ) const {
+    std::vector<pii> tiles;
+
+    for ( auto it = begin(); it != end(); ++it ) {
+        if ( it->get_type() == type )
+            tiles.push_back( it.GetIndices() );
+    }
+
+    return tiles;
+}
+
+std::vector<pii> Board::GetPlaceableTilesOfType( const Player* player, TileType type ) const {
     std::vector<pii> tiles;
 
     for ( auto it = begin(); it != end(); ++it ) {
@@ -44,15 +55,15 @@ std::vector<pii> Board::GetTilesOfType( Player* player, TileType type ) const {
     return tiles;
 }
 
-std::vector<pii> Board::GetEmptyTiles( Player* player ) const {
-    return GetTilesOfType( player, TileType::EMPTY );
+std::vector<pii> Board::GetEmptyTiles( const Player* player ) const {
+    return GetPlaceableTilesOfType( player, TileType::EMPTY );
 }
 
-std::vector<pii> Board::GetValidOceanTiles( Player* player ) const {
-    return GetTilesOfType( player, TileType::RESERVED_FOR_OCEAN );
+std::vector<pii> Board::GetValidOceanTiles( const Player* player ) const {
+    return GetPlaceableTilesOfType( player, TileType::RESERVED_FOR_OCEAN );
 }
 
-std::vector<pii> Board::GetValidGreeneryTiles( Player* player ) const {
+std::vector<pii> Board::GetValidGreeneryTiles( const Player* player ) const {
     std::vector<pii> tiles_with_neighbour_of_owner;
 
     for ( auto it = begin(); it != end(); ++it ) {
@@ -75,7 +86,7 @@ std::vector<pii> Board::GetValidGreeneryTiles( Player* player ) const {
     return GetEmptyTiles( player );
 }
 
-std::vector<pii> Board::GetValidCityTiles( Player* player ) const {
+std::vector<pii> Board::GetValidCityTiles( const Player* player ) const {
     std::vector<pii> tiles_with_no_city_neighbour;
 
     for ( auto it = begin(); it != end(); ++it ) {
@@ -99,7 +110,7 @@ std::vector<pii> Board::GetValidCityTiles( Player* player ) const {
     return tiles_with_no_city_neighbour;
 }
 
-std::vector<pii> Board::GetValidNoctisCityTiles( Player* player ) const {
+std::vector<pii> Board::GetValidNoctisCityTiles( const Player* player ) const {
     const pii* ptr_to_index = _concrete_board->NoctisCityIndex();
 
     if ( ptr_to_index )
@@ -108,7 +119,7 @@ std::vector<pii> Board::GetValidNoctisCityTiles( Player* player ) const {
     return GetValidCityTiles( player );
 }
 
-std::vector<pii> Board::GetValidLonelyCityTiles( Player* player ) const {
+std::vector<pii> Board::GetValidLonelyCityTiles( const Player* player ) const {
     std::vector<pii> tiles_with_no_neighbours;
 
     for ( auto it = begin(); it != end(); ++it ) {
@@ -132,7 +143,7 @@ std::vector<pii> Board::GetValidLonelyCityTiles( Player* player ) const {
     return tiles_with_no_neighbours;
 }
 
-std::vector<pii> Board::GetValidUrbanizedAreaTiles( Player* player ) const {
+std::vector<pii> Board::GetValidUrbanizedAreaTiles( const Player* player ) const {
     std::vector<pii> tiles_with_min_two_city_neighbours;
 
     for ( auto it = begin(); it != end(); ++it ) {

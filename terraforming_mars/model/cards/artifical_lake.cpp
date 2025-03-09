@@ -17,7 +17,7 @@ ArtificalLake::ArtificalLake( const GameModel& model ) noexcept :
 ArtificalLake::~ArtificalLake() noexcept {}
 
 bool ArtificalLake::SatisfiesRequirements() const {
-    return _model.Temperature() >= -6 && _model.IsTilePlaceable();
+    return _model.Temperature() >= -6 && _model.IsTilePlaceable( _holder );
 }
 
 void ArtificalLake::ApplyImmediateEffects() {

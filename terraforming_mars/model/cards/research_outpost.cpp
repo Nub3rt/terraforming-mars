@@ -19,7 +19,7 @@ ResearchOutpost::ResearchOutpost( const GameModel& model ) noexcept :
 ResearchOutpost::~ResearchOutpost() noexcept {}
 
 bool ResearchOutpost::SatisfiesRequirements() const {
-    return _model.IsAvailableLonelyTile();
+    return _model.IsAvailableLonelyTile( _holder );
 }
 
 void ResearchOutpost::ApplyImmediateEffects() {

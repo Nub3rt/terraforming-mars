@@ -18,7 +18,7 @@ CupolaCity::CupolaCity( const GameModel& model ) noexcept :
 CupolaCity::~CupolaCity() noexcept {}
 
 bool CupolaCity::SatisfiesRequirements() const {
-    return _model.Oxygen() <= 9 && _model.IsCityPlaceable() && _owner->GetResourceProduction( Resource::ENERGY ) >= 1;
+    return _model.Oxygen() <= 9 && _model.IsCityPlaceable( _holder ) && _owner->GetResourceProduction( Resource::ENERGY ) >= 1;
 }
 
 void CupolaCity::ApplyImmediateEffects() {

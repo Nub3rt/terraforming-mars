@@ -59,7 +59,7 @@ void TharsisConcreteBoard::PlaceTile( int q, int r, Player* player, TileType typ
 
     tile.set_owner( player );
     tile.set_type( type );
-    _on_tile_placed.Trigger( q, r, tile );
+    _on_tile_placed.Invoke( q, r, tile );
     tile.ApplyPlacementBonuses();
 }
 

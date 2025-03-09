@@ -46,41 +46,41 @@ inline const std::vector<decks::AutomatedCard*>& Player::get_automated_cards() c
 inline const std::vector<decks::ActiveCardWithAction*>& Player::get_action_cards() const noexcept { return _action_cards; }
 inline const std::vector<decks::ActiveCardWithEffect*>& Player::get_effect_cards() const noexcept { return _effect_cards; }
 
-void Player::DrawCard() { _on_draw_card.Trigger( this ); }
-void Player::RaiseTR( int amount ) { _on_raise_tr.Trigger( this, amount ); }
-void Player::RaiseTemperature() { _on_raise_temperature.Trigger( this ); }
-void Player::PlaceOcean() { _on_place_ocean.Trigger( this ); }
-void Player::PlaceOceanOnNonOcean() { _on_place_ocean_on_non_ocean.Trigger( this ); }
-void Player::RaiseOxygen() { _on_raise_oxygen.Trigger( this ); }
-void Player::PlaceGreenery() { _on_place_greenery.Trigger( this ); }
-void Player::PlaceGreeneryOnOcean() { _on_place_greenery_on_ocean.Trigger( this ); }
-void Player::PlaceCity() { _on_place_city.Trigger( this ); }
-void Player::PlaceNoctisCity() { _on_place_noctis_city.Trigger( this ); }
-void Player::PlaceLonelyCity() { _on_place_lonely_city.Trigger( this ); }
-void Player::PlaceUrbanizedArea() { _on_place_urbanized_area.Trigger( this ); }
+void Player::DrawCard() { _on_draw_card.Invoke( this ); }
+void Player::RaiseTR( int amount ) { _on_raise_tr.Invoke( this, amount ); }
+void Player::RaiseTemperature() { _on_raise_temperature.Invoke( this ); }
+void Player::PlaceOcean() { _on_place_ocean.Invoke( this ); }
+void Player::PlaceOceanOnNonOcean() { _on_place_ocean_on_non_ocean.Invoke( this ); }
+void Player::RaiseOxygen() { _on_raise_oxygen.Invoke( this ); }
+void Player::PlaceGreenery() { _on_place_greenery.Invoke( this ); }
+void Player::PlaceGreeneryOnOcean() { _on_place_greenery_on_ocean.Invoke( this ); }
+void Player::PlaceCity() { _on_place_city.Invoke( this ); }
+void Player::PlaceNoctisCity() { _on_place_noctis_city.Invoke( this ); }
+void Player::PlaceLonelyCity() { _on_place_lonely_city.Invoke( this ); }
+void Player::PlaceUrbanizedArea() { _on_place_urbanized_area.Invoke( this ); }
 
 int Player::GetResource( Resource resource ) const { return _resources[ +resource ]; }
 int Player::GetResourceProduction( Resource resource ) const { return _resource_productions[ +resource ]; }
 
 void Player::GainResource( Resource resource, int amount ) {
     _resources[ +resource ] += amount;
-    _on_resource_amount_changed.Trigger( this, resource, amount );
+    _on_resource_amount_changed.Invoke( this, resource, amount );
 }
 void Player::GainResourceProduction( Resource resource, int amount ) {
     _resource_productions[ +resource ] += amount;
-    _on_resource_production_amount_changed.Trigger( this, resource, amount );
+    _on_resource_production_amount_changed.Invoke( this, resource, amount );
 }
 void Player::LoseResource( Resource resource, int amount ) {
     _resources[ +resource ] -= amount;
-    _on_resource_amount_changed.Trigger( this, resource, -amount );
+    _on_resource_amount_changed.Invoke( this, resource, -amount );
 }
 void Player::LoseResourceProduction( Resource resource, int amount ) {
     _resource_productions[ +resource ] -= amount;
-    _on_resource_production_amount_changed.Trigger( this, resource, -amount );
+    _on_resource_production_amount_changed.Invoke( this, resource, -amount );
 }
 
-void Player::DestroyResource( Resource resource, int amount ) { _on_destroy_resource.Trigger( this, resource, amount ); }
-void Player::DestroyResourceProduction( Resource resource, int amount ) { _on_destroy_resource_production.Trigger( this, resource, amount ); }
+void Player::DestroyResource( Resource resource, int amount ) { _on_destroy_resource.Invoke( this, resource, amount ); }
+void Player::DestroyResourceProduction( Resource resource, int amount ) { _on_destroy_resource_production.Invoke( this, resource, amount ); }
 
 int Player::GetTagCount( Tag tag ) {
     return _tags[ +tag ];
@@ -101,7 +101,7 @@ void Player::ConfirmSteelPayment( int cost, std::function<void()> after_payment 
         return;
     }
 
-    _on_confirm_steel_payment.Trigger( this, cost, after_payment );
+    _on_confirm_steel_payment.Invoke( this, cost, after_payment );
 }
 
 void Player::ConfirmTitaniumPayment( int cost, std::function<void()> after_payment ) {
@@ -111,7 +111,7 @@ void Player::ConfirmTitaniumPayment( int cost, std::function<void()> after_payme
         return;
     }
 
-    _on_confirm_titanium_payment.Trigger( this, cost, after_payment );
+    _on_confirm_titanium_payment.Invoke( this, cost, after_payment );
 }
 
 void Player::GetCard( decks::Card* card ) {
@@ -175,6 +175,8 @@ void Player::SetOnResourceAmountChangedCallback( Callback<Resource, int> callbac
 void Player::SetOnResourceProductionAmountChangedCallback( Callback<Resource, int> callback ) { _on_resource_production_amount_changed.SetCallback( callback ); }
 void Player::SetOnDestroyResourceCallback( Callback<Resource, int> callback ) { _on_destroy_resource.SetCallback( callback ); }
 void Player::SetOnDestroyResourceProductionCallback( Callback<Resource, int> callback ) { _on_destroy_resource_production.SetCallback( callback ); }
+inline void Player::SetOnConfirmSteelPaymentCallback( Callback<int, std::function<void()>> callback ) { _on_confirm_steel_payment.SetCallback( callback ); }
+inline void Player::SetOnConfirmTitaniumPaymentCallback( Callback<int, std::function<void()>> callback ) { _on_confirm_titanium_payment.SetCallback( callback ); }
 
 
 void Player::DoPlayCard( decks::Card* card ) {

@@ -396,6 +396,7 @@
     <ClInclude Include="deck.fwd.h">
       <Filter>decks</Filter>
     </ClInclude>
+    <ClInclude Include="solo_game_model.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="player.cpp" />
@@ -761,5 +762,6 @@
       <Filter>decks</Filter>
     </ClCompile>
     <ClCompile Include="game_model_state.cpp" />
+    <ClCompile Include="solo_game_model.cpp" />
   </ItemGroup>
 </Project>

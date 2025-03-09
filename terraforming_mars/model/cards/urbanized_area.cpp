@@ -19,7 +19,7 @@ UrbanizedArea::UrbanizedArea( const GameModel& model ) noexcept :
 UrbanizedArea::~UrbanizedArea() noexcept {}
 
 bool UrbanizedArea::SatisfiesRequirements() const {
-    return _owner->GetResourceProduction( Resource::ENERGY ) >= 1 && _model.IsUrbanizedAreaPlaceable();
+    return _owner->GetResourceProduction( Resource::ENERGY ) >= 1 && _model.IsUrbanizedAreaPlaceable( _holder );
 }
 
 void UrbanizedArea::ApplyImmediateEffects() {

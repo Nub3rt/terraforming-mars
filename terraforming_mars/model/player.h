@@ -110,6 +110,9 @@ public:
     inline void SetOnDestroyResourceCallback( Callback<Resource, int> callback );
     inline void SetOnDestroyResourceProductionCallback( Callback<Resource, int> callback );
 
+    inline void SetOnConfirmSteelPaymentCallback( Callback <int, std::function<void()>> callback );
+    inline void SetOnConfirmTitaniumPaymentCallback( Callback <int, std::function<void()>> callback );
+
 private:
     std::array<int, +Tag::MAX + 1> _tags;
     std::array<int, +Resource::MAX + 1> _resources;
