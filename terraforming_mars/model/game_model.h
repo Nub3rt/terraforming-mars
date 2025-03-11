@@ -100,6 +100,12 @@ public:
     static const int MAX_OCEAN_COUNT = 9;
     static const int MAX_OXYGEN_LEVEL = 14;
 
+    static const int POWER_PLANT_SP_COST = 0;
+    static const int ASTEROID_SP_COST = 0;
+    static const int AQUIFER_SP_COST = 0;
+    static const int GREENERY_SP_COST = 0;
+    static const int CITY_SP_COST = 0;
+
 protected:
     GameModel( int seed );
 
