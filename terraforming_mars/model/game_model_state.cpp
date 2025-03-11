@@ -3,6 +3,7 @@
 #include <stdexcept>
 
 #include "game_model.h"
+#include "deck.h"
 #include "player.h"
 #include "resource.h"
 
