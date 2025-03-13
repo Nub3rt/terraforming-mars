@@ -44,7 +44,7 @@ void GameModel::Initialize( board::Board* board, decks::Deck* deck ) {
     _ocean_count = STARTING_OCEAN_COUNT;
     _oxygen_level = STARTING_OXYGEN_LEVEL;
 
-    _state = new IdleState( this );
+    _state = CreateIdleState();
 
     _board = board;
     _deck = deck;
@@ -120,6 +120,12 @@ inline void GameModel::PaymentConfirmed( int credit, int resource ) { _state->Pa
 
 inline void GameModel::EndTurn() { _state->EndTurn(); }
 
+void GameModel::EndGame() {
+    _game_ended = true;
+    _on_game_end.Invoke();
+    ChangeState( CreateGameOverState() );
+}
+
 inline void GameModel::SetOnDrawCard( Callback<decks::Card*> callback ) { _on_draw_card.SetCallback( callback ); }
 inline void GameModel::SetOnPlayCard( Callback<decks::Card*> callback ) { _on_play_card.SetCallback( callback ); }
 inline void GameModel::SetOnRaiseTR( Callback<int> callback ) { _on_raise_tr.SetCallback( callback ); }
@@ -131,7 +137,8 @@ inline void GameModel::SetOnPlaceTile( Callback<pii> callback ) { _on_place_tile
 inline void GameModel::SetOnConfirmPayment( Callback<int, Resource, int> callback ) { _on_confirm_payment.SetCallback( callback ); }
 inline void GameModel::SetOnConfirmPlacement( Callback<board::TileType, std::vector<pii>> callback ) { _on_confirm_placement.SetCallback( callback ); }
 inline void GameModel::SetOnConfirmDestroyResource( Callback<Resource, int> callback ) { _on_confirm_destroy_resource.SetCallback( callback ); }
-inline void GameModel::SetOnConfirmDestroyResourceProduction( Callback<Resource, int> callback ) { _on_confirm_destroy_resource_production.SetCallback( callback );}
+inline void GameModel::SetOnConfirmDestroyResourceProduction( Callback<Resource, int> callback ) { _on_confirm_destroy_resource_production.SetCallback( callback ); }
+inline void GameModel::SetOnGameEnd( Callback<> callback ) { _on_game_end.SetCallback( callback ); }
 
 void GameModel::SubscribeCallbacksOnPlayer( Player* player ) {
     player->SetOnDrawCardCallback( std::bind_front( &GameModel::Player_OnDrawCard, this ) );
@@ -159,6 +166,13 @@ void GameModel::SubscribeCallbacksOnPlayer( Player* player ) {
     player->SetOnConfirmSteelPaymentCallback( std::bind_front( &GameModel::Player_OnConfirmTitaniumPayment, this ) );
 }
 
+IdleState* GameModel::CreateIdleState() { return new IdleState( this ); }
+PlacementConfirmationState* GameModel::CreatePlacementConfirmationState( PlacementRequest* request ) { return new PlacementConfirmationState( this, request ); }
+PaymentConfirmationState* GameModel::CreatePaymentConfirmationState( PaymentRequest* request ) { return new PaymentConfirmationState( this, request ); }
+PostLastGenerationState* GameModel::CreatePostLastGenerationState() { return new PostLastGenerationState( this ); }
+PostLastGenerationPlacementConfirmationState* GameModel::CreatePostLastGenerationPlacementConfirmationState( PostLastGenerationGreeneryPlacementRequest* request ) { return new PostLastGenerationPlacementConfirmationState( this, request ); }
+GameOverState* GameModel::CreateGameOverState() { return new GameOverState( this ); }
+
 void GameModel::ChangeState( GameModelState* state ) {
     if ( _state != nullptr )
         delete _state;
@@ -167,25 +181,25 @@ void GameModel::ChangeState( GameModelState* state ) {
 }
 
 inline void GameModel::Player_OnDrawCard( Player* player ) { _state->Player_OnDrawCard( player ); }
-inline void GameModel::Player_OnRaiseTR( Player* player, int amount ) { _state->Player_OnRaiseTR( player, amount );}
-inline void GameModel::Player_OnRaiseTemperature( Player* player ) { _state->Player_OnRaiseTemperature( player );}
-inline void GameModel::Player_OnPlaceOcean( Player* player ) { _state->Player_OnPlaceOcean( player );}
-inline void GameModel::Player_OnPlaceOceanOnNonOcean( Player* player ) { _state->Player_OnPlaceOceanOnNonOcean( player );}
-inline void GameModel::Player_OnRaiseOxygen( Player* player ) { _state->Player_OnRaiseOxygen( player );}
-inline void GameModel::Player_OnPlaceGreenery( Player* player ) { _state->Player_OnPlaceGreenery( player );}
-inline void GameModel::Player_OnPlaceGreeneryOnOcean( Player* player ) { _state->Player_OnPlaceGreeneryOnOcean( player );}
-inline void GameModel::Player_OnPlaceCity( Player* player ) { _state->Player_OnPlaceCity( player );}
-inline void GameModel::Player_OnPlaceNoctisCity( Player* player ) { _state->Player_OnPlaceNoctisCity( player );}
-inline void GameModel::Player_OnPlaceLonelyCity( Player* player ) { _state->Player_OnPlaceLonelyCity( player );}
-inline void GameModel::Player_OnPlaceUrbanizedArea( Player* player ) { _state->Player_OnPlaceUrbanizedArea( player );}
+inline void GameModel::Player_OnRaiseTR( Player* player, int amount ) { _state->Player_OnRaiseTR( player, amount ); }
+inline void GameModel::Player_OnRaiseTemperature( Player* player ) { _state->Player_OnRaiseTemperature( player ); }
+inline void GameModel::Player_OnPlaceOcean( Player* player ) { _state->Player_OnPlaceOcean( player ); }
+inline void GameModel::Player_OnPlaceOceanOnNonOcean( Player* player ) { _state->Player_OnPlaceOceanOnNonOcean( player ); }
+inline void GameModel::Player_OnRaiseOxygen( Player* player ) { _state->Player_OnRaiseOxygen( player ); }
+inline void GameModel::Player_OnPlaceGreenery( Player* player ) { _state->Player_OnPlaceGreenery( player ); }
+inline void GameModel::Player_OnPlaceGreeneryOnOcean( Player* player ) { _state->Player_OnPlaceGreeneryOnOcean( player ); }
+inline void GameModel::Player_OnPlaceCity( Player* player ) { _state->Player_OnPlaceCity( player ); }
+inline void GameModel::Player_OnPlaceNoctisCity( Player* player ) { _state->Player_OnPlaceNoctisCity( player ); }
+inline void GameModel::Player_OnPlaceLonelyCity( Player* player ) { _state->Player_OnPlaceLonelyCity( player ); }
+inline void GameModel::Player_OnPlaceUrbanizedArea( Player* player ) { _state->Player_OnPlaceUrbanizedArea( player ); }
 inline void GameModel::Player_OnResourceAmountChanged( Player* player, Resource resource, int amount )
-    { _state->Player_OnResourceAmountChanged( player, resource, amount );}
+    { _state->Player_OnResourceAmountChanged( player, resource, amount ); }
 inline void GameModel::Player_OnResourceProductionAmountChanged( Player* player, Resource resource, int amount )
-    { _state->Player_OnResourceProductionAmountChanged( player, resource, amount );}
+    { _state->Player_OnResourceProductionAmountChanged( player, resource, amount ); }
 inline void GameModel::Player_OnDestroyResource( Player* player, Resource resource, int amount )
-    { _state->Player_OnDestroyResource( player, resource, amount );}
+    { _state->Player_OnDestroyResource( player, resource, amount ); }
 inline void GameModel::Player_OnDestroyResourceProduction( Player* player, Resource resource, int amount )
-    { _state->Player_OnDestroyResourceProduction( player, resource, amount );}
+    { _state->Player_OnDestroyResourceProduction( player, resource, amount ); }
 inline void GameModel::Player_OnConfirmSteelPayment( Player* player, int cost, std::function<void()> after_payment )
     { _state->Player_OnConfirmSteelPayment( player, cost, after_payment ); }
 inline void GameModel::Player_OnConfirmTitaniumPayment( Player* player, int cost, std::function<void()> after_payment )
@@ -204,6 +218,13 @@ GameModel::PaymentRequest::PaymentRequest( int cost, Resource resource, int reso
     : cost( cost ), resource( resource ), resource_value( resource_value ), after_payment( std::move( after_payment ) ) {}
 
 void GameModel::PaymentRequest::Perform( GameModelState* state ) {
+    state->PerformRequest( this );
+}
+
+GameModel::PostLastGenerationGreeneryPlacementRequest::PostLastGenerationGreeneryPlacementRequest( std::vector<pii> valid_positions )
+    : valid_positions( std::move( valid_positions ) ) {}
+
+void GameModel::PostLastGenerationGreeneryPlacementRequest::Perform( GameModelState* state ) {
     state->PerformRequest( this );
 }
 

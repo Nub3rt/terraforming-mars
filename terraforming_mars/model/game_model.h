@@ -22,12 +22,22 @@ namespace model
 class GameModel
 {
     friend class GameModelState;
+
     friend class IdleState;
     friend class PlacementConfirmationState;
     friend class PaymentConfirmationState;
+    friend class PostLastGenerationState;
+    friend class PostLastGenerationPlacementConfirmationState;
+    friend class GameOverState;
+
+    friend class SoloIdleState;
+    friend class SoloPostLastGenerationState;
 
 protected:
     class Request;
+    class PlacementRequest;
+    class PaymentRequest;
+    class PostLastGenerationGreeneryPlacementRequest;
 
 public:
     using pii = std::pair<int, int>;
@@ -86,6 +96,8 @@ public:
 
     inline void EndTurn();
 
+    virtual void EndGame();
+
 
     inline void SetOnDrawCard( Callback<decks::Card*> callback );
     inline void SetOnPlayCard( Callback<decks::Card*> callback );
@@ -99,6 +111,7 @@ public:
     inline void SetOnConfirmPlacement( Callback<board::TileType, std::vector<pii>> callback );
     inline void SetOnConfirmDestroyResource( Callback<Resource, int> callback );
     inline void SetOnConfirmDestroyResourceProduction( Callback<Resource, int> callback );
+    inline void SetOnGameEnd( Callback<> callback );
 
     static const int STARTING_TEMPERATURE = -30;
     static const int STARTING_OCEAN_COUNT = 0;
@@ -117,6 +130,9 @@ protected:
     GameModel( int seed );
 
     bool _initialized = false;
+
+    bool _in_post_last_generation = false;
+    bool _game_ended = false;
 
     int _generation = 0;
     int _temperature = 0;
@@ -149,10 +165,19 @@ protected:
     Event<Resource, int> _on_confirm_destroy_resource;
     Event<Resource, int> _on_confirm_destroy_resource_production;
 
+    Event<> _on_game_end;
+
 
     virtual Player* CreateLocalPlayer() = 0;
 
     virtual void SubscribeCallbacksOnPlayer( Player* player );
+
+    virtual IdleState* CreateIdleState();
+    virtual PlacementConfirmationState* CreatePlacementConfirmationState( PlacementRequest* request );
+    virtual PaymentConfirmationState* CreatePaymentConfirmationState( PaymentRequest* request );
+    virtual PostLastGenerationState* CreatePostLastGenerationState();
+    virtual PostLastGenerationPlacementConfirmationState* CreatePostLastGenerationPlacementConfirmationState( PostLastGenerationGreeneryPlacementRequest* request );
+    virtual GameOverState* CreateGameOverState();
 
     void ChangeState( GameModelState* state );
 
@@ -204,6 +229,16 @@ protected:
         Resource resource;
         int resource_value;
         std::function<void()> after_payment;
+
+        void Perform( GameModelState* state ) override;
+    };
+
+    class PostLastGenerationGreeneryPlacementRequest : public Request
+    {
+    public:
+        PostLastGenerationGreeneryPlacementRequest( std::vector<pii> valid_positions );
+
+        std::vector<pii> valid_positions;
 
         void Perform( GameModelState* state ) override;
     };

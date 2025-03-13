@@ -49,8 +49,9 @@ public:
 
     virtual void EndTurn();
 
-    void PerformRequest( GameModel::PaymentRequest* request );
     void PerformRequest( GameModel::PlacementRequest* request );
+    void PerformRequest( GameModel::PaymentRequest* request );
+    void PerformRequest( GameModel::PostLastGenerationGreeneryPlacementRequest* request );
 
     virtual void Player_OnDrawCard( Player* player );
     virtual void Player_OnRaiseTR( Player* player, int amount );
@@ -133,7 +134,6 @@ public:
 protected:
     void DoOnPlacementConfirmation( board::TileType type, std::vector<pii> valid_positions ) override;
 
-private:
     GameModel::PlacementRequest* _request;
 };
 
@@ -151,7 +151,54 @@ public:
 protected:
     void DoOnPlacementConfirmation( board::TileType type, std::vector<pii> valid_positions ) override;
 
-private:
     GameModel::PaymentRequest* _request;
+};
+
+class PostLastGenerationState : public GameModelState
+{
+public:
+    PostLastGenerationState( GameModel* model );
+    ~PostLastGenerationState();
+
+    bool CanConvertPlantsToGreenery() override;
+
+    virtual void ConvertPlantsToGreenery();
+
+    void EndTurn() override;
+
+    void Player_OnConfirmSteelPayment( Player* player, int cost, std::function<void()> after_payment ) override;
+    void Player_OnConfirmTitaniumPayment( Player* player, int cost, std::function<void()> after_payment ) override;
+
+protected:
+    void DoOnPlacementConfirmation( board::TileType type, std::vector<pii> valid_positions ) override;
+};
+
+class PostLastGenerationPlacementConfirmationState : public GameModelState
+{
+public:
+    PostLastGenerationPlacementConfirmationState( GameModel* model, GameModel::PostLastGenerationGreeneryPlacementRequest* request );
+    ~PostLastGenerationPlacementConfirmationState();
+
+    void TilePlacementConfirmed( int q, int r ) override;
+
+    void Player_OnConfirmSteelPayment( Player* player, int cost, std::function<void()> after_payment ) override;
+    void Player_OnConfirmTitaniumPayment( Player* player, int cost, std::function<void()> after_payment ) override;
+
+    void DoOnPlacementConfirmation( board::TileType type, std::vector<pii> valid_positions ) override;
+
+    GameModel::PostLastGenerationGreeneryPlacementRequest* _request;
+};
+
+class GameOverState : public GameModelState
+{
+public:
+    GameOverState( GameModel* model );
+    ~GameOverState();
+
+    void Player_OnConfirmSteelPayment( Player* player, int cost, std::function<void()> after_payment ) override;
+    void Player_OnConfirmTitaniumPayment( Player* player, int cost, std::function<void()> after_payment ) override;
+
+protected:
+    void DoOnPlacementConfirmation( board::TileType type, std::vector<pii> valid_positions ) override;
 };
 }

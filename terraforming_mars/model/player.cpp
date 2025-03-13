@@ -87,6 +87,20 @@ inline void Player::LoseResourceProduction( Resource resource, int amount ) {
 inline void Player::DestroyResource( Resource resource, int amount ) { _on_destroy_resource.Invoke( this, resource, amount ); }
 inline void Player::DestroyResourceProduction( Resource resource, int amount ) { _on_destroy_resource_production.Invoke( this, resource, amount ); }
 
+void Player::PerformProductionPhase() {
+    int energy_amount = _resources[ +Resource::ENERGY ];
+    LoseResource( Resource::ENERGY, energy_amount );
+    GainResource( Resource::HEAT, energy_amount );
+
+    GainResource( Resource::CREDIT, _tr + _resource_productions[ +Resource::CREDIT ] );
+    for ( int r = +Resource::STEEL; r <= +Resource::MAX; ++r )
+        if ( _resource_productions[ r ] > 0 )
+            GainResource( static_cast<Resource>( r ), _resource_productions[ r ] );
+
+    for ( decks::ActiveCardWithAction* card : _action_cards )
+        card->NextGenerationStarted();
+}
+
 int Player::GetTagCount( Tag tag ) {
     return _tags[ +tag ];
 }
@@ -155,8 +169,8 @@ void Player::PlayCard( decks::Card* card ) {
 }
 
 int Player::CalculateCardCost( const decks::Card* card, int base_cost ) const {
-    for (auto effect_card : _effect_cards )
-        base_cost = effect_card->ModifyCardCost( card, base_cost );
+    for ( decks::ActiveCardWithEffect* card : _effect_cards )
+        base_cost = card->ModifyCardCost( card, base_cost );
 
     return base_cost;
 }
@@ -169,7 +183,7 @@ void Player::UseAction( decks::ActiveCardWithAction* card ) {
 }
 
 void Player::OnEffect( std::function<void( decks::ActiveCardWithEffect* )> effect ) {
-    for ( auto card : _effect_cards )
+    for ( decks::ActiveCardWithEffect* card : _effect_cards )
         effect( card );
 }
 

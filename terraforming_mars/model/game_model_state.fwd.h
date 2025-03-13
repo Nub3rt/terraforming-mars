@@ -6,4 +6,7 @@ class GameModelState;
 class IdleState;
 class PlacementConfirmationState;
 class PaymentConfirmationState;
+class PostLastGenerationState;
+class PostLastGenerationPlacementConfirmationState;
+class GameOverState;
 }

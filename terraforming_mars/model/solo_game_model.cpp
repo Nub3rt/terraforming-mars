@@ -46,7 +46,44 @@ Player* SoloGameModel::CreateLocalPlayer() {
     SubscribeCallbacksOnPlayer( player );
     return player;
 }
-void SoloGameModel::Player_OnDestroyResource( Player* player, Resource resource, int amount ) {}
 
+IdleState* SoloGameModel::CreateIdleState() {
+    return new SoloIdleState( this );
+}
+PostLastGenerationState* SoloGameModel::CreatePostLastGenerationState() {
+    return new SoloPostLastGenerationState( this );
+}
+
+void SoloGameModel::Player_OnDestroyResource( Player* player, Resource resource, int amount ) {}
 void SoloGameModel::Player_OnDestroyResourceProduction( Player* player, Resource resource, int amount ) {}
+
+
+SoloIdleState::SoloIdleState( GameModel* model ) : IdleState( model ) {}
+SoloIdleState::~SoloIdleState() {}
+
+void SoloIdleState::EndTurn() {
+    _model->_local_player->PerformProductionPhase();
+
+    if ( _model->_generation < 14 && !_model->AreGlobalParametersFulfilled() ) {
+        ++_model->_generation;
+        // TODO research phase
+        return;
+    }
+
+    if ( CanConvertPlantsToGreenery() ) {
+        _model->_in_post_last_generation = true;
+        _model->ChangeState( _model->CreatePostLastGenerationState() );
+        return;
+    }
+
+    _model->EndGame();
+}
+
+SoloPostLastGenerationState::SoloPostLastGenerationState( GameModel* model ) : PostLastGenerationState( model ) {}
+SoloPostLastGenerationState::~SoloPostLastGenerationState() {
+}
+
+void SoloPostLastGenerationState::EndTurn() {
+    _model->EndGame();
+}
 }

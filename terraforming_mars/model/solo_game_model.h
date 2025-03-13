@@ -1,9 +1,10 @@
 #pragma once
 
-#include "game_model.h"
 
 #include "board.h"
 #include "deck.h"
+#include "game_model.h"
+#include "game_model_state.h"
 #include "player.h"
 
 namespace model
@@ -21,5 +22,27 @@ protected:
 
     void Player_OnDestroyResource( Player* player, Resource resource, int amount ) override;
     void Player_OnDestroyResourceProduction( Player* player, Resource resource, int amount ) override;
+
+    IdleState* CreateIdleState() override;
+    PostLastGenerationState* CreatePostLastGenerationState() override;
+};
+
+
+class SoloIdleState : public IdleState
+{
+public:
+    SoloIdleState( GameModel* model );
+    ~SoloIdleState();
+
+    void EndTurn() override;
+};
+
+class SoloPostLastGenerationState : public PostLastGenerationState
+{
+public:
+    SoloPostLastGenerationState( GameModel* model );
+    ~SoloPostLastGenerationState();
+
+    void EndTurn() override;
 };
 }

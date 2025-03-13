@@ -80,6 +80,8 @@ public:
 
     // void AddResouce( ... );
 
+    void PerformProductionPhase();
+
 
     int GetTagCount( Tag tag );
 
