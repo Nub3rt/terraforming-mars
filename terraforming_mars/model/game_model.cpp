@@ -174,6 +174,6 @@ GameModel::PaymentRequest::PaymentRequest( int cost, Resource resource, int reso
 void GameModel::PaymentRequest::Perform( GameModelState* state ) {
     state->PerformRequest( this );
 }
-}
 
 #pragma endregion Request
+}

@@ -3,6 +3,7 @@
 #include <stdexcept>
 
 #include "game_model.h"
+#include "deck.h"
 #include "player.h"
 #include "resource.h"
 
@@ -69,12 +70,67 @@ void GameModelState::Player_OnConfirmTitaniumPayment( Player* player, int cost, 
 
 #pragma region IdleState
 
+IdleState::IdleState( GameModel* model ) : GameModelState( model ) {}
+IdleState::~IdleState() {}
+
+bool IdleState::CanUsePowerPlantSP() { return _model->_local_player->GetResource( Resource::CREDIT ) >= _model->POWER_PLANT_SP_COST; }
+bool IdleState::CanUseAsteroidSP() { return _model->_local_player->GetResource( Resource::CREDIT ) >= _model->ASTEROID_SP_COST &&
+                                            _model->Temperature() < _model->MAX_TEMPTERATURE; }
+bool IdleState::CanUseAquiferSP() { return _model->_local_player->GetResource( Resource::CREDIT ) >= _model->POWER_PLANT_SP_COST &&
+                                           _model->OceanCount() < _model->MAX_OCEAN_COUNT; }
+bool IdleState::CanUseGreenerySP() { return _model->_local_player->GetResource( Resource::CREDIT ) >= _model->GREENERY_SP_COST; }
+bool IdleState::CanUseCitySP() { return _model->_local_player->GetResource( Resource::CREDIT ) >= _model->POWER_PLANT_SP_COST &&
+                                        _model->_board->GetValidCityTiles( _model->_local_player ).size() > 0 ; }
+bool IdleState::CanConvertPlantsToGreenery() { return _model->_local_player->GetResource( Resource::PLANTS ) >= _model->_local_player->get_greenery_cost() &&
+                                                      _model->_board->GetValidGreeneryTiles( _model->_local_player ).size() > 0; }
+bool IdleState::CanConvertHeatToTemperature() { return _model->_local_player->GetResource( Resource::HEAT ) >= _model->_local_player->get_temperature_cost() &&
+                                                       _model->Temperature() < _model->MAX_TEMPTERATURE; }
+
+bool IdleState::InIdleState() { return true; }
+
+void IdleState::SellCardSP( decks::Card* card ) {
+    _model->_local_player->SellCard( card );
+    _model->_deck->DiscardCard( card );
+}
+
+void IdleState::UsePowerPlantSP() {
+
+}
+
+void IdleState::UseAsteroidSP() {}
+void IdleState::UseAquiferSP() {}
+void IdleState::UseGreenerySP() {}
+void IdleState::UseCitySP() {}
+
+void IdleState::PlayCard( decks::Card* card ) {}
+void IdleState::UseAction( decks::Card* card ) {}
+void IdleState::ConvertPlantsToGreenery() {}
+void IdleState::ConvertHeatToTemperature() {}
+
 void IdleState::PerformRequest( GameModel::PaymentRequest* request ) {
 }
 
 void IdleState::PerformRequest( GameModel::PlacementRequest* request ) {
 }
 
+void IdleState::Player_OnDrawCard( Player* player ) {}
+void IdleState::Player_OnRaiseTR( Player* player, int amount ) {}
+void IdleState::Player_OnRaiseTemperature( Player* player ) {}
+void IdleState::Player_OnPlaceOcean( Player* player ) {}
+void IdleState::Player_OnPlaceOceanOnNonOcean( Player* player ) {}
+void IdleState::Player_OnRaiseOxygen( Player* player ) {}
+void IdleState::Player_OnPlaceGreenery( Player* player ) {}
+void IdleState::Player_OnPlaceGreeneryOnOcean( Player* player ) {}
+void IdleState::Player_OnPlaceCity( Player* player ) {}
+void IdleState::Player_OnPlaceNoctisCity( Player* player ) {}
+void IdleState::Player_OnPlaceLonelyCity( Player* player ) {}
+void IdleState::Player_OnPlaceUrbanizedArea( Player* player ) {}
+void IdleState::Player_OnResourceAmountChanged( Player* player, Resource resource, int amount ) {}
+void IdleState::Player_OnResourceProductionAmountChanged( Player* player, Resource resource, int amount ) {}
+void IdleState::Player_OnDestroyResource( Player* player, Resource resource, int amount ) {}
+void IdleState::Player_OnDestroyResourceProduction( Player* player, Resource resource, int amount ) {}
+void IdleState::Player_OnConfirmSteelPayment( Player* player, int cost, std::function<void()> after_payment ) {}
+void IdleState::Player_OnConfirmTitaniumPayment( Player* player, int cost, std::function<void()> after_payment ) {}
 
 #pragma endregion IdleState
 

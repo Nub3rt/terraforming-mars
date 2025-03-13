@@ -37,6 +37,9 @@ public:
     inline int get_steel_value() const noexcept;
     inline int get_titanium_value() const noexcept;
 
+    inline int get_greenery_cost() const noexcept;
+    inline int get_temperature_cost() const noexcept;
+
     inline const std::vector<decks::Card*>& get_hand() const noexcept;
     inline const std::vector<decks::EventCard*>& get_event_cards() const noexcept;
     inline const std::vector<decks::AutomatedCard*>& get_automated_cards() const noexcept;
@@ -82,7 +85,7 @@ public:
     void ConfirmTitaniumPayment( int cost, std::function<void()> after_payment );
 
     void GetCard( decks::Card* card );
-    void DiscardCard( decks::Card* card );
+    void SellCard( decks::Card* card );
     void PlayCard( decks::Card* card );
     int CalculateCardCost( const decks::Card* card, int base_cost ) const;
 
@@ -127,6 +130,9 @@ private:
 
     int _steel_value = 2;
     int _titanium_value = 3;
+
+    int _greenery_cost = 8;
+    int _temperature_cost = 8;
 
     Event<Player*> _on_draw_card;
     Event<Player*, int> _on_raise_tr;

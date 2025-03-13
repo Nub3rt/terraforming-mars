@@ -40,6 +40,8 @@ inline const auto& Player::get_resources() const noexcept { return _resources; }
 inline const auto& Player::get_resource_productions() const noexcept { return _resource_productions; }
 inline int Player::get_steel_value() const noexcept { return _steel_value; }
 inline int Player::get_titanium_value() const noexcept { return _titanium_value; }
+inline int Player::get_greenery_cost() const noexcept { return _greenery_cost; }
+inline int Player::get_temperature_cost() const noexcept { return _temperature_cost; }
 inline const std::vector<decks::Card*>& Player::get_hand() const noexcept { return _hand; }
 inline const std::vector<decks::EventCard*>& Player::get_event_cards() const noexcept { return _event_cards; }
 inline const std::vector<decks::AutomatedCard*>& Player::get_automated_cards() const noexcept { return _automated_cards; }
@@ -118,13 +120,15 @@ void Player::GetCard( decks::Card* card ) {
     _hand.push_back( card );
 }
 
-void Player::DiscardCard( decks::Card* card ) {
+void Player::SellCard( decks::Card* card ) {
     auto it_to_card = std::find( _hand.cbegin(), _hand.cend(), card );
 
     if ( it_to_card == _hand.cend() )
-        throw std::logic_error( "Player::DiscardCard: card was not in hand!" );
+        throw std::logic_error( "Player::SellCard: card was not in hand!" );
 
     _hand.erase( it_to_card );
+
+    GainResource( Resource::CREDIT, 1 );
 }
 
 void Player::PlayCard( decks::Card* card ) {

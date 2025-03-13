@@ -89,7 +89,7 @@ public:
         pii GetIndices() const override;
 
     private:
-        Iterator* const _iterator;
+        Iterator* _iterator;
 
     };
 

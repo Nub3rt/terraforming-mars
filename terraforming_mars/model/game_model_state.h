@@ -85,9 +85,44 @@ public:
     bool CanUseAquiferSP() override;
     bool CanUseGreenerySP() override;
     bool CanUseCitySP() override;
+    bool CanConvertPlantsToGreenery() override;
+    bool CanConvertHeatToTemperature() override;
+
+    bool InIdleState() override;
+
+    void SellCardSP( decks::Card* card ) override;
+    void UsePowerPlantSP() override;
+    void UseAsteroidSP() override;
+    void UseAquiferSP() override;
+    void UseGreenerySP() override;
+    void UseCitySP() override;
+
+    void PlayCard( decks::Card* card ) override;
+    void UseAction( decks::Card* card ) override;
+    void ConvertPlantsToGreenery() override;
+    void ConvertHeatToTemperature() override;
 
     void PerformRequest( GameModel::PaymentRequest* request ) override;
     void PerformRequest( GameModel::PlacementRequest* request ) override;
+
+    void Player_OnDrawCard( Player* player ) override;
+    void Player_OnRaiseTR( Player* player, int amount ) override;
+    void Player_OnRaiseTemperature( Player* player ) override;
+    void Player_OnPlaceOcean( Player* player ) override;
+    void Player_OnPlaceOceanOnNonOcean( Player* player ) override;
+    void Player_OnRaiseOxygen( Player* player ) override;
+    void Player_OnPlaceGreenery( Player* player ) override;
+    void Player_OnPlaceGreeneryOnOcean( Player* player ) override;
+    void Player_OnPlaceCity( Player* player ) override;
+    void Player_OnPlaceNoctisCity( Player* player ) override;
+    void Player_OnPlaceLonelyCity( Player* player ) override;
+    void Player_OnPlaceUrbanizedArea( Player* player ) override;
+    void Player_OnResourceAmountChanged( Player* player, Resource resource, int amount ) override;
+    void Player_OnResourceProductionAmountChanged( Player* player, Resource resource, int amount ) override;
+    void Player_OnDestroyResource( Player* player, Resource resource, int amount ) override;
+    void Player_OnDestroyResourceProduction( Player* player, Resource resource, int amount ) override;
+    void Player_OnConfirmSteelPayment( Player* player, int cost, std::function<void()> after_payment ) override;
+    void Player_OnConfirmTitaniumPayment( Player* player, int cost, std::function<void()> after_payment ) override;
 };
 
 class PlacementConfirmationState : public GameModelState
