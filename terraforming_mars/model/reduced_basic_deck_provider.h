@@ -14,6 +14,6 @@ public:
     ReducedBasicDeckProvider() noexcept;
     ~ReducedBasicDeckProvider() noexcept;
 
-    std::vector<Card*> GenerateDeck( const GameModel& model );
+    std::vector<Card*> GenerateDeck( const GameModel& model ) override;
 };
 }

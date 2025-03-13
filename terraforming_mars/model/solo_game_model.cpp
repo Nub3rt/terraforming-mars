@@ -20,7 +20,7 @@ void SoloGameModel::Initialize( board::Board* board, decks::Deck* deck ) {
     GameModel::Initialize( board, deck );
 
     const std::vector<pii> empties = _board->GetTilesOfType( board::TileType::EMPTY );
-    int half_point = empties.size() / 2;
+    int half_point = static_cast<int>( empties.size() / 2 );
     int index_of_first_city = _random() % half_point;
     int index_of_second_city = _random() % half_point + half_point;
     auto& [q1, r1] = empties[ index_of_first_city ];
@@ -42,6 +42,11 @@ void SoloGameModel::Initialize( board::Board* board, decks::Deck* deck ) {
 }
 
 Player* SoloGameModel::CreateLocalPlayer() {
-    return new Player( 0 );
+    Player* player = new Player( 14, 0 );
+    SubscribeCallbacksOnPlayer( player );
+    return player;
 }
+void SoloGameModel::Player_OnDestroyResource( Player* player, Resource resource, int amount ) {}
+
+void SoloGameModel::Player_OnDestroyResourceProduction( Player* player, Resource resource, int amount ) {}
 }

@@ -24,15 +24,17 @@ public:
     template<typename... Args>
     using Callback = std::function<void( Player*, Args... )>;
 
-    Player( int starting_resource_production_amount );
+    Player( int starting_tr, int starting_resource_production_amount );
     ~Player();
     Player( const Player& other ) = delete;
     Player( Player&& other ) = delete;
     Player& operator=( const Player& other ) = delete;
     Player& operator=( Player&& other ) = delete;
 
-    inline const auto& get_resources() const noexcept;
-    inline const auto& get_resource_productions() const noexcept;
+    inline const int get_tr() const noexcept;
+
+    inline const std::array<int, +Resource::MAX + 1>& get_resources() const noexcept;
+    inline const std::array<int, +Resource::MAX + 1>& get_resource_productions() const noexcept;
 
     inline int get_steel_value() const noexcept;
     inline int get_titanium_value() const noexcept;
@@ -62,6 +64,8 @@ public:
     inline void PlaceLonelyCity();
     inline void PlaceUrbanizedArea();
 
+    inline void GetTR( int amount );
+
     inline int GetResource( Resource resource ) const;
     inline int GetResourceProduction( Resource resource ) const;
 
@@ -89,6 +93,7 @@ public:
     void PlayCard( decks::Card* card );
     int CalculateCardCost( const decks::Card* card, int base_cost ) const;
 
+    void UseAction( decks::ActiveCardWithAction* card );
     void OnEffect( std::function<void( decks::ActiveCardWithEffect* )> effect );
 
 
@@ -117,6 +122,8 @@ public:
     inline void SetOnConfirmTitaniumPaymentCallback( Callback <int, std::function<void()>> callback );
 
 private:
+    int _tr;
+
     std::array<int, +Tag::MAX + 1> _tags;
     std::array<int, +Resource::MAX + 1> _resources;
     std::array<int, +Resource::MAX + 1> _resource_productions;

@@ -6,6 +6,8 @@
 #include <utility>
 #include <vector>
 
+#include "card.h"
+#include "active_card_with_action.h"
 #include "game_model.h"
 #include "player.h"
 #include "resource.h"
@@ -14,9 +16,9 @@ namespace model
 {
 class GameModelState
 {
+public:
     using pii = std::pair<int, int>;
 
-public:
     virtual ~GameModelState() {}
 
     virtual bool CanUsePowerPlantSP();
@@ -35,11 +37,11 @@ public:
     virtual void UseAquiferSP();
     virtual void UseGreenerySP();
     virtual void UseCitySP();
-
-    virtual void PlayCard( decks::Card* card );
-    virtual void UseAction( decks::Card* card );
     virtual void ConvertPlantsToGreenery();
     virtual void ConvertHeatToTemperature();
+
+    virtual void PlayCard( decks::Card* card );
+    virtual void UseAction( decks::ActiveCardWithAction* card );
 
     virtual void TilePlacementConfirmed( int q, int r );
 
@@ -47,37 +49,43 @@ public:
 
     virtual void EndTurn();
 
-    virtual void PerformRequest( GameModel::PaymentRequest* request ) = 0;
-    virtual void PerformRequest( GameModel::PlacementRequest* request ) = 0;
+    void PerformRequest( GameModel::PaymentRequest* request );
+    void PerformRequest( GameModel::PlacementRequest* request );
 
     virtual void Player_OnDrawCard( Player* player );
     virtual void Player_OnRaiseTR( Player* player, int amount );
     virtual void Player_OnRaiseTemperature( Player* player );
-    virtual void Player_OnPlaceOcean( Player* player );
-    virtual void Player_OnPlaceOceanOnNonOcean( Player* player );
     virtual void Player_OnRaiseOxygen( Player* player );
-    virtual void Player_OnPlaceGreenery( Player* player );
-    virtual void Player_OnPlaceGreeneryOnOcean( Player* player );
-    virtual void Player_OnPlaceCity( Player* player );
-    virtual void Player_OnPlaceNoctisCity( Player* player );
-    virtual void Player_OnPlaceLonelyCity( Player* player );
-    virtual void Player_OnPlaceUrbanizedArea( Player* player );
+
+    void Player_OnPlaceOcean( Player* player );
+    void Player_OnPlaceOceanOnNonOcean( Player* player );
+    void Player_OnPlaceGreenery( Player* player );
+    void Player_OnPlaceGreeneryOnOcean( Player* player );
+    void Player_OnPlaceCity( Player* player );
+    void Player_OnPlaceNoctisCity( Player* player );
+    void Player_OnPlaceLonelyCity( Player* player );
+    void Player_OnPlaceUrbanizedArea( Player* player );
+
     virtual void Player_OnResourceAmountChanged( Player* player, Resource resource, int amount );
     virtual void Player_OnResourceProductionAmountChanged( Player* player, Resource resource, int amount );
     virtual void Player_OnDestroyResource( Player* player, Resource resource, int amount );
     virtual void Player_OnDestroyResourceProduction( Player* player, Resource resource, int amount );
-    virtual void Player_OnConfirmSteelPayment( Player* player, int cost, std::function<void()> after_payment );
-    virtual void Player_OnConfirmTitaniumPayment( Player* player, int cost, std::function<void()> after_payment );
+
+    virtual void Player_OnConfirmSteelPayment( Player* player, int cost, std::function<void()> after_payment ) = 0;
+    virtual void Player_OnConfirmTitaniumPayment( Player* player, int cost, std::function<void()> after_payment ) = 0;
 
 protected:
     GameModelState( GameModel* model );
+
     GameModel* _model;
+
+    virtual void DoOnPlacementConfirmation( board::TileType type, std::vector<pii> valid_positions ) = 0;
 };
 
 class IdleState : public GameModelState
 {
 public:
-    IdleState( GameModel* model);
+    IdleState( GameModel* model );
     ~IdleState();
 
     bool CanUsePowerPlantSP() override;
@@ -98,42 +106,52 @@ public:
     void UseCitySP() override;
 
     void PlayCard( decks::Card* card ) override;
-    void UseAction( decks::Card* card ) override;
+    void UseAction( decks::ActiveCardWithAction* card ) override;
     void ConvertPlantsToGreenery() override;
     void ConvertHeatToTemperature() override;
 
-    void PerformRequest( GameModel::PaymentRequest* request ) override;
-    void PerformRequest( GameModel::PlacementRequest* request ) override;
+    void EndTurn() override;
 
-    void Player_OnDrawCard( Player* player ) override;
-    void Player_OnRaiseTR( Player* player, int amount ) override;
-    void Player_OnRaiseTemperature( Player* player ) override;
-    void Player_OnPlaceOcean( Player* player ) override;
-    void Player_OnPlaceOceanOnNonOcean( Player* player ) override;
-    void Player_OnRaiseOxygen( Player* player ) override;
-    void Player_OnPlaceGreenery( Player* player ) override;
-    void Player_OnPlaceGreeneryOnOcean( Player* player ) override;
-    void Player_OnPlaceCity( Player* player ) override;
-    void Player_OnPlaceNoctisCity( Player* player ) override;
-    void Player_OnPlaceLonelyCity( Player* player ) override;
-    void Player_OnPlaceUrbanizedArea( Player* player ) override;
-    void Player_OnResourceAmountChanged( Player* player, Resource resource, int amount ) override;
-    void Player_OnResourceProductionAmountChanged( Player* player, Resource resource, int amount ) override;
-    void Player_OnDestroyResource( Player* player, Resource resource, int amount ) override;
-    void Player_OnDestroyResourceProduction( Player* player, Resource resource, int amount ) override;
     void Player_OnConfirmSteelPayment( Player* player, int cost, std::function<void()> after_payment ) override;
     void Player_OnConfirmTitaniumPayment( Player* player, int cost, std::function<void()> after_payment ) override;
+
+protected:
+    void DoOnPlacementConfirmation( board::TileType type, std::vector<pii> valid_positions ) override;
 };
 
 class PlacementConfirmationState : public GameModelState
 {
 public:
-    PlacementConfirmationState();
+    PlacementConfirmationState( GameModel* model, GameModel::PlacementRequest* request );
     ~PlacementConfirmationState();
+
+    void TilePlacementConfirmed( int q, int r ) override;
+
+    void Player_OnConfirmSteelPayment( Player* player, int cost, std::function<void()> after_payment ) override;
+    void Player_OnConfirmTitaniumPayment( Player* player, int cost, std::function<void()> after_payment ) override;
+
+protected:
+    void DoOnPlacementConfirmation( board::TileType type, std::vector<pii> valid_positions ) override;
+
+private:
+    GameModel::PlacementRequest* _request;
 };
 
 class PaymentConfirmationState : public GameModelState
 {
+public:
+    PaymentConfirmationState( GameModel* model, GameModel::PaymentRequest* request );
+    ~PaymentConfirmationState();
 
+    void PaymentConfirmed( int credit, int resource ) override;
+
+    void Player_OnConfirmSteelPayment( Player* player, int cost, std::function<void()> after_payment ) override;
+    void Player_OnConfirmTitaniumPayment( Player* player, int cost, std::function<void()> after_payment ) override;
+
+protected:
+    void DoOnPlacementConfirmation( board::TileType type, std::vector<pii> valid_positions ) override;
+
+private:
+    GameModel::PaymentRequest* _request;
 };
 }

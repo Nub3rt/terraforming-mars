@@ -17,7 +17,7 @@
 
 namespace model
 {
-Player::Player( int starting_resource_production_amount ) : _tags(), _resources(), _resource_productions() {
+Player::Player( int starting_tr, int starting_resource_production_amount ) : _tr( starting_tr ), _tags(), _resources(), _resource_productions() {
     for ( int& resource_production : _resource_productions )
         resource_production = starting_resource_production_amount;
 }
@@ -36,8 +36,9 @@ Player::~Player() {
         delete card;
 }
 
-inline const auto& Player::get_resources() const noexcept { return _resources; }
-inline const auto& Player::get_resource_productions() const noexcept { return _resource_productions; }
+inline const int Player::get_tr() const noexcept { return _tr; }
+inline const std::array<int, +Resource::MAX + 1>& Player::get_resources() const noexcept { return _resources; }
+inline const std::array<int, +Resource::MAX + 1>& Player::get_resource_productions() const noexcept { return _resource_productions; }
 inline int Player::get_steel_value() const noexcept { return _steel_value; }
 inline int Player::get_titanium_value() const noexcept { return _titanium_value; }
 inline int Player::get_greenery_cost() const noexcept { return _greenery_cost; }
@@ -48,41 +49,43 @@ inline const std::vector<decks::AutomatedCard*>& Player::get_automated_cards() c
 inline const std::vector<decks::ActiveCardWithAction*>& Player::get_action_cards() const noexcept { return _action_cards; }
 inline const std::vector<decks::ActiveCardWithEffect*>& Player::get_effect_cards() const noexcept { return _effect_cards; }
 
-void Player::DrawCard() { _on_draw_card.Invoke( this ); }
-void Player::RaiseTR( int amount ) { _on_raise_tr.Invoke( this, amount ); }
-void Player::RaiseTemperature() { _on_raise_temperature.Invoke( this ); }
-void Player::PlaceOcean() { _on_place_ocean.Invoke( this ); }
-void Player::PlaceOceanOnNonOcean() { _on_place_ocean_on_non_ocean.Invoke( this ); }
-void Player::RaiseOxygen() { _on_raise_oxygen.Invoke( this ); }
-void Player::PlaceGreenery() { _on_place_greenery.Invoke( this ); }
-void Player::PlaceGreeneryOnOcean() { _on_place_greenery_on_ocean.Invoke( this ); }
-void Player::PlaceCity() { _on_place_city.Invoke( this ); }
-void Player::PlaceNoctisCity() { _on_place_noctis_city.Invoke( this ); }
-void Player::PlaceLonelyCity() { _on_place_lonely_city.Invoke( this ); }
-void Player::PlaceUrbanizedArea() { _on_place_urbanized_area.Invoke( this ); }
+inline void Player::DrawCard() { _on_draw_card.Invoke( this ); }
+inline void Player::RaiseTR( int amount ) { _on_raise_tr.Invoke( this, amount ); }
+inline void Player::RaiseTemperature() { _on_raise_temperature.Invoke( this ); }
+inline void Player::PlaceOcean() { _on_place_ocean.Invoke( this ); }
+inline void Player::PlaceOceanOnNonOcean() { _on_place_ocean_on_non_ocean.Invoke( this ); }
+inline void Player::RaiseOxygen() { _on_raise_oxygen.Invoke( this ); }
+inline void Player::PlaceGreenery() { _on_place_greenery.Invoke( this ); }
+inline void Player::PlaceGreeneryOnOcean() { _on_place_greenery_on_ocean.Invoke( this ); }
+inline void Player::PlaceCity() { _on_place_city.Invoke( this ); }
+inline void Player::PlaceNoctisCity() { _on_place_noctis_city.Invoke( this ); }
+inline void Player::PlaceLonelyCity() { _on_place_lonely_city.Invoke( this ); }
+inline void Player::PlaceUrbanizedArea() { _on_place_urbanized_area.Invoke( this ); }
 
-int Player::GetResource( Resource resource ) const { return _resources[ +resource ]; }
-int Player::GetResourceProduction( Resource resource ) const { return _resource_productions[ +resource ]; }
+inline void Player::GetTR( int amount ) { _tr += amount; }
 
-void Player::GainResource( Resource resource, int amount ) {
+inline int Player::GetResource( Resource resource ) const { return _resources[ +resource ]; }
+inline int Player::GetResourceProduction( Resource resource ) const { return _resource_productions[ +resource ]; }
+
+inline void Player::GainResource( Resource resource, int amount ) {
     _resources[ +resource ] += amount;
     _on_resource_amount_changed.Invoke( this, resource, amount );
 }
-void Player::GainResourceProduction( Resource resource, int amount ) {
+inline void Player::GainResourceProduction( Resource resource, int amount ) {
     _resource_productions[ +resource ] += amount;
     _on_resource_production_amount_changed.Invoke( this, resource, amount );
 }
-void Player::LoseResource( Resource resource, int amount ) {
+inline void Player::LoseResource( Resource resource, int amount ) {
     _resources[ +resource ] -= amount;
     _on_resource_amount_changed.Invoke( this, resource, -amount );
 }
-void Player::LoseResourceProduction( Resource resource, int amount ) {
+inline void Player::LoseResourceProduction( Resource resource, int amount ) {
     _resource_productions[ +resource ] -= amount;
     _on_resource_production_amount_changed.Invoke( this, resource, -amount );
 }
 
-void Player::DestroyResource( Resource resource, int amount ) { _on_destroy_resource.Invoke( this, resource, amount ); }
-void Player::DestroyResourceProduction( Resource resource, int amount ) { _on_destroy_resource_production.Invoke( this, resource, amount ); }
+inline void Player::DestroyResource( Resource resource, int amount ) { _on_destroy_resource.Invoke( this, resource, amount ); }
+inline void Player::DestroyResourceProduction( Resource resource, int amount ) { _on_destroy_resource_production.Invoke( this, resource, amount ); }
 
 int Player::GetTagCount( Tag tag ) {
     return _tags[ +tag ];
@@ -103,7 +106,7 @@ void Player::ConfirmSteelPayment( int cost, std::function<void()> after_payment 
         return;
     }
 
-    _on_confirm_steel_payment.Invoke( this, cost, after_payment );
+    _on_confirm_steel_payment.Invoke( this, cost, std::move( after_payment ) );
 }
 
 void Player::ConfirmTitaniumPayment( int cost, std::function<void()> after_payment ) {
@@ -113,7 +116,7 @@ void Player::ConfirmTitaniumPayment( int cost, std::function<void()> after_payme
         return;
     }
 
-    _on_confirm_titanium_payment.Invoke( this, cost, after_payment );
+    _on_confirm_titanium_payment.Invoke( this, cost, std::move( after_payment ) );
 }
 
 void Player::GetCard( decks::Card* card ) {
@@ -156,6 +159,13 @@ int Player::CalculateCardCost( const decks::Card* card, int base_cost ) const {
         base_cost = effect_card->ModifyCardCost( card, base_cost );
 
     return base_cost;
+}
+
+void Player::UseAction( decks::ActiveCardWithAction* card ) {
+    if ( std::find( _action_cards.cbegin(), _action_cards.cend(), card ) == _action_cards.cend() )
+        throw std::logic_error( "Player::UseAction: card was not played by this player!" );
+
+    card->UseAction();
 }
 
 void Player::OnEffect( std::function<void( decks::ActiveCardWithEffect* )> effect ) {
