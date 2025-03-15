@@ -164,6 +164,18 @@ void GameModelState::Player_OnDestroyResourceProduction( Player* player, Resourc
     // TODO
 }
 
+void GameModelState::Player_OnConfirmSteelPayment( Player* player, int cost, std::function<void()> after_payment ) {
+    throw std::logic_error( "GameModelState::Player_OnConfirmSteelPayment: GameModel was in an invalid state!" );
+}
+
+void GameModelState::Player_OnConfirmTitaniumPayment( Player* player, int cost, std::function<void()> after_payment ) {
+    throw std::logic_error( "GameModelState::Player_OnConfirmTitaniumPayment: GameModel was in an invalid state!" );
+}
+
+void GameModelState::DoOnPlacementConfirmation( board::TileType type, std::vector<pii> valid_positions ) {
+    throw std::logic_error( "GameModelState::DoOnPlacementConfirmation: GameModel was in an invalid state!" );
+}
+
 #pragma endregion GameModelState
 
 #pragma region ResearchState
@@ -205,18 +217,6 @@ void ResearchState::ConfirmPurchases() {
     _model->_on_research_confirmed.Invoke( std::move( _to_buy ) );
 
     _model->ChangeState( _model->CreateIdleState() );
-}
-
-void ResearchState::Player_OnConfirmSteelPayment( Player* player, int cost, std::function<void()> after_payment ) {
-    throw std::logic_error( "ResearchState::Player_OnConfirmSteelPayment: GameModel was in an invalid state!" );
-}
-
-void ResearchState::Player_OnConfirmTitaniumPayment( Player* player, int cost, std::function<void()> after_payment ) {
-    throw std::logic_error( "ResearchState::Player_OnConfirmTitaniumPayment: GameModel was in an invalid state!" );
-}
-
-void ResearchState::DoOnPlacementConfirmation( board::TileType type, std::vector<pii> valid_positions ) {
-    throw std::logic_error( "ResearchState::DoOnPlacementConfirmation: GameModel was in an invalid state!" );
 }
 
 #pragma endregion ResearchState
@@ -443,14 +443,6 @@ void PostLastGenerationState::EndTurn() {
     // TODO
 }
 
-void PostLastGenerationState::Player_OnConfirmSteelPayment( Player* player, int cost, std::function<void()> after_payment ) {
-    throw std::logic_error( "PostLastGenerationState::Player_OnConfirmSteelPayment: GameModel was in an invalid state!" );
-}
-
-void PostLastGenerationState::Player_OnConfirmTitaniumPayment( Player* player, int cost, std::function<void()> after_payment ) {
-    throw std::logic_error( "PostLastGenerationState::Player_OnConfirmSteelPayment: GameModel was in an invalid state!" );
-}
-
 void PostLastGenerationState::DoOnPlacementConfirmation( board::TileType type, std::vector<pii> valid_positions ) {
     GameModel::PlacementRequest* request = new GameModel::PlacementRequest( type, std::move( valid_positions ) );
     PerformRequest( request );
@@ -480,36 +472,12 @@ void PostLastGenerationPlacementConfirmationState::TilePlacementConfirmed( int q
     _model->ChangeState( _model->CreatePostLastGenerationState() );
 }
 
-void PostLastGenerationPlacementConfirmationState::Player_OnConfirmSteelPayment( Player* player, int cost, std::function<void()> after_payment ) {
-    throw std::logic_error( "PostLastGenerationPlacementConfirmationState::Player_OnConfirmSteelPayment: GameModel was in an invalid state!" );
-}
-
-void PostLastGenerationPlacementConfirmationState::Player_OnConfirmTitaniumPayment( Player* player, int cost, std::function<void()> after_payment ) {
-    throw std::logic_error( "PostLastGenerationPlacementConfirmationState::Player_OnConfirmTitaniumPayment: GameModel was in an invalid state!" );
-}
-
-void PostLastGenerationPlacementConfirmationState::DoOnPlacementConfirmation( board::TileType type, std::vector<pii> valid_positions ) {
-    throw std::logic_error( "PostLastGenerationPlacementConfirmationState::DoOnPlacementConfirmation: GameModel was in an invalid state!" );
-}
-
 #pragma endregion PostLastGenerationPlacementConfirmationState
 
 #pragma region GameOverState
 
 GameOverState::GameOverState( GameModel* model ) : GameModelState( model ) {}
 GameOverState::~GameOverState() {}
-
-void GameOverState::Player_OnConfirmSteelPayment( Player* player, int cost, std::function<void()> after_payment ) {
-    throw std::logic_error( "GameOverState::Player_OnConfirmSteelPayment: GameModel was in an invalid state!" );
-}
-
-void GameOverState::Player_OnConfirmTitaniumPayment( Player* player, int cost, std::function<void()> after_payment ) {
-    throw std::logic_error( "GameOverState::Player_OnConfirmTitaniumPayment: GameModel was in an invalid state!" );
-}
-
-void GameOverState::DoOnPlacementConfirmation( board::TileType type, std::vector<pii> valid_positions ) {
-    throw std::logic_error( "GameOverState::DoOnPlacementConfirmation: GameModel was in an invalid state!" );
-}
 
 #pragma endregion GameOverState
 }
