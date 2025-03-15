@@ -16,6 +16,7 @@ public:
     ~SoloGameModel();
 
     void Initialize( board::Board* board, decks::Deck* deck ) override;
+    void Start() override;
 
 protected:
     Player* CreateLocalPlayer() override;

@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "board.h"
+#include "constants.h"
 #include "deck.h"
 #include "player.h"
 #include "tile_type.h"
@@ -41,8 +42,16 @@ void SoloGameModel::Initialize( board::Board* board, decks::Deck* deck ) {
     }
 }
 
+void SoloGameModel::Start() {
+    _local_player->GainResource( Resource::CREDIT, BEGINNER_CORPORATION_CREDITS );
+
+    for ( int i = 0; i < STARTING_CARD_COUNT; ++i ) {
+        _local_player->DrawCard();
+    }
+}
+
 Player* SoloGameModel::CreateLocalPlayer() {
-    Player* player = new Player( 14, 0 );
+    Player* player = new Player( SOLO_GAME_STARTING_TR, SOLO_GAME_STARTING_RESOURCE_PRODUCTION );
     SubscribeCallbacksOnPlayer( player );
     return player;
 }
@@ -64,9 +73,9 @@ SoloIdleState::~SoloIdleState() {}
 void SoloIdleState::EndTurn() {
     _model->_local_player->PerformProductionPhase();
 
-    if ( _model->_generation < 14 && !_model->AreGlobalParametersFulfilled() ) {
+    if ( _model->_generation < SOLO_GAME_MAX_GENERATIONS && !_model->AreGlobalParametersFulfilled() ) {
         ++_model->_generation;
-        // TODO research phase
+        _model->ChangeState( _model->CreateResearchState() );
         return;
     }
 

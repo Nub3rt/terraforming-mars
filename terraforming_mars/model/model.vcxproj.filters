@@ -397,6 +397,7 @@
       <Filter>decks</Filter>
     </ClInclude>
     <ClInclude Include="solo_game_model.h" />
+    <ClInclude Include="constants.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="player.cpp" />

@@ -243,6 +243,7 @@
     <ClInclude Include="cards\zeppelins.h" />
     <ClInclude Include="cards\_cards.h" />
     <ClInclude Include="card_id.h" />
+    <ClInclude Include="constants.h" />
     <ClInclude Include="deck.fwd.h" />
     <ClInclude Include="deck.h" />
     <ClInclude Include="deck_provider.h" />

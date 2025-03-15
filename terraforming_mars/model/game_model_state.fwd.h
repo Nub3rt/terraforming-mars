@@ -3,6 +3,7 @@
 namespace model
 {
 class GameModelState;
+class ResearchState;
 class IdleState;
 class PlacementConfirmationState;
 class PaymentConfirmationState;

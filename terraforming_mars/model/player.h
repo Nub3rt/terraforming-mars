@@ -11,6 +11,7 @@
 #include "active_card_with_action.h"
 #include "active_card_with_effect.h"
 #include "automated_card.h"
+#include "constants.h"
 #include "event.h"
 #include "event_card.h"
 #include "resource.h"
@@ -137,11 +138,11 @@ private:
     std::vector<decks::ActiveCardWithAction*> _action_cards;
     std::vector<decks::ActiveCardWithEffect*> _effect_cards;
 
-    int _steel_value = 2;
-    int _titanium_value = 3;
+    int _steel_value = STARTING_STEEL_VALUE;
+    int _titanium_value = STARTING_TITANIUM_VALUE;
 
-    int _greenery_cost = 8;
-    int _temperature_cost = 8;
+    int _greenery_cost = BASE_GREENERY_COST;
+    int _temperature_cost = BASE_TEMPERATURE_COST;
 
     Event<Player*> _on_draw_card;
     Event<Player*, int> _on_raise_tr;

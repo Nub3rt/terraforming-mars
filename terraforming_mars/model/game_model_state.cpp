@@ -6,8 +6,9 @@
 #include <utility>
 #include <vector>
 
-#include "game_model.h"
+#include "constants.h"
 #include "deck.h"
+#include "game_model.h"
 #include "player.h"
 #include "resource.h"
 
@@ -36,6 +37,9 @@ void GameModelState::UseCitySP() { throw std::logic_error( "GameModelState::UseC
 
 void GameModelState::PlayCard( decks::Card* card ) { throw std::logic_error( "GameModelState::PlayCard: GameModel was in an invalid state!" ); }
 void GameModelState::UseAction( decks::ActiveCardWithAction* card ) { throw std::logic_error( "GameModelState::UseAction: GameModel was in an invalid state!" ); }
+void GameModelState::ToggleToBuyCard( int index ) { throw std::logic_error( "GameModelState::ToggleToBuyCard: GameModel was in an invalid state!" ); }
+int GameModelState::GetTotalCost() const { throw std::logic_error( "GameModelState::GetTotalCost: GameModel was in an invalid state!" ); }
+void GameModelState::ConfirmPurchases() { throw std::logic_error( "GameModelState::ConfirmPurchases: GameModel was in an invalid state!" ); }
 void GameModelState::ConvertPlantsToGreenery() { throw std::logic_error( "GameModelState::ConvertPlantsToGreenery: GameModel was in an invalid state!" ); }
 void GameModelState::ConvertHeatToTemperature() { throw std::logic_error( "GameModelState::ConvertHeatToTemperature: GameModel was in an invalid state!" ); }
 
@@ -76,7 +80,7 @@ void GameModelState::Player_OnRaiseTR( Player* player, int amount ) {
 }
 
 void GameModelState::Player_OnRaiseTemperature( Player* player ) {
-    if ( _model->Temperature() == _model->MAX_TEMPERATURE )
+    if ( _model->Temperature() == MAX_TEMPERATURE )
         return;
 
     _model->_temperature += 2;
@@ -84,7 +88,7 @@ void GameModelState::Player_OnRaiseTemperature( Player* player ) {
     player->GetTR( 1 );
 }
 void GameModelState::Player_OnRaiseOxygen( Player* player ) {
-    if ( _model->Oxygen() == _model->MAX_OXYGEN_LEVEL )
+    if ( _model->Oxygen() == MAX_OXYGEN_LEVEL )
         return;
 
     _model->_oxygen_level += 1;
@@ -162,24 +166,79 @@ void GameModelState::Player_OnDestroyResourceProduction( Player* player, Resourc
 
 #pragma endregion GameModelState
 
+#pragma region ResearchState
+
+ResearchState::ResearchState( GameModel* model ) : GameModelState( model ), _cards(), _to_buy() {
+    for ( int i = 0; i < RESEARCH_CARD_NUM; ++i ) {
+        _cards[ i ] = _model->_deck->DrawCard();
+        _to_buy[ i ] = true;
+    }
+
+    _model->_on_confirm_research.Invoke( _cards );
+}
+
+ResearchState::~ResearchState() {}
+
+void ResearchState::ToggleToBuyCard( int index ) {
+    _to_buy[ index ] = !_to_buy[ index ];
+}
+
+inline int ResearchState::GetTotalCost() const {
+    int sum = 0;
+
+    for ( const bool& to_buy : _to_buy )
+        if ( to_buy )
+            sum += RESEARCH_CARD_COST;
+
+    return sum;
+}
+
+void ResearchState::ConfirmPurchases() {
+    _model->_local_player->LoseResource( Resource::CREDIT, GetTotalCost() );
+
+    for ( int i = 0; i < RESEARCH_CARD_NUM; ++i )
+        if ( _to_buy[ i ] )
+            _model->_local_player->GetCard( _cards[ i ] );
+        else
+            _model->_deck->DiscardCard( _cards[ i ] );
+
+    _model->_on_research_confirmed.Invoke( std::move( _to_buy ) );
+
+    _model->ChangeState( _model->CreateIdleState() );
+}
+
+void ResearchState::Player_OnConfirmSteelPayment( Player* player, int cost, std::function<void()> after_payment ) {
+    throw std::logic_error( "ResearchState::Player_OnConfirmSteelPayment: GameModel was in an invalid state!" );
+}
+
+void ResearchState::Player_OnConfirmTitaniumPayment( Player* player, int cost, std::function<void()> after_payment ) {
+    throw std::logic_error( "ResearchState::Player_OnConfirmTitaniumPayment: GameModel was in an invalid state!" );
+}
+
+void ResearchState::DoOnPlacementConfirmation( board::TileType type, std::vector<pii> valid_positions ) {
+    throw std::logic_error( "ResearchState::DoOnPlacementConfirmation: GameModel was in an invalid state!" );
+}
+
+#pragma endregion ResearchState
+
 #pragma region IdleState
 
 IdleState::IdleState( GameModel* model ) : GameModelState( model ) {}
 IdleState::~IdleState() {}
 
-bool IdleState::CanUsePowerPlantSP() { return _model->_local_player->GetResource( Resource::CREDIT ) >= _model->POWER_PLANT_SP_COST; }
-bool IdleState::CanUseAsteroidSP() { return _model->_local_player->GetResource( Resource::CREDIT ) >= _model->ASTEROID_SP_COST &&
-                                            _model->Temperature() < _model->MAX_TEMPERATURE; }
-bool IdleState::CanUseAquiferSP() { return _model->_local_player->GetResource( Resource::CREDIT ) >= _model->POWER_PLANT_SP_COST &&
-                                           _model->OceanCount() < _model->MAX_OCEAN_COUNT; }
-bool IdleState::CanUseGreenerySP() { return _model->_local_player->GetResource( Resource::CREDIT ) >= _model->GREENERY_SP_COST &&
+bool IdleState::CanUsePowerPlantSP() { return _model->_local_player->GetResource( Resource::CREDIT ) >= POWER_PLANT_SP_COST; }
+bool IdleState::CanUseAsteroidSP() { return _model->_local_player->GetResource( Resource::CREDIT ) >= ASTEROID_SP_COST &&
+                                            _model->Temperature() < MAX_TEMPERATURE; }
+bool IdleState::CanUseAquiferSP() { return _model->_local_player->GetResource( Resource::CREDIT ) >= POWER_PLANT_SP_COST &&
+                                           _model->OceanCount() < MAX_OCEAN_COUNT; }
+bool IdleState::CanUseGreenerySP() { return _model->_local_player->GetResource( Resource::CREDIT ) >= GREENERY_SP_COST &&
                                             _model->_board->GetValidGreeneryTiles( _model->_local_player ).size() > 0; }
-bool IdleState::CanUseCitySP() { return _model->_local_player->GetResource( Resource::CREDIT ) >= _model->POWER_PLANT_SP_COST &&
+bool IdleState::CanUseCitySP() { return _model->_local_player->GetResource( Resource::CREDIT ) >= POWER_PLANT_SP_COST &&
                                         _model->_board->GetValidCityTiles( _model->_local_player ).size() > 0 ; }
 bool IdleState::CanConvertPlantsToGreenery() { return _model->_local_player->GetResource( Resource::PLANTS ) >= _model->_local_player->get_greenery_cost() &&
                                                       _model->_board->GetValidGreeneryTiles( _model->_local_player ).size() > 0; }
 bool IdleState::CanConvertHeatToTemperature() { return _model->_local_player->GetResource( Resource::HEAT ) >= _model->_local_player->get_temperature_cost() &&
-                                                       _model->Temperature() < _model->MAX_TEMPERATURE; }
+                                                       _model->Temperature() < MAX_TEMPERATURE; }
 
 bool IdleState::InIdleState() { return true; }
 
@@ -192,7 +251,7 @@ void IdleState::UsePowerPlantSP() {
     if ( !CanUsePowerPlantSP() )
         throw std::logic_error( "IdleState::UsePowerPlantSP: standard project cannot be used!" );
 
-    _model->_local_player->LoseResource( Resource::CREDIT, _model->POWER_PLANT_SP_COST );
+    _model->_local_player->LoseResource( Resource::CREDIT, POWER_PLANT_SP_COST );
     _model->_local_player->GainResourceProduction( Resource::ENERGY, 1 );
 }
 
@@ -200,28 +259,28 @@ void IdleState::UseAsteroidSP() {
     if ( !CanUseAsteroidSP() )
         throw std::logic_error( "IdleState::UseAsteroidSP: standard project cannot be used!" );
 
-    _model->_local_player->LoseResource( Resource::CREDIT, _model->ASTEROID_SP_COST );
+    _model->_local_player->LoseResource( Resource::CREDIT, ASTEROID_SP_COST );
     _model->_local_player->RaiseTemperature();
 }
 void IdleState::UseAquiferSP() {
     if ( !CanUseAquiferSP() )
         throw std::logic_error( "IdleState::UseAquiferSP: standard project cannot be used!" );
 
-    _model->_local_player->LoseResource( Resource::CREDIT, _model->AQUIFER_SP_COST );
+    _model->_local_player->LoseResource( Resource::CREDIT, AQUIFER_SP_COST );
     _model->_local_player->PlaceOcean();
 }
 void IdleState::UseGreenerySP() {
     if ( !CanUseGreenerySP() )
         throw std::logic_error( "IdleState::UseGreenerySP: standard project cannot be used!" );
 
-    _model->_local_player->LoseResource( Resource::CREDIT, _model->GREENERY_SP_COST );
+    _model->_local_player->LoseResource( Resource::CREDIT, GREENERY_SP_COST );
     _model->_local_player->PlaceGreenery();
 }
 void IdleState::UseCitySP() {
     if ( !CanUseCitySP() )
         throw std::logic_error( "IdleState::UseCitySP: standard project cannot be used!" );
 
-    _model->_local_player->LoseResource( Resource::CREDIT, _model->CITY_SP_COST );
+    _model->_local_player->LoseResource( Resource::CREDIT, CITY_SP_COST );
     _model->_local_player->GainResourceProduction( Resource::CREDIT, 1 );
     _model->_local_player->PlaceCity();
 }
@@ -369,7 +428,8 @@ PostLastGenerationState::~PostLastGenerationState() {}
 
 bool PostLastGenerationState::CanConvertPlantsToGreenery() {
     return _model->_local_player->GetResource( Resource::PLANTS ) >= _model->_local_player->get_greenery_cost() &&
-           _model->_board->GetValidGreeneryTiles( _model->_local_player ).size() > 0; }
+           _model->_board->GetValidGreeneryTiles( _model->_local_player ).size() > 0;
+}
 
 void PostLastGenerationState::ConvertPlantsToGreenery() {
     if ( !CanConvertPlantsToGreenery() )
@@ -412,7 +472,7 @@ PostLastGenerationPlacementConfirmationState::~PostLastGenerationPlacementConfir
 
 void PostLastGenerationPlacementConfirmationState::TilePlacementConfirmed( int q, int r ) {
     if ( std::find( _request->valid_positions.cbegin(), _request->valid_positions.cend(), pii( q, r ) ) == _request->valid_positions.cend() )
-        throw std::logic_error( std::format( "PlacementConfirmationState::TilePlacementConfirmed: indices q: {}, r: {} are not valid positions!", q, r ) );
+        throw std::logic_error( std::format( "PostLastGenerationPlacementConfirmationState::TilePlacementConfirmed: indices q: {}, r: {} are not valid positions!", q, r ) );
 
     _model->_board->PlaceTile( q, r, _model->_local_player, board::TileType::GREENERY );
     _model->_on_place_tile.Invoke( pii( q, r ) );
@@ -431,7 +491,6 @@ void PostLastGenerationPlacementConfirmationState::Player_OnConfirmTitaniumPayme
 void PostLastGenerationPlacementConfirmationState::DoOnPlacementConfirmation( board::TileType type, std::vector<pii> valid_positions ) {
     throw std::logic_error( "PostLastGenerationPlacementConfirmationState::DoOnPlacementConfirmation: GameModel was in an invalid state!" );
 }
-
 
 #pragma endregion PostLastGenerationPlacementConfirmationState
 

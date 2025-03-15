@@ -6,13 +6,15 @@
 #include "game_model_state.fwd.h"
 #include "player.fwd.h"
 
+#include <array>
 #include <functional>
 #include <queue>
 #include <random>
 #include <utility>
 
-#include "board.h"
 #include "active_card_with_action.h"
+#include "board.h"
+#include "constants.h"
 #include "event.h"
 #include "resource.h"
 #include "tile_type.h"
@@ -24,6 +26,7 @@ class GameModel
     friend class GameModelState;
 
     friend class IdleState;
+    friend class ResearchState;
     friend class PlacementConfirmationState;
     friend class PaymentConfirmationState;
     friend class PostLastGenerationState;
@@ -90,13 +93,18 @@ public:
     inline void PlayCard( decks::Card* card );
     inline void UseAction( decks::ActiveCardWithAction* card );
 
+    // Research State
+    inline void ToggleToBuyCard( int index );
+    inline int GetTotalCost() const;
+    inline void ConfirmPurchases();
+
+    // Placement Confirmation State
     inline void TilePlacementConfirmed( int q, int r );
 
+    // Payment Confirmation State
     inline void PaymentConfirmed( int credit, int resource );
 
     inline void EndTurn();
-
-    virtual void EndGame();
 
 
     inline void SetOnDrawCard( Callback<decks::Card*> callback );
@@ -104,32 +112,22 @@ public:
     inline void SetOnRaiseTR( Callback<int> callback );
     inline void SetOnRaiseTemperature( Callback<> callback );
     inline void SetOnRaiseOxygen( Callback<> callback );
+    inline void SetOnPlaceTile( Callback<pii> callback );
     inline void SetOnResourceAmountChanged( Callback<Resource, int> callback );
     inline void SetOnResourceProductionAmountChanged( Callback<Resource, int> callback );
-    inline void SetOnPlaceTile( Callback<pii> callback );
+    inline void SetOnResearchConfirmed( Callback<std::array<bool, RESEARCH_CARD_NUM>> callback );
+    inline void SetOnConfirmResearch( Callback<std::array<decks::Card*, RESEARCH_CARD_NUM>> callback );
     inline void SetOnConfirmPayment( Callback<int, Resource, int> callback );
     inline void SetOnConfirmPlacement( Callback<board::TileType, std::vector<pii>> callback );
     inline void SetOnConfirmDestroyResource( Callback<Resource, int> callback );
     inline void SetOnConfirmDestroyResourceProduction( Callback<Resource, int> callback );
     inline void SetOnGameEnd( Callback<> callback );
 
-    static const int STARTING_TEMPERATURE = -30;
-    static const int STARTING_OCEAN_COUNT = 0;
-    static const int STARTING_OXYGEN_LEVEL = 0;
-    static const int MAX_TEMPERATURE = 8;
-    static const int MAX_OCEAN_COUNT = 9;
-    static const int MAX_OXYGEN_LEVEL = 14;
-
-    static const int POWER_PLANT_SP_COST = 0;
-    static const int ASTEROID_SP_COST = 0;
-    static const int AQUIFER_SP_COST = 0;
-    static const int GREENERY_SP_COST = 0;
-    static const int CITY_SP_COST = 0;
-
 protected:
     GameModel( int seed );
 
     bool _initialized = false;
+    bool _started = false;
 
     bool _in_post_last_generation = false;
     bool _game_ended = false;
@@ -159,7 +157,9 @@ protected:
     Event<pii> _on_place_tile;
     Event<Resource, int> _on_resource_amount_changed;
     Event<Resource, int> _on_resource_production_amount_changed;
+    Event<std::array<bool, RESEARCH_CARD_NUM>> _on_research_confirmed;
 
+    Event<std::array<decks::Card*, RESEARCH_CARD_NUM>> _on_confirm_research;
     Event<int, Resource, int> _on_confirm_payment;
     Event<board::TileType, std::vector<pii>> _on_confirm_placement;
     Event<Resource, int> _on_confirm_destroy_resource;
@@ -173,6 +173,7 @@ protected:
     virtual void SubscribeCallbacksOnPlayer( Player* player );
 
     virtual IdleState* CreateIdleState();
+    virtual ResearchState* CreateResearchState();
     virtual PlacementConfirmationState* CreatePlacementConfirmationState( PlacementRequest* request );
     virtual PaymentConfirmationState* CreatePaymentConfirmationState( PaymentRequest* request );
     virtual PostLastGenerationState* CreatePostLastGenerationState();
@@ -180,6 +181,8 @@ protected:
     virtual GameOverState* CreateGameOverState();
 
     void ChangeState( GameModelState* state );
+
+    virtual void EndGame();
 
     inline void Player_OnDrawCard( Player* player );
     inline void Player_OnRaiseTR( Player* player, int amount );

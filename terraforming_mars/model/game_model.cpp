@@ -4,6 +4,7 @@
 
 #include "board.h"
 #include "card.h"
+#include "constants.h"
 #include "active_card_with_action.h"
 #include "deck.h"
 #include "event.h"
@@ -55,6 +56,11 @@ void GameModel::Initialize( board::Board* board, decks::Deck* deck ) {
 void GameModel::Start() {
     if ( !_initialized )
         throw std::logic_error( "GameModel::Start: model was not initialized!" );
+
+    if ( _started )
+        throw std::logic_error( "GameModel::Start: model was already started!" );
+
+    _started = true;
 
     // TODO
 }
@@ -115,6 +121,10 @@ inline void GameModel::ConvertHeatToTemperature() { _state->ConvertHeatToTempera
 inline void GameModel::PlayCard( decks::Card* card ) { _state->PlayCard( card ); }
 inline void GameModel::UseAction( decks::ActiveCardWithAction* card ) { _state->UseAction( card ); }
 
+inline void GameModel::ToggleToBuyCard( int index ) { _state->ToggleToBuyCard( index ); }
+inline int GameModel::GetTotalCost() const { return _state->GetTotalCost(); }
+inline void GameModel::ConfirmPurchases() { _state->ConfirmPurchases(); }
+
 inline void GameModel::TilePlacementConfirmed( int q, int r ) { _state->TilePlacementConfirmed( q, r ); }
 inline void GameModel::PaymentConfirmed( int credit, int resource ) { _state->PaymentConfirmed( credit, resource ); }
 
@@ -131,9 +141,11 @@ inline void GameModel::SetOnPlayCard( Callback<decks::Card*> callback ) { _on_pl
 inline void GameModel::SetOnRaiseTR( Callback<int> callback ) { _on_raise_tr.SetCallback( callback ); }
 inline void GameModel::SetOnRaiseTemperature( Callback<> callback ) { _on_raise_temperature.SetCallback( callback ); }
 inline void GameModel::SetOnRaiseOxygen( Callback<> callback ) { _on_raise_oxygen.SetCallback( callback ); }
+inline void GameModel::SetOnPlaceTile( Callback<pii> callback ) { _on_place_tile.SetCallback( callback ); }
 inline void GameModel::SetOnResourceAmountChanged( Callback<Resource, int> callback ) { _on_resource_amount_changed.SetCallback( callback ); }
 inline void GameModel::SetOnResourceProductionAmountChanged( Callback<Resource, int> callback ) { _on_resource_production_amount_changed.SetCallback( callback ); }
-inline void GameModel::SetOnPlaceTile( Callback<pii> callback ) { _on_place_tile.SetCallback( callback ); }
+inline void GameModel::SetOnResearchConfirmed( Callback<std::array<bool, RESEARCH_CARD_NUM>> callback ) { _on_research_confirmed.SetCallback( callback ); }
+inline void GameModel::SetOnConfirmResearch( Callback<std::array<decks::Card*, RESEARCH_CARD_NUM>> callback ) { _on_confirm_research.SetCallback( callback ); }
 inline void GameModel::SetOnConfirmPayment( Callback<int, Resource, int> callback ) { _on_confirm_payment.SetCallback( callback ); }
 inline void GameModel::SetOnConfirmPlacement( Callback<board::TileType, std::vector<pii>> callback ) { _on_confirm_placement.SetCallback( callback ); }
 inline void GameModel::SetOnConfirmDestroyResource( Callback<Resource, int> callback ) { _on_confirm_destroy_resource.SetCallback( callback ); }
@@ -167,6 +179,7 @@ void GameModel::SubscribeCallbacksOnPlayer( Player* player ) {
 }
 
 IdleState* GameModel::CreateIdleState() { return new IdleState( this ); }
+ResearchState* GameModel::CreateResearchState() { return new ResearchState( this ); }
 PlacementConfirmationState* GameModel::CreatePlacementConfirmationState( PlacementRequest* request ) { return new PlacementConfirmationState( this, request ); }
 PaymentConfirmationState* GameModel::CreatePaymentConfirmationState( PaymentRequest* request ) { return new PaymentConfirmationState( this, request ); }
 PostLastGenerationState* GameModel::CreatePostLastGenerationState() { return new PostLastGenerationState( this ); }

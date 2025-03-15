@@ -3,11 +3,13 @@
 #include "game_model.fwd.h"
 #include "game_model_state.fwd.h"
 
+#include <array>
 #include <utility>
 #include <vector>
 
-#include "card.h"
 #include "active_card_with_action.h"
+#include "card.h"
+#include "constants.h"
 #include "game_model.h"
 #include "player.h"
 #include "resource.h"
@@ -42,6 +44,10 @@ public:
 
     virtual void PlayCard( decks::Card* card );
     virtual void UseAction( decks::ActiveCardWithAction* card );
+
+    virtual void ToggleToBuyCard( int index );
+    virtual int GetTotalCost() const;
+    virtual void ConfirmPurchases();
 
     virtual void TilePlacementConfirmed( int q, int r );
 
@@ -81,6 +87,26 @@ protected:
     GameModel* _model;
 
     virtual void DoOnPlacementConfirmation( board::TileType type, std::vector<pii> valid_positions ) = 0;
+};
+
+class ResearchState : public GameModelState
+{
+public:
+    ResearchState( GameModel* model );
+    ~ResearchState();
+
+    void ToggleToBuyCard( int index ) override;
+    inline int GetTotalCost() const;
+    void ConfirmPurchases() override;
+
+    void Player_OnConfirmSteelPayment( Player* player, int cost, std::function<void()> after_payment ) override;
+    void Player_OnConfirmTitaniumPayment( Player* player, int cost, std::function<void()> after_payment ) override;
+
+protected:
+    std::array<decks::Card*, RESEARCH_CARD_NUM> _cards;
+    std::array<bool, RESEARCH_CARD_NUM> _to_buy;
+
+    void DoOnPlacementConfirmation( board::TileType type, std::vector<pii> valid_positions ) override;
 };
 
 class IdleState : public GameModelState
