@@ -50,11 +50,11 @@ public:
 
     virtual ~GameModel();
 
-    virtual void Initialize( board::Board* board, decks::Deck* deck );
+    virtual void Initialize( boards::Board* board, decks::Deck* deck );
     virtual void Start();
 
     inline int get_generation() const;
-    inline const board::Board* get_board() const;
+    inline const boards::Board* get_board() const;
     inline const Player* get_local_player() const;
 
     inline int Temperature() const;
@@ -118,7 +118,7 @@ public:
     inline void SetOnResearchConfirmed( Callback<std::array<bool, RESEARCH_CARD_NUM>> callback );
     inline void SetOnConfirmResearch( Callback<std::array<decks::Card*, RESEARCH_CARD_NUM>> callback );
     inline void SetOnConfirmPayment( Callback<int, Resource, int> callback );
-    inline void SetOnConfirmPlacement( Callback<board::TileType, std::vector<pii>> callback );
+    inline void SetOnConfirmPlacement( Callback<boards::TileType, std::vector<pii>> callback );
     inline void SetOnConfirmDestroyResource( Callback<Resource, int> callback );
     inline void SetOnConfirmDestroyResourceProduction( Callback<Resource, int> callback );
     inline void SetOnGameEnd( Callback<> callback );
@@ -141,7 +141,7 @@ protected:
 
     Player* _local_player = nullptr;
 
-    board::Board* _board = nullptr;
+    boards::Board* _board = nullptr;
 
     decks::Deck* _deck = nullptr;
 
@@ -161,7 +161,7 @@ protected:
 
     Event<std::array<decks::Card*, RESEARCH_CARD_NUM>> _on_confirm_research;
     Event<int, Resource, int> _on_confirm_payment;
-    Event<board::TileType, std::vector<pii>> _on_confirm_placement;
+    Event<boards::TileType, std::vector<pii>> _on_confirm_placement;
     Event<Resource, int> _on_confirm_destroy_resource;
     Event<Resource, int> _on_confirm_destroy_resource_production;
 
@@ -215,9 +215,9 @@ protected:
     class PlacementRequest : public Request
     {
     public:
-        PlacementRequest( board::TileType type, std::vector<pii> valid_positions );
+        PlacementRequest( boards::TileType type, std::vector<pii> valid_positions );
 
-        board::TileType type;
+        boards::TileType type;
         std::vector<pii> valid_positions;
 
         void Perform( GameModelState* state ) override;

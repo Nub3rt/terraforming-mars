@@ -9,7 +9,7 @@
 #include "player.h"
 #include "tile.h"
 
-namespace model::board
+namespace model::boards
 {
 using pii = std::pair<int, int>;
 

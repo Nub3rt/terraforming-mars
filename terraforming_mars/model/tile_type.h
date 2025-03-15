@@ -1,6 +1,6 @@
 #pragma once
 
-namespace model::board
+namespace model::boards
 {
 enum class TileType
 {

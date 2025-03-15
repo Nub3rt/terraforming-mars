@@ -7,7 +7,7 @@
 #include "player.h"
 #include "tile.h"
 
-namespace model::board
+namespace model::boards
 {
 class ConcreteBoard
 {

@@ -15,7 +15,7 @@ public:
     SoloGameModel( int seed );
     ~SoloGameModel();
 
-    void Initialize( board::Board* board, decks::Deck* deck ) override;
+    void Initialize( boards::Board* board, decks::Deck* deck ) override;
     void Start() override;
 
 protected:

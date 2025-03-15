@@ -3,7 +3,7 @@
 #include <utility>
 #include <vector>
 
-namespace model::board
+namespace model::boards
 {
 using pii = std::pair<int, int>;
 

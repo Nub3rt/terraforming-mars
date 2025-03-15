@@ -5,7 +5,7 @@
 #include "player.h"
 #include "tile_type.h"
 
-namespace model::board
+namespace model::boards
 {
 class Tile
 {

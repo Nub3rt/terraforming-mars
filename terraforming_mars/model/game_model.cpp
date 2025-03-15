@@ -34,7 +34,7 @@ GameModel::~GameModel() {
     }
 }
 
-void GameModel::Initialize( board::Board* board, decks::Deck* deck ) {
+void GameModel::Initialize( boards::Board* board, decks::Deck* deck ) {
     if ( _initialized )
         throw std::logic_error( "GameModel::Initialize: model was already initialized!" );
 
@@ -66,7 +66,7 @@ void GameModel::Start() {
 }
 
 inline int GameModel::get_generation() const { return _generation; }
-inline const board::Board* GameModel::get_board() const { return _board; }
+inline const boards::Board* GameModel::get_board() const { return _board; }
 inline const Player* GameModel::get_local_player() const { return _local_player; }
 
 inline int GameModel::Temperature() const { return _temperature; }
@@ -74,11 +74,11 @@ inline int GameModel::OceanCount() const { return _ocean_count; }
 inline int GameModel::Oxygen() const { return _oxygen_level; }
 
 inline int GameModel::CityCount() const {
-    return static_cast<int>( _board->GetTilesOfType( board::TileType::CITY ).size() );
+    return static_cast<int>( _board->GetTilesOfType( boards::TileType::CITY ).size() );
 }
 
 bool GameModel::IsTilePlaceable( const Player* player ) const {
-    return _board->GetPlaceableTilesOfType( player, board::TileType::EMPTY ).size() > 0;
+    return _board->GetPlaceableTilesOfType( player, boards::TileType::EMPTY ).size() > 0;
 }
 
 bool GameModel::IsCityPlaceable( const Player* player ) const {
@@ -147,7 +147,7 @@ inline void GameModel::SetOnResourceProductionAmountChanged( Callback<Resource, 
 inline void GameModel::SetOnResearchConfirmed( Callback<std::array<bool, RESEARCH_CARD_NUM>> callback ) { _on_research_confirmed.SetCallback( callback ); }
 inline void GameModel::SetOnConfirmResearch( Callback<std::array<decks::Card*, RESEARCH_CARD_NUM>> callback ) { _on_confirm_research.SetCallback( callback ); }
 inline void GameModel::SetOnConfirmPayment( Callback<int, Resource, int> callback ) { _on_confirm_payment.SetCallback( callback ); }
-inline void GameModel::SetOnConfirmPlacement( Callback<board::TileType, std::vector<pii>> callback ) { _on_confirm_placement.SetCallback( callback ); }
+inline void GameModel::SetOnConfirmPlacement( Callback<boards::TileType, std::vector<pii>> callback ) { _on_confirm_placement.SetCallback( callback ); }
 inline void GameModel::SetOnConfirmDestroyResource( Callback<Resource, int> callback ) { _on_confirm_destroy_resource.SetCallback( callback ); }
 inline void GameModel::SetOnConfirmDestroyResourceProduction( Callback<Resource, int> callback ) { _on_confirm_destroy_resource_production.SetCallback( callback ); }
 inline void GameModel::SetOnGameEnd( Callback<> callback ) { _on_game_end.SetCallback( callback ); }
@@ -220,7 +220,7 @@ inline void GameModel::Player_OnConfirmTitaniumPayment( Player* player, int cost
 
 #pragma region Requests
 
-GameModel::PlacementRequest::PlacementRequest( board::TileType type, std::vector<pii> valid_positions )
+GameModel::PlacementRequest::PlacementRequest( boards::TileType type, std::vector<pii> valid_positions )
     : type( type ), valid_positions( std::move( valid_positions ) ) {}
 
 void GameModel::PlacementRequest::Perform( GameModelState* state ) {

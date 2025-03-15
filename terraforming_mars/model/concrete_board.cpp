@@ -9,7 +9,7 @@
 #include "resource.h"
 #include "tile_type.h"
 
-namespace model::board
+namespace model::boards
 {
 using pii = std::pair<int, int>;
 

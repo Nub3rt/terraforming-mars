@@ -5,7 +5,7 @@
 
 #include "player.h"
 
-namespace model::board
+namespace model::boards
 {
 Tile::Tile( const std::function<void( Player* )>& apply_placement_bonuses, TileType type ) noexcept
     : _type( type ), _owner( nullptr ), _apply_placement_bonuses( apply_placement_bonuses ) {}
