@@ -6,12 +6,12 @@
 #include <stdexcept>
 #include <vector>
 
-#include "card.h"
-#include "active_card.h"
-#include "active_card_with_action.h"
-#include "active_card_with_effect.h"
-#include "automated_card.h"
-#include "event_card.h"
+#include "decks/card.h"
+#include "decks/active_card.h"
+#include "decks/active_card_with_action.h"
+#include "decks/active_card_with_effect.h"
+#include "decks/automated_card.h"
+#include "decks/event_card.h"
 #include "resource.h"
 #include "tag.h"
 

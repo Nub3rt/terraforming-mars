@@ -7,7 +7,7 @@
 #include <vector>
 
 #include "constants.h"
-#include "deck.h"
+#include "decks/deck.h"
 #include "game_model.h"
 #include "player.h"
 #include "resource.h"

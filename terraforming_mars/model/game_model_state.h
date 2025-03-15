@@ -7,8 +7,8 @@
 #include <utility>
 #include <vector>
 
-#include "active_card_with_action.h"
-#include "card.h"
+#include "decks/active_card_with_action.h"
+#include "decks/card.h"
 #include "constants.h"
 #include "game_model.h"
 #include "player.h"

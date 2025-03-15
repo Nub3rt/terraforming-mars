@@ -4,11 +4,11 @@
 #include <utility>
 #include <vector>
 
-#include "board.h"
+#include "boards/board.h"
 #include "constants.h"
-#include "deck.h"
+#include "decks/deck.h"
 #include "player.h"
-#include "tile_type.h"
+#include "boards/tile_type.h"
 
 namespace model
 {

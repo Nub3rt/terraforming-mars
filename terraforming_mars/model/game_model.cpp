@@ -2,11 +2,11 @@
 
 #include <stdexcept>
 
-#include "board.h"
-#include "card.h"
+#include "boards/board.h"
+#include "decks/card.h"
 #include "constants.h"
-#include "active_card_with_action.h"
-#include "deck.h"
+#include "decks/active_card_with_action.h"
+#include "decks/deck.h"
 #include "event.h"
 #include "game_model_state.h"
 #include "player.h"

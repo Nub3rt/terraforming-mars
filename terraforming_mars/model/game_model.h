@@ -1,7 +1,7 @@
 #pragma once
 
-#include "card.fwd.h"
-#include "deck.fwd.h"
+#include "decks/card.fwd.h"
+#include "decks/deck.fwd.h"
 #include "game_model.fwd.h"
 #include "game_model_state.fwd.h"
 #include "player.fwd.h"
@@ -12,12 +12,12 @@
 #include <random>
 #include <utility>
 
-#include "active_card_with_action.h"
-#include "board.h"
+#include "decks/active_card_with_action.h"
+#include "boards/board.h"
 #include "constants.h"
 #include "event.h"
 #include "resource.h"
-#include "tile_type.h"
+#include "boards/tile_type.h"
 
 namespace model
 {
