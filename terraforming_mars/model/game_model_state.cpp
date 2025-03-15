@@ -7,7 +7,7 @@
 #include <vector>
 
 #include "constants.h"
-#include "deck.h"
+#include "decks/deck.h"
 #include "game_model.h"
 #include "player.h"
 #include "resource.h"
@@ -60,7 +60,7 @@ void GameModelState::PerformRequest( GameModel::PaymentRequest* request ) {
 }
 
 void GameModelState::PerformRequest( GameModel::PostLastGenerationGreeneryPlacementRequest* request ) {
-    _model->_on_confirm_placement.Invoke( board::TileType::GREENERY, request->valid_positions );
+    _model->_on_confirm_placement.Invoke( boards::TileType::GREENERY, request->valid_positions );
     _model->ChangeState( _model->CreatePostLastGenerationPlacementConfirmationState( request ) );
 }
 
@@ -99,37 +99,37 @@ void GameModelState::Player_OnRaiseOxygen( Player* player ) {
 
 void GameModelState::Player_OnPlaceOcean( Player* player ) {
     std::vector<pii> valid_positions = _model->_board->GetValidOceanTiles( player );
-    DoOnPlacementConfirmation( board::TileType::OCEAN, std::move( valid_positions ) );
+    DoOnPlacementConfirmation( boards::TileType::OCEAN, std::move( valid_positions ) );
 }
 
 void GameModelState::Player_OnPlaceOceanOnNonOcean( Player* player ) {
     std::vector<pii> valid_positions = _model->_board->GetEmptyTiles( player );
-    DoOnPlacementConfirmation( board::TileType::OCEAN, std::move( valid_positions ) );
+    DoOnPlacementConfirmation( boards::TileType::OCEAN, std::move( valid_positions ) );
 }
 
 void GameModelState::Player_OnPlaceGreenery( Player* player ) {
     std::vector<pii> valid_positions = _model->_board->GetValidGreeneryTiles( player );
-    DoOnPlacementConfirmation( board::TileType::GREENERY, std::move( valid_positions ) );
+    DoOnPlacementConfirmation( boards::TileType::GREENERY, std::move( valid_positions ) );
 }
 
 void GameModelState::Player_OnPlaceGreeneryOnOcean( Player* player ) {
     std::vector<pii> valid_positions = _model->_board->GetValidOceanTiles( player );
-    DoOnPlacementConfirmation( board::TileType::GREENERY, std::move( valid_positions ) );
+    DoOnPlacementConfirmation( boards::TileType::GREENERY, std::move( valid_positions ) );
 }
 
 void GameModelState::Player_OnPlaceCity( Player* player ) {
     std::vector<pii> valid_positions = _model->_board->GetValidCityTiles( player );
-    DoOnPlacementConfirmation( board::TileType::CITY, std::move( valid_positions ) );
+    DoOnPlacementConfirmation( boards::TileType::CITY, std::move( valid_positions ) );
 }
 
 void GameModelState::Player_OnPlaceLonelyCity( Player* player ) {
     std::vector<pii> valid_positions = _model->_board->GetValidLonelyCityTiles( player );
-    DoOnPlacementConfirmation( board::TileType::CITY, std::move( valid_positions ) );
+    DoOnPlacementConfirmation( boards::TileType::CITY, std::move( valid_positions ) );
 }
 
 void GameModelState::Player_OnPlaceUrbanizedArea( Player* player ) {
     std::vector<pii> valid_positions = _model->_board->GetValidUrbanizedAreaTiles( player );
-    DoOnPlacementConfirmation( board::TileType::CITY, std::move( valid_positions ) );
+    DoOnPlacementConfirmation( boards::TileType::CITY, std::move( valid_positions ) );
 }
 
 void GameModelState::Player_OnPlaceNoctisCity( Player* player ) {
@@ -140,12 +140,12 @@ void GameModelState::Player_OnPlaceNoctisCity( Player* player ) {
 
     if ( valid_positions.size() == 1 ) {
         auto& [q, r] = valid_positions[ 0 ];
-        _model->_board->PlaceTile( q, r, player, board::TileType::CITY );
+        _model->_board->PlaceTile( q, r, player, boards::TileType::CITY );
         _model->_on_place_tile.Invoke( valid_positions[ 0 ] );
         return;
     }
 
-    DoOnPlacementConfirmation( board::TileType::CITY, std::move( valid_positions ) );
+    DoOnPlacementConfirmation( boards::TileType::CITY, std::move( valid_positions ) );
 }
 
 void GameModelState::Player_OnResourceAmountChanged( Player* player, Resource resource, int amount ) {
@@ -172,7 +172,7 @@ void GameModelState::Player_OnConfirmTitaniumPayment( Player* player, int cost, 
     throw std::logic_error( "GameModelState::Player_OnConfirmTitaniumPayment: GameModel was in an invalid state!" );
 }
 
-void GameModelState::DoOnPlacementConfirmation( board::TileType type, std::vector<pii> valid_positions ) {
+void GameModelState::DoOnPlacementConfirmation( boards::TileType type, std::vector<pii> valid_positions ) {
     throw std::logic_error( "GameModelState::DoOnPlacementConfirmation: GameModel was in an invalid state!" );
 }
 
@@ -318,7 +318,7 @@ void IdleState::Player_OnConfirmTitaniumPayment( Player* player, int cost, std::
     PerformRequest( request );
 }
 
-void IdleState::DoOnPlacementConfirmation( board::TileType type, std::vector<pii> valid_positions ) {
+void IdleState::DoOnPlacementConfirmation( boards::TileType type, std::vector<pii> valid_positions ) {
     GameModel::PlacementRequest* request = new GameModel::PlacementRequest( type, std::move( valid_positions ) );
     PerformRequest( request );
 }
@@ -343,7 +343,7 @@ void PlacementConfirmationState::TilePlacementConfirmed( int q, int r ) {
 
     _model->_board->PlaceTile( q, r, _model->_local_player, _request->type );
     _model->_on_place_tile.Invoke( pii( q, r ) );
-    if ( _request->type == board::TileType::GREENERY )
+    if ( _request->type == boards::TileType::GREENERY )
         _model->_local_player->RaiseOxygen();
 
     if ( _model->_queued_request.empty() ) {
@@ -366,7 +366,7 @@ void PlacementConfirmationState::Player_OnConfirmTitaniumPayment( Player* player
     _model->_queued_request.push( request );
 }
 
-void PlacementConfirmationState::DoOnPlacementConfirmation( board::TileType type, std::vector<pii> valid_positions ) {
+void PlacementConfirmationState::DoOnPlacementConfirmation( boards::TileType type, std::vector<pii> valid_positions ) {
     GameModel::PlacementRequest* request = new GameModel::PlacementRequest( type, std::move( valid_positions ) );
     _model->_queued_request.push( request );
 }
@@ -414,7 +414,7 @@ void PaymentConfirmationState::Player_OnConfirmTitaniumPayment( Player* player, 
     _model->_queued_request.push( request );
 }
 
-void PaymentConfirmationState::DoOnPlacementConfirmation( board::TileType type, std::vector<pii> valid_positions ) {
+void PaymentConfirmationState::DoOnPlacementConfirmation( boards::TileType type, std::vector<pii> valid_positions ) {
     GameModel::PlacementRequest* request = new GameModel::PlacementRequest( type, std::move( valid_positions ) );
     _model->_queued_request.push( request );
 }
@@ -443,7 +443,7 @@ void PostLastGenerationState::EndTurn() {
     // TODO
 }
 
-void PostLastGenerationState::DoOnPlacementConfirmation( board::TileType type, std::vector<pii> valid_positions ) {
+void PostLastGenerationState::DoOnPlacementConfirmation( boards::TileType type, std::vector<pii> valid_positions ) {
     GameModel::PlacementRequest* request = new GameModel::PlacementRequest( type, std::move( valid_positions ) );
     PerformRequest( request );
 }
@@ -466,7 +466,7 @@ void PostLastGenerationPlacementConfirmationState::TilePlacementConfirmed( int q
     if ( std::find( _request->valid_positions.cbegin(), _request->valid_positions.cend(), pii( q, r ) ) == _request->valid_positions.cend() )
         throw std::logic_error( std::format( "PostLastGenerationPlacementConfirmationState::TilePlacementConfirmed: indices q: {}, r: {} are not valid positions!", q, r ) );
 
-    _model->_board->PlaceTile( q, r, _model->_local_player, board::TileType::GREENERY );
+    _model->_board->PlaceTile( q, r, _model->_local_player, boards::TileType::GREENERY );
     _model->_on_place_tile.Invoke( pii( q, r ) );
 
     _model->ChangeState( _model->CreatePostLastGenerationState() );

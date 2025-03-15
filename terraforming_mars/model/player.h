@@ -1,19 +1,19 @@
 #pragma once
 
-#include "card.fwd.h"
+#include "decks/card.fwd.h"
 #include "player.fwd.h"
 
 #include <array>
 #include <functional>
 #include <vector>
 
-#include "active_card.h"
-#include "active_card_with_action.h"
-#include "active_card_with_effect.h"
-#include "automated_card.h"
+#include "decks/active_card.h"
+#include "decks/active_card_with_action.h"
+#include "decks/active_card_with_effect.h"
+#include "decks/automated_card.h"
 #include "constants.h"
 #include "event.h"
-#include "event_card.h"
+#include "decks/event_card.h"
 #include "resource.h"
 #include "tag.h"
 

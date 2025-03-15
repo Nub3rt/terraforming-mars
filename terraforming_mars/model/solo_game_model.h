@@ -1,8 +1,8 @@
 #pragma once
 
 
-#include "board.h"
-#include "deck.h"
+#include "boards/board.h"
+#include "decks/deck.h"
 #include "game_model.h"
 #include "game_model_state.h"
 #include "player.h"
@@ -15,7 +15,7 @@ public:
     SoloGameModel( int seed );
     ~SoloGameModel();
 
-    void Initialize( board::Board* board, decks::Deck* deck ) override;
+    void Initialize( boards::Board* board, decks::Deck* deck ) override;
     void Start() override;
 
 protected:

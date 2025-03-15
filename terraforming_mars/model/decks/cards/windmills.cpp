@@ -1,0 +1,31 @@
+#include "windmills.h"
+
+#include "../automated_card.h"
+#include "../card_id.h"
+#include "../../game_model.h"
+#include "../../player.h"
+#include "../../resource.h"
+#include "../../tag.h"
+
+namespace model::decks::cards
+{
+Windmills::Windmills( const GameModel& model ) noexcept :
+    AutomatedCard( model, CardID::WINDMILLS, 6 ) {
+    AddTag( Tag::BUILDING );
+    AddTag( Tag::POWER );
+}
+
+Windmills::~Windmills() noexcept {}
+
+bool Windmills::SatisfiesRequirements() const {
+    return _model.Oxygen() >= 7;
+}
+
+void Windmills::ApplyImmediateEffects() {
+    _owner->GainResourceProduction( Resource::ENERGY, 1 );
+}
+
+int Windmills::DoCountVPs() const {
+    return 1;
+}
+}

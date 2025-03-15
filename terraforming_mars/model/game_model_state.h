@@ -7,8 +7,8 @@
 #include <utility>
 #include <vector>
 
-#include "active_card_with_action.h"
-#include "card.h"
+#include "decks/active_card_with_action.h"
+#include "decks/card.h"
 #include "constants.h"
 #include "game_model.h"
 #include "player.h"
@@ -86,7 +86,7 @@ protected:
 
     GameModel* _model;
 
-    virtual void DoOnPlacementConfirmation( board::TileType type, std::vector<pii> valid_positions );
+    virtual void DoOnPlacementConfirmation( boards::TileType type, std::vector<pii> valid_positions );
 };
 
 class ResearchState : public GameModelState
@@ -138,7 +138,7 @@ public:
     void Player_OnConfirmTitaniumPayment( Player* player, int cost, std::function<void()> after_payment ) override;
 
 protected:
-    void DoOnPlacementConfirmation( board::TileType type, std::vector<pii> valid_positions ) override;
+    void DoOnPlacementConfirmation( boards::TileType type, std::vector<pii> valid_positions ) override;
 };
 
 class PlacementConfirmationState : public GameModelState
@@ -153,7 +153,7 @@ public:
     void Player_OnConfirmTitaniumPayment( Player* player, int cost, std::function<void()> after_payment ) override;
 
 protected:
-    void DoOnPlacementConfirmation( board::TileType type, std::vector<pii> valid_positions ) override;
+    void DoOnPlacementConfirmation( boards::TileType type, std::vector<pii> valid_positions ) override;
 
     GameModel::PlacementRequest* _request;
 };
@@ -170,7 +170,7 @@ public:
     void Player_OnConfirmTitaniumPayment( Player* player, int cost, std::function<void()> after_payment ) override;
 
 protected:
-    void DoOnPlacementConfirmation( board::TileType type, std::vector<pii> valid_positions ) override;
+    void DoOnPlacementConfirmation( boards::TileType type, std::vector<pii> valid_positions ) override;
 
     GameModel::PaymentRequest* _request;
 };
@@ -188,7 +188,7 @@ public:
     void EndTurn() override;
 
 protected:
-    void DoOnPlacementConfirmation( board::TileType type, std::vector<pii> valid_positions ) override;
+    void DoOnPlacementConfirmation( boards::TileType type, std::vector<pii> valid_positions ) override;
 };
 
 class PostLastGenerationPlacementConfirmationState : public GameModelState

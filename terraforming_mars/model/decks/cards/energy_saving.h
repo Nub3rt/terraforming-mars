@@ -1,0 +1,17 @@
+#pragma once
+
+#include "../automated_card.h"
+#include "../../game_model.h"
+
+namespace model::decks::cards
+{
+class EnergySaving : public AutomatedCard
+{
+public:
+    EnergySaving( const GameModel& model ) noexcept;
+    ~EnergySaving() noexcept;
+
+protected:
+    void ApplyImmediateEffects() override;
+};
+}
