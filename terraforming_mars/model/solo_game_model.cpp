@@ -31,13 +31,13 @@ void SoloGameModel::Initialize( boards::Board* board, decks::Deck* deck ) {
 
     const std::vector<pii> neighbours_of_first = _board->GetNeighbouringTilesOfType( q1, r1, boards::TileType::EMPTY );
     if ( neighbours_of_first.size() > 0 ) {
-        auto& [q1_n, r1_n] = neighbours_of_first[ _random() / neighbours_of_first.size() ];
+        auto& [q1_n, r1_n] = neighbours_of_first[ _random() % neighbours_of_first.size() ];
         _board->SetTileType( q1_n, r1_n, boards::TileType::GREENERY );
     }
 
     const std::vector<pii> neighbours_of_second = _board->GetNeighbouringTilesOfType( q2, r2, boards::TileType::EMPTY );
     if ( neighbours_of_second.size() > 0 ) {
-        auto& [q2_n, r2_n] = neighbours_of_second[ _random() / neighbours_of_second.size() ];
+        auto& [q2_n, r2_n] = neighbours_of_second[ _random() % neighbours_of_second.size() ];
         _board->SetTileType( q2_n, r2_n, boards::TileType::GREENERY );
     }
 }

@@ -81,7 +81,7 @@ ConcreteBoard::IteratorWrapper::Iterator& ConcreteBoard::IteratorWrapper::operat
 
 bool ConcreteBoard::IteratorWrapper::operator==( const Iterator& other ) const {
     const IteratorWrapper* other_wrapper = dynamic_cast<const IteratorWrapper*>( &other );
-    return other_wrapper && _iterator == other_wrapper->_iterator;
+    return other_wrapper && *_iterator == *other_wrapper->_iterator;
 }
 
 bool ConcreteBoard::IteratorWrapper::operator!=( const Iterator& other ) const {
