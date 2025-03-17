@@ -19,6 +19,7 @@ public:
     ~TharsisConcreteBoard() noexcept;
 
     inline Tile& get_tile( int q, int r ) noexcept { return _board[ r ][ q ]; }
+    const Tile& get_tile( int q, int r ) const noexcept override;
 
     std::vector<pii> GetNeighbouringTiles( int q, int r ) const override;
     const pii* NoctisCityIndex() const override;

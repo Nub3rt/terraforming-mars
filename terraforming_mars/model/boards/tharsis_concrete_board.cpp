@@ -17,6 +17,8 @@ TharsisConcreteBoard::TharsisConcreteBoard() noexcept : _board( _starting_board 
 
 TharsisConcreteBoard::~TharsisConcreteBoard() noexcept {}
 
+const Tile& TharsisConcreteBoard::get_tile( int q, int r ) const noexcept { return _board[ r ][ q ]; }
+
 std::vector<pii> TharsisConcreteBoard::GetNeighbouringTiles( int q, int r ) const {
     std::vector<pii> neighbours;
 
