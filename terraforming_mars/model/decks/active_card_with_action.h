@@ -15,7 +15,7 @@ public:
 
     Availability Availability() const;
     void UseAction();
-    inline void NextGenerationStarted() noexcept;
+    inline void NextGenerationStarted() noexcept { _used_this_generation = false; }
 
 protected:
     ActiveCardWithAction( const GameModel& model, CardID card_id, int base_cost ) noexcept;

@@ -17,26 +17,22 @@ TharsisConcreteBoard::TharsisConcreteBoard() noexcept : _board( _starting_board 
 
 TharsisConcreteBoard::~TharsisConcreteBoard() noexcept {}
 
-inline Tile& TharsisConcreteBoard::get_tile( int q, int r ) noexcept {
-    return _board[ r ][ q ];
-}
-
 std::vector<pii> TharsisConcreteBoard::GetNeighbouringTiles( int q, int r ) const {
     std::vector<pii> neighbours;
 
     int s = -q - r;
     if ( r > 0 && q < 8 )
-        neighbours.emplace_back( q + 1, r - 1);
+        neighbours.emplace_back( q + 1, r - 1 );
     if ( q < 8 && s > -12 )
-        neighbours.emplace_back( q + 1, r    );
+        neighbours.emplace_back( q + 1, r     );
     if ( s > -12 && r < 8 )
-        neighbours.emplace_back( q    , r + 1);
+        neighbours.emplace_back( q    , r + 1 );
     if ( r < 8 && q > 0 )
-        neighbours.emplace_back( q - 1, r + 1);
+        neighbours.emplace_back( q - 1, r + 1 );
     if ( q > 0 && s < -4 )
-        neighbours.emplace_back( q - 1, r    );
+        neighbours.emplace_back( q - 1, r     );
     if ( s < -4 && r > 0 )
-        neighbours.emplace_back( q    , r - 1);
+        neighbours.emplace_back( q    , r - 1 );
 
     return neighbours;
 }
@@ -216,10 +212,6 @@ bool TharsisConcreteBoard::TharsisIterator::operator==( const Iterator& other ) 
 
 bool TharsisConcreteBoard::TharsisIterator::operator!=( const Iterator& other ) const {
     return !(*this == other);
-}
-
-inline pii TharsisConcreteBoard::TharsisIterator::GetIndices() const {
-    return pii( _q, _r );
 }
 
 void TharsisConcreteBoard::TharsisIterator::PointerOneUp() {

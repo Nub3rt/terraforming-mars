@@ -22,11 +22,6 @@ bool Card::IsActive() const noexcept { return false; }
 bool Card::IsActiveWithAction() const noexcept { return false; }
 bool Card::IsActiveWithEffect() const noexcept { return false; }
 
-inline CardID Card::get_card_id() const noexcept { return _card_id; }
-
-inline bool Card::HasTag( Tag tag ) const noexcept { return _tags[ +tag ] > 0; }
-inline int Card::GetTagCount( Tag tag ) const noexcept { return _tags[ +tag ]; }
-
 void Card::Buy( Player* player ) { 
     if ( _holder != nullptr || _owner != nullptr )
         throw std::logic_error( "Card::Buy: card was already bought!" );

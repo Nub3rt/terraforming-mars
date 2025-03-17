@@ -27,7 +27,7 @@ public:
     virtual void SetOwner( int q, int r, Player* player ) = 0;
     virtual void SetTileType( int q, int r, TileType type ) = 0;
 
-    inline void SetOnTilePlacedCallback( std::function<void( int, int, const Tile& )> callback );
+    inline void SetOnTilePlacedCallback( std::function<void( int, int, const Tile& )> callback ) { _on_tile_placed.SetCallback( callback ); }
 
 protected:
     ConcreteBoard() noexcept;

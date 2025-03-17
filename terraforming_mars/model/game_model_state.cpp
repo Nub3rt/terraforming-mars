@@ -195,7 +195,7 @@ void ResearchState::ToggleToBuyCard( int index ) {
     _to_buy[ index ] = !_to_buy[ index ];
 }
 
-inline int ResearchState::GetTotalCost() const {
+int ResearchState::GetTotalCost() const {
     int sum = 0;
 
     for ( const bool& to_buy : _to_buy )

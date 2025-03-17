@@ -18,7 +18,7 @@ public:
     TharsisConcreteBoard() noexcept;
     ~TharsisConcreteBoard() noexcept;
 
-    inline Tile& get_tile( int q, int r ) noexcept;
+    inline Tile& get_tile( int q, int r ) noexcept { return _board[ r ][ q ]; }
 
     std::vector<pii> GetNeighbouringTiles( int q, int r ) const override;
     const pii* NoctisCityIndex() const override;
@@ -49,7 +49,7 @@ public:
         bool operator==( const Iterator& other ) const override;
         bool operator!=( const Iterator& other ) const override;
 
-        inline pii GetIndices() const override;
+        inline pii GetIndices() const override { return pii( _q, _r ); }
 
         void PointerOneUp();
 

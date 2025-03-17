@@ -12,10 +12,10 @@ class Tile
 public:
     Tile( const std::function<void( Player* )>& apply_placement_bonuses, TileType type = TileType::NONE ) noexcept;
 
-    inline TileType get_type() const noexcept;
-    inline void set_type( TileType type ) noexcept;
-    inline Player* get_owner() const noexcept;
-    inline void set_owner( Player* owner ) noexcept;
+    inline TileType get_type() const noexcept { return _type; }
+    inline void set_type( TileType type ) noexcept { _type = type; }
+    inline Player* get_owner() const noexcept { return _owner; }
+    inline void set_owner( Player* owner ) noexcept { _owner = owner; }
     
     void ApplyPlacementBonuses();
 

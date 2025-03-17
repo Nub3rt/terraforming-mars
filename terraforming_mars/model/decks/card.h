@@ -24,10 +24,10 @@ public:
     virtual bool IsActiveWithAction() const noexcept;
     virtual bool IsActiveWithEffect() const noexcept;
 
-    inline CardID get_card_id() const noexcept;
+    inline CardID get_card_id() const noexcept { return _card_id; }
 
-    inline bool HasTag( Tag tag ) const noexcept;
-    inline int GetTagCount( Tag tag ) const noexcept;
+    inline bool HasTag( Tag tag ) const noexcept { return _tags[ +tag ] > 0; }
+    inline int GetTagCount( Tag tag ) const noexcept { return _tags[ +tag ]; }
 
     void Buy( Player* player );
     void Sell();

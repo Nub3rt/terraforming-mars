@@ -41,10 +41,6 @@ std::vector<pii> ConcreteBoard::GetNeighbouringTilesOfTypeRange( int q, int r, T
 
 const pii* ConcreteBoard::NoctisCityIndex() const { return nullptr; }
 
-inline void ConcreteBoard::SetOnTilePlacedCallback( std::function<void( int, int, const Tile& )> callback ) {
-    _on_tile_placed.SetCallback( callback );
-}
-
 
 const std::function<void( Player* )> ConcreteBoard::_noop              = []( Player* player ) {};
 const std::function<void( Player* )> ConcreteBoard::_draw_one_card     = []( Player* player ) { player->DrawCard(); };
@@ -59,7 +55,7 @@ const std::function<void( Player* )> ConcreteBoard::_gain_two_plants   = []( Pla
 const std::function<void( Player* )> ConcreteBoard::_gain_titanium_and_plants =
     []( Player* player ) { player->GainResource( Resource::TITANIUM, 1 ); player->GainResource( Resource::PLANTS, 1 ); };
 
-const std::function<void( Player* )> ConcreteBoard::_bad_index = []( Player* player ) { throw std::logic_error( "ConcreteBoard was indexed on an invalid tile!" ); };
+const std::function<void( Player* )> ConcreteBoard::_bad_index = []( Player* player ) { throw std::logic_error( "ConcreteBoard::_bad_index: was indexed on an invalid tile!" ); };
 
 
 ConcreteBoard::Iterator::Iterator() {}

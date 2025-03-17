@@ -53,14 +53,14 @@ public:
     virtual void Initialize( boards::Board* board, decks::Deck* deck );
     virtual void Start();
 
-    inline int get_generation() const;
-    inline const boards::Board* get_board() const;
-    inline const Player* get_local_player() const;
+    inline int get_generation() const { return _generation; }
+    inline const boards::Board* get_board() const { return _board; }
+    inline const Player* get_local_player() const { return _local_player; }
 
-    inline int Temperature() const;
-    inline int OceanCount() const;
-    inline int Oxygen() const;
-    inline int CityCount() const;
+    inline int Temperature() const { return _temperature; }
+    inline int OceanCount() const { return _ocean_count; }
+    inline int Oxygen() const { return _oxygen_level; }
+    inline int CityCount() const { return static_cast<int>( _board->GetTilesOfType( boards::TileType::CITY ).size() ); }
 
     bool IsTilePlaceable( const Player* player ) const;
     bool IsCityPlaceable( const Player* player ) const;
@@ -69,59 +69,59 @@ public:
 
     virtual bool AreGlobalParametersFulfilled() const;
 
-    inline bool CanUsePowerPlantSP() const;
-    inline bool CanUseAsteroidSP() const;
-    inline bool CanUseAquiferSP() const;
-    inline bool CanUseGreenerySP() const;
-    inline bool CanUseCitySP() const;
-    inline bool CanConvertPlantsToGreenery() const;
-    inline bool CanConvertHeatToTemperature() const;
+    bool CanUsePowerPlantSP() const;
+    bool CanUseAsteroidSP() const;
+    bool CanUseAquiferSP() const;
+    bool CanUseGreenerySP() const;
+    bool CanUseCitySP() const;
+    bool CanConvertPlantsToGreenery() const;
+    bool CanConvertHeatToTemperature() const;
 
-    inline bool InIdleState() const; // can play cards, can use actions;
-    inline bool CanPlayCards() const;
-    inline bool CanUseActions() const;
+    bool InIdleState() const; // can play cards, can use actions;
+    bool CanPlayCards() const;
+    bool CanUseActions() const;
 
-    inline void SellCardSP( decks::Card* card );
-    inline void UsePowerPlantSP();
-    inline void UseAsteroidSP();
-    inline void UseAquiferSP();
-    inline void UseGreenerySP();
-    inline void UseCitySP();
-    inline void ConvertPlantsToGreenery();
-    inline void ConvertHeatToTemperature();
+    void SellCardSP( decks::Card* card );
+    void UsePowerPlantSP();
+    void UseAsteroidSP();
+    void UseAquiferSP();
+    void UseGreenerySP();
+    void UseCitySP();
+    void ConvertPlantsToGreenery();
+    void ConvertHeatToTemperature();
 
-    inline void PlayCard( decks::Card* card );
-    inline void UseAction( decks::ActiveCardWithAction* card );
+    void PlayCard( decks::Card* card );
+    void UseAction( decks::ActiveCardWithAction* card );
 
     // Research State
-    inline void ToggleToBuyCard( int index );
-    inline int GetTotalCost() const;
-    inline void ConfirmPurchases();
+    void ToggleToBuyCard( int index );
+    int GetTotalCost() const;
+    void ConfirmPurchases();
 
     // Placement Confirmation State
-    inline void TilePlacementConfirmed( int q, int r );
+    void TilePlacementConfirmed( int q, int r );
 
     // Payment Confirmation State
-    inline void PaymentConfirmed( int credit, int resource );
+    void PaymentConfirmed( int credit, int resource );
 
-    inline void EndTurn();
+    void EndTurn();
 
 
-    inline void SetOnDrawCard( Callback<decks::Card*> callback );
-    inline void SetOnPlayCard( Callback<decks::Card*> callback );
-    inline void SetOnRaiseTR( Callback<int> callback );
-    inline void SetOnRaiseTemperature( Callback<> callback );
-    inline void SetOnRaiseOxygen( Callback<> callback );
-    inline void SetOnPlaceTile( Callback<pii> callback );
-    inline void SetOnResourceAmountChanged( Callback<Resource, int> callback );
-    inline void SetOnResourceProductionAmountChanged( Callback<Resource, int> callback );
-    inline void SetOnResearchConfirmed( Callback<std::array<bool, RESEARCH_CARD_NUM>> callback );
-    inline void SetOnConfirmResearch( Callback<std::array<decks::Card*, RESEARCH_CARD_NUM>> callback );
-    inline void SetOnConfirmPayment( Callback<int, Resource, int> callback );
-    inline void SetOnConfirmPlacement( Callback<boards::TileType, std::vector<pii>> callback );
-    inline void SetOnConfirmDestroyResource( Callback<Resource, int> callback );
-    inline void SetOnConfirmDestroyResourceProduction( Callback<Resource, int> callback );
-    inline void SetOnGameEnd( Callback<> callback );
+    inline void SetOnDrawCard( Callback<decks::Card*> callback ) { _on_draw_card.SetCallback( callback ); }
+    inline void SetOnPlayCard( Callback<decks::Card*> callback ) { _on_play_card.SetCallback( callback ); }
+    inline void SetOnRaiseTR( Callback<int> callback ) { _on_raise_tr.SetCallback( callback ); }
+    inline void SetOnRaiseTemperature( Callback<> callback ) { _on_raise_temperature.SetCallback( callback ); }
+    inline void SetOnRaiseOxygen( Callback<> callback ) { _on_raise_oxygen.SetCallback( callback ); }
+    inline void SetOnPlaceTile( Callback<pii> callback ) { _on_place_tile.SetCallback( callback ); }
+    inline void SetOnResourceAmountChanged( Callback<Resource, int> callback ) { _on_resource_amount_changed.SetCallback( callback ); }
+    inline void SetOnResourceProductionAmountChanged( Callback<Resource, int> callback ) { _on_resource_production_amount_changed.SetCallback( callback ); }
+    inline void SetOnResearchConfirmed( Callback<std::array<bool, RESEARCH_CARD_NUM>> callback ) { _on_research_confirmed.SetCallback( callback ); }
+    inline void SetOnConfirmResearch( Callback<std::array<decks::Card*, RESEARCH_CARD_NUM>> callback ) { _on_confirm_research.SetCallback( callback ); }
+    inline void SetOnConfirmPayment( Callback<int, Resource, int> callback ) { _on_confirm_payment.SetCallback( callback ); }
+    inline void SetOnConfirmPlacement( Callback<boards::TileType, std::vector<pii>> callback ) { _on_confirm_placement.SetCallback( callback ); }
+    inline void SetOnConfirmDestroyResource( Callback<Resource, int> callback ) { _on_confirm_destroy_resource.SetCallback( callback ); }
+    inline void SetOnConfirmDestroyResourceProduction( Callback<Resource, int> callback ) { _on_confirm_destroy_resource_production.SetCallback( callback ); }
+    inline void SetOnGameEnd( Callback<> callback ) { _on_game_end.SetCallback( callback ); }
 
 protected:
     GameModel( int seed );
@@ -184,24 +184,24 @@ protected:
 
     virtual void EndGame();
 
-    inline void Player_OnDrawCard( Player* player );
-    inline void Player_OnRaiseTR( Player* player, int amount );
-    inline void Player_OnRaiseTemperature( Player* player );
-    inline void Player_OnPlaceOcean( Player* player );
-    inline void Player_OnPlaceOceanOnNonOcean( Player* player );
-    inline void Player_OnRaiseOxygen( Player* player );
-    inline void Player_OnPlaceGreenery( Player* player );
-    inline void Player_OnPlaceGreeneryOnOcean( Player* player );
-    inline void Player_OnPlaceCity( Player* player );
-    inline void Player_OnPlaceNoctisCity( Player* player );
-    inline void Player_OnPlaceLonelyCity( Player* player );
-    inline void Player_OnPlaceUrbanizedArea( Player* player );
-    inline void Player_OnResourceAmountChanged( Player* player, Resource resource, int amount );
-    inline void Player_OnResourceProductionAmountChanged( Player* player, Resource resource, int amount );
+    virtual void Player_OnDrawCard( Player* player );
+    virtual void Player_OnRaiseTR( Player* player, int amount );
+    virtual void Player_OnRaiseTemperature( Player* player );
+    virtual void Player_OnPlaceOcean( Player* player );
+    virtual void Player_OnPlaceOceanOnNonOcean( Player* player );
+    virtual void Player_OnRaiseOxygen( Player* player );
+    virtual void Player_OnPlaceGreenery( Player* player );
+    virtual void Player_OnPlaceGreeneryOnOcean( Player* player );
+    virtual void Player_OnPlaceCity( Player* player );
+    virtual void Player_OnPlaceNoctisCity( Player* player );
+    virtual void Player_OnPlaceLonelyCity( Player* player );
+    virtual void Player_OnPlaceUrbanizedArea( Player* player );
+    virtual void Player_OnResourceAmountChanged( Player* player, Resource resource, int amount );
+    virtual void Player_OnResourceProductionAmountChanged( Player* player, Resource resource, int amount );
     virtual void Player_OnDestroyResource( Player* player, Resource resource, int amount );
     virtual void Player_OnDestroyResourceProduction( Player* player, Resource resource, int amount );
-    inline void Player_OnConfirmSteelPayment( Player* player, int cost, std::function<void()> after_payment );
-    inline void Player_OnConfirmTitaniumPayment( Player* player, int cost, std::function<void()> after_payment );
+    virtual void Player_OnConfirmSteelPayment( Player* player, int cost, std::function<void()> after_payment );
+    virtual void Player_OnConfirmTitaniumPayment( Player* player, int cost, std::function<void()> after_payment );
 
     class Request
     {

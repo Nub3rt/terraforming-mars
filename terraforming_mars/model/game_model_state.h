@@ -96,7 +96,7 @@ public:
     ~ResearchState();
 
     void ToggleToBuyCard( int index ) override;
-    inline int GetTotalCost() const;
+    int GetTotalCost() const;
     void ConfirmPurchases() override;
 
 protected:

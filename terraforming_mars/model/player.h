@@ -32,52 +32,49 @@ public:
     Player& operator=( const Player& other ) = delete;
     Player& operator=( Player&& other ) = delete;
 
-    inline const int get_tr() const noexcept;
+    inline const int get_tr() const noexcept { return _tr; }
 
-    inline const std::array<int, +Resource::MAX + 1>& get_resources() const noexcept;
-    inline const std::array<int, +Resource::MAX + 1>& get_resource_productions() const noexcept;
+    inline const std::array<int, +Resource::MAX + 1>& get_resources() const noexcept { return _resources; }
+    inline const std::array<int, +Resource::MAX + 1>& get_resource_productions() const noexcept { return _resource_productions; }
 
-    inline int get_steel_value() const noexcept;
-    inline int get_titanium_value() const noexcept;
+    inline int get_steel_value() const noexcept { return _steel_value; }
+    inline int get_titanium_value() const noexcept { return _titanium_value; }
 
-    inline int get_greenery_cost() const noexcept;
-    inline int get_temperature_cost() const noexcept;
+    inline int get_greenery_cost() const noexcept { return _greenery_cost; }
+    inline int get_temperature_cost() const noexcept { return _temperature_cost; }
 
-    inline const std::vector<decks::Card*>& get_hand() const noexcept;
-    inline const std::vector<decks::EventCard*>& get_event_cards() const noexcept;
-    inline const std::vector<decks::AutomatedCard*>& get_automated_cards() const noexcept;
-    inline const std::vector<decks::ActiveCardWithAction*>& get_action_cards() const noexcept;
-    inline const std::vector<decks::ActiveCardWithEffect*>& get_effect_cards() const noexcept;
+    inline const std::vector<decks::Card*>& get_hand() const noexcept { return _hand; }
+    inline const std::vector<decks::EventCard*>& get_event_cards() const noexcept { return _event_cards; }
+    inline const std::vector<decks::AutomatedCard*>& get_automated_cards() const noexcept { return _automated_cards; }
+    inline const std::vector<decks::ActiveCardWithAction*>& get_action_cards() const noexcept { return _action_cards; }
+    inline const std::vector<decks::ActiveCardWithEffect*>& get_effect_cards() const noexcept { return _effect_cards; }
 
-    inline void DrawCard();
+    inline void DrawCard() { _on_draw_card.Invoke( this ); }
+    inline void RaiseTR( int amount ) { _on_raise_tr.Invoke( this, amount ); }
+    inline void RaiseTemperature() { _on_raise_temperature.Invoke( this ); }
+    inline void PlaceOcean() { _on_place_ocean.Invoke( this ); }
+    inline void PlaceOceanOnNonOcean() { _on_place_ocean_on_non_ocean.Invoke( this ); }
+    inline void RaiseOxygen() { _on_raise_oxygen.Invoke( this ); }
+    inline void PlaceGreenery() { _on_place_greenery.Invoke( this ); }
+    inline void PlaceGreeneryOnOcean() { _on_place_greenery_on_ocean.Invoke( this ); }
+    inline void PlaceCity() { _on_place_city.Invoke( this ); }
+    inline void PlaceNoctisCity() { _on_place_noctis_city.Invoke( this ); }
+    inline void PlaceLonelyCity() { _on_place_lonely_city.Invoke( this ); }
+    inline void PlaceUrbanizedArea() { _on_place_urbanized_area.Invoke( this ); }
 
-    inline void RaiseTR( int amount );
+    void GetTR( int amount );
 
-    inline void RaiseTemperature();
-    inline void PlaceOcean();
-    inline void PlaceOceanOnNonOcean();
-    inline void RaiseOxygen();
+    int GetResource( Resource resource ) const;
+    int GetResourceProduction( Resource resource ) const;
 
-    inline void PlaceGreenery();
-    inline void PlaceGreeneryOnOcean();
-    inline void PlaceCity();
-    inline void PlaceNoctisCity();
-    inline void PlaceLonelyCity();
-    inline void PlaceUrbanizedArea();
+    void GainResource( Resource resource, int amount );
+    void GainResourceProduction( Resource resource, int amount );
 
-    inline void GetTR( int amount );
+    void LoseResource( Resource resource, int amount );
+    void LoseResourceProduction( Resource resource, int amount );
 
-    inline int GetResource( Resource resource ) const;
-    inline int GetResourceProduction( Resource resource ) const;
-
-    inline void GainResource( Resource resource, int amount );
-    inline void GainResourceProduction( Resource resource, int amount );
-
-    inline void LoseResource( Resource resource, int amount );
-    inline void LoseResourceProduction( Resource resource, int amount );
-
-    inline void DestroyResource( Resource resource, int amount );
-    inline void DestroyResourceProduction( Resource resource, int amount );
+    void DestroyResource( Resource resource, int amount );
+    void DestroyResourceProduction( Resource resource, int amount );
 
     // void AddResouce( ... );
 
@@ -100,29 +97,28 @@ public:
     void OnEffect( std::function<void( decks::ActiveCardWithEffect* )> effect );
 
 
-    inline void SetOnDrawCardCallback( Callback<> callback );
+    void SetOnDrawCardCallback( Callback<> callback ) { _on_draw_card.SetCallback( callback ); }
+    void SetOnRaiseTRCallback( Callback<int> callback ) { _on_raise_tr.SetCallback( callback ); }
 
-    inline void SetOnRaiseTRCallback( Callback<int> callback );
+    void SetOnRaiseTemperatureCallback( Callback<> callback ) { _on_raise_temperature.SetCallback( callback ); }
+    void SetOnPlaceOceanCallback( Callback<> callback ) { _on_place_ocean.SetCallback( callback ); }
+    void SetOnPlaceOceanOnNonOceanCallback( Callback<> callback ) { _on_place_ocean_on_non_ocean.SetCallback( callback ); }
+    void SetOnRaiseOxygenCallback( Callback<> callback ) { _on_raise_oxygen.SetCallback( callback ); }
 
-    inline void SetOnRaiseTemperatureCallback( Callback<> callback );
-    inline void SetOnPlaceOceanCallback( Callback<> callback );
-    inline void SetOnPlaceOceanOnNonOceanCallback( Callback<> callback );
-    inline void SetOnRaiseOxygenCallback( Callback<> callback );
+    void SetOnPlaceGreeneryCallback( Callback<> callback ) { _on_place_greenery.SetCallback( callback ); }
+    void SetOnPlaceGreeneryOnOceanCallback( Callback<> callback ) { _on_place_greenery_on_ocean.SetCallback( callback ); }
+    void SetOnPlaceCityCallback( Callback<> callback ) { _on_place_city.SetCallback( callback ); }
+    void SetOnPlaceNoctisCityCallback( Callback<> callback ) { _on_place_noctis_city.SetCallback( callback ); }
+    void SetOnPlaceLonelyCityCallback( Callback<> callback ) { _on_place_lonely_city.SetCallback( callback ); }
+    void SetOnPlaceUrbanizedAreaCallback( Callback<> callback ) { _on_place_urbanized_area.SetCallback( callback ); }
 
-    inline void SetOnPlaceGreeneryCallback( Callback<> callback );
-    inline void SetOnPlaceGreeneryOnOceanCallback( Callback<> callback );
-    inline void SetOnPlaceCityCallback( Callback<> callback );
-    inline void SetOnPlaceNoctisCityCallback( Callback<> callback );
-    inline void SetOnPlaceLonelyCityCallback( Callback<> callback );
-    inline void SetOnPlaceUrbanizedAreaCallback( Callback<> callback );
+    void SetOnResourceAmountChangedCallback( Callback<Resource, int> callback ) { _on_resource_amount_changed.SetCallback( callback ); }
+    void SetOnResourceProductionAmountChangedCallback( Callback<Resource, int> callback ) { _on_resource_production_amount_changed.SetCallback( callback ); }
+    void SetOnDestroyResourceCallback( Callback<Resource, int> callback ) { _on_destroy_resource.SetCallback( callback ); }
+    void SetOnDestroyResourceProductionCallback( Callback<Resource, int> callback ) { _on_destroy_resource_production.SetCallback( callback ); }
 
-    inline void SetOnResourceAmountChangedCallback( Callback<Resource, int> callback );
-    inline void SetOnResourceProductionAmountChangedCallback( Callback<Resource, int> callback );
-    inline void SetOnDestroyResourceCallback( Callback<Resource, int> callback );
-    inline void SetOnDestroyResourceProductionCallback( Callback<Resource, int> callback );
-
-    inline void SetOnConfirmSteelPaymentCallback( Callback <int, std::function<void()>> callback );
-    inline void SetOnConfirmTitaniumPaymentCallback( Callback <int, std::function<void()>> callback );
+    void SetOnConfirmSteelPaymentCallback( Callback <int, std::function<void()>> callback ) { _on_confirm_steel_payment.SetCallback( callback ); }
+    void SetOnConfirmTitaniumPaymentCallback( Callback <int, std::function<void()>> callback ) { _on_confirm_titanium_payment.SetCallback( callback ); }
 
 private:
     int _tr;

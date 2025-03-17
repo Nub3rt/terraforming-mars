@@ -36,6 +36,4 @@ void ActiveCardWithAction::UseAction() {
     DoUseAction();
     _used_this_generation = true;
 }
-
-inline void ActiveCardWithAction::NextGenerationStarted() noexcept { _used_this_generation = false; }
 }

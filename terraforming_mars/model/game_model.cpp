@@ -65,18 +65,6 @@ void GameModel::Start() {
     // TODO
 }
 
-inline int GameModel::get_generation() const { return _generation; }
-inline const boards::Board* GameModel::get_board() const { return _board; }
-inline const Player* GameModel::get_local_player() const { return _local_player; }
-
-inline int GameModel::Temperature() const { return _temperature; }
-inline int GameModel::OceanCount() const { return _ocean_count; }
-inline int GameModel::Oxygen() const { return _oxygen_level; }
-
-inline int GameModel::CityCount() const {
-    return static_cast<int>( _board->GetTilesOfType( boards::TileType::CITY ).size() );
-}
-
 bool GameModel::IsTilePlaceable( const Player* player ) const {
     return _board->GetPlaceableTilesOfType( player, boards::TileType::EMPTY ).size() > 0;
 }
@@ -97,60 +85,38 @@ bool GameModel::AreGlobalParametersFulfilled() const {
     return Temperature() == MAX_TEMPERATURE && OceanCount() == MAX_OCEAN_COUNT && Oxygen() == MAX_OXYGEN_LEVEL;
 }
 
-inline bool GameModel::CanUsePowerPlantSP() const { return _state->CanUsePowerPlantSP(); }
-inline bool GameModel::CanUseAsteroidSP() const { return _state->CanUseAsteroidSP(); }
-inline bool GameModel::CanUseAquiferSP() const { return _state->CanUseAquiferSP(); }
-inline bool GameModel::CanUseGreenerySP() const { return _state->CanUseGreenerySP(); }
-inline bool GameModel::CanUseCitySP() const { return _state->CanUseCitySP(); }
-inline bool GameModel::CanConvertPlantsToGreenery() const { return _state->CanConvertPlantsToGreenery(); }
-inline bool GameModel::CanConvertHeatToTemperature() const { return _state->CanConvertHeatToTemperature(); }
+bool GameModel::CanUsePowerPlantSP() const { return _state->CanUsePowerPlantSP(); }
+bool GameModel::CanUseAsteroidSP() const { return _state->CanUseAsteroidSP(); }
+bool GameModel::CanUseAquiferSP() const { return _state->CanUseAquiferSP(); }
+bool GameModel::CanUseGreenerySP() const { return _state->CanUseGreenerySP(); }
+bool GameModel::CanUseCitySP() const { return _state->CanUseCitySP(); }
+bool GameModel::CanConvertPlantsToGreenery() const { return _state->CanConvertPlantsToGreenery(); }
+bool GameModel::CanConvertHeatToTemperature() const { return _state->CanConvertHeatToTemperature(); }
 
-inline bool GameModel::InIdleState() const { return _state->InIdleState(); }
-inline bool GameModel::CanPlayCards() const { return InIdleState(); }
-inline bool GameModel::CanUseActions() const { return InIdleState(); }
+bool GameModel::InIdleState() const { return _state->InIdleState(); }
+bool GameModel::CanPlayCards() const { return InIdleState(); }
+bool GameModel::CanUseActions() const { return InIdleState(); }
 
-inline void GameModel::SellCardSP( decks::Card* card ) { _state->SellCardSP( card ); }
-inline void GameModel::UsePowerPlantSP() { _state->UsePowerPlantSP(); }
-inline void GameModel::UseAsteroidSP() { _state->UseAsteroidSP(); }
-inline void GameModel::UseAquiferSP() { _state->UseAquiferSP(); }
-inline void GameModel::UseGreenerySP() { _state->UseGreenerySP(); }
-inline void GameModel::UseCitySP() { _state->UseCitySP(); }
-inline void GameModel::ConvertPlantsToGreenery() { _state->ConvertPlantsToGreenery(); }
-inline void GameModel::ConvertHeatToTemperature() { _state->ConvertHeatToTemperature(); }
+void GameModel::SellCardSP( decks::Card* card ) { _state->SellCardSP( card ); }
+void GameModel::UsePowerPlantSP() { _state->UsePowerPlantSP(); }
+void GameModel::UseAsteroidSP() { _state->UseAsteroidSP(); }
+void GameModel::UseAquiferSP() { _state->UseAquiferSP(); }
+void GameModel::UseGreenerySP() { _state->UseGreenerySP(); }
+void GameModel::UseCitySP() { _state->UseCitySP(); }
+void GameModel::ConvertPlantsToGreenery() { _state->ConvertPlantsToGreenery(); }
+void GameModel::ConvertHeatToTemperature() { _state->ConvertHeatToTemperature(); }
 
-inline void GameModel::PlayCard( decks::Card* card ) { _state->PlayCard( card ); }
-inline void GameModel::UseAction( decks::ActiveCardWithAction* card ) { _state->UseAction( card ); }
+void GameModel::PlayCard( decks::Card* card ) { _state->PlayCard( card ); }
+void GameModel::UseAction( decks::ActiveCardWithAction* card ) { _state->UseAction( card ); }
 
-inline void GameModel::ToggleToBuyCard( int index ) { _state->ToggleToBuyCard( index ); }
-inline int GameModel::GetTotalCost() const { return _state->GetTotalCost(); }
-inline void GameModel::ConfirmPurchases() { _state->ConfirmPurchases(); }
+void GameModel::ToggleToBuyCard( int index ) { _state->ToggleToBuyCard( index ); }
+int GameModel::GetTotalCost() const { return _state->GetTotalCost(); }
+void GameModel::ConfirmPurchases() { _state->ConfirmPurchases(); }
 
-inline void GameModel::TilePlacementConfirmed( int q, int r ) { _state->TilePlacementConfirmed( q, r ); }
-inline void GameModel::PaymentConfirmed( int credit, int resource ) { _state->PaymentConfirmed( credit, resource ); }
+void GameModel::TilePlacementConfirmed( int q, int r ) { _state->TilePlacementConfirmed( q, r ); }
+void GameModel::PaymentConfirmed( int credit, int resource ) { _state->PaymentConfirmed( credit, resource ); }
 
-inline void GameModel::EndTurn() { _state->EndTurn(); }
-
-void GameModel::EndGame() {
-    _game_ended = true;
-    _on_game_end.Invoke();
-    ChangeState( CreateGameOverState() );
-}
-
-inline void GameModel::SetOnDrawCard( Callback<decks::Card*> callback ) { _on_draw_card.SetCallback( callback ); }
-inline void GameModel::SetOnPlayCard( Callback<decks::Card*> callback ) { _on_play_card.SetCallback( callback ); }
-inline void GameModel::SetOnRaiseTR( Callback<int> callback ) { _on_raise_tr.SetCallback( callback ); }
-inline void GameModel::SetOnRaiseTemperature( Callback<> callback ) { _on_raise_temperature.SetCallback( callback ); }
-inline void GameModel::SetOnRaiseOxygen( Callback<> callback ) { _on_raise_oxygen.SetCallback( callback ); }
-inline void GameModel::SetOnPlaceTile( Callback<pii> callback ) { _on_place_tile.SetCallback( callback ); }
-inline void GameModel::SetOnResourceAmountChanged( Callback<Resource, int> callback ) { _on_resource_amount_changed.SetCallback( callback ); }
-inline void GameModel::SetOnResourceProductionAmountChanged( Callback<Resource, int> callback ) { _on_resource_production_amount_changed.SetCallback( callback ); }
-inline void GameModel::SetOnResearchConfirmed( Callback<std::array<bool, RESEARCH_CARD_NUM>> callback ) { _on_research_confirmed.SetCallback( callback ); }
-inline void GameModel::SetOnConfirmResearch( Callback<std::array<decks::Card*, RESEARCH_CARD_NUM>> callback ) { _on_confirm_research.SetCallback( callback ); }
-inline void GameModel::SetOnConfirmPayment( Callback<int, Resource, int> callback ) { _on_confirm_payment.SetCallback( callback ); }
-inline void GameModel::SetOnConfirmPlacement( Callback<boards::TileType, std::vector<pii>> callback ) { _on_confirm_placement.SetCallback( callback ); }
-inline void GameModel::SetOnConfirmDestroyResource( Callback<Resource, int> callback ) { _on_confirm_destroy_resource.SetCallback( callback ); }
-inline void GameModel::SetOnConfirmDestroyResourceProduction( Callback<Resource, int> callback ) { _on_confirm_destroy_resource_production.SetCallback( callback ); }
-inline void GameModel::SetOnGameEnd( Callback<> callback ) { _on_game_end.SetCallback( callback ); }
+void GameModel::EndTurn() { _state->EndTurn(); }
 
 void GameModel::SubscribeCallbacksOnPlayer( Player* player ) {
     player->SetOnDrawCardCallback( std::bind_front( &GameModel::Player_OnDrawCard, this ) );
@@ -193,30 +159,36 @@ void GameModel::ChangeState( GameModelState* state ) {
     _state = state;
 }
 
-inline void GameModel::Player_OnDrawCard( Player* player ) { _state->Player_OnDrawCard( player ); }
-inline void GameModel::Player_OnRaiseTR( Player* player, int amount ) { _state->Player_OnRaiseTR( player, amount ); }
-inline void GameModel::Player_OnRaiseTemperature( Player* player ) { _state->Player_OnRaiseTemperature( player ); }
-inline void GameModel::Player_OnPlaceOcean( Player* player ) { _state->Player_OnPlaceOcean( player ); }
-inline void GameModel::Player_OnPlaceOceanOnNonOcean( Player* player ) { _state->Player_OnPlaceOceanOnNonOcean( player ); }
-inline void GameModel::Player_OnRaiseOxygen( Player* player ) { _state->Player_OnRaiseOxygen( player ); }
-inline void GameModel::Player_OnPlaceGreenery( Player* player ) { _state->Player_OnPlaceGreenery( player ); }
-inline void GameModel::Player_OnPlaceGreeneryOnOcean( Player* player ) { _state->Player_OnPlaceGreeneryOnOcean( player ); }
-inline void GameModel::Player_OnPlaceCity( Player* player ) { _state->Player_OnPlaceCity( player ); }
-inline void GameModel::Player_OnPlaceNoctisCity( Player* player ) { _state->Player_OnPlaceNoctisCity( player ); }
-inline void GameModel::Player_OnPlaceLonelyCity( Player* player ) { _state->Player_OnPlaceLonelyCity( player ); }
-inline void GameModel::Player_OnPlaceUrbanizedArea( Player* player ) { _state->Player_OnPlaceUrbanizedArea( player ); }
-inline void GameModel::Player_OnResourceAmountChanged( Player* player, Resource resource, int amount )
+void GameModel::Player_OnDrawCard( Player* player ) { _state->Player_OnDrawCard( player ); }
+void GameModel::Player_OnRaiseTR( Player* player, int amount ) { _state->Player_OnRaiseTR( player, amount ); }
+void GameModel::Player_OnRaiseTemperature( Player* player ) { _state->Player_OnRaiseTemperature( player ); }
+void GameModel::Player_OnPlaceOcean( Player* player ) { _state->Player_OnPlaceOcean( player ); }
+void GameModel::Player_OnPlaceOceanOnNonOcean( Player* player ) { _state->Player_OnPlaceOceanOnNonOcean( player ); }
+void GameModel::Player_OnRaiseOxygen( Player* player ) { _state->Player_OnRaiseOxygen( player ); }
+void GameModel::Player_OnPlaceGreenery( Player* player ) { _state->Player_OnPlaceGreenery( player ); }
+void GameModel::Player_OnPlaceGreeneryOnOcean( Player* player ) { _state->Player_OnPlaceGreeneryOnOcean( player ); }
+void GameModel::Player_OnPlaceCity( Player* player ) { _state->Player_OnPlaceCity( player ); }
+void GameModel::Player_OnPlaceNoctisCity( Player* player ) { _state->Player_OnPlaceNoctisCity( player ); }
+void GameModel::Player_OnPlaceLonelyCity( Player* player ) { _state->Player_OnPlaceLonelyCity( player ); }
+void GameModel::Player_OnPlaceUrbanizedArea( Player* player ) { _state->Player_OnPlaceUrbanizedArea( player ); }
+void GameModel::Player_OnResourceAmountChanged( Player* player, Resource resource, int amount )
     { _state->Player_OnResourceAmountChanged( player, resource, amount ); }
-inline void GameModel::Player_OnResourceProductionAmountChanged( Player* player, Resource resource, int amount )
+void GameModel::Player_OnResourceProductionAmountChanged( Player* player, Resource resource, int amount )
     { _state->Player_OnResourceProductionAmountChanged( player, resource, amount ); }
-inline void GameModel::Player_OnDestroyResource( Player* player, Resource resource, int amount )
+void GameModel::Player_OnDestroyResource( Player* player, Resource resource, int amount )
     { _state->Player_OnDestroyResource( player, resource, amount ); }
-inline void GameModel::Player_OnDestroyResourceProduction( Player* player, Resource resource, int amount )
+void GameModel::Player_OnDestroyResourceProduction( Player* player, Resource resource, int amount )
     { _state->Player_OnDestroyResourceProduction( player, resource, amount ); }
-inline void GameModel::Player_OnConfirmSteelPayment( Player* player, int cost, std::function<void()> after_payment )
+void GameModel::Player_OnConfirmSteelPayment( Player* player, int cost, std::function<void()> after_payment )
     { _state->Player_OnConfirmSteelPayment( player, cost, after_payment ); }
-inline void GameModel::Player_OnConfirmTitaniumPayment( Player* player, int cost, std::function<void()> after_payment )
+void GameModel::Player_OnConfirmTitaniumPayment( Player* player, int cost, std::function<void()> after_payment )
     { _state->Player_OnConfirmTitaniumPayment( player, cost, after_payment); }
+
+void GameModel::EndGame() {
+    _game_ended = true;
+    _on_game_end.Invoke();
+    ChangeState( CreateGameOverState() );
+}
 
 #pragma region Requests
 

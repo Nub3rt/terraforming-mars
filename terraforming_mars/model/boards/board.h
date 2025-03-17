@@ -78,12 +78,12 @@ public:
     Board& operator=( const Board& other ) = delete;
     Board& operator=( Board&& other ) = delete;
 
-    inline const Tile& operator()( int q, int r ) const noexcept;
-    inline const Tile& get_tile( int q, int r ) const noexcept;
+    inline const Tile& operator()( int q, int r ) const noexcept { return _concrete_board->get_tile( q, r ); }
+    inline const Tile& get_tile( int q, int r ) const noexcept { return _concrete_board->get_tile( q, r ); }
 
-    inline std::vector<pii> GetNeighbouringTiles( int q, int r ) const;
-    inline std::vector<pii> GetNeighbouringTilesOfType( int q, int r, TileType type ) const;
-    inline std::vector<pii> GetNeighbouringTilesOfTypeRange( int q, int r, TileType min, TileType max ) const;
+    inline std::vector<pii> GetNeighbouringTiles( int q, int r ) const { return _concrete_board->GetNeighbouringTiles( q, r ); }
+    inline std::vector<pii> GetNeighbouringTilesOfType( int q, int r, TileType type ) const { return _concrete_board->GetNeighbouringTilesOfType( q, r, type ); }
+    inline std::vector<pii> GetNeighbouringTilesOfTypeRange( int q, int r, TileType min, TileType max ) const { return _concrete_board->GetNeighbouringTilesOfTypeRange( q, r, min, max ); }
     std::vector<pii> GetTilesOfType( TileType type ) const;
     std::vector<pii> GetPlaceableTilesOfType( const Player* player, TileType type ) const;
     std::vector<pii> GetEmptyTiles( const Player* player ) const;
@@ -94,14 +94,14 @@ public:
     std::vector<pii> GetValidLonelyCityTiles( const Player* player ) const;
     std::vector<pii> GetValidUrbanizedAreaTiles( const Player* player ) const;
 
-    inline void PlaceTile( int q, int r, Player* player, TileType type );
-    inline void SetOwner( int q, int r, Player* player );
-    inline void SetTileType( int q, int r, TileType type );
+    inline void PlaceTile( int q, int r, Player* player, TileType type ) { _concrete_board->PlaceTile( q, r, player, type ); }
+    inline void SetOwner( int q, int r, Player* player ) { _concrete_board->SetOwner( q, r, player ); }
+    inline void SetTileType( int q, int r, TileType type ) { _concrete_board->SetTileType( q, r, type ); }
 
-    inline void SetOnTilePlacedCallback( std::function<void( int, int, const Tile& )> callback );
+    inline void SetOnTilePlacedCallback( std::function<void( int, int, const Tile& )> callback ) { _concrete_board->SetOnTilePlacedCallback( callback ); }
 
-    inline ConcreteBoard::IteratorWrapper begin() const;
-    inline ConcreteBoard::IteratorWrapper end() const;
+    inline ConcreteBoard::IteratorWrapper begin() const { return _concrete_board->begin(); }
+    inline ConcreteBoard::IteratorWrapper end() const { return _concrete_board->end(); }
 
 private:
     ConcreteBoard* _concrete_board;

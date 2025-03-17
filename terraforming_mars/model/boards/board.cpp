@@ -13,26 +13,6 @@ Board::~Board() noexcept {
     delete _concrete_board;
 }
 
-inline const Tile& Board::operator()( int q, int r ) const noexcept {
-    return _concrete_board->get_tile( q, r );
-}
-
-inline const Tile& Board::get_tile( int q, int r ) const noexcept {
-    return _concrete_board->get_tile( q, r );
-}
-
-inline std::vector<pii> Board::GetNeighbouringTiles( int q, int r ) const {
-    return _concrete_board->GetNeighbouringTiles( q, r );
-}
-
-inline std::vector<pii> Board::GetNeighbouringTilesOfType( int q, int r, TileType type ) const {
-    return _concrete_board->GetNeighbouringTilesOfType( q, r, type );
-}
-
-inline std::vector<pii> Board::GetNeighbouringTilesOfTypeRange( int q, int r, TileType min, TileType max ) const {
-    return _concrete_board->GetNeighbouringTilesOfTypeRange( q, r, min, max );
-}
-
 std::vector<pii> Board::GetTilesOfType( TileType type ) const {
     std::vector<pii> tiles;
 
@@ -164,29 +144,5 @@ std::vector<pii> Board::GetValidUrbanizedAreaTiles( const Player* player ) const
     }
 
     return tiles_with_min_two_city_neighbours;
-}
-
-inline void Board::PlaceTile( int q, int r, Player* player, TileType type ) {
-    _concrete_board->PlaceTile( q, r, player, type );
-}
-
-inline void Board::SetOwner( int q, int r, Player* player ) {
-    _concrete_board->SetOwner( q, r, player );
-}
-
-inline void Board::SetTileType( int q, int r, TileType type ) {
-    _concrete_board->SetTileType( q, r, type );
-}
-
-inline void Board::SetOnTilePlacedCallback( std::function<void( int, int, const Tile& )> callback ) {
-    _concrete_board->SetOnTilePlacedCallback( callback );
-}
-
-inline ConcreteBoard::IteratorWrapper Board::begin() const {
-    return _concrete_board->begin();
-}
-
-inline ConcreteBoard::IteratorWrapper Board::end() const {
-    return _concrete_board->end();
 }
 }
