@@ -5,5 +5,21 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="GL Utils">
+      <UniqueIdentifier>{7f2bbe54-ba03-4e5b-be78-3fdf66395b30}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="app.h" />
+    <ClCompile Include="app.cpp" />
+    <ClCompile Include="SDL_GLDebugMessageCallback.cpp">
+      <Filter>GL Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="SDL_GLDebugMessageCallback.h">
+      <Filter>GL Utils</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
