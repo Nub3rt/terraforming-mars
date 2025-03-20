@@ -11,13 +11,11 @@
 
 namespace model::boards
 {
-using pii = std::pair<int, int>;
-
 ConcreteBoard::ConcreteBoard() noexcept {}
 ConcreteBoard::~ConcreteBoard() noexcept {}
 
-std::vector<pii> ConcreteBoard::GetNeighbouringTilesOfType( int q, int r, TileType type ) const {
-    std::vector<pii> neighbours_of_type;
+std::vector<std::pair<int, int>> ConcreteBoard::GetNeighbouringTilesOfType( int q, int r, TileType type ) const {
+    std::vector<std::pair<int, int>> neighbours_of_type;
 
     for ( auto& [q_, r_] : GetNeighbouringTiles( q, r ) ) {
         if ( get_tile( q_, r_ ).get_type() == type )
@@ -27,8 +25,8 @@ std::vector<pii> ConcreteBoard::GetNeighbouringTilesOfType( int q, int r, TileTy
     return neighbours_of_type;
 }
 
-std::vector<pii> ConcreteBoard::GetNeighbouringTilesOfTypeRange( int q, int r, TileType min, TileType max ) const {
-    std::vector<pii> neighbours_of_type;
+std::vector<std::pair<int, int>> ConcreteBoard::GetNeighbouringTilesOfTypeRange( int q, int r, TileType min, TileType max ) const {
+    std::vector<std::pair<int, int>> neighbours_of_type;
 
     for ( auto& [q_, r_] : GetNeighbouringTiles( q, r ) ) {
         TileType tile_type = get_tile( q_, r_ ).get_type();
@@ -39,7 +37,7 @@ std::vector<pii> ConcreteBoard::GetNeighbouringTilesOfTypeRange( int q, int r, T
     return neighbours_of_type;
 }
 
-const pii* ConcreteBoard::NoctisCityIndex() const { return nullptr; }
+const std::pair<int, int>* ConcreteBoard::NoctisCityIndex() const { return nullptr; }
 
 
 const std::function<void( Player* )>& ConcreteBoard::get_noop() {
@@ -120,7 +118,7 @@ bool ConcreteBoard::IteratorWrapper::operator!=( const Iterator& other ) const {
     return !(*this == other);
 }
 
-pii ConcreteBoard::IteratorWrapper::GetIndices() const {
+std::pair<int, int> ConcreteBoard::IteratorWrapper::GetIndices() const {
     return _iterator->GetIndices();
 }
 }

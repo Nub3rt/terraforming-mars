@@ -69,8 +69,6 @@ namespace model::boards
 class Board
 {
 public:
-    using pii = std::pair<int, int>;
-
     Board( ConcreteBoard* board ) noexcept;
     ~Board() noexcept;
     Board( const Board& other ) = delete;
@@ -81,18 +79,18 @@ public:
     inline const Tile& operator()( int q, int r ) const noexcept { return _concrete_board->get_tile( q, r ); }
     inline const Tile& get_tile( int q, int r ) const noexcept { return _concrete_board->get_tile( q, r ); }
 
-    inline std::vector<pii> GetNeighbouringTiles( int q, int r ) const { return _concrete_board->GetNeighbouringTiles( q, r ); }
-    inline std::vector<pii> GetNeighbouringTilesOfType( int q, int r, TileType type ) const { return _concrete_board->GetNeighbouringTilesOfType( q, r, type ); }
-    inline std::vector<pii> GetNeighbouringTilesOfTypeRange( int q, int r, TileType min, TileType max ) const { return _concrete_board->GetNeighbouringTilesOfTypeRange( q, r, min, max ); }
-    std::vector<pii> GetTilesOfType( TileType type ) const;
-    std::vector<pii> GetPlaceableTilesOfType( const Player* player, TileType type ) const;
-    std::vector<pii> GetEmptyTiles( const Player* player ) const;
-    std::vector<pii> GetValidOceanTiles( const Player* player) const;
-    std::vector<pii> GetValidGreeneryTiles( const Player* player ) const;
-    std::vector<pii> GetValidCityTiles( const Player* player ) const;
-    std::vector<pii> GetValidNoctisCityTiles( const Player* player ) const;
-    std::vector<pii> GetValidLonelyCityTiles( const Player* player ) const;
-    std::vector<pii> GetValidUrbanizedAreaTiles( const Player* player ) const;
+    inline std::vector<std::pair<int, int>> GetNeighbouringTiles( int q, int r ) const { return _concrete_board->GetNeighbouringTiles( q, r ); }
+    inline std::vector<std::pair<int, int>> GetNeighbouringTilesOfType( int q, int r, TileType type ) const { return _concrete_board->GetNeighbouringTilesOfType( q, r, type ); }
+    inline std::vector<std::pair<int, int>> GetNeighbouringTilesOfTypeRange( int q, int r, TileType min, TileType max ) const { return _concrete_board->GetNeighbouringTilesOfTypeRange( q, r, min, max ); }
+    std::vector<std::pair<int, int>> GetTilesOfType( TileType type ) const;
+    std::vector<std::pair<int, int>> GetPlaceableTilesOfType( const Player* player, TileType type ) const;
+    std::vector<std::pair<int, int>> GetEmptyTiles( const Player* player ) const;
+    std::vector<std::pair<int, int>> GetValidOceanTiles( const Player* player) const;
+    std::vector<std::pair<int, int>> GetValidGreeneryTiles( const Player* player ) const;
+    std::vector<std::pair<int, int>> GetValidCityTiles( const Player* player ) const;
+    std::vector<std::pair<int, int>> GetValidNoctisCityTiles( const Player* player ) const;
+    std::vector<std::pair<int, int>> GetValidLonelyCityTiles( const Player* player ) const;
+    std::vector<std::pair<int, int>> GetValidUrbanizedAreaTiles( const Player* player ) const;
 
     inline void PlaceTile( int q, int r, Player* player, TileType type ) { _concrete_board->PlaceTile( q, r, player, type ); }
     inline void SetOwner( int q, int r, Player* player ) { _concrete_board->SetOwner( q, r, player ); }

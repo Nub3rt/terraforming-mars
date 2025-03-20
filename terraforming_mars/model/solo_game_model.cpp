@@ -12,15 +12,13 @@
 
 namespace model
 {
-using pii = std::pair<int, int>;
-
 SoloGameModel::SoloGameModel( int seed ) : GameModel( seed ) {}
 SoloGameModel::~SoloGameModel() {}
 
 void SoloGameModel::Initialize( boards::Board* board, decks::Deck* deck ) {
     GameModel::Initialize( board, deck );
 
-    const std::vector<pii> empties = _board->GetTilesOfType( boards::TileType::EMPTY );
+    const std::vector<std::pair<int, int>> empties = _board->GetTilesOfType( boards::TileType::EMPTY );
     int half_point = static_cast<int>( empties.size() / 2 );
     int index_of_first_city = _random() % half_point;
     int index_of_second_city = _random() % half_point + half_point;
@@ -29,13 +27,13 @@ void SoloGameModel::Initialize( boards::Board* board, decks::Deck* deck ) {
     _board->SetTileType( q1, r1, boards::TileType::CITY );
     _board->SetTileType( q2, r2, boards::TileType::CITY );
 
-    const std::vector<pii> neighbours_of_first = _board->GetNeighbouringTilesOfType( q1, r1, boards::TileType::EMPTY );
+    const std::vector<std::pair<int, int>> neighbours_of_first = _board->GetNeighbouringTilesOfType( q1, r1, boards::TileType::EMPTY );
     if ( neighbours_of_first.size() > 0 ) {
         auto& [q1_n, r1_n] = neighbours_of_first[ _random() % neighbours_of_first.size() ];
         _board->SetTileType( q1_n, r1_n, boards::TileType::GREENERY );
     }
 
-    const std::vector<pii> neighbours_of_second = _board->GetNeighbouringTilesOfType( q2, r2, boards::TileType::EMPTY );
+    const std::vector<std::pair<int, int>> neighbours_of_second = _board->GetNeighbouringTilesOfType( q2, r2, boards::TileType::EMPTY );
     if ( neighbours_of_second.size() > 0 ) {
         auto& [q2_n, r2_n] = neighbours_of_second[ _random() % neighbours_of_second.size() ];
         _board->SetTileType( q2_n, r2_n, boards::TileType::GREENERY );

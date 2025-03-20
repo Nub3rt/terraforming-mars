@@ -11,16 +11,14 @@
 
 namespace model::boards
 {
-using pii = std::pair<int, int>;
-
 TharsisConcreteBoard::TharsisConcreteBoard() noexcept : _board( get_starting_board() ) {}
 
 TharsisConcreteBoard::~TharsisConcreteBoard() noexcept {}
 
 const Tile& TharsisConcreteBoard::get_tile( int q, int r ) const noexcept { return _board[ r ][ q ]; }
 
-std::vector<pii> TharsisConcreteBoard::GetNeighbouringTiles( int q, int r ) const {
-    std::vector<pii> neighbours;
+std::vector<std::pair<int, int>> TharsisConcreteBoard::GetNeighbouringTiles( int q, int r ) const {
+    std::vector<std::pair<int, int>> neighbours;
 
     int s = -q - r;
     if ( r > 0 && q < 8 )
@@ -39,7 +37,7 @@ std::vector<pii> TharsisConcreteBoard::GetNeighbouringTiles( int q, int r ) cons
     return neighbours;
 }
 
-const pii* TharsisConcreteBoard::NoctisCityIndex() const {
+const std::pair<int, int>* TharsisConcreteBoard::NoctisCityIndex() const {
     return &_noctis_city_index;
 }
 
@@ -74,7 +72,7 @@ void TharsisConcreteBoard::SetTileType( int q, int r, TileType type ) {
     get_tile( q, r ).set_type( type );
 }
 
-constexpr pii TharsisConcreteBoard::_noctis_city_index = pii( 2, 4 );
+constexpr std::pair<int, int> TharsisConcreteBoard::_noctis_city_index = std::pair<int, int>( 2, 4 );
 
 const std::array<std::array<Tile, 9>, 9>& TharsisConcreteBoard::get_starting_board() {
     static const std::array<std::array<Tile, 9>, 9> starting_board = {{

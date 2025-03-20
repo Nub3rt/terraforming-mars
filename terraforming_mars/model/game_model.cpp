@@ -192,7 +192,7 @@ void GameModel::EndGame() {
 
 #pragma region Requests
 
-GameModel::PlacementRequest::PlacementRequest( boards::TileType type, std::vector<pii> valid_positions )
+GameModel::PlacementRequest::PlacementRequest( boards::TileType type, std::vector<std::pair<int, int>> valid_positions )
     : type( type ), valid_positions( std::move( valid_positions ) ) {}
 
 void GameModel::PlacementRequest::Perform( GameModelState* state ) {
@@ -206,7 +206,7 @@ void GameModel::PaymentRequest::Perform( GameModelState* state ) {
     state->PerformRequest( this );
 }
 
-GameModel::PostLastGenerationGreeneryPlacementRequest::PostLastGenerationGreeneryPlacementRequest( std::vector<pii> valid_positions )
+GameModel::PostLastGenerationGreeneryPlacementRequest::PostLastGenerationGreeneryPlacementRequest( std::vector<std::pair<int, int>> valid_positions )
     : valid_positions( std::move( valid_positions ) ) {}
 
 void GameModel::PostLastGenerationGreeneryPlacementRequest::Perform( GameModelState* state ) {

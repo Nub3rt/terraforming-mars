@@ -13,16 +13,14 @@ namespace model::boards
 class TharsisConcreteBoard : public ConcreteBoard
 {
 public:
-    using pii = std::pair<int, int>;
-
     TharsisConcreteBoard() noexcept;
     ~TharsisConcreteBoard() noexcept;
 
     inline Tile& get_tile( int q, int r ) noexcept { return _board[ r ][ q ]; }
     const Tile& get_tile( int q, int r ) const noexcept override;
 
-    std::vector<pii> GetNeighbouringTiles( int q, int r ) const override;
-    const pii* NoctisCityIndex() const override;
+    std::vector<std::pair<int, int>> GetNeighbouringTiles( int q, int r ) const override;
+    const std::pair<int, int>* NoctisCityIndex() const override;
 
     void PlaceTile( int q, int r, Player* player, TileType type ) override;
     void SetOwner( int q, int r, Player* player ) override;
@@ -31,7 +29,7 @@ public:
 protected:
     std::array<std::array<Tile, 9>, 9> _board;
 
-    static const pii _noctis_city_index;
+    static const std::pair<int, int> _noctis_city_index;
     static const std::array<std::array<Tile, 9>, 9>& get_starting_board();
 
 public:
@@ -50,7 +48,7 @@ public:
         bool operator==( const Iterator& other ) const override;
         bool operator!=( const Iterator& other ) const override;
 
-        inline pii GetIndices() const override { return pii( _q, _r ); }
+        inline std::pair<int, int> GetIndices() const override { return std::pair<int, int>( _q, _r ); }
 
         void PointerOneUp();
 

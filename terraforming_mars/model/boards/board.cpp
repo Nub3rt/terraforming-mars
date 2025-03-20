@@ -5,16 +5,14 @@
 
 namespace model::boards
 {
-using pii = std::pair<int, int>;
-
 Board::Board( ConcreteBoard* board ) noexcept : _concrete_board( board ) {}
 
 Board::~Board() noexcept {
     delete _concrete_board;
 }
 
-std::vector<pii> Board::GetTilesOfType( TileType type ) const {
-    std::vector<pii> tiles;
+std::vector<std::pair<int, int>> Board::GetTilesOfType( TileType type ) const {
+    std::vector<std::pair<int, int>> tiles;
 
     for ( auto it = begin(); it != end(); ++it ) {
         if ( it->get_type() == type )
@@ -24,8 +22,8 @@ std::vector<pii> Board::GetTilesOfType( TileType type ) const {
     return tiles;
 }
 
-std::vector<pii> Board::GetPlaceableTilesOfType( const Player* player, TileType type ) const {
-    std::vector<pii> tiles;
+std::vector<std::pair<int, int>> Board::GetPlaceableTilesOfType( const Player* player, TileType type ) const {
+    std::vector<std::pair<int, int>> tiles;
 
     for ( auto it = begin(); it != end(); ++it ) {
         if ( it->get_type() == type && (it->get_owner() == nullptr || it->get_owner() == player) )
@@ -35,21 +33,21 @@ std::vector<pii> Board::GetPlaceableTilesOfType( const Player* player, TileType 
     return tiles;
 }
 
-std::vector<pii> Board::GetEmptyTiles( const Player* player ) const {
+std::vector<std::pair<int, int>> Board::GetEmptyTiles( const Player* player ) const {
     return GetPlaceableTilesOfType( player, TileType::EMPTY );
 }
 
-std::vector<pii> Board::GetValidOceanTiles( const Player* player ) const {
+std::vector<std::pair<int, int>> Board::GetValidOceanTiles( const Player* player ) const {
     return GetPlaceableTilesOfType( player, TileType::RESERVED_FOR_OCEAN );
 }
 
-std::vector<pii> Board::GetValidGreeneryTiles( const Player* player ) const {
-    std::vector<pii> tiles_with_neighbour_of_owner;
+std::vector<std::pair<int, int>> Board::GetValidGreeneryTiles( const Player* player ) const {
+    std::vector<std::pair<int, int>> tiles_with_neighbour_of_owner;
 
     for ( auto it = begin(); it != end(); ++it ) {
         if ( it->get_type() == TileType::EMPTY && (it->get_owner() == nullptr || it->get_owner() == player) ) {
             auto [ q, r ] = it.GetIndices();
-            std::vector<pii> neighbours = GetNeighbouringTiles( q, r );
+            std::vector<std::pair<int, int>> neighbours = GetNeighbouringTiles( q, r );
 
             for ( const auto& [ nq, nr ] : neighbours ) {
                 if ( get_tile( nq, nr ).get_owner() == player ) {
@@ -66,13 +64,13 @@ std::vector<pii> Board::GetValidGreeneryTiles( const Player* player ) const {
     return GetEmptyTiles( player );
 }
 
-std::vector<pii> Board::GetValidCityTiles( const Player* player ) const {
-    std::vector<pii> tiles_with_no_city_neighbour;
+std::vector<std::pair<int, int>> Board::GetValidCityTiles( const Player* player ) const {
+    std::vector<std::pair<int, int>> tiles_with_no_city_neighbour;
 
     for ( auto it = begin(); it != end(); ++it ) {
         if ( it->get_type() == TileType::EMPTY && (it->get_owner() == nullptr || it->get_owner() == player) ) {
             auto [q, r] = it.GetIndices();
-            std::vector<pii> neighbours = GetNeighbouringTiles( q, r );
+            std::vector<std::pair<int, int>> neighbours = GetNeighbouringTiles( q, r );
 
             bool no_city_neighbour = true;
             for ( const auto& [nq, nr] : neighbours ) {
@@ -90,22 +88,22 @@ std::vector<pii> Board::GetValidCityTiles( const Player* player ) const {
     return tiles_with_no_city_neighbour;
 }
 
-std::vector<pii> Board::GetValidNoctisCityTiles( const Player* player ) const {
-    const pii* ptr_to_index = _concrete_board->NoctisCityIndex();
+std::vector<std::pair<int, int>> Board::GetValidNoctisCityTiles( const Player* player ) const {
+    const std::pair<int, int>* ptr_to_index = _concrete_board->NoctisCityIndex();
 
     if ( ptr_to_index )
-        return { pii( ptr_to_index->first, ptr_to_index->second ) };
+        return { std::pair<int, int>( ptr_to_index->first, ptr_to_index->second ) };
 
     return GetValidCityTiles( player );
 }
 
-std::vector<pii> Board::GetValidLonelyCityTiles( const Player* player ) const {
-    std::vector<pii> tiles_with_no_neighbours;
+std::vector<std::pair<int, int>> Board::GetValidLonelyCityTiles( const Player* player ) const {
+    std::vector<std::pair<int, int>> tiles_with_no_neighbours;
 
     for ( auto it = begin(); it != end(); ++it ) {
         if ( it->get_type() == TileType::EMPTY && (it->get_owner() == nullptr || it->get_owner() == player) ) {
             auto [q, r] = it.GetIndices();
-            std::vector<pii> neighbours = GetNeighbouringTiles( q, r );
+            std::vector<std::pair<int, int>> neighbours = GetNeighbouringTiles( q, r );
 
             bool no_neighbours = true;
             for ( const auto& [nq, nr] : neighbours ) {
@@ -123,13 +121,13 @@ std::vector<pii> Board::GetValidLonelyCityTiles( const Player* player ) const {
     return tiles_with_no_neighbours;
 }
 
-std::vector<pii> Board::GetValidUrbanizedAreaTiles( const Player* player ) const {
-    std::vector<pii> tiles_with_min_two_city_neighbours;
+std::vector<std::pair<int, int>> Board::GetValidUrbanizedAreaTiles( const Player* player ) const {
+    std::vector<std::pair<int, int>> tiles_with_min_two_city_neighbours;
 
     for ( auto it = begin(); it != end(); ++it ) {
         if ( it->get_type() == TileType::EMPTY && (it->get_owner() == nullptr || it->get_owner() == player) ) {
             auto [q, r] = it.GetIndices();
-            std::vector<pii> neighbours = GetNeighbouringTiles( q, r );
+            std::vector<std::pair<int, int>> neighbours = GetNeighbouringTiles( q, r );
 
             int city_neighbour_count = 0;
             for ( const auto& [nq, nr] : neighbours ) {

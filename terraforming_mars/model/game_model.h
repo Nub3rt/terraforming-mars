@@ -43,8 +43,6 @@ protected:
     class PostLastGenerationGreeneryPlacementRequest;
 
 public:
-    using pii = std::pair<int, int>;
-
     template<typename... Args>
     using Callback = std::function<void( Args... )>;
 
@@ -112,13 +110,13 @@ public:
     inline void SetOnRaiseTR( Callback<int> callback ) { _on_raise_tr.SetCallback( callback ); }
     inline void SetOnRaiseTemperature( Callback<> callback ) { _on_raise_temperature.SetCallback( callback ); }
     inline void SetOnRaiseOxygen( Callback<> callback ) { _on_raise_oxygen.SetCallback( callback ); }
-    inline void SetOnPlaceTile( Callback<pii> callback ) { _on_place_tile.SetCallback( callback ); }
+    inline void SetOnPlaceTile( Callback<std::pair<int, int>> callback ) { _on_place_tile.SetCallback( callback ); }
     inline void SetOnResourceAmountChanged( Callback<Resource, int> callback ) { _on_resource_amount_changed.SetCallback( callback ); }
     inline void SetOnResourceProductionAmountChanged( Callback<Resource, int> callback ) { _on_resource_production_amount_changed.SetCallback( callback ); }
     inline void SetOnResearchConfirmed( Callback<std::array<bool, RESEARCH_CARD_NUM>> callback ) { _on_research_confirmed.SetCallback( callback ); }
     inline void SetOnConfirmResearch( Callback<std::array<decks::Card*, RESEARCH_CARD_NUM>> callback ) { _on_confirm_research.SetCallback( callback ); }
     inline void SetOnConfirmPayment( Callback<int, Resource, int> callback ) { _on_confirm_payment.SetCallback( callback ); }
-    inline void SetOnConfirmPlacement( Callback<boards::TileType, std::vector<pii>> callback ) { _on_confirm_placement.SetCallback( callback ); }
+    inline void SetOnConfirmPlacement( Callback<boards::TileType, std::vector<std::pair<int, int>>> callback ) { _on_confirm_placement.SetCallback( callback ); }
     inline void SetOnConfirmDestroyResource( Callback<Resource, int> callback ) { _on_confirm_destroy_resource.SetCallback( callback ); }
     inline void SetOnConfirmDestroyResourceProduction( Callback<Resource, int> callback ) { _on_confirm_destroy_resource_production.SetCallback( callback ); }
     inline void SetOnGameEnd( Callback<> callback ) { _on_game_end.SetCallback( callback ); }
@@ -154,14 +152,14 @@ protected:
     Event<int> _on_raise_tr;
     Event<> _on_raise_temperature;
     Event<> _on_raise_oxygen;
-    Event<pii> _on_place_tile;
+    Event<std::pair<int, int>> _on_place_tile;
     Event<Resource, int> _on_resource_amount_changed;
     Event<Resource, int> _on_resource_production_amount_changed;
     Event<std::array<bool, RESEARCH_CARD_NUM>> _on_research_confirmed;
 
     Event<std::array<decks::Card*, RESEARCH_CARD_NUM>> _on_confirm_research;
     Event<int, Resource, int> _on_confirm_payment;
-    Event<boards::TileType, std::vector<pii>> _on_confirm_placement;
+    Event<boards::TileType, std::vector<std::pair<int, int>>> _on_confirm_placement;
     Event<Resource, int> _on_confirm_destroy_resource;
     Event<Resource, int> _on_confirm_destroy_resource_production;
 
@@ -215,10 +213,10 @@ protected:
     class PlacementRequest : public Request
     {
     public:
-        PlacementRequest( boards::TileType type, std::vector<pii> valid_positions );
+        PlacementRequest( boards::TileType type, std::vector<std::pair<int, int>> valid_positions );
 
         boards::TileType type;
-        std::vector<pii> valid_positions;
+        std::vector<std::pair<int, int>> valid_positions;
 
         void Perform( GameModelState* state ) override;
     };
@@ -239,9 +237,9 @@ protected:
     class PostLastGenerationGreeneryPlacementRequest : public Request
     {
     public:
-        PostLastGenerationGreeneryPlacementRequest( std::vector<pii> valid_positions );
+        PostLastGenerationGreeneryPlacementRequest( std::vector<std::pair<int, int>> valid_positions );
 
-        std::vector<pii> valid_positions;
+        std::vector<std::pair<int, int>> valid_positions;
 
         void Perform( GameModelState* state ) override;
     };

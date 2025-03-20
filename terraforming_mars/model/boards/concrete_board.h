@@ -12,16 +12,14 @@ namespace model::boards
 class ConcreteBoard
 {
 public:
-    using pii = std::pair<int, int>;
-
     virtual ~ConcreteBoard() noexcept;
 
     virtual const Tile& get_tile( int q, int r ) const noexcept = 0;
 
-    virtual std::vector<pii> GetNeighbouringTiles( int q, int r ) const = 0;
-    virtual std::vector<pii> GetNeighbouringTilesOfType( int q, int r, TileType type ) const;
-    virtual std::vector<pii> GetNeighbouringTilesOfTypeRange( int q, int r, TileType min, TileType max ) const;
-    virtual const pii* NoctisCityIndex() const;
+    virtual std::vector<std::pair<int, int>> GetNeighbouringTiles( int q, int r ) const = 0;
+    virtual std::vector<std::pair<int, int>> GetNeighbouringTilesOfType( int q, int r, TileType type ) const;
+    virtual std::vector<std::pair<int, int>> GetNeighbouringTilesOfTypeRange( int q, int r, TileType min, TileType max ) const;
+    virtual const std::pair<int, int>* NoctisCityIndex() const;
 
     virtual void PlaceTile( int q, int r, Player* player, TileType type ) = 0;
     virtual void SetOwner( int q, int r, Player* player ) = 0;
@@ -70,7 +68,7 @@ public:
         virtual bool operator==( const Iterator& other ) const = 0;
         virtual bool operator!=( const Iterator& other ) const = 0;
 
-        virtual pii GetIndices() const = 0;
+        virtual std::pair<int, int> GetIndices() const = 0;
     };
 
     class IteratorWrapper : public Iterator
@@ -86,7 +84,7 @@ public:
         bool operator==( const Iterator& other ) const override;
         bool operator!=( const Iterator& other ) const override;
 
-        pii GetIndices() const override;
+        std::pair<int, int> GetIndices() const override;
 
     private:
         Iterator* _iterator;
