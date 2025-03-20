@@ -10,7 +10,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="app.h" />
     <ClCompile Include="app.cpp" />
     <ClCompile Include="SDL_GLDebugMessageCallback.cpp">
       <Filter>GL Utils</Filter>
@@ -21,5 +20,6 @@
     <ClInclude Include="SDL_GLDebugMessageCallback.h">
       <Filter>GL Utils</Filter>
     </ClInclude>
+    <ClInclude Include="app.h" />
   </ItemGroup>
 </Project>
