@@ -32,7 +32,7 @@ protected:
     std::array<std::array<Tile, 9>, 9> _board;
 
     static const pii _noctis_city_index;
-    static const std::array<std::array<Tile, 9>, 9> _starting_board;
+    static const std::array<std::array<Tile, 9>, 9>& get_starting_board();
 
 public:
     class TharsisIterator : public ConcreteBoard::Iterator

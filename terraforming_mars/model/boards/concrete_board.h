@@ -35,19 +35,19 @@ protected:
     Event<int, int, const Tile&> _on_tile_placed;
 
 
-    static const std::function<void( Player* )> _noop;
-    static const std::function<void( Player* )> _draw_one_card;
-    static const std::function<void( Player* )> _draw_two_cards;
-    static const std::function<void( Player* )> _gain_one_plants;
-    static const std::function<void( Player* )> _gain_two_plants;
-    static const std::function<void( Player* )> _gain_one_steel;
-    static const std::function<void( Player* )> _gain_two_steel;
-    static const std::function<void( Player* )> _gain_one_titanium;
-    static const std::function<void( Player* )> _gain_two_titanium;
+    static const std::function<void( Player* )>& get_noop();
+    static const std::function<void( Player* )>& get_draw_one_card();
+    static const std::function<void( Player* )>& get_draw_two_cards();
+    static const std::function<void( Player* )>& get_gain_one_plants();
+    static const std::function<void( Player* )>& get_gain_two_plants();
+    static const std::function<void( Player* )>& get_gain_one_steel();
+    static const std::function<void( Player* )>& get_gain_two_steel();
+    static const std::function<void( Player* )>& get_gain_one_titanium();
+    static const std::function<void( Player* )>& get_gain_two_titanium();
 
-    static const std::function<void( Player* )> _gain_titanium_and_plants;
+    static const std::function<void( Player* )>& get_gain_titanium_and_plants();
 
-    static const std::function<void( Player* )> _bad_index;
+    static const std::function<void( Player* )>& get_bad_index();
 
 public:
     class Iterator

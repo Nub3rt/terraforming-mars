@@ -42,20 +42,52 @@ std::vector<pii> ConcreteBoard::GetNeighbouringTilesOfTypeRange( int q, int r, T
 const pii* ConcreteBoard::NoctisCityIndex() const { return nullptr; }
 
 
-const std::function<void( Player* )> ConcreteBoard::_noop              = []( Player* player ) {};
-const std::function<void( Player* )> ConcreteBoard::_draw_one_card     = []( Player* player ) { player->DrawCard(); };
-const std::function<void( Player* )> ConcreteBoard::_draw_two_cards    = []( Player* player ) { player->DrawCard(); player->DrawCard(); };
-const std::function<void( Player* )> ConcreteBoard::_gain_one_steel    = []( Player* player ) { player->GainResource( Resource::STEEL,    1 ); };
-const std::function<void( Player* )> ConcreteBoard::_gain_two_steel    = []( Player* player ) { player->GainResource( Resource::STEEL,    2 ); };
-const std::function<void( Player* )> ConcreteBoard::_gain_one_titanium = []( Player* player ) { player->GainResource( Resource::TITANIUM, 1 ); };
-const std::function<void( Player* )> ConcreteBoard::_gain_two_titanium = []( Player* player ) { player->GainResource( Resource::TITANIUM, 2 ); };
-const std::function<void( Player* )> ConcreteBoard::_gain_one_plants   = []( Player* player ) { player->GainResource( Resource::PLANTS,   1 ); };
-const std::function<void( Player* )> ConcreteBoard::_gain_two_plants   = []( Player* player ) { player->GainResource( Resource::PLANTS,   2 ); };
+const std::function<void( Player* )>& ConcreteBoard::get_noop() {
+    static const std::function<void( Player* )> callback = []( Player* player ) {};
+    return callback;
+}
+const std::function<void( Player* )>& ConcreteBoard::get_draw_one_card() {
+    static const std::function<void( Player* )> callback = []( Player* player ) { player->DrawCard(); };
+    return callback;
+}
+const std::function<void( Player* )>& ConcreteBoard::get_draw_two_cards() {
+    static const std::function<void( Player* )> callback = []( Player* player ) { player->DrawCard(); player->DrawCard(); };
+    return callback;
+}
+const std::function<void( Player* )>& ConcreteBoard::get_gain_one_steel() {
+    static const std::function<void( Player* )> callback = []( Player* player ) { player->GainResource( Resource::STEEL, 1 ); };
+    return callback;
+}
+const std::function<void( Player* )>& ConcreteBoard::get_gain_two_steel() {
+    static const std::function<void( Player* )> callback = []( Player* player ) { player->GainResource( Resource::STEEL, 2 ); };
+    return callback;
+}
+const std::function<void( Player* )>& ConcreteBoard::get_gain_one_titanium() {
+    static const std::function<void( Player* )> callback = []( Player* player ) { player->GainResource( Resource::TITANIUM, 1 ); };
+    return callback;
+}
+const std::function<void( Player* )>& ConcreteBoard::get_gain_two_titanium() {
+    static const std::function<void( Player* )> callback = []( Player* player ) { player->GainResource( Resource::TITANIUM, 2 ); };
+    return callback;
+}
+const std::function<void( Player* )>& ConcreteBoard::get_gain_one_plants() {
+    static const std::function<void( Player* )> callback = []( Player* player ) { player->GainResource( Resource::PLANTS, 1 ); };
+    return callback;
+}
+const std::function<void( Player* )>& ConcreteBoard::get_gain_two_plants() {
+    static const std::function<void( Player* )> callback = []( Player* player ) { player->GainResource( Resource::PLANTS, 2 ); };
+    return callback;
+}
 
-const std::function<void( Player* )> ConcreteBoard::_gain_titanium_and_plants =
-    []( Player* player ) { player->GainResource( Resource::TITANIUM, 1 ); player->GainResource( Resource::PLANTS, 1 ); };
+const std::function<void( Player* )>& ConcreteBoard::get_gain_titanium_and_plants() {
+    static const std::function<void( Player* )> callback = []( Player* player ) { player->GainResource( Resource::TITANIUM, 1 ); player->GainResource( Resource::PLANTS, 1 ); };
+    return callback;
+}
 
-const std::function<void( Player* )> ConcreteBoard::_bad_index = []( Player* player ) { throw std::logic_error( "ConcreteBoard::_bad_index: was indexed on an invalid tile!" ); };
+const std::function<void( Player* )>& ConcreteBoard::get_bad_index() {
+    static const std::function<void( Player* )> callback = []( Player* player ) { throw std::logic_error( "ConcreteBoard::get_bad_index: board was indexed on an invalid tile!" ); };
+    return callback;
+}
 
 
 ConcreteBoard::Iterator::Iterator() {}
