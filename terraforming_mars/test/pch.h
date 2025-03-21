@@ -2,9 +2,14 @@
 
 #include "gtest/gtest.h"
 
+#include <stdlib.h>
+
 #include <functional>
+#include <map>
+#include <set>
 #include <stdexcept>
 #include <utility>
+#include <vector>
 
 #include "../model/game_model.h"
 #include "../model/game_model_state.h"
