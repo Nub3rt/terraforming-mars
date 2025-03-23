@@ -19,15 +19,15 @@ WaterImportFromEuropa::WaterImportFromEuropa( const GameModel& model ) noexcept 
 
 WaterImportFromEuropa::~WaterImportFromEuropa() noexcept {}
 
+int WaterImportFromEuropa::DoCountVPs() const {
+    return _owner->GetTagCount( Tag::JOVIAN );
+}
+
 bool WaterImportFromEuropa::CanBeUsed() const {
     return _owner->GetMaxPayAmountForSpace() >= _action_credit_cost;
 }
 
 void WaterImportFromEuropa::DoUseAction() {
     _owner->ConfirmTitaniumPayment( _action_credit_cost, [ this ]() { _owner->PlaceOcean(); } );
-}
-
-int WaterImportFromEuropa::DoCountVPs() const {
-    return _owner->GetTagCount( Tag::JOVIAN );
 }
 }

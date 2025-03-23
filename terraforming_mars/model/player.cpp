@@ -89,7 +89,7 @@ int Player::GetMaxPayAmountForSpace() const {
 
 void Player::ConfirmSteelPayment( int cost, std::function<void()> after_payment ) {
     if ( _resources[ +Resource::STEEL ] == 0 ) {
-        LoseResource( Resource::STEEL, cost );
+        LoseResource( Resource::CREDIT, cost );
         after_payment();
         return;
     }
@@ -99,7 +99,7 @@ void Player::ConfirmSteelPayment( int cost, std::function<void()> after_payment 
 
 void Player::ConfirmTitaniumPayment( int cost, std::function<void()> after_payment ) {
     if ( _resources[ +Resource::TITANIUM ] == 0 ) {
-        LoseResource( Resource::TITANIUM, cost );
+        LoseResource( Resource::CREDIT, cost );
         after_payment();
         return;
     }
@@ -108,6 +108,7 @@ void Player::ConfirmTitaniumPayment( int cost, std::function<void()> after_payme
 }
 
 void Player::GetCard( decks::Card* card ) {
+    card->Buy( this );
     _hand.push_back( card );
 }
 
@@ -118,6 +119,7 @@ void Player::SellCard( decks::Card* card ) {
         throw std::logic_error( "Player::SellCard: card was not in hand!" );
 
     _hand.erase( it_to_card );
+    card->Sell();
 
     GainResource( Resource::CREDIT, 1 );
 }
@@ -139,6 +141,7 @@ void Player::PlayCard( decks::Card* card ) {
         return;
     }
 
+    LoseResource( Resource::CREDIT, card->GetCost() );
     DoPlayCard( card );
 }
 

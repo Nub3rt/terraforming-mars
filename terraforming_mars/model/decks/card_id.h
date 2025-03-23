@@ -111,4 +111,8 @@ enum class CardID
     SOLETTA = 203,
     RAD_CHEM_FACTORY = 205,
 };
+
+constexpr inline int operator+( CardID card_id ) {
+    return static_cast<int>( card_id );
+}
 }

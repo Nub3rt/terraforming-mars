@@ -37,8 +37,15 @@ void ActiveCardWithEffect::AfterYouPlaySpaceEvent() {
 }
 
 int ActiveCardWithEffect::ModifyCardCost( const Card* card, int cost ) {
+    // By default, effect cards also trigger when they are played. Modifying
+    // card cost is an exception, as it applies only to further cards. Throwing
+    // an exception here was an error, since the card being played called this
+    // on itself, and owner was not set yet. So if this condition is true, it
+    // should mean that the card is being played just now, so we just return.
+    // 
+    // This logic may need to be overviewed for the other effects.
     if ( _owner == nullptr )
-        throw std::logic_error( "ActiveCardWithEffect::ModifyCardCost: card has no owner!" );
+        return cost;
 
     return DoModifyCardCost( card, cost );
 }
