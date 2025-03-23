@@ -1,6 +1,5 @@
 #include "pch.h"
 
-#include "gtest/gtest-message.h"
 #include "gtest/gtest-typed-test.h"
 
 #include <algorithm>
@@ -66,10 +65,10 @@ TYPED_TEST( BoardTest, ValidGreeneryTilesWithOwnedTileTest ) {
     }
 
     this->board.PlaceTile( q, r, &this->player, TileType::CITY );
-    TileType t_expected = this->board( q, r ).get_type();
-    Player* p_expected = this->board( q, r ).get_owner();
-    ASSERT_EQ( TileType::CITY, t_expected );
-    ASSERT_EQ( &this->player, p_expected );
+    TileType t_actual = this->board( q, r ).get_type();
+    Player* p_actual = this->board( q, r ).get_owner();
+    ASSERT_EQ( TileType::CITY, t_actual );
+    ASSERT_EQ( &this->player, p_actual );
 
     std::vector<std::pair<int, int>> neighbours = this->board.GetNeighbouringTilesOfType( q, r, TileType::EMPTY );
     std::vector<std::pair<int, int>> valid_greenerys = this->board.GetValidGreeneryTiles( &this->player );
@@ -89,10 +88,10 @@ TYPED_TEST( BoardTest, ValidCityTilesTest ) {
     }
 
     this->board.PlaceTile( q, r, &this->player, TileType::CITY );
-    TileType t_expected = this->board( q, r ).get_type();
-    Player* p_expected = this->board( q, r ).get_owner();
-    ASSERT_EQ( TileType::CITY, t_expected );
-    ASSERT_EQ( &this->player, p_expected );
+    TileType t_actual = this->board( q, r ).get_type();
+    Player* p_actual = this->board( q, r ).get_owner();
+    ASSERT_EQ( TileType::CITY, t_actual );
+    ASSERT_EQ( &this->player, p_actual );
 
     std::vector<std::pair<int, int>> neighbours = this->board.GetNeighbouringTilesOfType( q, r, TileType::EMPTY );
     std::vector<std::pair<int, int>> valid_cities = this->board.GetValidCityTiles( &this->player );
@@ -112,10 +111,10 @@ TYPED_TEST( BoardTest, ValidLonelyCityTilesTest ) {
     }
 
     this->board.PlaceTile( q, r, &this->player, TileType::GREENERY );
-    TileType t_expected = this->board( q, r ).get_type();
-    Player* p_expected = this->board( q, r ).get_owner();
-    ASSERT_EQ( TileType::GREENERY, t_expected );
-    ASSERT_EQ( &this->player, p_expected );
+    TileType t_actual = this->board( q, r ).get_type();
+    Player* p_actual = this->board( q, r ).get_owner();
+    ASSERT_EQ( TileType::GREENERY, t_actual );
+    ASSERT_EQ( &this->player, p_actual );
 
     std::vector<std::pair<int, int>> neighbours = this->board.GetNeighbouringTilesOfType( q, r, TileType::EMPTY );
     std::vector<std::pair<int, int>> valid_lonely_cities = this->board.GetValidLonelyCityTiles( &this->player );
