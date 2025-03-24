@@ -5,21 +5,39 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="GL Utils">
+    <Filter Include="gl_utils">
       <UniqueIdentifier>{7f2bbe54-ba03-4e5b-be78-3fdf66395b30}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="app.cpp" />
-    <ClCompile Include="SDL_GLDebugMessageCallback.cpp">
-      <Filter>GL Utils</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="gl_utils\camera.cpp">
+      <Filter>gl_utils</Filter>
+    </ClCompile>
+    <ClCompile Include="gl_utils\gl_utils.cpp">
+      <Filter>gl_utils</Filter>
+    </ClCompile>
+    <ClCompile Include="gl_utils\SDL_GLDebugMessageCallback.cpp">
+      <Filter>gl_utils</Filter>
+    </ClCompile>
+    <ClCompile Include="gl_utils\spherical_camera_manipulator.cpp">
+      <Filter>gl_utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="SDL_GLDebugMessageCallback.h">
-      <Filter>GL Utils</Filter>
-    </ClInclude>
     <ClInclude Include="app.h" />
+    <ClInclude Include="gl_utils\camera.h">
+      <Filter>gl_utils</Filter>
+    </ClInclude>
+    <ClInclude Include="gl_utils\gl_utils.h">
+      <Filter>gl_utils</Filter>
+    </ClInclude>
+    <ClInclude Include="gl_utils\SDL_GLDebugMessageCallback.h">
+      <Filter>gl_utils</Filter>
+    </ClInclude>
+    <ClInclude Include="gl_utils\spherical_camera_manipulator.h">
+      <Filter>gl_utils</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

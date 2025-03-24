@@ -2,7 +2,7 @@
 
 #include <imgui.h>
 
-#include "SDL_GLDebugMessageCallback.h"
+#include "gl_utils/SDL_GLDebugMessageCallback.h"
 
 App::App() {
 }
