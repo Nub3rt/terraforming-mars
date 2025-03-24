@@ -142,6 +142,18 @@
     <ClInclude Include="gl_utils\SDL_GLDebugMessageCallback.h" />
     <ClInclude Include="gl_utils\spherical_camera_manipulator.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="shaders\skybox.frag" />
+    <None Include="shaders\skybox.vert" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="assets\back.png" />
+    <Image Include="assets\bottom.png" />
+    <Image Include="assets\front.png" />
+    <Image Include="assets\left.png" />
+    <Image Include="assets\right.png" />
+    <Image Include="assets\top.png" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

@@ -1,11 +1,14 @@
-#include "Camera.h"
-#include <glm/gtc/matrix_transform.hpp>
+#include "camera.h"
+
 #include <math.h>
+
+#include <glm/gtc/matrix_transform.hpp>
 
 namespace view
 {
 Camera::Camera() {
     SetView( glm::vec3( 0.0f, 0.0f, 0.0f ), glm::vec3( 0.0f, 0.0f, -1.0f ), glm::vec3( 0.0f, 1.0f, 0.0f ) );
+    _proj_matrix = glm::perspective( _angle, _aspect, _z_near, _z_far );
 }
 
 Camera::~Camera() {}

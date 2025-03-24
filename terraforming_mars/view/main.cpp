@@ -91,7 +91,7 @@ int main( int argc, char* argv[] ) {
     ImGui_ImplOpenGL3_Init();
 
 
-    App app;
+    view::App app;
 
     if ( !app.Init() ) {
         SDL_GL_DestroyContext( context );

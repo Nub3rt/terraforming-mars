@@ -2,16 +2,16 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
-//#include <glm/gtx/transform.hpp>
+#include <glm/gtx/transform.hpp>
 
 #include <GL/glew.h>
 
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_opengl.h>
 
-//#include "Camera.h"
-//#include "CameraManipulator.h"
-//#include "GLUtils.hpp"
+#include "gl_utils/camera.h"
+#include "gl_utils/spherical_camera_manipulator.h"
+#include "gl_utils/gl_utils.h"
 
 struct UpdateInfo
 {
@@ -19,6 +19,8 @@ struct UpdateInfo
     float delta = 0.0f;
 };
 
+namespace view
+{
 class App
 {
 public:
@@ -43,8 +45,23 @@ public:
     void OtherEvent( const SDL_Event& event );
 
 protected:
+    Camera _camera;
+    SphericalCameraManipulator* _camera_manipulator = nullptr;
+
     void SetupDebugCallback();
 
-    float green, blue, red = 0;
-    int x_resolution, y_resolution;
+    void RenderSkybox();
+
+    OGLObject _skybox_gpu = {};
+    void InitSkyboxGeometry();
+    void CleanSkyboxGeometry();
+
+    GLuint _program_skybox_id = 0;
+    void InitSkyboxShaders();
+    void CleanSkyboxShaders();
+
+    GLuint _skybox_texture_id = 0;
+    void InitSkyboxTextures();
+    void CleanSkyboxTextures();
 };
+}

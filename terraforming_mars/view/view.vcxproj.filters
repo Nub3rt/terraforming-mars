@@ -8,6 +8,9 @@
     <Filter Include="gl_utils">
       <UniqueIdentifier>{7f2bbe54-ba03-4e5b-be78-3fdf66395b30}</UniqueIdentifier>
     </Filter>
+    <Filter Include="shaders">
+      <UniqueIdentifier>{bdbe3233-f8d0-4a92-a29c-5a917bf36fc2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="app.cpp" />
@@ -39,5 +42,33 @@
     <ClInclude Include="gl_utils\spherical_camera_manipulator.h">
       <Filter>gl_utils</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shaders\skybox.frag">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shaders\skybox.vert">
+      <Filter>shaders</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="assets\back.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\bottom.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\front.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\left.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\right.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\top.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>
