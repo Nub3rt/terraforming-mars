@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -9,21 +9,19 @@
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_opengl.h>
 
-#include "view.h"
-
 #include "gl_utils/camera.h"
 #include "gl_utils/spherical_camera_manipulator.h"
 #include "gl_utils/gl_utils.h"
 
 namespace view
 {
-class App
+class View
 {
 public:
-    App();
-    ~App();
+    View();
+    ~View();
 
-    bool Init();
+    bool Init( Camera* camera );
     void Clean();
 
     void Update( const UpdateInfo& update_info );
@@ -41,28 +39,25 @@ public:
     void OtherEvent( const SDL_Event& event );
 
 protected:
-    View _view;
-    Camera _camera;
-    SphericalCameraManipulator* _camera_manipulator = nullptr;
-
-    void SetupDebugCallback();
-
-    void RenderSkybox();
+    Camera* _camera = nullptr;
 
 
-    GLuint _program_skybox_id = 0;
+    GLuint _program_id = 0;
+    GLuint _program_ui_id = 0;
 
-    void InitSkyboxShaders();
-    void CleanSkyboxShaders();
+    void InitShaders();
+    void CleanShaders();
 
-    OGLObject _skybox_gpu = {};
+    OGLObject _hexagon_gpu = {};
 
-    void InitSkyboxGeometry();
-    void CleanSkyboxGeometry();
+    void InitGeometry();
+    void CleanGeometry();
 
-    GLuint _skybox_texture_id = 0;
+    GLuint _orange_texture_id = 0;
 
-    void InitSkyboxTextures();
-    void CleanSkyboxTextures();
+    void InitTextures();
+    void CleanTextures();
+
+    static const std::initializer_list<VertexAttributeDescriptor> _vertex_attribute_list;
 };
 }

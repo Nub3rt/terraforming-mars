@@ -10,6 +10,12 @@
 
 namespace view
 {
+struct UpdateInfo
+{
+    float elapsed = 0.0f;
+    float delta = 0.0f;
+};
+
 struct VertexPosColor
 {
     glm::vec3 position;

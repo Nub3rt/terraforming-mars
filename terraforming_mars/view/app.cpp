@@ -2,6 +2,7 @@
 
 #include <imgui.h>
 
+#include "view.h"
 #include "gl_utils/gl_utils.h"
 #include "gl_utils/SDL_GLDebugMessageCallback.h"
 
@@ -17,6 +18,8 @@ bool App::Init() {
     SetupDebugCallback();
 
     glClearColor( 0.125f, 0.25f, 0.5f, 1.0f );
+
+    _view.Init( &_camera );
 
     InitSkyboxShaders();
     InitSkyboxGeometry();
@@ -55,6 +58,8 @@ void App::Render() {
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
     RenderSkybox();
+
+    _view.Render();
 }
 
 void App::RenderGUI() {
@@ -103,9 +108,7 @@ void App::SetupDebugCallback() {
 
 void App::RenderSkybox() {
     glUseProgram( _program_skybox_id );
-
     glBindVertexArray( _skybox_gpu.vao_id );
-
     glActiveTexture( GL_TEXTURE0 );
     glBindTexture( GL_TEXTURE_CUBE_MAP, _skybox_texture_id );
 
@@ -123,7 +126,19 @@ void App::RenderSkybox() {
     glDepthFunc( prev_depth_func );
 
     glBindTexture( GL_TEXTURE_CUBE_MAP, 0 );
+    glBindVertexArray( 0 );
     glUseProgram( 0 );
+}
+
+void App::InitSkyboxShaders() {
+    _program_skybox_id = glCreateProgram();
+    AttachShader( _program_skybox_id, GL_VERTEX_SHADER, "shaders/skybox.vert" );
+    AttachShader( _program_skybox_id, GL_FRAGMENT_SHADER, "shaders/skybox.frag" );
+    LinkProgram( _program_skybox_id );
+}
+
+void App::CleanSkyboxShaders() {
+    glDeleteProgram( _program_skybox_id );
 }
 
 void App::InitSkyboxGeometry() {
@@ -167,17 +182,6 @@ void App::InitSkyboxGeometry() {
 
 void App::CleanSkyboxGeometry() {
     CleanOGLObject( _skybox_gpu );
-}
-
-void App::InitSkyboxShaders() {
-    _program_skybox_id = glCreateProgram();
-    AttachShader( _program_skybox_id, GL_VERTEX_SHADER, "shaders/skybox.vert" );
-    AttachShader( _program_skybox_id, GL_FRAGMENT_SHADER, "shaders/skybox.frag" );
-    LinkProgram( _program_skybox_id );
-}
-
-void App::CleanSkyboxShaders() {
-    glDeleteProgram( _program_skybox_id );
 }
 
 void App::InitSkyboxTextures() {

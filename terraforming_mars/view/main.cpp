@@ -173,7 +173,7 @@ int main( int argc, char* argv[] ) {
 
             static Uint64 last_tick = SDL_GetTicks();
             Uint64 current_tick = SDL_GetTicks();
-            UpdateInfo update_info = { current_tick / 1000.0f, (current_tick - last_tick) / 1000.0f };
+            view::UpdateInfo update_info = { current_tick / 1000.0f, (current_tick - last_tick) / 1000.0f };
             last_tick = current_tick;
 
             app.Update( update_info );
