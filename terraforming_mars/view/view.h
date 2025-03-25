@@ -1,5 +1,7 @@
 #pragma once
 
+#include <utility>
+
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/transform.hpp>
@@ -40,6 +42,11 @@ public:
 
 protected:
     Camera* _camera = nullptr;
+    SphericalCameraManipulator* _camera_manipulator = nullptr;
+
+
+    void RenderBoard();
+    void RenderHexagon( int q, int r );
 
 
     GLuint _program_id = 0;
@@ -57,6 +64,8 @@ protected:
 
     void InitTextures();
     void CleanTextures();
+
+    virtual const std::pair<float, float>& GetBoardOrigin();
 
     static const std::initializer_list<VertexAttributeDescriptor> _vertex_attribute_list;
 };

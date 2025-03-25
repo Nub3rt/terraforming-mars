@@ -41,9 +41,8 @@ public:
     void OtherEvent( const SDL_Event& event );
 
 protected:
-    View _view;
+    View* _view = nullptr;
     Camera _camera;
-    SphericalCameraManipulator* _camera_manipulator = nullptr;
 
     void SetupDebugCallback();
 

@@ -1,4 +1,4 @@
-#include "view.h"
+﻿#include "view.h"
 
 #include <glm/glm.hpp>
 
@@ -7,12 +7,15 @@ namespace view
 View::View() {}
 View::~View() {}
 
-bool View::Init( Camera* camera) {
-    _camera = camera;
-
+bool View::Init( Camera* camera ) {
     InitShaders();
     InitGeometry();
     InitTextures();
+
+
+    _camera = camera;
+    _camera_manipulator = new SphericalCameraManipulator();
+    _camera_manipulator->SetCamera( camera );
 
     return true;
 }
@@ -21,18 +24,86 @@ void View::Clean() {
     CleanShaders();
     CleanGeometry();
     CleanTextures();
+
+    delete _camera_manipulator;
 }
 
 void View::Update( const UpdateInfo& update_info ) {
+    _camera_manipulator->Update( update_info.delta );
 }
 
 void View::Render() {
+    RenderBoard();
+}
+
+void View::RenderGUI() {
+}
+
+void View::KeyboardDown( const SDL_KeyboardEvent& key ) {
+    _camera_manipulator->KeyboardDown( key );
+}
+
+void View::KeyboardUp( const SDL_KeyboardEvent& key ) {
+    _camera_manipulator->KeyboardUp( key );
+}
+
+void View::MouseMotion( const SDL_MouseMotionEvent& mouse ) {
+    _camera_manipulator->MouseMove( mouse );
+}
+
+void View::MouseDown( const SDL_MouseButtonEvent& mouse ) {
+}
+
+void View::MouseUp( const SDL_MouseButtonEvent& mouse ) {
+}
+
+void View::MouseWheel( const SDL_MouseWheelEvent& wheel ) {
+    _camera_manipulator->MouseWheel( wheel );
+}
+
+void View::Resize( int w, int h ) {
+}
+
+void View::OtherEvent( const SDL_Event& event ) {
+}
+
+void View::RenderBoard() {
     glUseProgram( _program_id );
     glBindVertexArray( _hexagon_gpu.vao_id );
+
+    RenderHexagon( 4, 4 );
+
+    for ( int i = 0; i <= 4; ++i )
+        RenderHexagon( i, 4 - i );
+
+    for ( int i = 5; i < 10; ++i ) {
+        RenderHexagon( i, 5 );
+        RenderHexagon( 2, i );
+    }
+
+    glBindVertexArray( 0 );
+    glUseProgram( 0 );
+}
+
+void View::RenderHexagon( int q, int r ) {
     glActiveTexture( GL_TEXTURE0 );
     glBindTexture( GL_TEXTURE_2D, _orange_texture_id );
 
-    glm::mat4 world = glm::identity<glm::mat4>();
+    /*
+    *  *----> q         Ʌ x
+    *   \               |
+    *    \      ----->  |
+    *     \             |
+    *      V r          *----> z
+    */
+
+    auto& [q_o, r_o] = GetBoardOrigin();
+    float q_t = q - q_o;
+    float r_t = r - r_o;
+
+    float x = 3.0f / 2.0f * -r_t;
+    float z = glm::root_three<float>() * q_t + glm::root_three<float>() / 2.0f * r_t;
+    glm::mat4 world = glm::translate( glm::vec3( x, 0.0f, z ) );
 
     glUniformMatrix4fv( ul( "world" ), 1, GL_FALSE, glm::value_ptr( world ) );
     glUniformMatrix4fv( ul( "world_it" ), 1, GL_FALSE, glm::value_ptr( glm::transpose( glm::inverse( world ) ) ) );
@@ -43,27 +114,6 @@ void View::Render() {
     glDrawElements( GL_TRIANGLES, _hexagon_gpu.count, GL_UNSIGNED_INT, nullptr );
 
     glBindTexture( GL_TEXTURE_2D, 0 );
-    glBindVertexArray( 0 );
-    glUseProgram( 0 );
-}
-
-void View::RenderGUI() {
-}
-void View::KeyboardDown( const SDL_KeyboardEvent& key ) {
-}
-void View::KeyboardUp( const SDL_KeyboardEvent& key ) {
-}
-void View::MouseMotion( const SDL_MouseMotionEvent& mouse ) {
-}
-void View::MouseDown( const SDL_MouseButtonEvent& mouse ) {
-}
-void View::MouseUp( const SDL_MouseButtonEvent& mouse ) {
-}
-void View::MouseWheel( const SDL_MouseWheelEvent& wheel ) {
-}
-void View::Resize( int w, int h ) {
-}
-void View::OtherEvent( const SDL_Event& event ) {
 }
 
 void View::InitShaders() {
@@ -124,10 +174,15 @@ void View::CleanTextures() {
     glDeleteTextures( 1, &_orange_texture_id );
 }
 
+const std::pair<float, float>& View::GetBoardOrigin() {
+    static const std::pair<float, float> origin( 4.0f, 4.0f );
+    return origin;
+}
+
 const std::initializer_list<VertexAttributeDescriptor> View::_vertex_attribute_list =
 {
     { 0, offsetof( Vertex, position ), 3, GL_FLOAT },
     { 1, offsetof( Vertex, normal ), 3, GL_FLOAT },
-    { 2, offsetof( Vertex, texcoord ), 2, GL_FLOAT },
+    { 2, offsetof( Vertex, texcoord ), 2, GL_FLOAT },  
 };
 }

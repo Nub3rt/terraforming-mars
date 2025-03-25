@@ -19,25 +19,29 @@ bool App::Init() {
 
     glClearColor( 0.125f, 0.25f, 0.5f, 1.0f );
 
-    _view.Init( &_camera );
-
     InitSkyboxShaders();
     InitSkyboxGeometry();
     InitSkyboxTextures();
 
+#ifdef _DEBUG
+    glPolygonMode( GL_FRONT, GL_FILL );
+    glPolygonMode( GL_BACK,  GL_LINE );
+#else
     glEnable( GL_CULL_FACE );
     glCullFace( GL_BACK );
+#endif
 
     glEnable( GL_DEPTH_TEST );
 
+
     _camera.SetView(
-        glm::vec3( 0.0f, 40.0f, 0.0f ),
+        glm::vec3( -5.0f, 40.0f, 0.0f ),
         glm::vec3( 0.0f, 0.0f, 0.0f ),
         glm::vec3( 0.0f, 1.0f, 0.0f )
     );
 
-    _camera_manipulator = new SphericalCameraManipulator();
-    _camera_manipulator->SetCamera( &_camera );
+    _view = new View();
+    _view->Init( &_camera );
 
     return true;
 }
@@ -47,11 +51,13 @@ void App::Clean() {
     CleanSkyboxGeometry();
     CleanSkyboxTextures();
 
-    delete _camera_manipulator;
+
+    _view->Clean();
+    delete _view;
 }
 
 void App::Update( const UpdateInfo& update_info ) {
-    _camera_manipulator->Update( update_info.delta );
+    _view->Update( update_info );
 }
 
 void App::Render() {
@@ -59,40 +65,46 @@ void App::Render() {
 
     RenderSkybox();
 
-    _view.Render();
+    _view->Render();
 }
 
 void App::RenderGUI() {
+    _view->RenderGUI();
 }
 
 void App::KeyboardDown( const SDL_KeyboardEvent& key ) {
-    _camera_manipulator->KeyboardDown( key );
+    _view->KeyboardDown( key );
 }
 
 void App::KeyboardUp( const SDL_KeyboardEvent& key ) {
-    _camera_manipulator->KeyboardUp( key );
+    _view->KeyboardUp( key );
 }
 
 void App::MouseMotion( const SDL_MouseMotionEvent& mouse ) {
-    _camera_manipulator->MouseMove( mouse );
+    _view->MouseMotion( mouse );
 }
 
 void App::MouseDown( const SDL_MouseButtonEvent& mouse ) {
+    _view->MouseDown( mouse );
 }
 
 void App::MouseUp( const SDL_MouseButtonEvent& mouse ) {
+    _view->MouseUp( mouse );
 }
 
 void App::MouseWheel( const SDL_MouseWheelEvent& wheel ) {
-    _camera_manipulator->MouseWheel( wheel );
+    _view->MouseWheel( wheel );
 }
 
 void App::Resize( int w, int h ) {
     glViewport( 0, 0, w, h );
-    _camera.SetAspect( w / (float)h );
+    _camera.SetAspect( w / (float) h );
+
+    _view->Resize( w, h );
 }
 
 void App::OtherEvent( const SDL_Event& event ) {
+    _view->OtherEvent( event );
 }
 
 void App::SetupDebugCallback() {
