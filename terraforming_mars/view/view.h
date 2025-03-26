@@ -70,5 +70,6 @@ protected:
     virtual const std::pair<float, float>& GetBoardOrigin();
 
     static const std::initializer_list<VertexAttributeDescriptor> _vertex_attribute_list;
+    static const std::initializer_list<VertexAttributeDescriptor> _vertex_plus_attribute_list;
 };
 }

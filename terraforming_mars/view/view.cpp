@@ -132,15 +132,16 @@ void View::CleanShaders() {
 }
 
 void View::InitGeometry() {
-    MeshObject<Vertex> hexagon_cpu;
+    MeshObject<VertexF> hexagon_cpu;
 
     glm::vec3 position( 1.0f, 0.0f, 0.0f );
     glm::vec3 normal( 0.0f, 1.0f, 0.0f );
     glm::vec2 texcoord( 0.0f, 0.0f );
-    hexagon_cpu.vertex_array.emplace_back( glm::vec3( 0.0f ), normal, texcoord );
+    float on_edge = 1.0f;
+    hexagon_cpu.vertex_array.emplace_back( glm::vec3( 0.0f ), normal, texcoord, 0.0f );
 
     for ( int i = 0; i < 6; ++i ) {
-        hexagon_cpu.vertex_array.emplace_back( position, normal, texcoord );
+        hexagon_cpu.vertex_array.emplace_back( position, normal, texcoord, on_edge );
 
         static const glm::mat4 rotate_sixth = glm::rotate( glm::pi<float>() / 3.0f, glm::vec3( 0.0f, 1.0f, 0.0f ) );
         position = (rotate_sixth * glm::vec4( position, 1.0f )).xyz;
@@ -151,7 +152,7 @@ void View::InitGeometry() {
         hexagon_cpu.index_array.push_back( i % 6 + 1 );
     }
 
-    _hexagon_gpu = CreateGLObjectFromMesh( hexagon_cpu, _vertex_attribute_list );
+    _hexagon_gpu = CreateGLObjectFromMesh( hexagon_cpu, _vertex_plus_attribute_list );
 }
 
 void View::CleanGeometry() {
@@ -186,7 +187,15 @@ const std::pair<float, float>& View::GetBoardOrigin() {
 const std::initializer_list<VertexAttributeDescriptor> View::_vertex_attribute_list =
 {
     { 0, offsetof( Vertex, position ), 3, GL_FLOAT },
-    { 1, offsetof( Vertex, normal ), 3, GL_FLOAT },
+    { 1, offsetof( Vertex, normal   ), 3, GL_FLOAT },
     { 2, offsetof( Vertex, texcoord ), 2, GL_FLOAT },  
+};
+
+const std::initializer_list<VertexAttributeDescriptor> View::_vertex_plus_attribute_list =
+{
+    { 0, offsetof( VertexF, position ), 3, GL_FLOAT },
+    { 1, offsetof( VertexF, normal   ), 3, GL_FLOAT },
+    { 2, offsetof( VertexF, texcoord ), 2, GL_FLOAT },
+    { 3, offsetof( VertexF, plus     ), 1, GL_FLOAT },
 };
 }

@@ -35,6 +35,14 @@ struct Vertex
     glm::vec2 texcoord;
 };
 
+struct VertexF
+{
+    glm::vec3 position;
+    glm::vec3 normal;
+    glm::vec2 texcoord;
+    GLfloat plus;
+};
+
 struct ImageRGBA
 {
     typedef glm::u8vec4 TexelRGBA;
