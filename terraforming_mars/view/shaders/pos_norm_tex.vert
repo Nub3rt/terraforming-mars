@@ -15,7 +15,7 @@ uniform mat4 view_proj;
 void main() {
     gl_Position = view_proj * world * vec4( vs_in_pos, 1.0 ); 
 
-    vs_out_pos  = (world    * vec4( vs_in_pos,  1 )).xyz;
-    vs_out_norm = (world_it * vec4( vs_in_norm, 0 )).xyz;
+    vs_out_pos  = (world    * vec4( vs_in_pos,  1.0 )).xyz;
+    vs_out_norm = (world_it * vec4( vs_in_norm, 0.0 )).xyz;
     vs_out_tex = vs_in_tex;
 }

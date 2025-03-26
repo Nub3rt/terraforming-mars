@@ -41,6 +41,8 @@ public:
     void OtherEvent( const SDL_Event& event );
 
 protected:
+    float _elapsed = 0.0f;
+
     Camera* _camera = nullptr;
     SphericalCameraManipulator* _camera_manipulator = nullptr;
 

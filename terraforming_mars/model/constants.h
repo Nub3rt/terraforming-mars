@@ -1,5 +1,7 @@
 #pragma once
 
+namespace model
+{
 inline constexpr int STARTING_TEMPERATURE = -30;
 inline constexpr int STARTING_OCEAN_COUNT = 0;
 inline constexpr int STARTING_OXYGEN_LEVEL = 0;
@@ -30,3 +32,4 @@ inline constexpr int SOLO_GAME_MAX_GENERATIONS = 14;
 
 
 inline constexpr int BEGINNER_CORPORATION_CREDITS = 42;
+}

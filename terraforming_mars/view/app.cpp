@@ -2,6 +2,7 @@
 
 #include <imgui.h>
 
+#include "constants.h"
 #include "view.h"
 #include "gl_utils/gl_utils.h"
 #include "gl_utils/SDL_GLDebugMessageCallback.h"
@@ -57,6 +58,8 @@ void App::Clean() {
 }
 
 void App::Update( const UpdateInfo& update_info ) {
+    _elapsed = update_info.elapsed;
+
     _view->Update( update_info );
 }
 
@@ -69,6 +72,11 @@ void App::Render() {
 }
 
 void App::RenderGUI() {
+    //if ( ImGui::Begin( "Info" ) ) {
+    //    ImGui::LabelText( std::to_string( _elapsed ).c_str(), "Elapsed time" );
+    //}
+    //ImGui::End();
+
     _view->RenderGUI();
 }
 
@@ -124,8 +132,12 @@ void App::RenderSkybox() {
     glActiveTexture( GL_TEXTURE0 );
     glBindTexture( GL_TEXTURE_CUBE_MAP, _skybox_texture_id );
 
+    glm::mat4 world = glm::translate( _camera.GetEye() );
+    world = world * glm::rotate( _elapsed * SKYBOX_ROTATE_SPEED, glm::vec3( 0.0f, 1.0f, 0.0f ) );
+
+    glUniformMatrix4fv( ul( "world" ), 1, GL_FALSE, glm::value_ptr( world ) );
     glUniformMatrix4fv( ul( "view_proj" ), 1, GL_FALSE, glm::value_ptr( _camera.GetViewProj() ) );
-    glUniformMatrix4fv( ul( "world" ), 1, GL_FALSE, glm::value_ptr( glm::translate( _camera.GetEye() ) ) );
+
     glUniform1i( ul( "skybox_texture" ), 0 );
 
     GLint prev_depth_func;

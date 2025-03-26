@@ -2,6 +2,8 @@
 
 #include <glm/glm.hpp>
 
+#include "constants.h"
+
 namespace view
 {
 View::View() {}
@@ -29,6 +31,8 @@ void View::Clean() {
 }
 
 void View::Update( const UpdateInfo& update_info ) {
+    _elapsed = update_info.elapsed;
+
     _camera_manipulator->Update( update_info.delta );
 }
 

@@ -139,6 +139,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="app.h" />
+    <ClInclude Include="constants.h" />
     <ClInclude Include="gl_utils\camera.h" />
     <ClInclude Include="gl_utils\gl_utils.h" />
     <ClInclude Include="gl_utils\SDL_GLDebugMessageCallback.h" />
