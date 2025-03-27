@@ -6,8 +6,9 @@
 
 #include "concrete_board.h"
 #include "hexagonal_grid.h"
-#include "../player.h"
 #include "tile.h"
+#include "../constants.h"
+#include "../player.h"
 
 namespace model::boards
 {
@@ -77,103 +78,103 @@ constexpr std::pair<int, int> TharsisConcreteBoard::_noctis_city_index = std::pa
 const std::array<std::array<Tile, 9>, 9>& TharsisConcreteBoard::get_starting_board() {
     static const std::array<std::array<Tile, 9>, 9> starting_board = {{
         {{
-            Tile( get_bad_index ()),
-            Tile( get_bad_index ()),
-            Tile( get_bad_index ()),
-            Tile( get_bad_index ()),
-            Tile( get_gain_two_steel(), TileType::EMPTY ),
-            Tile( get_gain_two_steel(), TileType::RESERVED_FOR_OCEAN ),
-            Tile( get_noop(), TileType::EMPTY ),
-            Tile( get_draw_one_card(), TileType::RESERVED_FOR_OCEAN ),
-            Tile( get_noop(), TileType::RESERVED_FOR_OCEAN ),
+            Tile( 0, 0, get_bad_index ()),
+            Tile( 1, 0, get_bad_index ()),
+            Tile( 2, 0, get_bad_index ()),
+            Tile( 3, 0, get_bad_index ()),
+            Tile( 4, 0, get_gain_two_steel(), TileType::EMPTY ),
+            Tile( 5, 0, get_gain_two_steel(), TileType::RESERVED_FOR_OCEAN ),
+            Tile( 6, 0, get_noop(), TileType::EMPTY ),
+            Tile( 7, 0, get_draw_one_card(), TileType::RESERVED_FOR_OCEAN ),
+            Tile( 8, 0, get_noop(), TileType::RESERVED_FOR_OCEAN ),
         }}, // first row
         {{
-            Tile( get_bad_index ()),
-            Tile( get_bad_index ()),
-            Tile( get_bad_index ()),
-            Tile( get_noop(), TileType::EMPTY ),
-            Tile( get_gain_one_steel(), TileType::EMPTY ),
-            Tile( get_noop(), TileType::EMPTY ),
-            Tile( get_noop(), TileType::EMPTY ),
-            Tile( get_noop(), TileType::EMPTY ),
-            Tile( get_draw_two_cards(), TileType::RESERVED_FOR_OCEAN ),
+            Tile( 0, 1, get_bad_index() ),
+            Tile( 1, 1, get_bad_index() ),
+            Tile( 2, 1, get_bad_index() ),
+            Tile( 3, 1, get_noop(), TileType::EMPTY ),
+            Tile( 4, 1, get_gain_one_steel(), TileType::EMPTY ),
+            Tile( 5, 1, get_noop(), TileType::EMPTY ),
+            Tile( 6, 1, get_noop(), TileType::EMPTY ),
+            Tile( 7, 1, get_noop(), TileType::EMPTY ),
+            Tile( 8, 1, get_draw_two_cards(), TileType::RESERVED_FOR_OCEAN ),
         }}, // second row
         {{
-            Tile( get_bad_index ()),
-            Tile( get_bad_index ()),
-            Tile( get_draw_one_card(), TileType::EMPTY ),
-            Tile( get_noop(), TileType::EMPTY ),
-            Tile( get_noop(), TileType::EMPTY ),
-            Tile( get_noop(), TileType::EMPTY ),
-            Tile( get_noop(), TileType::EMPTY ),
-            Tile( get_noop(), TileType::EMPTY ),
-            Tile( get_gain_one_steel(), TileType::EMPTY ),
+            Tile( 0, 2, get_bad_index() ),
+            Tile( 1, 2, get_bad_index() ),
+            Tile( 2, 2, get_draw_one_card(), TileType::EMPTY ),
+            Tile( 3, 2, get_noop(), TileType::EMPTY ),
+            Tile( 4, 2, get_noop(), TileType::EMPTY ),
+            Tile( 5, 2, get_noop(), TileType::EMPTY ),
+            Tile( 6, 2, get_noop(), TileType::EMPTY ),
+            Tile( 7, 2, get_noop(), TileType::EMPTY ),
+            Tile( 8, 2, get_gain_one_steel(), TileType::EMPTY ),
         }}, // third row
         {{
-            Tile( get_bad_index ()),
-            Tile( get_gain_titanium_and_plants(), TileType::EMPTY),
-            Tile( get_gain_one_plants(), TileType::EMPTY ),
-            Tile( get_gain_one_plants(), TileType::EMPTY ),
-            Tile( get_gain_one_plants(), TileType::EMPTY ),
-            Tile( get_gain_two_plants(), TileType::EMPTY ),
-            Tile( get_gain_one_plants(), TileType::EMPTY ),
-            Tile( get_gain_one_plants(), TileType::EMPTY ),
-            Tile( get_gain_two_plants(), TileType::RESERVED_FOR_OCEAN ),
+            Tile( 0, 3, get_bad_index() ),
+            Tile( 1, 3, get_gain_titanium_and_plants(), TileType::EMPTY ),
+            Tile( 2, 3, get_gain_one_plants(), TileType::EMPTY ),
+            Tile( 3, 3, get_gain_one_plants(), TileType::EMPTY ),
+            Tile( 4, 3, get_gain_one_plants(), TileType::EMPTY ),
+            Tile( 5, 3, get_gain_two_plants(), TileType::EMPTY ),
+            Tile( 6, 3, get_gain_one_plants(), TileType::EMPTY ),
+            Tile( 7, 3, get_gain_one_plants(), TileType::EMPTY ),
+            Tile( 8, 3, get_gain_two_plants(), TileType::RESERVED_FOR_OCEAN ),
         }}, // fourth row
         {{
-            Tile( get_gain_two_plants(), TileType::EMPTY ),
-            Tile( get_gain_two_plants(), TileType::EMPTY ),
-            Tile( get_gain_two_plants(), TileType::RESERVED_FOR_NOCTIS ),
-            Tile( get_gain_two_plants(), TileType::RESERVED_FOR_OCEAN ),
-            Tile( get_gain_two_plants(), TileType::RESERVED_FOR_OCEAN ),
-            Tile( get_gain_two_plants(), TileType::RESERVED_FOR_OCEAN ),
-            Tile( get_gain_two_plants(), TileType::EMPTY ),
-            Tile( get_gain_two_plants(), TileType::EMPTY ),
-            Tile( get_gain_two_plants(), TileType::EMPTY ),
+            Tile( 0, 4, get_gain_two_plants(), TileType::EMPTY ),
+            Tile( 1, 4, get_gain_two_plants(), TileType::EMPTY ),
+            Tile( 2, 4, get_gain_two_plants(), TileType::RESERVED_FOR_NOCTIS ),
+            Tile( 3, 4, get_gain_two_plants(), TileType::RESERVED_FOR_OCEAN ),
+            Tile( 4, 4, get_gain_two_plants(), TileType::RESERVED_FOR_OCEAN ),
+            Tile( 5, 4, get_gain_two_plants(), TileType::RESERVED_FOR_OCEAN ),
+            Tile( 6, 4, get_gain_two_plants(), TileType::EMPTY ),
+            Tile( 7, 4, get_gain_two_plants(), TileType::EMPTY ),
+            Tile( 8, 4, get_gain_two_plants(), TileType::EMPTY ),
         }}, // fifth row
         {{
-            Tile( get_gain_one_plants(), TileType::EMPTY ),
-            Tile( get_gain_two_plants(), TileType::EMPTY ),
-            Tile( get_gain_one_plants(), TileType::EMPTY ),
-            Tile( get_gain_one_plants(), TileType::EMPTY ),
-            Tile( get_gain_one_plants(), TileType::EMPTY ),
-            Tile( get_gain_one_plants(), TileType::RESERVED_FOR_OCEAN ),
-            Tile( get_gain_one_plants(), TileType::RESERVED_FOR_OCEAN ),
-            Tile( get_gain_one_plants(), TileType::RESERVED_FOR_OCEAN ),
-            Tile( get_bad_index ()),
+            Tile( 0, 5, get_gain_one_plants(), TileType::EMPTY ),
+            Tile( 1, 5, get_gain_two_plants(), TileType::EMPTY ),
+            Tile( 2, 5, get_gain_one_plants(), TileType::EMPTY ),
+            Tile( 3, 5, get_gain_one_plants(), TileType::EMPTY ),
+            Tile( 4, 5, get_gain_one_plants(), TileType::EMPTY ),
+            Tile( 5, 5, get_gain_one_plants(), TileType::RESERVED_FOR_OCEAN ),
+            Tile( 6, 5, get_gain_one_plants(), TileType::RESERVED_FOR_OCEAN ),
+            Tile( 7, 5, get_gain_one_plants(), TileType::RESERVED_FOR_OCEAN ),
+            Tile( 8, 5, get_bad_index ()),
         }}, // sixth row
         {{
-            Tile( get_noop(), TileType::EMPTY ),
-            Tile( get_noop(), TileType::EMPTY ),
-            Tile( get_noop(), TileType::EMPTY ),
-            Tile( get_noop(), TileType::EMPTY ),
-            Tile( get_noop(), TileType::EMPTY ),
-            Tile( get_gain_one_plants(), TileType::EMPTY ),
-            Tile( get_noop(), TileType::EMPTY ),
-            Tile( get_bad_index ()),
-            Tile( get_bad_index ()),
+            Tile( 0, 6, get_noop(), TileType::EMPTY ),
+            Tile( 1, 6, get_noop(), TileType::EMPTY ),
+            Tile( 2, 6, get_noop(), TileType::EMPTY ),
+            Tile( 3, 6, get_noop(), TileType::EMPTY ),
+            Tile( 4, 6, get_noop(), TileType::EMPTY ),
+            Tile( 5, 6, get_gain_one_plants(), TileType::EMPTY ),
+            Tile( 6, 6, get_noop(), TileType::EMPTY ),
+            Tile( 7, 6, get_bad_index() ),
+            Tile( 8, 6, get_bad_index ()),
         }}, // seventh row
         {{
-            Tile( get_gain_two_steel(), TileType::EMPTY ),
-            Tile( get_noop(), TileType::EMPTY ),
-            Tile( get_draw_one_card(), TileType::EMPTY ),
-            Tile( get_draw_one_card(), TileType::EMPTY ),
-            Tile( get_noop(), TileType::EMPTY ),
-            Tile( get_gain_one_titanium(), TileType::EMPTY ),
-            Tile( get_bad_index ()),
-            Tile( get_bad_index ()),
-            Tile( get_bad_index ()),
+            Tile( 0, 7, get_gain_two_steel(), TileType::EMPTY ),
+            Tile( 1, 7, get_noop(), TileType::EMPTY ),
+            Tile( 2, 7, get_draw_one_card(), TileType::EMPTY ),
+            Tile( 3, 7, get_draw_one_card(), TileType::EMPTY ),
+            Tile( 4, 7, get_noop(), TileType::EMPTY ),
+            Tile( 5, 7, get_gain_one_titanium(), TileType::EMPTY ),
+            Tile( 6, 7, get_bad_index() ),
+            Tile( 7, 7, get_bad_index() ),
+            Tile( 8, 7, get_bad_index ()),
         }}, // eighth row
         {{
-            Tile( get_gain_one_steel(), TileType::EMPTY ),
-            Tile( get_gain_two_steel(), TileType::EMPTY ),
-            Tile( get_noop(), TileType::EMPTY ),
-            Tile( get_noop(), TileType::EMPTY ),
-            Tile( get_gain_two_titanium(), TileType::RESERVED_FOR_OCEAN ),
-            Tile( get_bad_index ()),
-            Tile( get_bad_index ()),
-            Tile( get_bad_index ()),
-            Tile( get_bad_index ()),
+            Tile( 0, 8, get_gain_one_steel(), TileType::EMPTY ),
+            Tile( 1, 8, get_gain_two_steel(), TileType::EMPTY ),
+            Tile( 2, 8, get_noop(), TileType::EMPTY ),
+            Tile( 3, 8, get_noop(), TileType::EMPTY ),
+            Tile( 4, 8, get_gain_two_titanium(), TileType::RESERVED_FOR_OCEAN ),
+            Tile( 5, 8, get_bad_index() ),
+            Tile( 6, 8, get_bad_index() ),
+            Tile( 7, 8, get_bad_index() ),
+            Tile( 8, 8, get_bad_index ()),
         }}, // ninth row
     }};
     return starting_board;
@@ -181,10 +182,10 @@ const std::array<std::array<Tile, 9>, 9>& TharsisConcreteBoard::get_starting_boa
 
 
 TharsisConcreteBoard::TharsisIterator::TharsisIterator() :
-    _ptr( nullptr ), _q( 0 ), _r( 0 ) {}
+    _ptr( nullptr ) {}
 
-TharsisConcreteBoard::TharsisIterator::TharsisIterator( pointer ptr, int q, int r ) :
-    _ptr( ptr ), _q( q ), _r( r ) {}
+TharsisConcreteBoard::TharsisIterator::TharsisIterator( pointer ptr ) :
+    _ptr( ptr ) {}
 
 TharsisConcreteBoard::TharsisIterator::~TharsisIterator() {}
 
@@ -197,10 +198,10 @@ ConcreteBoard::Iterator::pointer TharsisConcreteBoard::TharsisIterator::operator
 }
 
 ConcreteBoard::Iterator& TharsisConcreteBoard::TharsisIterator::operator++() {
-    if ( _r == 8 && _q == 5 )
+    if ( _ptr->r == 8 && _ptr->q == 5 )
         return *this;
 
-    PointerOneUp();
+    ++_ptr;
 
     if ( _ptr->get_type() == TileType::NONE )
         return ++(*this);
@@ -217,21 +218,11 @@ bool TharsisConcreteBoard::TharsisIterator::operator!=( const Iterator& other ) 
     return !(*this == other);
 }
 
-void TharsisConcreteBoard::TharsisIterator::PointerOneUp() {
-    ++_ptr;
-
-    if ( _q == 8 ) {
-        _q = 0;
-        ++_r;
-    } else
-        ++_q;
-}
-
 ConcreteBoard::IteratorWrapper TharsisConcreteBoard::begin() const {
-    return new TharsisIterator( &_board[ 0 ][ 4 ], 4, 0 );
+    return new TharsisIterator( &_board[ THARSIS_BEGIN_R ][ THARSIS_BEGIN_Q ] );
 }
 
 ConcreteBoard::IteratorWrapper TharsisConcreteBoard::end() const {
-    return new TharsisIterator( &_board[ 8 ][ 5 ], 5, 8 );
+    return new TharsisIterator( &_board[ THARSIS_END_R ][ THARSIS_END_Q ] );
 }
 }

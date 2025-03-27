@@ -37,7 +37,7 @@ public:
     {
     public:
         TharsisIterator();
-        TharsisIterator( pointer ptr, int q, int r );
+        TharsisIterator( pointer ptr );
         ~TharsisIterator() override;
 
         reference operator*() const override;
@@ -48,14 +48,8 @@ public:
         bool operator==( const Iterator& other ) const override;
         bool operator!=( const Iterator& other ) const override;
 
-        inline std::pair<int, int> GetIndices() const override { return std::pair<int, int>( _q, _r ); }
-
-        void PointerOneUp();
-
     private:
         pointer _ptr;
-        int _q;
-        int _r;
     };
 
     IteratorWrapper begin() const override;

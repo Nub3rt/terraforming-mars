@@ -30,6 +30,11 @@ inline constexpr int SOLO_GAME_STARTING_TR = 14;
 inline constexpr int SOLO_GAME_STARTING_RESOURCE_PRODUCTION = 0;
 inline constexpr int SOLO_GAME_MAX_GENERATIONS = 14;
 
+inline constexpr int THARSIS_BEGIN_Q = 4;
+inline constexpr int THARSIS_BEGIN_R = 0;
+inline constexpr int THARSIS_END_Q = 5;
+inline constexpr int THARSIS_END_R = 8;
+
 
 inline constexpr int BEGINNER_CORPORATION_CREDITS = 42;
 }

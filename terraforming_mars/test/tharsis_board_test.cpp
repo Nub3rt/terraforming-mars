@@ -98,7 +98,7 @@ TEST_F( TharsisBoardTest, NoctisCityTest ) {
     EXPECT_EQ( 4, r );
 
     for ( auto it = tharsis_board.begin(); it != tharsis_board.end(); ++it ) {
-        if ( it.GetIndices() == *noctis_position )
+        if ( it->get_indices() == *noctis_position )
             EXPECT_EQ( TileType::RESERVED_FOR_NOCTIS, it->get_type() );
         else
             EXPECT_NE( TileType::RESERVED_FOR_NOCTIS, it->get_type() );

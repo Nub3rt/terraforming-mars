@@ -117,8 +117,4 @@ bool ConcreteBoard::IteratorWrapper::operator==( const Iterator& other ) const {
 bool ConcreteBoard::IteratorWrapper::operator!=( const Iterator& other ) const {
     return !(*this == other);
 }
-
-std::pair<int, int> ConcreteBoard::IteratorWrapper::GetIndices() const {
-    return _iterator->GetIndices();
-}
 }

@@ -35,7 +35,7 @@ TYPED_TEST( BoardTest, TilesOfTypeTest ) {
     std::vector<std::pair<int, int>> tiles = this->board.GetTilesOfType( TileType::EMPTY );
 
     for ( auto it = this->board.begin(); it != this->board.end(); ++it ) {
-        if ( std::find( tiles.cbegin(), tiles.cend(), it.GetIndices() ) != tiles.cend() )
+        if ( std::find( tiles.cbegin(), tiles.cend(), it->get_indices() ) != tiles.cend() )
             EXPECT_EQ( TileType::EMPTY, it->get_type() );
         else
             EXPECT_NE( TileType::EMPTY, it->get_type() );
@@ -58,10 +58,10 @@ TYPED_TEST( BoardTest, ValidGreeneryTilesTest ) {
 
 TYPED_TEST( BoardTest, ValidGreeneryTilesWithOwnedTileTest ) {
     auto it = this->board.begin();
-    auto [q, r] = it.GetIndices();
+    auto [q, r] = it->get_indices();
     while ( it->get_type() != TileType::EMPTY && this->board.GetNeighbouringTilesOfType( q, r, TileType::EMPTY ).size() < 2 ) {
         ++it;
-        std::tie( q, r ) = it.GetIndices();
+        std::tie( q, r ) = it->get_indices();
     }
 
     this->board.PlaceTile( q, r, &this->player, TileType::CITY );
@@ -81,10 +81,10 @@ TYPED_TEST( BoardTest, ValidGreeneryTilesWithOwnedTileTest ) {
 
 TYPED_TEST( BoardTest, ValidCityTilesTest ) {
     auto it = this->board.begin();
-    auto [q, r] = it.GetIndices();
+    auto [q, r] = it->get_indices();
     while ( it->get_type() != TileType::EMPTY && this->board.GetNeighbouringTilesOfType( q, r, TileType::EMPTY ).size() < 2 ) {
         ++it;
-        std::tie( q, r ) = it.GetIndices();
+        std::tie( q, r ) = it->get_indices();
     }
 
     this->board.PlaceTile( q, r, &this->player, TileType::CITY );
@@ -104,10 +104,10 @@ TYPED_TEST( BoardTest, ValidCityTilesTest ) {
 
 TYPED_TEST( BoardTest, ValidLonelyCityTilesTest ) {
     auto it = this->board.begin();
-    auto [q, r] = it.GetIndices();
+    auto [q, r] = it->get_indices();
     while ( it->get_type() != TileType::EMPTY && this->board.GetNeighbouringTilesOfType( q, r, TileType::EMPTY ).size() < 2 ) {
         ++it;
-        std::tie( q, r ) = it.GetIndices();
+        std::tie( q, r ) = it->get_indices();
     }
 
     this->board.PlaceTile( q, r, &this->player, TileType::GREENERY );
@@ -127,13 +127,13 @@ TYPED_TEST( BoardTest, ValidLonelyCityTilesTest ) {
 
 TYPED_TEST( BoardTest, ValidUrbanizedAreaTilesTest ) {
     auto it = this->board.begin();
-    auto [q, r] = it.GetIndices();
+    auto [q, r] = it->get_indices();
     // this is not too safe
     while ( this->board( q, r     ).get_type() == TileType::EMPTY &&
             this->board( q, r + 1 ).get_type() == TileType::EMPTY &&
             this->board( q, r + 2 ).get_type() == TileType::EMPTY ) {
         ++it;
-        std::tie( q, r ) = it.GetIndices();
+        std::tie( q, r ) = it->get_indices();
     }
 
     this->board.PlaceTile( q, r    , &this->player, TileType::CITY );

@@ -67,8 +67,6 @@ public:
 
         virtual bool operator==( const Iterator& other ) const = 0;
         virtual bool operator!=( const Iterator& other ) const = 0;
-
-        virtual std::pair<int, int> GetIndices() const = 0;
     };
 
     class IteratorWrapper : public Iterator
@@ -84,11 +82,8 @@ public:
         bool operator==( const Iterator& other ) const override;
         bool operator!=( const Iterator& other ) const override;
 
-        std::pair<int, int> GetIndices() const override;
-
     private:
         Iterator* _iterator;
-
     };
 
     virtual IteratorWrapper begin() const = 0;

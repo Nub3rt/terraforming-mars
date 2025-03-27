@@ -16,7 +16,7 @@ std::vector<std::pair<int, int>> Board::GetTilesOfType( TileType type ) const {
 
     for ( auto it = begin(); it != end(); ++it ) {
         if ( it->get_type() == type )
-            tiles.push_back( it.GetIndices() );
+            tiles.push_back( it->get_indices() );
     }
 
     return tiles;
@@ -27,7 +27,7 @@ std::vector<std::pair<int, int>> Board::GetPlaceableTilesOfType( const Player* p
 
     for ( auto it = begin(); it != end(); ++it ) {
         if ( it->get_type() == type && (it->get_owner() == nullptr || it->get_owner() == player) )
-            tiles.push_back( it.GetIndices() );
+            tiles.push_back( it->get_indices() );
     }
 
     return tiles;
@@ -46,7 +46,7 @@ std::vector<std::pair<int, int>> Board::GetValidGreeneryTiles( const Player* pla
 
     for ( auto it = begin(); it != end(); ++it ) {
         if ( it->get_type() == TileType::EMPTY && (it->get_owner() == nullptr || it->get_owner() == player) ) {
-            auto [ q, r ] = it.GetIndices();
+            auto [ q, r ] = it->get_indices();
             std::vector<std::pair<int, int>> neighbours = GetNeighbouringTiles( q, r );
 
             for ( const auto& [ nq, nr ] : neighbours ) {
@@ -69,7 +69,7 @@ std::vector<std::pair<int, int>> Board::GetValidCityTiles( const Player* player 
 
     for ( auto it = begin(); it != end(); ++it ) {
         if ( it->get_type() == TileType::EMPTY && (it->get_owner() == nullptr || it->get_owner() == player) ) {
-            auto [q, r] = it.GetIndices();
+            auto [q, r] = it->get_indices();
             std::vector<std::pair<int, int>> neighbours = GetNeighbouringTiles( q, r );
 
             bool no_city_neighbour = true;
@@ -102,7 +102,7 @@ std::vector<std::pair<int, int>> Board::GetValidLonelyCityTiles( const Player* p
 
     for ( auto it = begin(); it != end(); ++it ) {
         if ( it->get_type() == TileType::EMPTY && (it->get_owner() == nullptr || it->get_owner() == player) ) {
-            auto [q, r] = it.GetIndices();
+            auto [q, r] = it->get_indices();
             std::vector<std::pair<int, int>> neighbours = GetNeighbouringTiles( q, r );
 
             bool no_neighbours = true;
@@ -126,7 +126,7 @@ std::vector<std::pair<int, int>> Board::GetValidUrbanizedAreaTiles( const Player
 
     for ( auto it = begin(); it != end(); ++it ) {
         if ( it->get_type() == TileType::EMPTY && (it->get_owner() == nullptr || it->get_owner() == player) ) {
-            auto [q, r] = it.GetIndices();
+            auto [q, r] = it->get_indices();
             std::vector<std::pair<int, int>> neighbours = GetNeighbouringTiles( q, r );
 
             int city_neighbour_count = 0;
