@@ -94,20 +94,20 @@ void View::RenderHexagon( int q, int r ) {
     glBindTexture( GL_TEXTURE_2D, _orange_texture_id );
 
     /*
-    *  *----> q         Ʌ x
+    *  *----> q         Ʌ y
     *   \               |
     *    \      ----->  |
     *     \             |
-    *      V r          *----> z
+    *      V r          *----> x
     */
 
     auto& [q_o, r_o] = GetBoardOrigin();
     float q_t = q - q_o;
     float r_t = r - r_o;
 
-    float x = 3.0f / 2.0f * -r_t;
-    float z = glm::root_three<float>() * q_t + glm::root_three<float>() / 2.0f * r_t;
-    glm::mat4 world = glm::translate( glm::vec3( x, 0.0f, z ) );
+    float x = glm::root_three<float>() * q_t + glm::root_three<float>() / 2.0f * r_t;
+    float y = 3.0f / 2.0f * -r_t;
+    glm::mat4 world = glm::translate( glm::vec3( x, y, 0.0f ) );
 
     glUniformMatrix4fv( ul( "world" ), 1, GL_FALSE, glm::value_ptr( world ) );
     glUniformMatrix4fv( ul( "world_it" ), 1, GL_FALSE, glm::value_ptr( glm::transpose( glm::inverse( world ) ) ) );
@@ -134,8 +134,8 @@ void View::CleanShaders() {
 void View::InitGeometry() {
     MeshObject<VertexF> hexagon_cpu;
 
-    glm::vec3 position( 1.0f, 0.0f, 0.0f );
-    glm::vec3 normal( 0.0f, 1.0f, 0.0f );
+    glm::vec3 position( 0.0f, 1.0f, 0.0f );
+    glm::vec3 normal( 0.0f, 0.0f, 1.0f );
     glm::vec2 texcoord( 0.0f, 0.0f );
     float on_edge = 1.0f;
     hexagon_cpu.vertex_array.emplace_back( glm::vec3( 0.0f ), normal, texcoord, 0.0f );
@@ -143,7 +143,7 @@ void View::InitGeometry() {
     for ( int i = 0; i < 6; ++i ) {
         hexagon_cpu.vertex_array.emplace_back( position, normal, texcoord, on_edge );
 
-        static const glm::mat4 rotate_sixth = glm::rotate( glm::pi<float>() / 3.0f, glm::vec3( 0.0f, 1.0f, 0.0f ) );
+        static const glm::mat4 rotate_sixth = glm::rotate( glm::pi<float>() / 3.0f, glm::vec3( 0.0f, 0.0f, 1.0f ) );
         position = (rotate_sixth * glm::vec4( position, 1.0f )).xyz;
     }
     for ( int i = 1; i <= 6; ++i ) {

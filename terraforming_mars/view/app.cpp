@@ -36,7 +36,7 @@ bool App::Init() {
 
 
     _camera.SetView(
-        glm::vec3( -5.0f, 40.0f, 0.0f ),
+        glm::vec3( 0.0f, 0.0f, 40.0f ),
         glm::vec3( 0.0f, 0.0f, 0.0f ),
         glm::vec3( 0.0f, 1.0f, 0.0f )
     );

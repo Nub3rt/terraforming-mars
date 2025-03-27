@@ -41,8 +41,8 @@ int main( int argc, char* argv[] ) {
 
 
     SDL_Window* window = SDL_CreateWindow( "Terraforming Mars",
-                                           1080,
-                                           720,
+                                           1600,
+                                           900,
                                            SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE );
 
     if ( window == nullptr ) {
