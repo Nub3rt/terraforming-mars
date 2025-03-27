@@ -14,7 +14,7 @@ namespace model::decks
 class Deck
 {
 public:
-    Deck( const GameModel& model, DeckProvider* deck_provider, int seed );
+    Deck( const GameModel& model, DeckProvider& deck_provider, int seed );
     ~Deck();
     Deck( const Deck& other ) = delete;
     Deck( Deck&& other ) = delete;

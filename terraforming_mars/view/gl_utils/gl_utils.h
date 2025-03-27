@@ -128,7 +128,6 @@ template <typename VertexT>
                        GL_STATIC_DRAW );
 
     glCreateBuffers( 1, &mesh_gpu.ibo_id );
-    //glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, mesh_gpu.ibo_id );
     glNamedBufferData( mesh_gpu.ibo_id, mesh.index_array.size() * sizeof( GLuint ), mesh.index_array.data(), GL_STATIC_DRAW );
 
     mesh_gpu.count = static_cast<GLsizei>( mesh.index_array.size() );

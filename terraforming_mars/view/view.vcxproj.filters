@@ -28,6 +28,7 @@
       <Filter>gl_utils</Filter>
     </ClCompile>
     <ClCompile Include="view.cpp" />
+    <ClCompile Include="tile_wrapper.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="app.h" />
@@ -45,6 +46,7 @@
     </ClInclude>
     <ClInclude Include="view.h" />
     <ClInclude Include="constants.h" />
+    <ClInclude Include="tile_wrapper.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\skybox.frag">

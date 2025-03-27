@@ -135,6 +135,7 @@
     <ClCompile Include="gl_utils\spherical_camera_manipulator.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="app.cpp" />
+    <ClCompile Include="tile_wrapper.cpp" />
     <ClCompile Include="view.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -144,6 +145,7 @@
     <ClInclude Include="gl_utils\gl_utils.h" />
     <ClInclude Include="gl_utils\SDL_GLDebugMessageCallback.h" />
     <ClInclude Include="gl_utils\spherical_camera_manipulator.h" />
+    <ClInclude Include="tile_wrapper.h" />
     <ClInclude Include="view.h" />
   </ItemGroup>
   <ItemGroup>
@@ -159,6 +161,11 @@
     <Image Include="assets\left.png" />
     <Image Include="assets\right.png" />
     <Image Include="assets\top.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\model\model.vcxproj">
+      <Project>{59cc3f5d-ba83-45db-82bd-2ef2e503be8b}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

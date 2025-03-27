@@ -9,7 +9,7 @@ namespace view
 View::View() {}
 View::~View() {}
 
-bool View::Init( Camera* camera ) {
+bool View::Init( Camera* camera, model::GameModel* model ) {
     InitShaders();
     InitGeometry();
     InitTextures();
@@ -18,6 +18,15 @@ bool View::Init( Camera* camera ) {
     _camera = camera;
     _camera_manipulator = new SphericalCameraManipulator();
     _camera_manipulator->SetCamera( camera );
+
+    _model = model;
+    _model->Start();
+
+    _tiles.clear();
+    for ( const model::boards::Tile& tile : *_model->get_board() ) {
+        _tiles.emplace_back( tile );
+    }
+    _starting_card_id = _tiles.size();
 
     return true;
 }
@@ -28,6 +37,8 @@ void View::Clean() {
     CleanTextures();
 
     delete _camera_manipulator;
+
+    delete _model;
 }
 
 void View::Update( const UpdateInfo& update_info ) {
@@ -79,21 +90,15 @@ void View::RenderBoard() {
     glUseProgram( _program_id );
     glBindVertexArray( _hexagon_gpu.vao_id );
 
-    RenderHexagon( 4, 4 );
-
-    for ( int i = 0; i <= 4; ++i )
-        RenderHexagon( i, 4 - i );
-
-    for ( int i = 5; i < 10; ++i ) {
-        RenderHexagon( i, 5 );
-        RenderHexagon( 2, i );
+    for ( TileWrapper& tile : _tiles ) {
+        RenderHexagon( tile );
     }
 
     glBindVertexArray( 0 );
     glUseProgram( 0 );
 }
 
-void View::RenderHexagon( int q, int r ) {
+void View::RenderHexagon( TileWrapper& tile ) {
     glActiveTexture( GL_TEXTURE0 );
     glBindTexture( GL_TEXTURE_2D, _orange_texture_id );
 
@@ -106,11 +111,11 @@ void View::RenderHexagon( int q, int r ) {
     */
 
     auto& [q_o, r_o] = GetBoardOrigin();
-    float q_t = q - q_o;
-    float r_t = r - r_o;
+    float q = tile.tile.q - q_o;
+    float r = tile.tile.r - r_o;
 
-    float x = glm::root_three<float>() * q_t + glm::root_three<float>() / 2.0f * r_t;
-    float y = 3.0f / 2.0f * -r_t;
+    float x = glm::root_three<float>() * q + glm::root_three<float>() / 2.0f * r;
+    float y = 3.0f / 2.0f * -r;
     glm::mat4 world = glm::translate( glm::vec3( x, y, 0.0f ) );
 
     glUniformMatrix4fv( ul( "world" ), 1, GL_FALSE, glm::value_ptr( world ) );

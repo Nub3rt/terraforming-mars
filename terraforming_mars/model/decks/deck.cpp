@@ -11,7 +11,7 @@
 
 namespace model::decks
 {
-Deck::Deck( const GameModel& model, DeckProvider* deck_provider, int seed ) : _deck( deck_provider->GenerateDeck( model ) ),
+Deck::Deck( const GameModel& model, DeckProvider& deck_provider, int seed ) : _deck( deck_provider.GenerateDeck( model ) ),
     _discard_pile(), _random( seed ) {
     std::shuffle( _deck.begin(), _deck.end(), _random );
 }

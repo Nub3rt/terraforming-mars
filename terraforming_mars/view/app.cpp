@@ -7,6 +7,12 @@
 #include "gl_utils/gl_utils.h"
 #include "gl_utils/SDL_GLDebugMessageCallback.h"
 
+#include "../model/game_model.h"
+#include "../model/solo_game_model.h"
+#include "../model/boards/tharsis_concrete_board.h"
+#include "../model/decks/deck.h"
+#include "../model/decks/reduced_basic_deck_provider.h"
+
 namespace view
 {
 App::App() : _camera() {
@@ -46,8 +52,15 @@ bool App::Init() {
         glm::vec3( 0.0f, 1.0f, 0.0f )
     );
 
+    model::GameModel* model = new model::SoloGameModel( 3 );
+    model::boards::ConcreteBoard* tharsis = new model::boards::TharsisConcreteBoard();
+    model::boards::Board* board = new model::boards::Board( tharsis );
+    model::decks::ReducedBasicDeckProvider dp;
+    model::decks::Deck* deck = new model::decks::Deck( *model, dp, 5 );
+    model->Initialize( board, deck );
+
     _view = new View();
-    _view->Init( &_camera );
+    _view->Init( &_camera, model );
 
     return true;
 }

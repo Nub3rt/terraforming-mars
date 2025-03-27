@@ -1,6 +1,7 @@
 #pragma once
 
 #include <utility>
+#include <vector>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -11,9 +12,12 @@
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_opengl.h>
 
+#include "tile_wrapper.h"
 #include "gl_utils/camera.h"
 #include "gl_utils/spherical_camera_manipulator.h"
 #include "gl_utils/gl_utils.h"
+
+#include "../model/game_model.h"
 
 namespace view
 {
@@ -23,7 +27,7 @@ public:
     View();
     ~View();
 
-    bool Init( Camera* camera );
+    bool Init( Camera* camera, model::GameModel* model );
     void Clean();
 
     void Update( const UpdateInfo& update_info );
@@ -50,8 +54,13 @@ protected:
     SphericalCameraManipulator* _camera_manipulator = nullptr;
 
 
+    model::GameModel* _model = nullptr;
+    std::vector<TileWrapper> _tiles;
+    int _starting_card_id = 0;
+
+
     void RenderBoard();
-    void RenderHexagon( int q, int r );
+    void RenderHexagon( TileWrapper& tile );
 
 
     GLuint _program_id = 0;

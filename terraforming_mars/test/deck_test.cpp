@@ -45,7 +45,7 @@ public:
 TEST_F( DeckTest, BaseFunctionalityTest ) {
     deck_provider.AddCard( card_1 );
     deck_provider.AddCard( card_2 );
-    Deck deck( model, &deck_provider, 5 );
+    Deck deck( model, deck_provider, 5 );
 
     std::set<Card*> expected{ card_1, card_2 };
     std::set<Card*> actual;
@@ -62,7 +62,7 @@ TEST_F( DeckTest, ReshuffleOnlyOnEmptyTest ) {
     for ( int i = 0; i < 100; ++i ) {
         deck_provider.AddCard( card_1 );
         deck_provider.AddCard( card_2 );
-        Deck deck( model, &deck_provider, 5 );
+        Deck deck( model, deck_provider, 5 );
 
         Card* first = deck.DrawCard();
         Card* second = first == card_1 ? card_2 : card_1;
