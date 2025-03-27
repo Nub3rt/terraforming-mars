@@ -1,4 +1,4 @@
-﻿#include "view.h"
+#include "view.h"
 
 #include <glm/glm.hpp>
 
@@ -26,7 +26,7 @@ bool View::Init( Camera* camera, model::GameModel* model ) {
     for ( const model::boards::Tile& tile : *_model->get_board() ) {
         _tiles.emplace_back( tile );
     }
-    _starting_card_id = _tiles.size();
+    _starting_card_id = (int)_tiles.size();
 
     return true;
 }
@@ -68,7 +68,7 @@ void View::MouseMotion( const SDL_MouseMotionEvent& mouse ) {
 
 void View::MouseDown( const SDL_MouseButtonEvent& mouse ) {
     uint8_t id;
-    glReadPixels( mouse.x, _height - mouse.y, 1, 1, GL_STENCIL_INDEX, GL_UNSIGNED_BYTE, &id );
+    glReadPixels( (GLint)mouse.x, _height - (GLint)mouse.y, 1, 1, GL_STENCIL_INDEX, GL_UNSIGNED_BYTE, &id );
 }
 
 void View::MouseUp( const SDL_MouseButtonEvent& mouse ) {
