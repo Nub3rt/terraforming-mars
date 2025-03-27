@@ -41,6 +41,9 @@ public:
     void OtherEvent( const SDL_Event& event );
 
 protected:
+    int _width = 0;
+    int _height = 0;
+
     float _elapsed = 0.0f;
 
     Camera* _camera = nullptr;

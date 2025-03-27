@@ -56,6 +56,8 @@ void View::MouseMotion( const SDL_MouseMotionEvent& mouse ) {
 }
 
 void View::MouseDown( const SDL_MouseButtonEvent& mouse ) {
+    uint8_t id;
+    glReadPixels( mouse.x, _height - mouse.y, 1, 1, GL_STENCIL_INDEX, GL_UNSIGNED_BYTE, &id );
 }
 
 void View::MouseUp( const SDL_MouseButtonEvent& mouse ) {
@@ -66,6 +68,8 @@ void View::MouseWheel( const SDL_MouseWheelEvent& wheel ) {
 }
 
 void View::Resize( int w, int h ) {
+    _width = w;
+    _height = h;
 }
 
 void View::OtherEvent( const SDL_Event& event ) {
@@ -114,6 +118,8 @@ void View::RenderHexagon( int q, int r ) {
     glUniformMatrix4fv( ul( "view_proj" ), 1, GL_FALSE, glm::value_ptr( _camera->GetViewProj() ) );
 
     glUniform1i( ul( "color" ), 0 );
+
+    glStencilFunc( GL_ALWAYS, q + 9 * r, 0xff );
 
     glDrawElements( GL_TRIANGLES, _hexagon_gpu.count, GL_UNSIGNED_INT, nullptr );
 

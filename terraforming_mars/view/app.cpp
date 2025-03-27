@@ -24,6 +24,7 @@ bool App::Init() {
     InitSkyboxGeometry();
     InitSkyboxTextures();
 
+
 #ifdef _DEBUG
     glPolygonMode( GL_FRONT, GL_FILL );
     glPolygonMode( GL_BACK,  GL_LINE );
@@ -33,6 +34,10 @@ bool App::Init() {
 #endif
 
     glEnable( GL_DEPTH_TEST );
+
+    glEnable( GL_STENCIL_TEST );
+    glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP );
+    glClearStencil( STENCIL_NONE );
 
 
     _camera.SetView(
@@ -64,7 +69,7 @@ void App::Update( const UpdateInfo& update_info ) {
 }
 
 void App::Render() {
-    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT );
 
     RenderSkybox();
 
@@ -139,6 +144,8 @@ void App::RenderSkybox() {
     glUniformMatrix4fv( ul( "view_proj" ), 1, GL_FALSE, glm::value_ptr( _camera.GetViewProj() ) );
 
     glUniform1i( ul( "skybox_texture" ), 0 );
+
+    glStencilFunc( GL_ALWAYS, STENCIL_NONE, 0xff );
 
     GLint prev_depth_func;
     glGetIntegerv( GL_DEPTH_FUNC, &prev_depth_func );
@@ -225,9 +232,9 @@ void App::InitSkyboxTextures() {
     glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGBA, zpos.width, zpos.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, zpos.data() );
     glTexImage2D( GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGBA, zneg.width, zneg.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, zneg.data() );
 
-	glTexParameteri( GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-	glTexParameteri( GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-	glTexParameteri( GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
+    glTexParameteri( GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+    glTexParameteri( GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+    glTexParameteri( GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
     glTexParameteri( GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
     glTexParameteri( GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE );
 
