@@ -12,6 +12,8 @@
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_opengl.h>
 
+#include "card_wrapper.h"
+#include "constants.h"
 #include "tile_wrapper.h"
 #include "gl_utils/camera.h"
 #include "gl_utils/spherical_camera_manipulator.h"
@@ -60,27 +62,36 @@ protected:
 
 
     void RenderBoard();
-    void RenderHexagon( TileWrapper& tile );
+    void RenderHexagon( TileWrapper& tile, int id );
+
+    void RenderHUD();
+    void RenderHand();
+    void RenderCard( CardWrapper& card, int index );
+
+    inline void SetStencilRef( GLint ref = STENCIL_NONE ) { glStencilFunc( GL_ALWAYS, ref, 0xff ); }
 
 
     GLuint _program_id = 0;
-    GLuint _program_ui_id = 0;
+    GLuint _program_sprite_sheet_id = 0;
 
     void InitShaders();
     void CleanShaders();
 
     OGLObject _hexagon_gpu = {};
+    OGLObject _rectangle_gpu = {};
 
     void InitGeometry();
     void CleanGeometry();
 
     GLuint _orange_texture_id = 0;
+    GLuint _cards_texture_id = 0;
 
     void InitTextures();
     void CleanTextures();
 
     virtual const std::pair<float, float>& GetBoardOrigin();
 
+    static const std::initializer_list<VertexAttributeDescriptor> _vertex_pos_tex_attribute_list;
     static const std::initializer_list<VertexAttributeDescriptor> _vertex_attribute_list;
     static const std::initializer_list<VertexAttributeDescriptor> _vertex_plus_attribute_list;
 };

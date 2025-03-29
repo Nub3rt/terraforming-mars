@@ -29,6 +29,7 @@
     </ClCompile>
     <ClCompile Include="view.cpp" />
     <ClCompile Include="tile_wrapper.cpp" />
+    <ClCompile Include="card_wrapper.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="app.h" />
@@ -47,6 +48,7 @@
     <ClInclude Include="view.h" />
     <ClInclude Include="constants.h" />
     <ClInclude Include="tile_wrapper.h" />
+    <ClInclude Include="card_wrapper.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\skybox.frag">
@@ -59,6 +61,12 @@
       <Filter>shaders</Filter>
     </None>
     <None Include="shaders\pos_norm_tex.vert">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shaders\sprite_sheet.frag">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shaders\sprite_sheet.vert">
       <Filter>shaders</Filter>
     </None>
   </ItemGroup>
@@ -79,6 +87,9 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="assets\top.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\cards.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

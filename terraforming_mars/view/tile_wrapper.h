@@ -10,6 +10,10 @@ public:
     TileWrapper( const model::boards::Tile& tile );
     ~TileWrapper();
 
-    const model::boards::Tile& tile;
+    inline model::boards::Tile* operator->() noexcept { return &_tile; }
+    inline model::boards::Tile& operator*() noexcept { return _tile; }
+
+private:
+    model::boards::Tile _tile;
 };
 }

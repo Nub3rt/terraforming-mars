@@ -1,2 +1,10 @@
+grafika csoport
+
+https://learnopengl.com
+
 https://www.redblobgames.com/grids/hexagons/
 https://www.gamelogic.co.za/downloads/HexMath2.pdf
+
+https://github.com/terraforming-mars/card-images
+https://github.com/SliceOfBread/tm_cardmaker.git
+https://tools.wwwtyro.net/space-3d/index.html

@@ -1,6 +1,6 @@
 #version 430
 
-layout (location = 0 ) in vec3 vs_in_pos;
+layout ( location = 0 ) in vec3 vs_in_pos;
 
 out vec3 vs_out_pos;
 
