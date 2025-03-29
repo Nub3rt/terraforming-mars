@@ -2,6 +2,9 @@
 
 namespace view
 {
+inline constexpr int WINDOW_WIDTH = 1600;
+inline constexpr int WINDOW_HEIGHT = 900;
+
 inline constexpr float SKYBOX_ROTATE_SPEED = 0.01f;
 
 inline constexpr uint8_t STENCIL_NONE = 0xff;

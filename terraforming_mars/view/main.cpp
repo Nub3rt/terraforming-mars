@@ -11,6 +11,8 @@
 #include <iostream>
 
 #include "app.h"
+#include "constants.h"
+#include "text_renderer.h"
 
 int main( int argc, char* argv[] ) {
     SDL_SetLogPriority( SDL_LOG_CATEGORY_ERROR, SDL_LOG_PRIORITY_ERROR );
@@ -41,8 +43,8 @@ int main( int argc, char* argv[] ) {
 
 
     SDL_Window* window = SDL_CreateWindow( "Terraforming Mars",
-                                           1600,
-                                           900,
+                                           view::WINDOW_WIDTH,
+                                           view::WINDOW_HEIGHT,
                                            SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE );
 
     if ( window == nullptr ) {
@@ -54,6 +56,7 @@ int main( int argc, char* argv[] ) {
     SDL_GLContext context = SDL_GL_CreateContext( window );
 
     if ( context == nullptr ) {
+        SDL_DestroyWindow( window );
         SDL_LogError( SDL_LOG_CATEGORY_ERROR, "[OGL context creation] Error during the creation of the OGL context: %s", SDL_GetError() );
         return 1;
     }
@@ -63,6 +66,8 @@ int main( int argc, char* argv[] ) {
     GLenum error = glewInit();
 
     if ( error != GLEW_OK ) {
+        SDL_GL_DestroyContext( context );
+        SDL_DestroyWindow( window );
         SDL_LogError( SDL_LOG_CATEGORY_ERROR, "[GLEW] Error during the initialization of glew." );
         return 1;
     }
@@ -74,7 +79,6 @@ int main( int argc, char* argv[] ) {
     if ( gl_version[ 0 ] == -1 || gl_version[ 1 ] == -1 ) {
         SDL_GL_DestroyContext( context );
         SDL_DestroyWindow( window );
-
         SDL_LogError( SDL_LOG_CATEGORY_ERROR, "[OGL context creation] Error during the inialization of the OGL context! Maybe one of the SDL_GL_SetAttribute(...) calls is erroneous." );
         return 1;
     }
@@ -89,6 +93,14 @@ int main( int argc, char* argv[] ) {
 
     ImGui_ImplSDL3_InitForOpenGL( window, context );
     ImGui_ImplOpenGL3_Init();
+
+
+    if ( !view::TextRenderer::Init( "fonts/prototype.ttf", 48 ) ) {
+        SDL_GL_DestroyContext( context );
+        SDL_DestroyWindow( window );
+        SDL_LogError( SDL_LOG_CATEGORY_ERROR, "[TextRenderer Initialization] Error during the initialization of the text renderer!" );
+        return 1;
+    }
 
 
     view::App app;
@@ -163,6 +175,7 @@ int main( int argc, char* argv[] ) {
                     case SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED:
                         int w, h;
                         SDL_GetWindowSize( window, &w, &h );
+                        view::TextRenderer::Resize( w, h );
                         app.Resize( w, h );
                         break;
 
@@ -192,6 +205,7 @@ int main( int argc, char* argv[] ) {
         }
 
         app.Clean();
+        view::TextRenderer::Clean();
     }
 
 

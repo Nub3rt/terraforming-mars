@@ -136,6 +136,7 @@
     <ClCompile Include="gl_utils\spherical_camera_manipulator.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="app.cpp" />
+    <ClCompile Include="text_renderer.cpp" />
     <ClCompile Include="tile_wrapper.cpp" />
     <ClCompile Include="view.cpp" />
   </ItemGroup>
@@ -147,6 +148,7 @@
     <ClInclude Include="gl_utils\gl_utils.h" />
     <ClInclude Include="gl_utils\SDL_GLDebugMessageCallback.h" />
     <ClInclude Include="gl_utils\spherical_camera_manipulator.h" />
+    <ClInclude Include="text_renderer.h" />
     <ClInclude Include="tile_wrapper.h" />
     <ClInclude Include="view.h" />
   </ItemGroup>
@@ -157,6 +159,8 @@
     <None Include="shaders\skybox.vert" />
     <None Include="shaders\sprite_sheet.frag" />
     <None Include="shaders\sprite_sheet.vert" />
+    <None Include="shaders\text.frag" />
+    <None Include="shaders\text.vert" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="assets\back.png" />
