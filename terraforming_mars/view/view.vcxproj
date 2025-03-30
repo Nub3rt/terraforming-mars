@@ -155,6 +155,8 @@
   <ItemGroup>
     <None Include="shaders\lighting.frag" />
     <None Include="shaders\pos_norm_tex.vert" />
+    <None Include="shaders\rectangle.frag" />
+    <None Include="shaders\rectangle.vert" />
     <None Include="shaders\skybox.frag" />
     <None Include="shaders\skybox.vert" />
     <None Include="shaders\sprite_sheet.frag" />

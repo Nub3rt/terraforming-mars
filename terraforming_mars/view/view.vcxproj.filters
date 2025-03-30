@@ -77,6 +77,12 @@
     <None Include="shaders\text.vert">
       <Filter>shaders</Filter>
     </None>
+    <None Include="shaders\rectangle.frag">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shaders\rectangle.vert">
+      <Filter>shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="assets\back.png">

@@ -1,6 +1,8 @@
 ﻿#include "view.h"
 
+#include <array>
 #include <iostream>
+#include <stdexcept>
 
 #include <glm/glm.hpp>
 #include <imgui.h>
@@ -8,9 +10,11 @@
 #include "constants.h"
 #include "text_renderer.h"
 
+#include "../model/constants.h"
+
 namespace view
 {
-View::View() {}
+View::View() : _resources(), _resource_productions() {}
 View::~View() {}
 
 bool View::Init( Camera* camera, model::GameModel* model ) {
@@ -143,22 +147,114 @@ void View::RenderHexagon( TileWrapper& tile, int id ) {
 }
 
 void View::RenderHUD() {
+    RenderGlobalParameters();
     RenderResources();
     RenderHand();
 }
 
+void View::RenderGlobalParameters() {
+    glUseProgram( _program_rectangle_id );
+    glBindVertexArray( _rectangle_gpu.vao_id );
+
+    glActiveTexture( GL_TEXTURE0 );
+    glUniform1i( ul( "image" ), 0 );
+
+
+    std::array<GLuint, 4> to_draw = {
+        _temperature_texture_id,
+        _ocean_texture_id,
+        _oxygen_texture_id,
+        _tr_texture_id,
+    };
+    for ( int i = 0; i < to_draw.size(); ++i ) {
+        glBindTexture( GL_TEXTURE_2D, to_draw[ i ] );
+
+        auto [x, y, scale] = CalculateParameterPosition( i, 0 );
+
+        glm::mat4 world = glm::translate( glm::vec3( x, y, 0.0f ) ) * glm::scale( scale );
+        glUniformMatrix4fv( ul( "world" ), 1, GL_FALSE, glm::value_ptr( world ) );
+
+        glDrawElements( GL_TRIANGLES, _rectangle_gpu.count, GL_UNSIGNED_INT, nullptr );
+    }
+
+    glBindTexture( GL_TEXTURE_2D, 0 );
+
+    glBindVertexArray( 0 );
+    glUseProgram( 0 );
+
+    std::array<std::pair<int, int>, 4> text_to_draw = {{
+        { _temperature, model::MAX_TEMPERATURE },
+        { _ocean_count, model::MAX_OCEAN_COUNT },
+        { _oxygen_level, model::MAX_OXYGEN_LEVEL },
+        { _tr, -1 },
+    }};
+    for ( int i = 0; i < text_to_draw.size(); ++i ) {
+        static const float scale = 1.5f;
+        auto& [current, max] = text_to_draw[ i ];
+        glm::vec3 color = current == max ? glm::vec3( 0.0f, 1.0f, 0.0f ) : glm::vec3( 1.0f );
+
+        auto [x, y, _] = CalculateParameterPosition( i, 1 );
+        TextRenderer::RenderTextCentered(
+            std::to_string( current ),
+            x,
+            y,
+            scale,
+            color
+        );
+    }
+}
+
+std::tuple<float, float, glm::vec3> View::CalculateParameterPosition( int parameter, int type ) {
+    static const float temperature_ratio = (float)TEMPERATURE_TEXTURE_HEIGHT / TEMPERATURE_TEXTURE_WIDTH;
+    static const float ocean_ratio = (float)OCEAN_TEXTURE_HEIGHT / OCEAN_TEXTURE_WIDTH;
+    static const float tr_ratio = (float)TR_TEXTURE_HEIGHT / TR_TEXTURE_WIDTH;
+    static const float oxygen_ratio = 1.0f;
+    static const float size = 0.06f;
+    static const float spacing = size * 2.5f;
+    static const float padding = size * 0.5f;
+
+    float x = 1.0f - size - type * spacing / 2.0f;
+    float size_x = size / _width * _height;
+
+    float temperature_y = size * temperature_ratio;
+    if ( parameter == 0 ) return {
+        x,
+        1.0f - temperature_y - padding,
+        glm::vec3( size_x, size * temperature_ratio, 1.0f )
+    };
+
+    float ocean_y = size * ocean_ratio;
+    if ( parameter == 1 ) return {
+        x,
+        1.0f - temperature_y * 2.0f - ocean_y - padding * 2.0f,
+        glm::vec3( size_x, size * ocean_ratio, 1.0f )
+    };
+
+    float oxygen_y = size * oxygen_ratio;
+    if ( parameter == 2 ) return {
+        x,
+        1.0f - temperature_y * 2.0f - ocean_y * 2.0f - oxygen_y - padding * 3.0f,
+        glm::vec3( size_x, size * oxygen_ratio, 1.0f )
+    };
+
+    float tr_y = size * tr_ratio;
+    if ( parameter == 3 ) return {
+        x,
+        1.0f - temperature_y * 2.0f - ocean_y * 2.0f - oxygen_y * 2.0f - tr_y - padding * 4.0f,
+        glm::vec3( size_x, size * tr_ratio, 1.0f )
+    };
+
+    throw std::logic_error( "View::CalculateParameterPosition: received invalid parameter!" );
+}
+
 void View::RenderResources() {
-    glUseProgram( _program_sprite_sheet_id );
+    glUseProgram( _program_rectangle_id );
     glBindVertexArray( _rectangle_gpu.vao_id );
 
     glActiveTexture( GL_TEXTURE0 );
     glUniform1i( ul( "image" ), 0 );
 
     glBindTexture( GL_TEXTURE_2D, _production_box_texture_id );
-    glUniform1f( ul( "stride_x" ), 1.0f );
-    glUniform1f( ul( "stride_y" ), 1.0f );
-    glUniform1i( ul( "index_x" ), 0 );
-    glUniform1i( ul( "index_y" ), 0 );
     for ( int i = 0; i < +model::Resource::MAX; ++i ) {
         auto [x, y, scale] = CalculateResourcePosition( i, 0 );
 
@@ -167,6 +263,11 @@ void View::RenderResources() {
 
         glDrawElements( GL_TRIANGLES, _rectangle_gpu.count, GL_UNSIGNED_INT, nullptr );
     }
+
+
+    glUseProgram( _program_sprite_sheet_id );
+
+    glUniform1i( ul( "image" ), 0 );
 
     glBindTexture( GL_TEXTURE_2D, _resources_texture_id );
     for ( int i = 0; i < +model::Resource::MAX; ++i ) {
@@ -194,6 +295,7 @@ void View::RenderResources() {
     glBindVertexArray( 0 );
     glUseProgram( 0 );
 
+
     for ( int i = 0; i < +model::Resource::MAX; ++i ) {
         static const float scale = 1.5f;
 
@@ -218,7 +320,7 @@ void View::RenderResources() {
 }
 
 std::tuple<float, float, glm::vec3> View::CalculateResourcePosition( int resource, int type ) {
-    float size = 0.06f;
+    static const float size = 0.06f;
     static const float spacing = size * 2.5f;
     return {
         1.0f - size - type * spacing / 2.0f,
@@ -277,6 +379,11 @@ void View::InitShaders() {
     AttachShader( _program_id, GL_FRAGMENT_SHADER, "shaders/lighting.frag" );
     LinkProgram( _program_id );
 
+    _program_rectangle_id = glCreateProgram();
+    AttachShader( _program_rectangle_id, GL_VERTEX_SHADER, "shaders/rectangle.vert" );
+    AttachShader( _program_rectangle_id, GL_FRAGMENT_SHADER, "shaders/rectangle.frag" );
+    LinkProgram( _program_rectangle_id );
+
     _program_sprite_sheet_id = glCreateProgram();
     AttachShader( _program_sprite_sheet_id, GL_VERTEX_SHADER, "shaders/sprite_sheet.vert" );
     AttachShader( _program_sprite_sheet_id, GL_FRAGMENT_SHADER, "shaders/sprite_sheet.frag" );
@@ -285,6 +392,7 @@ void View::InitShaders() {
 
 void View::CleanShaders() {
     glDeleteProgram( _program_id );
+    glDeleteProgram( _program_rectangle_id );
     glDeleteProgram( _program_sprite_sheet_id );
 }
 
@@ -350,10 +458,10 @@ void View::InitTextures() {
     LoadTexture( &_cards_texture_id, "assets/cards.png" );
     LoadTexture( &_resources_texture_id, "assets/resources.png" );
     LoadTexture( &_card_cover_texture_id, "assets/card_cover.png" );
-    LoadTexture( &_tr_texture_id, "assets/tr.png" );
     LoadTexture( &_temperature_texture_id, "assets/temperature.png" );
     LoadTexture( &_ocean_texture_id, "assets/ocean.png" );
     LoadTexture( &_oxygen_texture_id, "assets/oxygen.png" );
+    LoadTexture( &_tr_texture_id, "assets/tr.png" );
     LoadTexture( &_production_box_texture_id, "assets/production_box.png" );
 
 
@@ -365,10 +473,10 @@ void View::CleanTextures() {
     glDeleteTextures( 1, &_cards_texture_id );
     glDeleteTextures( 1, &_resources_texture_id );
     glDeleteTextures( 1, &_card_cover_texture_id );
-    glDeleteTextures( 1, &_tr_texture_id );
     glDeleteTextures( 1, &_temperature_texture_id );
     glDeleteTextures( 1, &_ocean_texture_id );
     glDeleteTextures( 1, &_oxygen_texture_id );
+    glDeleteTextures( 1, &_tr_texture_id );
     glDeleteTextures( 1, &_production_box_texture_id );
 }
 

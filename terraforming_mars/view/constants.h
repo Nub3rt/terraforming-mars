@@ -17,4 +17,11 @@ inline constexpr int CARD_TEXTURE_HEIGHT = 686;
 
 inline constexpr int RESOURCE_TEXTURE_ROWS = 1;
 inline constexpr int RESOURCE_TEXTURE_COLUMNS = 6;
+
+inline constexpr int TEMPERATURE_TEXTURE_WIDTH = 163;
+inline constexpr int TEMPERATURE_TEXTURE_HEIGHT = 547;
+inline constexpr int OCEAN_TEXTURE_WIDTH = 418;
+inline constexpr int OCEAN_TEXTURE_HEIGHT = 483;
+inline constexpr int TR_TEXTURE_WIDTH = 535;
+inline constexpr int TR_TEXTURE_HEIGHT = 396;
 }

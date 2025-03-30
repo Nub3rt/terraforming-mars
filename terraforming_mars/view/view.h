@@ -59,16 +59,24 @@ protected:
 
 
     model::GameModel* _model = nullptr;
-    std::vector<TileWrapper> _tiles;
-    int _starting_card_id = 0;
+
+    int _generation = 0;
+    int _temperature = 0;
+    int _ocean_count = 0;
+    int _oxygen_level = 0;
+    int _tr = 0;
     std::array<int, +model::Resource::MAX + 1> _resources;
     std::array<int, +model::Resource::MAX + 1> _resource_productions;
+    std::vector<TileWrapper> _tiles;
+    int _starting_card_id = 0;
 
 
     void RenderBoard();
     void RenderHexagon( TileWrapper& tile, int id );
 
     void RenderHUD();
+    void RenderGlobalParameters();
+    std::tuple<float, float, glm::vec3> CalculateParameterPosition( int parameter, int type );
     void RenderResources();
     std::tuple<float, float, glm::vec3> CalculateResourcePosition( int resource, int type );
     void RenderHand();
@@ -78,6 +86,7 @@ protected:
 
 
     GLuint _program_id = 0;
+    GLuint _program_rectangle_id = 0;
     GLuint _program_sprite_sheet_id = 0;
 
     void InitShaders();
@@ -93,10 +102,10 @@ protected:
     GLuint _cards_texture_id = 0;
     GLuint _resources_texture_id = 0;
     GLuint _card_cover_texture_id = 0;
-    GLuint _tr_texture_id = 0;
     GLuint _temperature_texture_id = 0;
     GLuint _ocean_texture_id = 0;
     GLuint _oxygen_texture_id = 0;
+    GLuint _tr_texture_id = 0;
     GLuint _production_box_texture_id = 0;
 
     void InitTextures();
