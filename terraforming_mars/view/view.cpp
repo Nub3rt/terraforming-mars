@@ -6,6 +6,7 @@
 #include <imgui.h>
 
 #include "constants.h"
+#include "text_renderer.h"
 
 namespace view
 {
@@ -142,7 +143,88 @@ void View::RenderHexagon( TileWrapper& tile, int id ) {
 }
 
 void View::RenderHUD() {
+    RenderResources();
     RenderHand();
+}
+
+void View::RenderResources() {
+    glUseProgram( _program_sprite_sheet_id );
+    glBindVertexArray( _rectangle_gpu.vao_id );
+
+    glActiveTexture( GL_TEXTURE0 );
+    glUniform1i( ul( "image" ), 0 );
+
+    glBindTexture( GL_TEXTURE_2D, _production_box_texture_id );
+    glUniform1f( ul( "stride_x" ), 1.0f );
+    glUniform1f( ul( "stride_y" ), 1.0f );
+    glUniform1i( ul( "index_x" ), 0 );
+    glUniform1i( ul( "index_y" ), 0 );
+    for ( int i = 0; i < +model::Resource::MAX; ++i ) {
+        auto [x, y, scale] = CalculateResourcePosition( i, 0 );
+
+        glm::mat4 world = glm::translate( glm::vec3( x, y, 0.0f ) ) * glm::scale( scale );
+        glUniformMatrix4fv( ul( "world" ), 1, GL_FALSE, glm::value_ptr( world ) );
+
+        glDrawElements( GL_TRIANGLES, _rectangle_gpu.count, GL_UNSIGNED_INT, nullptr );
+    }
+
+    glBindTexture( GL_TEXTURE_2D, _resources_texture_id );
+    for ( int i = 0; i < +model::Resource::MAX; ++i ) {
+        static const float stride_x = 1.0f / RESOURCE_TEXTURE_COLUMNS;
+        static const float stride_y = 1.0f / RESOURCE_TEXTURE_ROWS;
+        int res_index = +model::Resource::MAX - i - 1;
+        int index_x = res_index % RESOURCE_TEXTURE_COLUMNS;
+        int index_y = res_index / RESOURCE_TEXTURE_COLUMNS;
+
+        auto [x, y, scale] = CalculateResourcePosition( i, 1 );
+
+        glm::mat4 world = glm::translate( glm::vec3( x, y, 0.0f ) ) * glm::scale( scale );
+        glUniformMatrix4fv( ul( "world" ), 1, GL_FALSE, glm::value_ptr( world ) );
+
+        glUniform1f( ul( "stride_x" ), stride_x );
+        glUniform1f( ul( "stride_y" ), stride_y );
+        glUniform1i( ul( "index_x" ), index_x );
+        glUniform1i( ul( "index_y" ), index_y );
+
+        glDrawElements( GL_TRIANGLES, _rectangle_gpu.count, GL_UNSIGNED_INT, nullptr );
+    }
+
+    glBindTexture( GL_TEXTURE_2D, 0 );
+
+    glBindVertexArray( 0 );
+    glUseProgram( 0 );
+
+    for ( int i = 0; i < +model::Resource::MAX; ++i ) {
+        static const float scale = 1.5f;
+
+        auto [x, y, _] = CalculateResourcePosition( i, 0 );
+        TextRenderer::RenderTextCentered(
+            std::to_string( _resource_productions[ i + 1 ] ),
+            x,
+            y,
+            scale,
+            glm::vec3( 0.0f )
+        );
+
+        std::tie( x, y, _ ) = CalculateResourcePosition( i, 2 );
+        TextRenderer::RenderTextCentered(
+            std::to_string( _resources[ i + 1 ] ),
+            x,
+            y,
+            scale,
+            glm::vec3( 1.0f )
+        );
+    }
+}
+
+std::tuple<float, float, glm::vec3> View::CalculateResourcePosition( int resource, int type ) {
+    float size = 0.06f;
+    static const float spacing = size * 2.5f;
+    return {
+        1.0f - size - type * spacing / 2.0f,
+        resource * spacing + size * 2.0f - 1.0f,
+        glm::vec3( size / _width * _height , size, 1.0f )
+    };
 }
 
 void View::RenderHand() {
@@ -265,16 +347,14 @@ void View::InitTextures() {
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
 
 
-    ImageRGBA cards = ImageFromFile( "assets/cards.png" );
-
-    glGenTextures( 1, &_cards_texture_id );
-    glBindTexture( GL_TEXTURE_2D, _cards_texture_id );
-    glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, cards.width, cards.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, cards.data() );
-    glGenerateMipmap( GL_TEXTURE_2D );
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
+    LoadTexture( &_cards_texture_id, "assets/cards.png" );
+    LoadTexture( &_resources_texture_id, "assets/resources.png" );
+    LoadTexture( &_card_cover_texture_id, "assets/card_cover.png" );
+    LoadTexture( &_tr_texture_id, "assets/tr.png" );
+    LoadTexture( &_temperature_texture_id, "assets/temperature.png" );
+    LoadTexture( &_ocean_texture_id, "assets/ocean.png" );
+    LoadTexture( &_oxygen_texture_id, "assets/oxygen.png" );
+    LoadTexture( &_production_box_texture_id, "assets/production_box.png" );
 
 
     glBindTexture( GL_TEXTURE_2D, 0 );
@@ -283,6 +363,26 @@ void View::InitTextures() {
 void View::CleanTextures() {
     glDeleteTextures( 1, &_orange_texture_id );
     glDeleteTextures( 1, &_cards_texture_id );
+    glDeleteTextures( 1, &_resources_texture_id );
+    glDeleteTextures( 1, &_card_cover_texture_id );
+    glDeleteTextures( 1, &_tr_texture_id );
+    glDeleteTextures( 1, &_temperature_texture_id );
+    glDeleteTextures( 1, &_ocean_texture_id );
+    glDeleteTextures( 1, &_oxygen_texture_id );
+    glDeleteTextures( 1, &_production_box_texture_id );
+}
+
+void View::LoadTexture( GLuint* id, const std::filesystem::path& filename, GLint wrap_behaviour ) {
+    ImageRGBA cards = ImageFromFile( filename );
+
+    glGenTextures( 1, id );
+    glBindTexture( GL_TEXTURE_2D, *id );
+    glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, cards.width, cards.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, cards.data() );
+    glGenerateMipmap( GL_TEXTURE_2D );
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR );
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap_behaviour );
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap_behaviour );
 }
 
 const std::pair<float, float>& View::GetBoardOrigin() {

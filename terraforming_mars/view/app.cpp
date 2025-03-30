@@ -229,12 +229,12 @@ void App::CleanSkyboxGeometry() {
 }
 
 void App::InitSkyboxTextures() {
-    ImageRGBA xpos = ImageFromFile( "assets/right.png", false );
-    ImageRGBA xneg = ImageFromFile( "assets/left.png", false );
-    ImageRGBA ypos = ImageFromFile( "assets/top.png", false );
-    ImageRGBA yneg = ImageFromFile( "assets/bottom.png", false );
-    ImageRGBA zpos = ImageFromFile( "assets/front.png", false );
-    ImageRGBA zneg = ImageFromFile( "assets/back.png", false );
+    ImageRGBA xpos = ImageFromFile( "assets/space_right.png", false );
+    ImageRGBA xneg = ImageFromFile( "assets/space_left.png", false );
+    ImageRGBA ypos = ImageFromFile( "assets/space_top.png", false );
+    ImageRGBA yneg = ImageFromFile( "assets/space_bottom.png", false );
+    ImageRGBA zpos = ImageFromFile( "assets/space_front.png", false );
+    ImageRGBA zneg = ImageFromFile( "assets/space_back.png", false );
 
     glCreateTextures( GL_TEXTURE_CUBE_MAP, 1, &_skybox_texture_id );
     glBindTexture( GL_TEXTURE_CUBE_MAP, _skybox_texture_id );

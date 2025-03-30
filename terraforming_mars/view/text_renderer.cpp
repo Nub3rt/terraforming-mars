@@ -124,17 +124,13 @@ bool TextRenderer::LoadFont( std::string font, FT_UInt font_size ) {
 }
 
 void TextRenderer::RenderText( std::string text, float x, float y, float scale, glm::vec4 color ) {
-    x = x * 2.0f - 1.0f;
-    y = y * 2.0f - 1.0f;
-    scale *= (float)_width / WINDOW_WIDTH;
+    scale *= (float)_width / STARTING_WINDOW_WIDTH;
 
     DoRenderText( text, x, y, scale, color );
 }
 
 void TextRenderer::RenderTextCentered( std::string text, float x, float y, float scale, glm::vec4 color ) {
-    x = x * 2.0f - 1.0f;
-    y = y * 2.0f - 1.0f;
-    scale *= (float)_width / WINDOW_WIDTH;
+    scale *= (float)_width / STARTING_WINDOW_WIDTH;
     float advance = 0.0f;
     float max_h = 0.0f;
 

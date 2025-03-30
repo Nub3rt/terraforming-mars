@@ -1,5 +1,6 @@
 #pragma once
 
+#include <array>
 #include <utility>
 #include <vector>
 
@@ -20,6 +21,7 @@
 #include "gl_utils/gl_utils.h"
 
 #include "../model/game_model.h"
+#include "../model/resource.h"
 
 namespace view
 {
@@ -59,12 +61,16 @@ protected:
     model::GameModel* _model = nullptr;
     std::vector<TileWrapper> _tiles;
     int _starting_card_id = 0;
+    std::array<int, +model::Resource::MAX + 1> _resources;
+    std::array<int, +model::Resource::MAX + 1> _resource_productions;
 
 
     void RenderBoard();
     void RenderHexagon( TileWrapper& tile, int id );
 
     void RenderHUD();
+    void RenderResources();
+    std::tuple<float, float, glm::vec3> CalculateResourcePosition( int resource, int type );
     void RenderHand();
     void RenderCard( CardWrapper& card, int index );
 
@@ -85,9 +91,17 @@ protected:
 
     GLuint _orange_texture_id = 0;
     GLuint _cards_texture_id = 0;
+    GLuint _resources_texture_id = 0;
+    GLuint _card_cover_texture_id = 0;
+    GLuint _tr_texture_id = 0;
+    GLuint _temperature_texture_id = 0;
+    GLuint _ocean_texture_id = 0;
+    GLuint _oxygen_texture_id = 0;
+    GLuint _production_box_texture_id = 0;
 
     void InitTextures();
     void CleanTextures();
+    void LoadTexture( GLuint* id, const std::filesystem::path& filename, GLint wrap_behaviour = GL_CLAMP_TO_EDGE );
 
     virtual const std::pair<float, float>& GetBoardOrigin();
 
