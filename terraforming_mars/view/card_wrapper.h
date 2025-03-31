@@ -21,7 +21,6 @@ public:
     glm::vec2 scale = CARD_BASE_SCALE;
     float rotate = 0.0f;
     bool hovered = false;
-    uint8_t stencil_id = 0;
 
 private:
     model::decks::Card* _card;

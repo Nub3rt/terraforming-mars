@@ -94,7 +94,7 @@ protected:
     void RenderHand();
     void RenderCard( CardWrapper& card, int index );
 
-    int CalculateHoveredCardIdByMousePos( float x, float y );
+    int CalculateHoveredCardByMousePos( float x, float y );
     std::tuple<float, float, glm::vec3> CalculateParameterPosition( int parameter, int type );
     std::tuple<float, float, glm::vec3> CalculateResourcePosition( int resource, int type );
 

@@ -80,33 +80,23 @@ void View::MouseMotion( const SDL_MouseMotionEvent& mouse ) {
     uint8_t hovered_id;
     glReadPixels( (GLint)mouse.x, _height - (GLint)mouse.y, 1, 1, GL_STENCIL_INDEX, GL_UNSIGNED_BYTE, &hovered_id );
 
-    float x = mouse.x / _width * 2.0f - 1.0f;
-    float y = (_height - mouse.y) / _height * 2.0f - 1.0f;
+    float mouse_x = mouse.x / _width * 2.0f - 1.0f;
+    float mouse_y = (_height - mouse.y) / _height * 2.0f - 1.0f;
     std::cout << std::format( "start_x: {}, end_x: {}, x: {}\n", _hand_start_x, _hand_end_x, x );
 
-    uint8_t hovered_card_id = 0;
-    if ( y < _hand_top_y && x > _hand_start_x && x < _hand_end_x ) {
-        hovered_card_id = CalculateHoveredCardIdByMousePos( x, y );
-    } else if ( hovered_id >= _stencil_starting_card &&
-                hovered_id < _stencil_starting_card + _hand.size() ) {
-        hovered_card_id = hovered_id;
-    }
+    int hovered_card_index = CalculateHoveredCardByMousePos( mouse_x, mouse_y );
 
-    for ( CardWrapper& card : _hand ) {
-        if ( card.hovered && hovered_card_id != card.stencil_id ) {
+    for ( int i = 0; i < _hand.size(); ++i ) {
+        CardWrapper& card = _hand[ i ];
+        if ( card.hovered && hovered_card_index != i ) {
             card.hovered = false;
             RefreshHandPositions();
-        } else if ( !card.hovered && hovered_card_id == card.stencil_id ) {
+        } else if ( !card.hovered && hovered_card_index == i ) {
             card.hovered = true;
             card.scale *= 2.0f;
-            card.pos.y += 0.7f;
+            card.pos.y += 0.6f;
             card.rotate = 0.0f;
         }
-    }
-
-    if ( hovered_id != STENCIL_NONE ) {
-        // TODO
-
     }
 }
 
@@ -148,7 +138,6 @@ void View::RefreshHandPositions() {
         card.pos.y = HAND_BASE_Y;
         card.scale = CARD_BASE_SCALE;
         card.rotate = 0.0f;
-        card.stencil_id = _stencil_starting_card;
         return;
     }
 
@@ -157,16 +146,12 @@ void View::RefreshHandPositions() {
     for ( int i = 0; i < _hand.size(); ++i ) {
         CardWrapper& card = _hand[ i ];
         card.pos.x = _hand_start_x + i * spacing;
-        card.stencil_id = _stencil_starting_card + i;
         if ( card.hovered )
             continue;
         card.pos.y = HAND_BASE_Y;
         card.scale = CARD_BASE_SCALE;
         card.rotate = 0.0f;
     }
-
-    _hand_start_x -= card_width;
-    _hand_end_x   += card_width;
 }
 
 void View::RenderBoard() {
@@ -431,28 +416,21 @@ void View::RenderCard( CardWrapper& card, int index ) {
     glUniform1i( ul( "index_x" ), index_x );
     glUniform1i( ul( "index_y" ), index_y );
 
-    SetStencilRef( card.stencil_id );
-
     glDrawElements( GL_TRIANGLES, _rectangle_gpu.count, GL_UNSIGNED_INT, nullptr );
-
-    SetStencilRef();
 }
 
-int view::View::CalculateHoveredCardIdByMousePos( float x, float y ) {
+int view::View::CalculateHoveredCardByMousePos( float mouse_x, float mouse_y ) {
     static const float card_ratio = (float)CARD_TEXTURE_WIDTH / CARD_TEXTURE_HEIGHT;
-    float card_width = CARD_BASE_SCALE.x * card_ratio / _width * _height;;
+    float card_width = CARD_BASE_SCALE.x * card_ratio / _width * _height;
 
-    if ( x < _hand_start_x || x >= _hand_end_x ) {
-        if ( x < _hand_start_x && x >= _hand_start_x - card_width )
-            return _hand[ 0 ].stencil_id;
-        if ( x >= _hand_end_x && x <= _hand_end_x + card_width )
-            return _hand[ _hand.size() - 1 ].stencil_id;
-        return 0;
-    }
+    if ( mouse_y > _hand_top_y ||
+         mouse_x < _hand_start_x - card_width ||
+         mouse_x >= _hand_end_x + card_width )
+        return -1;
 
-    float interval_length = (_hand_end_x - _hand_start_x) / _hand.size();
-    int card_index = static_cast<int>( (x - _hand_start_x) / interval_length );
-    return _hand[ card_index ].stencil_id;
+    float interval_length = (_hand_end_x - _hand_start_x) / (_hand.size() - 1);
+    float at = (mouse_x - _hand_start_x + interval_length / 2.0f) / interval_length;
+    return glm::clamp<int>( static_cast<int>( at ), 0, (int)_hand.size() - 1 );
 }
 
 std::tuple<float, float, glm::vec3> View::CalculateParameterPosition( int parameter, int type ) {
