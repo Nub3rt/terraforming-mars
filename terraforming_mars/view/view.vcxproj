@@ -143,6 +143,7 @@
     <ClCompile Include="view_state.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="animatable.h" />
     <ClInclude Include="app.h" />
     <ClInclude Include="builder.h" />
     <ClInclude Include="card_wrapper.h" />

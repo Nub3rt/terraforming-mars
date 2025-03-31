@@ -57,6 +57,7 @@
     <ClInclude Include="view_state.h" />
     <ClInclude Include="view.fwd.h" />
     <ClInclude Include="view_state.fwd.h" />
+    <ClInclude Include="animatable.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\skybox.frag">

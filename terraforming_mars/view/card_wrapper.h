@@ -2,6 +2,7 @@
 
 #include <glm/glm.hpp>
 
+#include "animatable.h"
 #include "constants.h"
 
 #include "../model/decks/card.h"
@@ -17,10 +18,25 @@ public:
     inline model::decks::Card* operator->() noexcept { return _card; }
     inline model::decks::Card* operator*() noexcept { return _card; }
 
-    glm::vec2 pos = glm::vec2( 0.0f, HAND_BASE_Y );
-    glm::vec2 scale = CARD_BASE_SCALE;
-    float rotate = 0.0f;
+    inline void Update( float delta ) {
+        pos.Update( delta );
+        scale.Update( delta );
+        rotate.Update( delta );
+    }
+
+    void GoToBase( float duration );
+    void XGoToBase( float duration );
+
     bool hovered = false;
+    bool dragging = false;
+
+    glm::vec2 base_pos = glm::vec2( 0.0f, HAND_BASE_Y );
+    glm::vec2 base_scale = CARD_BASE_SCALE;
+    float base_rotate = 0.0f;
+
+    Animatable<glm::vec2> pos;
+    Animatable<glm::vec2> scale;
+    Animatable<float> rotate;
 
 private:
     model::decks::Card* _card;

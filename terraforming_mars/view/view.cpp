@@ -53,6 +53,9 @@ void View::Update( const UpdateInfo& update_info ) {
     _elapsed = update_info.elapsed;
 
     _camera_manipulator->Update( update_info.delta );
+
+    for ( CardWrapper& card : _hand )
+        card.Update( update_info.delta );
 }
 
 void View::Render() {
@@ -84,20 +87,25 @@ void View::MouseMotion( const SDL_MouseMotionEvent& mouse ) {
 
     float mouse_x = mouse.x / _width * 2.0f - 1.0f;
     float mouse_y = (_height - mouse.y) / _height * 2.0f - 1.0f;
-    std::cout << std::format( "start_x: {}, end_x: {}, x: {}\n", _hand_start_x, _hand_end_x, x );
 
     int hovered_card_index = CalculateHoveredCardByMousePos( mouse_x, mouse_y );
 
     for ( int i = 0; i < _hand.size(); ++i ) {
         CardWrapper& card = _hand[ i ];
+
+        if ( card.dragging )
+            continue;
+
         if ( card.hovered && hovered_card_index != i ) {
             card.hovered = false;
-            RefreshHandPositions();
+            card.pos.y.SetAnim( -1.0f + (1.0f + *card.pos.y) / 2.0f, card.base_pos.y, CARD_ADJUST_DURATION );
+            card.scale.Set( card.base_scale );
+            card.rotate.Set( card.base_rotate );
         } else if ( !card.hovered && hovered_card_index == i ) {
             card.hovered = true;
-            card.scale *= 2.0f;
-            card.pos.y += 0.6f;
-            card.rotate = 0.0f;
+            card.scale.Set( card.base_scale * 2.0f );
+            card.pos.y.Set( card.base_pos.y + 0.6f );
+            card.rotate.Set( 0.0f );
         }
     }
 }
@@ -146,25 +154,44 @@ void View::RefreshHandPositions() {
     if ( _hand.size() == 0 )
         return;
 
+    _hand_start_x = fmaxf( min_x, mid_x - (_hand.size() - 1) / 2.0f * spacing );
+    _hand_end_x   = fminf( max_x, mid_x + (_hand.size() - 1) / 2.0f * spacing );
+
     if ( _hand.size() == 1 ) {
         CardWrapper& card = _hand[ 0 ];
-        card.pos.x = mid_x;
-        card.pos.y = HAND_BASE_Y;
-        card.scale = CARD_BASE_SCALE;
-        card.rotate = 0.0f;
+        card.base_pos.x = mid_x;
+        card.base_pos.y = HAND_BASE_Y;
+        card.base_scale = CARD_BASE_SCALE;
+        card.base_rotate = 0.0f;
+
+        if ( card.dragging )
+            return;
+
+        if ( card.hovered ) {
+            card.XGoToBase( CARD_ADJUST_DURATION );
+            return;
+        }
+
+        card.GoToBase( CARD_ADJUST_DURATION );
         return;
     }
 
-    _hand_start_x = fmaxf( min_x, mid_x - (_hand.size() - 1) / 2.0f * spacing );
-    _hand_end_x   = fminf( max_x, mid_x + (_hand.size() - 1) / 2.0f * spacing );
     for ( int i = 0; i < _hand.size(); ++i ) {
         CardWrapper& card = _hand[ i ];
-        card.pos.x = _hand_start_x + i * spacing;
-        if ( card.hovered )
+        card.base_pos.x = _hand_start_x + i * spacing;
+        card.base_pos.y = HAND_BASE_Y;
+        card.base_scale = CARD_BASE_SCALE;
+        card.base_rotate = 0.0f;
+
+        if ( card.dragging )
             continue;
-        card.pos.y = HAND_BASE_Y;
-        card.scale = CARD_BASE_SCALE;
-        card.rotate = 0.0f;
+
+        if ( card.hovered ) {
+            card.XGoToBase( CARD_ADJUST_DURATION );
+            continue;
+        }
+
+        card.GoToBase( CARD_ADJUST_DURATION );
     }
 }
 
@@ -421,8 +448,8 @@ void View::RenderCard( CardWrapper& card, int index ) {
 
     static const float card_ratio = (float)CARD_TEXTURE_WIDTH / CARD_TEXTURE_HEIGHT;
     float card_width = card_ratio / _width * _height;
-    glm::vec3 scale( card.scale.x * card_width, card.scale.y, 1.0f );
-    glm::vec3 translate( card.pos, card.hovered ? -0.1f : index / -1000.0f );
+    glm::vec3 scale( *card.scale.x * card_width, *card.scale.y, 1.0f );
+    glm::vec3 translate( *card.pos, card.hovered ? -0.1f : index / -1000.0f );
 
     glm::mat4 world = glm::translate( translate ) * glm::scale( scale );
     glUniformMatrix4fv( ul( "world" ), 1, GL_FALSE, glm::value_ptr( world ) );
