@@ -16,6 +16,13 @@ struct UpdateInfo
     float delta = 0.0f;
 };
 
+struct Texture
+{
+    GLuint id;
+    unsigned int width;
+    unsigned int height;
+};
+
 struct VertexPosColor
 {
     glm::vec3 position;

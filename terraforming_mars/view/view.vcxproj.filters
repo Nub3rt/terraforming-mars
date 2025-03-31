@@ -106,5 +106,47 @@
     <Image Include="assets\cards.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="assets\button.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\card_cover.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\ocean.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\oxygen.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\production_box.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\resources.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\space_back.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\space_bottom.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\space_front.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\space_left.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\space_right.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\space_top.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\temperature.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\tr.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

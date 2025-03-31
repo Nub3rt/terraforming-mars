@@ -34,7 +34,7 @@ bool View::Init( Camera* camera, model::GameModel* model ) {
     for ( const model::boards::Tile& tile : *_model->get_board() ) {
         _tiles.emplace_back( tile );
     }
-    _starting_card_id = (int)_tiles.size();
+    _stencil_starting_card = STENCIL_STARTING_BOARD + (int)_tiles.size();
 
     return true;
 }
@@ -104,7 +104,7 @@ void View::RenderBoard() {
     glBindVertexArray( _hexagon_gpu.vao_id );
 
     for ( int i = 0; i < _tiles.size(); ++i) {
-        RenderHexagon( _tiles[i], i );
+        RenderHexagon( _tiles[i], STENCIL_STARTING_BOARD + i );
     }
 
     glBindVertexArray( 0 );
@@ -147,9 +147,14 @@ void View::RenderHexagon( TileWrapper& tile, int id ) {
 }
 
 void View::RenderHUD() {
+    RenderMenuButton();
     RenderGlobalParameters();
+    RenderEndButton();
     RenderResources();
     RenderHand();
+}
+
+void View::RenderMenuButton() {
 }
 
 void View::RenderGlobalParameters() {
@@ -161,10 +166,10 @@ void View::RenderGlobalParameters() {
 
 
     std::array<GLuint, 4> to_draw = {
-        _temperature_texture_id,
-        _ocean_texture_id,
-        _oxygen_texture_id,
-        _tr_texture_id,
+        _temperature_texture.id,
+        _ocean_texture.id,
+        _oxygen_texture.id,
+        _tr_texture.id,
     };
     for ( int i = 0; i < to_draw.size(); ++i ) {
         glBindTexture( GL_TEXTURE_2D, to_draw[ i ] );
@@ -204,47 +209,46 @@ void View::RenderGlobalParameters() {
     }
 }
 
-std::tuple<float, float, glm::vec3> View::CalculateParameterPosition( int parameter, int type ) {
-    static const float temperature_ratio = (float)TEMPERATURE_TEXTURE_HEIGHT / TEMPERATURE_TEXTURE_WIDTH;
-    static const float ocean_ratio = (float)OCEAN_TEXTURE_HEIGHT / OCEAN_TEXTURE_WIDTH;
-    static const float tr_ratio = (float)TR_TEXTURE_HEIGHT / TR_TEXTURE_WIDTH;
-    static const float oxygen_ratio = 1.0f;
+void View::RenderEndButton() {
+    static const float button_ratio = (float)_button_texture.height / _temperature_texture.width;
     static const float size = 0.06f;
     static const float spacing = size * 2.5f;
-    static const float padding = size * 0.5f;
+    static const float ratio_modifier = 0.8f;
 
-    float x = 1.0f - size - type * spacing / 2.0f;
-    float size_x = size / _width * _height;
+    float x = 1.0f - size - spacing / button_ratio;
+    float y = 0.0f;
+    glm::vec3 scale( size * button_ratio, size * _width / _height * ratio_modifier, 1.0f );
 
-    float temperature_y = size * temperature_ratio;
-    if ( parameter == 0 ) return {
+    glUseProgram( _program_rectangle_id );
+    glBindVertexArray( _rectangle_gpu.vao_id );
+
+    glActiveTexture( GL_TEXTURE0 );
+    glUniform1i( ul( "image" ), 0 );
+
+    glBindTexture( GL_TEXTURE_2D, _button_texture.id );
+
+    glm::mat4 world = glm::translate( glm::vec3( x, y, 0.0f ) ) * glm::scale( scale );
+    glUniformMatrix4fv( ul( "world" ), 1, GL_FALSE, glm::value_ptr( world ) );
+
+    SetStencilRef( STENCIL_END );
+
+    glDrawElements( GL_TRIANGLES, _rectangle_gpu.count, GL_UNSIGNED_INT, nullptr );
+
+    SetStencilRef();
+
+    glBindTexture( GL_TEXTURE_2D, 0 );
+
+    glBindVertexArray( 0 );
+    glUseProgram( 0 );
+
+    static const glm::vec3 color = glm::vec3( 1280.f, 58.0f, 47.0f ) / 255.0f;
+    TextRenderer::RenderTextCentered(
+        "End Generation",
         x,
-        1.0f - temperature_y - padding,
-        glm::vec3( size_x, size * temperature_ratio, 1.0f )
-    };
-
-    float ocean_y = size * ocean_ratio;
-    if ( parameter == 1 ) return {
-        x,
-        1.0f - temperature_y * 2.0f - ocean_y - padding * 2.0f,
-        glm::vec3( size_x, size * ocean_ratio, 1.0f )
-    };
-
-    float oxygen_y = size * oxygen_ratio;
-    if ( parameter == 2 ) return {
-        x,
-        1.0f - temperature_y * 2.0f - ocean_y * 2.0f - oxygen_y - padding * 3.0f,
-        glm::vec3( size_x, size * oxygen_ratio, 1.0f )
-    };
-
-    float tr_y = size * tr_ratio;
-    if ( parameter == 3 ) return {
-        x,
-        1.0f - temperature_y * 2.0f - ocean_y * 2.0f - oxygen_y * 2.0f - tr_y - padding * 4.0f,
-        glm::vec3( size_x, size * tr_ratio, 1.0f )
-    };
-
-    throw std::logic_error( "View::CalculateParameterPosition: received invalid parameter!" );
+        y,
+        1.0f,
+        color
+    );
 }
 
 void View::RenderResources() {
@@ -254,7 +258,7 @@ void View::RenderResources() {
     glActiveTexture( GL_TEXTURE0 );
     glUniform1i( ul( "image" ), 0 );
 
-    glBindTexture( GL_TEXTURE_2D, _production_box_texture_id );
+    glBindTexture( GL_TEXTURE_2D, _production_box_texture.id );
     for ( int i = 0; i < +model::Resource::MAX; ++i ) {
         auto [x, y, scale] = CalculateResourcePosition( i, 0 );
 
@@ -269,7 +273,7 @@ void View::RenderResources() {
 
     glUniform1i( ul( "image" ), 0 );
 
-    glBindTexture( GL_TEXTURE_2D, _resources_texture_id );
+    glBindTexture( GL_TEXTURE_2D, _resources_texture.id );
     for ( int i = 0; i < +model::Resource::MAX; ++i ) {
         static const float stride_x = 1.0f / RESOURCE_TEXTURE_COLUMNS;
         static const float stride_y = 1.0f / RESOURCE_TEXTURE_ROWS;
@@ -319,22 +323,12 @@ void View::RenderResources() {
     }
 }
 
-std::tuple<float, float, glm::vec3> View::CalculateResourcePosition( int resource, int type ) {
-    static const float size = 0.06f;
-    static const float spacing = size * 2.5f;
-    return {
-        1.0f - size - type * spacing / 2.0f,
-        resource * spacing + size * 2.0f - 1.0f,
-        glm::vec3( size / _width * _height , size, 1.0f )
-    };
-}
-
 void View::RenderHand() {
     glUseProgram( _program_sprite_sheet_id );
     glBindVertexArray( _rectangle_gpu.vao_id );
 
     glActiveTexture( GL_TEXTURE0 );
-    glBindTexture( GL_TEXTURE_2D, _cards_texture_id );
+    glBindTexture( GL_TEXTURE_2D, _cards_texture.id );
     glUniform1i( ul( "image" ), 0 );
 
     CardWrapper card( _model->get_local_player()->get_hand()[ 0 ] );
@@ -366,11 +360,64 @@ void View::RenderCard( CardWrapper& card, int index ) {
     glUniform1i( ul( "index_x" ), index_x );
     glUniform1i( ul( "index_y" ), index_y );
 
-    SetStencilRef( _starting_card_id + index );
+    SetStencilRef( _stencil_starting_card + index );
 
     glDrawElements( GL_TRIANGLES, _rectangle_gpu.count, GL_UNSIGNED_INT, nullptr );
 
     SetStencilRef();
+}
+
+std::tuple<float, float, glm::vec3> View::CalculateParameterPosition( int parameter, int type ) {
+    static const float temperature_ratio = (float)_temperature_texture.height / _temperature_texture.width;
+    static const float ocean_ratio = (float)_ocean_texture.height / _ocean_texture.width;
+    static const float oxygen_ratio = (float)_oxygen_texture.height / _oxygen_texture.width;
+    static const float tr_ratio = (float)_tr_texture.height / _tr_texture.width;
+    static const float size = 0.06f;
+    static const float spacing = size * 2.5f;
+    static const float padding = size * 0.5f;
+
+    float x = 1.0f - size - type * spacing / 2.0f;
+    float size_x = size / _width * _height;
+
+    float temperature_y = size * temperature_ratio;
+    if ( parameter == 0 ) return {
+        x,
+        1.0f - temperature_y - padding,
+        glm::vec3( size_x, size * temperature_ratio, 1.0f )
+    };
+
+    float ocean_y = size * ocean_ratio;
+    if ( parameter == 1 ) return {
+        x,
+        1.0f - temperature_y * 2.0f - ocean_y - padding * 2.0f,
+        glm::vec3( size_x, size * ocean_ratio, 1.0f )
+    };
+
+    float oxygen_y = size * oxygen_ratio;
+    if ( parameter == 2 ) return {
+        x,
+        1.0f - temperature_y * 2.0f - ocean_y * 2.0f - oxygen_y - padding * 3.0f,
+        glm::vec3( size_x, size * oxygen_ratio, 1.0f )
+    };
+
+    float tr_y = size * tr_ratio;
+    if ( parameter == 3 ) return {
+        x,
+        1.0f - temperature_y * 2.0f - ocean_y * 2.0f - oxygen_y * 2.0f - tr_y - padding * 4.0f,
+        glm::vec3( size_x, size * tr_ratio, 1.0f )
+    };
+
+    throw std::logic_error( "View::CalculateParameterPosition: received invalid parameter!" );
+}
+
+std::tuple<float, float, glm::vec3> View::CalculateResourcePosition( int resource, int type ) {
+    static const float size = 0.055f;
+    static const float spacing = size * 2.5f;
+    return {
+        1.0f - size - type * spacing / 2.0f,
+        resource * spacing + size * 2.0f - 1.0f,
+        glm::vec3( size / _width * _height , size, 1.0f )
+    };
 }
 
 void View::InitShaders() {
@@ -455,14 +502,15 @@ void View::InitTextures() {
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
 
 
-    LoadTexture( &_cards_texture_id, "assets/cards.png" );
-    LoadTexture( &_resources_texture_id, "assets/resources.png" );
-    LoadTexture( &_card_cover_texture_id, "assets/card_cover.png" );
-    LoadTexture( &_temperature_texture_id, "assets/temperature.png" );
-    LoadTexture( &_ocean_texture_id, "assets/ocean.png" );
-    LoadTexture( &_oxygen_texture_id, "assets/oxygen.png" );
-    LoadTexture( &_tr_texture_id, "assets/tr.png" );
-    LoadTexture( &_production_box_texture_id, "assets/production_box.png" );
+    _cards_texture = LoadTexture( "assets/cards.png" );
+    _resources_texture = LoadTexture( "assets/resources.png" );
+    _card_cover_texture = LoadTexture( "assets/card_cover.png" );
+    _temperature_texture = LoadTexture( "assets/temperature.png" );
+    _ocean_texture = LoadTexture( "assets/ocean.png" );
+    _oxygen_texture = LoadTexture( "assets/oxygen.png" );
+    _tr_texture = LoadTexture( "assets/tr.png" );
+    _button_texture = LoadTexture( "assets/button.png" );
+    _production_box_texture = LoadTexture( "assets/production_box.png" );
 
 
     glBindTexture( GL_TEXTURE_2D, 0 );
@@ -470,27 +518,30 @@ void View::InitTextures() {
 
 void View::CleanTextures() {
     glDeleteTextures( 1, &_orange_texture_id );
-    glDeleteTextures( 1, &_cards_texture_id );
-    glDeleteTextures( 1, &_resources_texture_id );
-    glDeleteTextures( 1, &_card_cover_texture_id );
-    glDeleteTextures( 1, &_temperature_texture_id );
-    glDeleteTextures( 1, &_ocean_texture_id );
-    glDeleteTextures( 1, &_oxygen_texture_id );
-    glDeleteTextures( 1, &_tr_texture_id );
-    glDeleteTextures( 1, &_production_box_texture_id );
+    glDeleteTextures( 1, &_cards_texture.id );
+    glDeleteTextures( 1, &_resources_texture.id );
+    glDeleteTextures( 1, &_card_cover_texture.id );
+    glDeleteTextures( 1, &_temperature_texture.id );
+    glDeleteTextures( 1, &_ocean_texture.id );
+    glDeleteTextures( 1, &_oxygen_texture.id );
+    glDeleteTextures( 1, &_tr_texture.id );
+    glDeleteTextures( 1, &_production_box_texture.id );
 }
 
-void View::LoadTexture( GLuint* id, const std::filesystem::path& filename, GLint wrap_behaviour ) {
+Texture View::LoadTexture( const std::filesystem::path& filename, GLint wrap_behaviour ) {
     ImageRGBA cards = ImageFromFile( filename );
+    Texture tex = { 0, cards.width, cards.height };
 
-    glGenTextures( 1, id );
-    glBindTexture( GL_TEXTURE_2D, *id );
+    glGenTextures( 1, &tex.id );
+    glBindTexture( GL_TEXTURE_2D, tex.id );
     glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, cards.width, cards.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, cards.data() );
     glGenerateMipmap( GL_TEXTURE_2D );
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR );
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap_behaviour );
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap_behaviour );
+
+    return tex;
 }
 
 const std::pair<float, float>& View::GetBoardOrigin() {

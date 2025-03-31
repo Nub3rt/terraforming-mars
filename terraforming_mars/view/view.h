@@ -68,19 +68,22 @@ protected:
     std::array<int, +model::Resource::MAX + 1> _resources;
     std::array<int, +model::Resource::MAX + 1> _resource_productions;
     std::vector<TileWrapper> _tiles;
-    int _starting_card_id = 0;
+
+    int _stencil_starting_card = 0;
 
 
     void RenderBoard();
     void RenderHexagon( TileWrapper& tile, int id );
 
     void RenderHUD();
+    void RenderMenuButton();
     void RenderGlobalParameters();
-    std::tuple<float, float, glm::vec3> CalculateParameterPosition( int parameter, int type );
+    void RenderEndButton();
     void RenderResources();
-    std::tuple<float, float, glm::vec3> CalculateResourcePosition( int resource, int type );
     void RenderHand();
     void RenderCard( CardWrapper& card, int index );
+    std::tuple<float, float, glm::vec3> CalculateParameterPosition( int parameter, int type );
+    std::tuple<float, float, glm::vec3> CalculateResourcePosition( int resource, int type );
 
     inline void SetStencilRef( GLint ref = STENCIL_NONE ) { glStencilFunc( GL_ALWAYS, ref, 0xff ); }
 
@@ -99,18 +102,19 @@ protected:
     void CleanGeometry();
 
     GLuint _orange_texture_id = 0;
-    GLuint _cards_texture_id = 0;
-    GLuint _resources_texture_id = 0;
-    GLuint _card_cover_texture_id = 0;
-    GLuint _temperature_texture_id = 0;
-    GLuint _ocean_texture_id = 0;
-    GLuint _oxygen_texture_id = 0;
-    GLuint _tr_texture_id = 0;
-    GLuint _production_box_texture_id = 0;
+    Texture _cards_texture = {};
+    Texture _resources_texture = {};
+    Texture _card_cover_texture = {};
+    Texture _temperature_texture = {};
+    Texture _ocean_texture = {};
+    Texture _oxygen_texture = {};
+    Texture _tr_texture = {};
+    Texture _button_texture = {};
+    Texture _production_box_texture = {};
 
     void InitTextures();
     void CleanTextures();
-    void LoadTexture( GLuint* id, const std::filesystem::path& filename, GLint wrap_behaviour = GL_CLAMP_TO_EDGE );
+    Texture LoadTexture( const std::filesystem::path& filename, GLint wrap_behaviour = GL_CLAMP_TO_EDGE );
 
     virtual const std::pair<float, float>& GetBoardOrigin();
 

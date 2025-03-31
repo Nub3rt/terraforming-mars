@@ -167,11 +167,25 @@
   <ItemGroup>
     <Image Include="assets\back.png" />
     <Image Include="assets\bottom.png" />
+    <Image Include="assets\button.png" />
     <Image Include="assets\cards.png" />
+    <Image Include="assets\card_cover.png" />
     <Image Include="assets\front.png" />
     <Image Include="assets\left.png" />
+    <Image Include="assets\ocean.png" />
+    <Image Include="assets\oxygen.png" />
+    <Image Include="assets\production_box.png" />
+    <Image Include="assets\resources.png" />
     <Image Include="assets\right.png" />
+    <Image Include="assets\space_back.png" />
+    <Image Include="assets\space_bottom.png" />
+    <Image Include="assets\space_front.png" />
+    <Image Include="assets\space_left.png" />
+    <Image Include="assets\space_right.png" />
+    <Image Include="assets\space_top.png" />
+    <Image Include="assets\temperature.png" />
     <Image Include="assets\top.png" />
+    <Image Include="assets\tr.png" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\model\model.vcxproj">
