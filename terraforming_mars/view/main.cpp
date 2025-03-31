@@ -15,6 +15,8 @@
 #include "text_renderer.h"
 
 int main( int argc, char* argv[] ) {
+    srand( (unsigned int)time( NULL ) );
+
     SDL_SetLogPriority( SDL_LOG_CATEGORY_ERROR, SDL_LOG_PRIORITY_ERROR );
 
     if ( !SDL_Init( SDL_INIT_VIDEO ) ) {

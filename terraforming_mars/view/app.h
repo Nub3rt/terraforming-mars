@@ -9,6 +9,7 @@
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_opengl.h>
 
+#include "builder.h"
 #include "view.h"
 
 #include "gl_utils/camera.h"
@@ -45,6 +46,8 @@ protected:
 
     View* _view = nullptr;
     Camera _camera;
+
+    Builder _builder;
 
     void SetupDebugCallback();
 

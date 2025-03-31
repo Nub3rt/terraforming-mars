@@ -7,16 +7,17 @@
 #include "gl_utils/gl_utils.h"
 #include "gl_utils/SDL_GLDebugMessageCallback.h"
 
-#include "../model/game_model.h"
-#include "../model/solo_game_model.h"
-#include "../model/boards/tharsis_concrete_board.h"
-#include "../model/decks/deck.h"
-#include "../model/decks/reduced_basic_deck_provider.h"
+#ifdef _DEBUG
+#  define BUILDER_SEED 42
+#else
+#  define BUILDER_SEED rand()
+#endif _DEBUG
 
 namespace view
 {
-App::App() : _camera() {
+App::App() : _camera(), _builder( BUILDER_SEED ) {
 }
+#undef BUILDER_SEED
 
 App::~App() {
 }
@@ -37,7 +38,7 @@ bool App::Init() {
 #else
     glEnable( GL_CULL_FACE );
     glCullFace( GL_BACK );
-#endif
+#endif _DEBUG
 
     glEnable( GL_DEPTH_TEST );
 
@@ -52,15 +53,11 @@ bool App::Init() {
         glm::vec3( 0.0f, 1.0f, 0.0f )
     );
 
-    model::GameModel* model = new model::SoloGameModel( 3 );
-    model::boards::ConcreteBoard* tharsis = new model::boards::TharsisConcreteBoard();
-    model::boards::Board* board = new model::boards::Board( tharsis );
-    model::decks::ReducedBasicDeckProvider dp;
-    model::decks::Deck* deck = new model::decks::Deck( *model, dp, 5 );
-    model->Initialize( board, deck );
-
-    _view = new View();
-    _view->Init( &_camera, model );
+    _view = _builder.SoloGameModel()
+                    .TharsisBoard()
+                    .ReducedBasicDeck()
+                    .SoloGameView()
+                    .GetResult( &_camera );
 
     return true;
 }
