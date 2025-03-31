@@ -140,6 +140,7 @@
     <ClCompile Include="text_renderer.cpp" />
     <ClCompile Include="tile_wrapper.cpp" />
     <ClCompile Include="view.cpp" />
+    <ClCompile Include="view_state.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="app.h" />
@@ -152,7 +153,10 @@
     <ClInclude Include="gl_utils\spherical_camera_manipulator.h" />
     <ClInclude Include="text_renderer.h" />
     <ClInclude Include="tile_wrapper.h" />
+    <ClInclude Include="view.fwd.h" />
     <ClInclude Include="view.h" />
+    <ClInclude Include="view_state.fwd.h" />
+    <ClInclude Include="view_state.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\lighting.frag" />

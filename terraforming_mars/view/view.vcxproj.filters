@@ -32,6 +32,7 @@
     <ClCompile Include="card_wrapper.cpp" />
     <ClCompile Include="text_renderer.cpp" />
     <ClCompile Include="builder.cpp" />
+    <ClCompile Include="view_state.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="app.h" />
@@ -53,6 +54,9 @@
     <ClInclude Include="card_wrapper.h" />
     <ClInclude Include="text_renderer.h" />
     <ClInclude Include="builder.h" />
+    <ClInclude Include="view_state.h" />
+    <ClInclude Include="view.fwd.h" />
+    <ClInclude Include="view_state.fwd.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\skybox.frag">

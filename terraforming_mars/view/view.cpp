@@ -66,6 +66,8 @@ void View::Render() {
 void View::RenderGUI() {
 }
 
+#pragma region Events
+
 void View::KeyboardDown( const SDL_KeyboardEvent& key ) {
     _camera_manipulator->KeyboardDown( key );
 }
@@ -121,6 +123,18 @@ void View::Resize( int w, int h ) {
 void View::OtherEvent( const SDL_Event& event ) {
 }
 
+#pragma endregion Events
+
+#pragma region State
+
+void View::ChangeState( ViewState* state ) {
+    if ( _state != nullptr )
+        delete _state;
+
+    _state = state;
+}
+#pragma endregion State
+
 void View::RefreshHandPositions() {
     static const float card_ratio = (float)CARD_TEXTURE_WIDTH / CARD_TEXTURE_HEIGHT;
     static const float min_x = -0.6f;
@@ -153,6 +167,8 @@ void View::RefreshHandPositions() {
         card.rotate = 0.0f;
     }
 }
+
+#pragma region Rendering
 
 void View::RenderBoard() {
     glUseProgram( _program_id );
@@ -486,6 +502,10 @@ std::tuple<float, float, glm::vec3> View::CalculateResourcePosition( int resourc
     };
 }
 
+#pragma endregion Rendering
+
+#pragma region Init and Clean
+
 void View::InitShaders() {
     _program_id = glCreateProgram();
     AttachShader( _program_id, GL_VERTEX_SHADER, "shaders/pos_norm_tex.vert" );
@@ -610,6 +630,10 @@ Texture View::LoadTexture( const std::filesystem::path& filename, GLint wrap_beh
     return tex;
 }
 
+#pragma endregion Init and Clean
+
+#pragma region Constants
+
 const std::pair<float, float>& View::GetBoardOrigin() {
     static const std::pair<float, float> origin( 4.0f, 4.0f );
     return origin;
@@ -635,4 +659,6 @@ const std::initializer_list<VertexAttributeDescriptor> View::_vertex_plus_attrib
     { 2, offsetof( VertexF, texcoord ), 2, GL_FLOAT },
     { 3, offsetof( VertexF, plus     ), 1, GL_FLOAT },
 };
+
+#pragma endregion Constants
 }

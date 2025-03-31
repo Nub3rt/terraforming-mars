@@ -1,5 +1,8 @@
 #pragma once
 
+#include "view.fwd.h"
+#include "view_state.fwd.h"
+
 #include <array>
 #include <utility>
 #include <vector>
@@ -27,6 +30,8 @@ namespace view
 {
 class View
 {
+    friend class ViewState;
+
 public:
     View();
     ~View();
@@ -56,6 +61,10 @@ protected:
 
     Camera* _camera = nullptr;
     SphericalCameraManipulator* _camera_manipulator = nullptr;
+
+    ViewState* _state = nullptr;
+
+    void ChangeState( ViewState* state );
 
 
     model::GameModel* _model = nullptr;
