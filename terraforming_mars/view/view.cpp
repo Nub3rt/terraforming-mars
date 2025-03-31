@@ -76,6 +76,38 @@ void View::KeyboardUp( const SDL_KeyboardEvent& key ) {
 
 void View::MouseMotion( const SDL_MouseMotionEvent& mouse ) {
     _camera_manipulator->MouseMove( mouse );
+
+    uint8_t hovered_id;
+    glReadPixels( (GLint)mouse.x, _height - (GLint)mouse.y, 1, 1, GL_STENCIL_INDEX, GL_UNSIGNED_BYTE, &hovered_id );
+
+    float x = mouse.x / _width * 2.0f - 1.0f;
+    float y = (_height - mouse.y) / _height * 2.0f - 1.0f;
+    std::cout << std::format( "start_x: {}, end_x: {}, x: {}\n", _hand_start_x, _hand_end_x, x );
+
+    uint8_t hovered_card_id = 0;
+    if ( y < _hand_top_y && x > _hand_start_x && x < _hand_end_x ) {
+        hovered_card_id = CalculateHoveredCardIdByMousePos( x, y );
+    } else if ( hovered_id >= _stencil_starting_card &&
+                hovered_id < _stencil_starting_card + _hand.size() ) {
+        hovered_card_id = hovered_id;
+    }
+
+    for ( CardWrapper& card : _hand ) {
+        if ( card.hovered && hovered_card_id != card.stencil_id ) {
+            card.hovered = false;
+            RefreshHandPositions();
+        } else if ( !card.hovered && hovered_card_id == card.stencil_id ) {
+            card.hovered = true;
+            card.scale *= 2.0f;
+            card.pos.y += 0.7f;
+            card.rotate = 0.0f;
+        }
+    }
+
+    if ( hovered_id != STENCIL_NONE ) {
+        // TODO
+
+    }
 }
 
 void View::MouseDown( const SDL_MouseButtonEvent& mouse ) {
@@ -97,6 +129,44 @@ void View::Resize( int w, int h ) {
 }
 
 void View::OtherEvent( const SDL_Event& event ) {
+}
+
+void View::RefreshHandPositions() {
+    static const float card_ratio = (float)CARD_TEXTURE_WIDTH / CARD_TEXTURE_HEIGHT;
+    static const float min_x = -0.6f;
+    static const float max_x =  0.6f;
+    static const float mid_x = (min_x + max_x) / 2.0f;
+    static const float spacing = 0.1f;
+    float card_width = CARD_BASE_SCALE.x * card_ratio / _width * _height;
+
+    if ( _hand.size() == 0 )
+        return;
+
+    if ( _hand.size() == 1 ) {
+        CardWrapper& card = _hand[ 0 ];
+        card.pos.x = mid_x;
+        card.pos.y = HAND_BASE_Y;
+        card.scale = CARD_BASE_SCALE;
+        card.rotate = 0.0f;
+        card.stencil_id = _stencil_starting_card;
+        return;
+    }
+
+    _hand_start_x = fmaxf( min_x, mid_x - (_hand.size() - 1) / 2.0f * spacing );
+    _hand_end_x   = fminf( max_x, mid_x + (_hand.size() - 1) / 2.0f * spacing );
+    for ( int i = 0; i < _hand.size(); ++i ) {
+        CardWrapper& card = _hand[ i ];
+        card.pos.x = _hand_start_x + i * spacing;
+        card.stencil_id = _stencil_starting_card + i;
+        if ( card.hovered )
+            continue;
+        card.pos.y = HAND_BASE_Y;
+        card.scale = CARD_BASE_SCALE;
+        card.rotate = 0.0f;
+    }
+
+    _hand_start_x -= card_width;
+    _hand_end_x   += card_width;
 }
 
 void View::RenderBoard() {
@@ -155,6 +225,7 @@ void View::RenderHUD() {
 }
 
 void View::RenderMenuButton() {
+    // TODO
 }
 
 void View::RenderGlobalParameters() {
@@ -331,8 +402,8 @@ void View::RenderHand() {
     glBindTexture( GL_TEXTURE_2D, _cards_texture.id );
     glUniform1i( ul( "image" ), 0 );
 
-    CardWrapper card( _model->get_local_player()->get_hand()[ 0 ] );
-    RenderCard( card, 0 );
+    for ( int i = 0; i < _hand.size(); ++i )
+        RenderCard( _hand[ i ], i );
 
     glBindTexture( GL_TEXTURE_2D, 0 );
 
@@ -350,7 +421,7 @@ void View::RenderCard( CardWrapper& card, int index ) {
     static const float card_ratio = (float)CARD_TEXTURE_WIDTH / CARD_TEXTURE_HEIGHT;
     float card_width = card_ratio / _width * _height;
     glm::vec3 scale( card.scale.x * card_width, card.scale.y, 1.0f );
-    glm::vec3 translate( card.pos, index / 20.0f );
+    glm::vec3 translate( card.pos, card.hovered ? -0.1f : index / -1000.0f );
 
     glm::mat4 world = glm::translate( translate ) * glm::scale( scale );
     glUniformMatrix4fv( ul( "world" ), 1, GL_FALSE, glm::value_ptr( world ) );
@@ -360,11 +431,28 @@ void View::RenderCard( CardWrapper& card, int index ) {
     glUniform1i( ul( "index_x" ), index_x );
     glUniform1i( ul( "index_y" ), index_y );
 
-    SetStencilRef( _stencil_starting_card + index );
+    SetStencilRef( card.stencil_id );
 
     glDrawElements( GL_TRIANGLES, _rectangle_gpu.count, GL_UNSIGNED_INT, nullptr );
 
     SetStencilRef();
+}
+
+int view::View::CalculateHoveredCardIdByMousePos( float x, float y ) {
+    static const float card_ratio = (float)CARD_TEXTURE_WIDTH / CARD_TEXTURE_HEIGHT;
+    float card_width = CARD_BASE_SCALE.x * card_ratio / _width * _height;;
+
+    if ( x < _hand_start_x || x >= _hand_end_x ) {
+        if ( x < _hand_start_x && x >= _hand_start_x - card_width )
+            return _hand[ 0 ].stencil_id;
+        if ( x >= _hand_end_x && x <= _hand_end_x + card_width )
+            return _hand[ _hand.size() - 1 ].stencil_id;
+        return 0;
+    }
+
+    float interval_length = (_hand_end_x - _hand_start_x) / _hand.size();
+    int card_index = static_cast<int>( (x - _hand_start_x) / interval_length );
+    return _hand[ card_index ].stencil_id;
 }
 
 std::tuple<float, float, glm::vec3> View::CalculateParameterPosition( int parameter, int type ) {

@@ -67,10 +67,21 @@ protected:
     int _tr = 0;
     std::array<int, +model::Resource::MAX + 1> _resources;
     std::array<int, +model::Resource::MAX + 1> _resource_productions;
+    std::vector<CardWrapper> _hand;
+    std::vector<CardWrapper> _events;
+    std::vector<CardWrapper> _automated;
+    std::vector<CardWrapper> _effects;
+    std::vector<CardWrapper> _actions;
     std::vector<TileWrapper> _tiles;
 
     int _stencil_starting_card = 0;
+    float _hand_start_x = 0.0f;
+    float _hand_end_x = 0.0f;
+    float _hand_top_y = -1.0f + 1.0f / 9.0f;
+    bool _card_hovered_last_frame = false;
 
+
+    void RefreshHandPositions();
 
     void RenderBoard();
     void RenderHexagon( TileWrapper& tile, int id );
@@ -82,6 +93,8 @@ protected:
     void RenderResources();
     void RenderHand();
     void RenderCard( CardWrapper& card, int index );
+
+    int CalculateHoveredCardIdByMousePos( float x, float y );
     std::tuple<float, float, glm::vec3> CalculateParameterPosition( int parameter, int type );
     std::tuple<float, float, glm::vec3> CalculateResourcePosition( int resource, int type );
 
