@@ -12,23 +12,29 @@ namespace view
 class CardWrapper
 {
 public:
-    CardWrapper( model::decks::Card* card );
+    enum State
+    {
+        IDLE,
+        HOVERED,
+        DRAGGING,
+        DRAWING_1,
+        DRAWING_2,
+    };
+
+    CardWrapper( model::decks::Card* card, bool drawn = true );
     ~CardWrapper();
 
     inline model::decks::Card* operator->() noexcept { return _card; }
     inline model::decks::Card* operator*() noexcept { return _card; }
 
-    inline void Update( float delta ) {
-        pos.Update( delta );
-        scale.Update( delta );
-        rotate.Update( delta );
-    }
+    void SetEase( Animatable<float>::ease_t );
+    void SetDefaultEase();
+
+    void Update( float delta );
 
     void GoToBase( float duration );
-    void XGoToBase( float duration );
 
-    bool hovered = false;
-    bool dragging = false;
+    State state = IDLE;
 
     glm::vec2 base_pos = glm::vec2( 0.0f, HAND_BASE_Y );
     glm::vec2 base_scale = CARD_BASE_SCALE;
@@ -40,5 +46,12 @@ public:
 
 private:
     model::decks::Card* _card;
+
+    static const glm::vec2 drawing_pos_1;
+    static const glm::vec2 drawing_scale_1;
+    static const float drawing_rotate_1;
+    static const glm::vec2 drawing_pos_2;
+    static const glm::vec2 drawing_scale_2;
+    static const float drawing_rotate_2;
 };
 }

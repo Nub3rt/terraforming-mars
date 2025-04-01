@@ -12,6 +12,7 @@ inline constexpr float SKYBOX_ROTATE_SPEED = 0.01f;
 inline constexpr float HAND_BASE_Y = -1.12f;
 inline constexpr glm::vec2 CARD_BASE_SCALE = glm::vec2( 0.25f );
 inline constexpr float CARD_ADJUST_DURATION = 0.5;
+inline constexpr float CARD_DRAW_DURATION = 2.0f;
 
 inline constexpr uint8_t STENCIL_NONE = 0xff;
 

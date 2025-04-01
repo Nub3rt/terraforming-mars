@@ -93,16 +93,13 @@ void View::MouseMotion( const SDL_MouseMotionEvent& mouse ) {
     for ( int i = 0; i < _hand.size(); ++i ) {
         CardWrapper& card = _hand[ i ];
 
-        if ( card.dragging )
-            continue;
-
-        if ( card.hovered && hovered_card_index != i ) {
-            card.hovered = false;
+        if ( card.state == CardWrapper::HOVERED && hovered_card_index != i ) {
+            card.state = CardWrapper::IDLE;
             card.pos.y.SetAnim( -1.0f + (1.0f + *card.pos.y) / 2.0f, card.base_pos.y, CARD_ADJUST_DURATION );
             card.scale.Set( card.base_scale );
             card.rotate.Set( card.base_rotate );
-        } else if ( !card.hovered && hovered_card_index == i ) {
-            card.hovered = true;
+        } else if ( card.state == CardWrapper::IDLE && hovered_card_index == i ) {
+            card.state = CardWrapper::HOVERED;
             card.scale.Set( card.base_scale * 2.0f );
             card.pos.y.Set( card.base_pos.y + 0.6f );
             card.rotate.Set( 0.0f );
@@ -164,15 +161,16 @@ void View::RefreshHandPositions() {
         card.base_scale = CARD_BASE_SCALE;
         card.base_rotate = 0.0f;
 
-        if ( card.dragging )
+        if ( card.state == CardWrapper::DRAGGING ||
+             card.state == CardWrapper::DRAWING_1 )
             return;
 
-        if ( card.hovered ) {
-            card.XGoToBase( CARD_ADJUST_DURATION );
+        if ( card.state == CardWrapper::IDLE ) {
+            card.GoToBase( CARD_ADJUST_DURATION );
             return;
         }
 
-        card.GoToBase( CARD_ADJUST_DURATION );
+        card.pos.x.UpdateAnim( card.base_pos.x, CARD_ADJUST_DURATION );
         return;
     }
 
@@ -183,15 +181,16 @@ void View::RefreshHandPositions() {
         card.base_scale = CARD_BASE_SCALE;
         card.base_rotate = 0.0f;
 
-        if ( card.dragging )
+        if ( card.state == CardWrapper::DRAGGING ||
+             card.state == CardWrapper::DRAWING_1 )
             continue;
 
-        if ( card.hovered ) {
-            card.XGoToBase( CARD_ADJUST_DURATION );
+        if ( card.state == CardWrapper::IDLE ) {
+            card.GoToBase( CARD_ADJUST_DURATION );
             continue;
         }
 
-        card.GoToBase( CARD_ADJUST_DURATION );
+        card.pos.x.UpdateAnim( card.base_pos.x, CARD_ADJUST_DURATION );
     }
 }
 
@@ -448,8 +447,13 @@ void View::RenderCard( CardWrapper& card, int index ) {
 
     static const float card_ratio = (float)CARD_TEXTURE_WIDTH / CARD_TEXTURE_HEIGHT;
     float card_width = card_ratio / _width * _height;
+
+    float z = card.state == CardWrapper::HOVERED ||
+              card.state == CardWrapper::DRAGGING ?
+        -0.1f : index / -1000.0f;
+
     glm::vec3 scale( *card.scale.x * card_width, *card.scale.y, 1.0f );
-    glm::vec3 translate( *card.pos, card.hovered ? -0.1f : index / -1000.0f );
+    glm::vec3 translate( *card.pos, z );
 
     glm::mat4 world = glm::translate( translate ) * glm::scale( scale );
     glUniformMatrix4fv( ul( "world" ), 1, GL_FALSE, glm::value_ptr( world ) );

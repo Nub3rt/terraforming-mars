@@ -28,9 +28,21 @@ public:
     inline T* operator->() noexcept { return &_value; }
     inline T& operator*() noexcept { return _value; }
 
+    inline bool Animating() {
+        return _a.has_value();
+    }
+
     inline void Set( T value ) {
         _a.reset();
         _value = value;
+    }
+
+    inline void UpdateAnim( T value, float duration ) {
+        if ( _a ) {
+            _a->end = value;
+        } else {
+            _a = { _value , value, 0.0f, duration };
+        }
     }
 
     inline void SetAnim( T start, T end, float duration ) {
@@ -77,9 +89,18 @@ public:
     inline glm::vec2* operator->() noexcept { return &_value; }
     inline glm::vec2& operator*() noexcept { return _value; }
 
+    inline bool Animating() {
+        return x.Animating() || y.Animating();
+    }
+
     inline void Set( glm::vec2 value ) {
         x.Set( value.x );
         y.Set( value.y );
+    }
+
+    inline void UpdateAnim( glm::vec2 value, float duration ) {
+        x.UpdateAnim( value.x, duration );
+        y.UpdateAnim( value.y, duration );
     }
 
     inline void SetAnim( glm::vec2 start, glm::vec2 end, float duration ) {
