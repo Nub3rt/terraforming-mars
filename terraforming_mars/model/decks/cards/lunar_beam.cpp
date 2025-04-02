@@ -18,7 +18,7 @@ LunarBeam::LunarBeam( const GameModel& model ) noexcept :
 LunarBeam::~LunarBeam() noexcept {}
 
 bool LunarBeam::SatisfiesRequirements() const {
-    return _owner->GetResourceProduction( Resource::CREDIT ) >= 2 - 5;
+    return _holder->GetResourceProduction( Resource::CREDIT ) >= 2 - 5;
 }
 
 void LunarBeam::ApplyImmediateEffects() {

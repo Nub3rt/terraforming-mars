@@ -18,7 +18,7 @@ UndergroundCity::UndergroundCity( const GameModel& model ) noexcept :
 UndergroundCity::~UndergroundCity() noexcept {}
 
 bool UndergroundCity::SatisfiesRequirements() const {
-    return _model.IsCityPlaceable( _holder ) && _owner->GetResourceProduction( Resource::ENERGY ) >= 2;
+    return _model.IsCityPlaceable( _holder ) && _holder->GetResourceProduction( Resource::ENERGY ) >= 2;
 }
 
 void UndergroundCity::ApplyImmediateEffects() {

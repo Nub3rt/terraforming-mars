@@ -17,7 +17,7 @@ CarbonateProcessing::CarbonateProcessing( const GameModel& model ) noexcept :
 CarbonateProcessing::~CarbonateProcessing() noexcept {}
 
 bool CarbonateProcessing::SatisfiesRequirements() const {
-    return _owner->GetResourceProduction( Resource::ENERGY ) >= 1;
+    return _holder->GetResourceProduction( Resource::ENERGY ) >= 1;
 }
 
 void CarbonateProcessing::ApplyImmediateEffects() {

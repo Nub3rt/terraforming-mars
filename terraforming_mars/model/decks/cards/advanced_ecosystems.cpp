@@ -19,7 +19,7 @@ AdvancedEcosystems::AdvancedEcosystems( const GameModel& model ) noexcept :
 AdvancedEcosystems::~AdvancedEcosystems() noexcept {}
 
 bool AdvancedEcosystems::SatisfiesRequirements() const {
-    return _owner->GetTagCount( Tag::PLANT ) >= 1 && _owner->GetTagCount( Tag::MICROBE ) >= 1 && _owner->GetTagCount( Tag::ANIMAL ) >= 1;
+    return _holder->GetTagCount( Tag::PLANT ) >= 1 && _holder->GetTagCount( Tag::MICROBE ) >= 1 && _holder->GetTagCount( Tag::ANIMAL ) >= 1;
 }
 
 void AdvancedEcosystems::ApplyImmediateEffects() {

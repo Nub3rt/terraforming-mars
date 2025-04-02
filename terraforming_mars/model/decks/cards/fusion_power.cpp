@@ -19,7 +19,7 @@ FusionPower::FusionPower( const GameModel& model ) noexcept :
 FusionPower::~FusionPower() noexcept {}
 
 bool FusionPower::SatisfiesRequirements() const {
-    return _owner->GetTagCount( Tag::POWER ) >= 2;
+    return _holder->GetTagCount( Tag::POWER ) >= 2;
 }
 
 void FusionPower::ApplyImmediateEffects() {

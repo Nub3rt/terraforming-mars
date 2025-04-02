@@ -17,7 +17,7 @@ Moss::Moss( const GameModel& model ) noexcept :
 Moss::~Moss() noexcept {}
 
 bool Moss::SatisfiesRequirements() const {
-    return _model.OceanCount() >= 3 && _owner->GetResource( Resource::PLANTS ) >= 1;
+    return _model.OceanCount() >= 3 && _holder->GetResource( Resource::PLANTS ) >= 1;
 }
 
 void Moss::ApplyImmediateEffects() {

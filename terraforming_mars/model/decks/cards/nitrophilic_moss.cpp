@@ -17,7 +17,7 @@ NitrophilicMoss::NitrophilicMoss( const GameModel& model ) noexcept :
 NitrophilicMoss::~NitrophilicMoss() noexcept {}
 
 bool NitrophilicMoss::SatisfiesRequirements() const {
-    return _model.OceanCount() >= 3 && _owner->GetResource( Resource::PLANTS ) >= 2;
+    return _model.OceanCount() >= 3 && _holder->GetResource( Resource::PLANTS ) >= 2;
 }
 
 void NitrophilicMoss::ApplyImmediateEffects() {

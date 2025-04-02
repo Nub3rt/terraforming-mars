@@ -17,7 +17,7 @@ FoodFactory::FoodFactory( const GameModel& model ) noexcept :
 FoodFactory::~FoodFactory() noexcept {}
 
 bool FoodFactory::SatisfiesRequirements() const {
-    return _owner->GetResourceProduction( Resource::PLANTS ) >= 1;
+    return _holder->GetResourceProduction( Resource::PLANTS ) >= 1;
 }
 
 void FoodFactory::ApplyImmediateEffects() {

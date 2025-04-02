@@ -17,7 +17,7 @@ Shuttles::Shuttles( const GameModel& model ) noexcept :
 Shuttles::~Shuttles() noexcept {}
 
 bool Shuttles::SatisfiesRequirements() const {
-    return _model.Oxygen() >= 5 && _owner->GetResourceProduction( Resource::ENERGY ) >= 1;
+    return _model.Oxygen() >= 5 && _holder->GetResourceProduction( Resource::ENERGY ) >= 1;
 }
 
 void Shuttles::ApplyImmediateEffects() {

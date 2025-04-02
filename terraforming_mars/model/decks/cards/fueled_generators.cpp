@@ -18,7 +18,7 @@ FueledGenerators::FueledGenerators( const GameModel& model ) noexcept :
 FueledGenerators::~FueledGenerators() noexcept {}
 
 bool FueledGenerators::SatisfiesRequirements() const {
-    return _owner->GetResourceProduction( Resource::CREDIT ) >= 1 - 5;
+    return _holder->GetResourceProduction( Resource::CREDIT ) >= 1 - 5;
 }
 
 void FueledGenerators::ApplyImmediateEffects() {

@@ -17,7 +17,7 @@ MagneticFieldGenerators::MagneticFieldGenerators( const GameModel& model ) noexc
 MagneticFieldGenerators::~MagneticFieldGenerators() noexcept {}
 
 bool MagneticFieldGenerators::SatisfiesRequirements() const {
-    return _owner->GetResourceProduction( Resource::ENERGY ) >= 4;
+    return _holder->GetResourceProduction( Resource::ENERGY ) >= 4;
 }
 
 void MagneticFieldGenerators::ApplyImmediateEffects() {

@@ -17,7 +17,7 @@ StripMine::StripMine( const GameModel& model ) noexcept :
 StripMine::~StripMine() noexcept {}
 
 bool StripMine::SatisfiesRequirements() const {
-    return _owner->GetResourceProduction( Resource::ENERGY ) >= 2;
+    return _holder->GetResourceProduction( Resource::ENERGY ) >= 2;
 }
 
 void StripMine::ApplyImmediateEffects() {

@@ -18,7 +18,7 @@ ImmigrantCity::ImmigrantCity( const GameModel& model ) noexcept :
 ImmigrantCity::~ImmigrantCity() noexcept {}
 
 bool ImmigrantCity::SatisfiesRequirements() const {
-    return _owner->GetResourceProduction( Resource::CREDIT ) >= 2 - 5 && _owner->GetResourceProduction( Resource::ENERGY ) >= 1 && _model.IsCityPlaceable( _holder );
+    return _holder->GetResourceProduction( Resource::CREDIT ) >= 2 - 5 && _holder->GetResourceProduction( Resource::ENERGY ) >= 1 && _model.IsCityPlaceable( _holder );
 }
 
 void ImmigrantCity::ApplyImmediateEffects() {

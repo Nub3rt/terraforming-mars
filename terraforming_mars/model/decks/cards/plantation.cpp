@@ -17,7 +17,7 @@ Plantation::Plantation( const GameModel& model ) noexcept :
 Plantation::~Plantation() noexcept {}
 
 bool Plantation::SatisfiesRequirements() const {
-    return _owner->GetTagCount( Tag::SCIENCE ) >= 2 && _model.IsTilePlaceable( _holder );
+    return _holder->GetTagCount( Tag::SCIENCE ) >= 2 && _model.IsTilePlaceable( _holder );
 }
 
 void Plantation::ApplyImmediateEffects() {

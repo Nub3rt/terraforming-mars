@@ -18,7 +18,7 @@ TectonicStressPower::TectonicStressPower( const GameModel& model ) noexcept :
 TectonicStressPower::~TectonicStressPower() noexcept {}
 
 bool TectonicStressPower::SatisfiesRequirements() const {
-    return _owner->GetTagCount( Tag::SCIENCE ) >= 2;
+    return _holder->GetTagCount( Tag::SCIENCE ) >= 2;
 }
 
 void TectonicStressPower::ApplyImmediateEffects() {

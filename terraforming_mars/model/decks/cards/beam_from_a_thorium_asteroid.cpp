@@ -19,7 +19,7 @@ BeamFromAThoriumAsteroid::BeamFromAThoriumAsteroid( const GameModel& model ) noe
 BeamFromAThoriumAsteroid::~BeamFromAThoriumAsteroid() noexcept {}
 
 bool BeamFromAThoriumAsteroid::SatisfiesRequirements() const {
-    return _owner->GetTagCount( Tag::JOVIAN ) >= 1;
+    return _holder->GetTagCount( Tag::JOVIAN ) >= 1;
 }
 
 void BeamFromAThoriumAsteroid::ApplyImmediateEffects() {

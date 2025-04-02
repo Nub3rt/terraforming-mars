@@ -18,7 +18,7 @@ DomedCrater::DomedCrater( const GameModel& model ) noexcept :
 DomedCrater::~DomedCrater() noexcept {}
 
 bool DomedCrater::SatisfiesRequirements() const {
-    return _model.Oxygen() <= 7 && _model.IsCityPlaceable( _holder ) && _owner->GetResourceProduction( Resource::ENERGY ) >= 1;
+    return _model.Oxygen() <= 7 && _model.IsCityPlaceable( _holder ) && _holder->GetResourceProduction( Resource::ENERGY ) >= 1;
 }
 
 void DomedCrater::ApplyImmediateEffects() {

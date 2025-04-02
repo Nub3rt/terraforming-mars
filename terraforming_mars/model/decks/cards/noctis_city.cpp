@@ -18,7 +18,7 @@ NoctisCity::NoctisCity( const GameModel& model ) noexcept :
 NoctisCity::~NoctisCity() noexcept {}
 
 bool NoctisCity::SatisfiesRequirements() const {
-    return _owner->GetResourceProduction( Resource::ENERGY ) >= 1;
+    return _holder->GetResourceProduction( Resource::ENERGY ) >= 1;
 }
 
 void NoctisCity::ApplyImmediateEffects() {

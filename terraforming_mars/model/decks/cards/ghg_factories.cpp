@@ -17,7 +17,7 @@ GhgFactories::GhgFactories( const GameModel& model ) noexcept :
 GhgFactories::~GhgFactories() noexcept {}
 
 bool GhgFactories::SatisfiesRequirements() const {
-    return _owner->GetResourceProduction( Resource::ENERGY ) >= 1;
+    return _holder->GetResourceProduction( Resource::ENERGY ) >= 1;
 }
 
 void GhgFactories::ApplyImmediateEffects() {

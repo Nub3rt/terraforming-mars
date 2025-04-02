@@ -17,7 +17,7 @@ RadChemFactory::RadChemFactory( const GameModel& model ) noexcept :
 RadChemFactory::~RadChemFactory() noexcept {}
 
 bool RadChemFactory::SatisfiesRequirements() const {
-    return _owner->GetResourceProduction( Resource::ENERGY ) >= 1;
+    return _holder->GetResourceProduction( Resource::ENERGY ) >= 1;
 }
 
 void RadChemFactory::ApplyImmediateEffects() {

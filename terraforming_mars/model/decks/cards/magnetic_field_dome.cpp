@@ -17,7 +17,7 @@ MagneticFieldDome::MagneticFieldDome( const GameModel& model ) noexcept :
 MagneticFieldDome::~MagneticFieldDome() noexcept {}
 
 bool MagneticFieldDome::SatisfiesRequirements() const {
-    return _owner->GetResourceProduction( Resource::ENERGY ) >= 2;
+    return _holder->GetResourceProduction( Resource::ENERGY ) >= 2;
 }
 
 void MagneticFieldDome::ApplyImmediateEffects() {

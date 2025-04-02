@@ -17,7 +17,7 @@ SoilFactory::SoilFactory( const GameModel& model ) noexcept :
 SoilFactory::~SoilFactory() noexcept {}
 
 bool SoilFactory::SatisfiesRequirements() const {
-    return _owner->GetResourceProduction( Resource::ENERGY ) >= 1;
+    return _holder->GetResourceProduction( Resource::ENERGY ) >= 1;
 }
 
 void SoilFactory::ApplyImmediateEffects() {
