@@ -19,6 +19,7 @@
 #include "card_wrapper.h"
 #include "constants.h"
 #include "tile_wrapper.h"
+
 #include "gl_utils/camera.h"
 #include "gl_utils/spherical_camera_manipulator.h"
 #include "gl_utils/gl_utils.h"
@@ -31,6 +32,13 @@ namespace view
 class View
 {
     friend class ViewState;
+    friend class ResearchVState;
+    friend class IdleVState;
+    friend class SellVState;
+    friend class PlacementConfirmationVState;
+    friend class PaymentConfirmationVState;
+    friend class PostLastGenerationVState;
+    friend class GameOverVState;
 
 public:
     View();
@@ -62,7 +70,16 @@ protected:
     Camera* _camera = nullptr;
     SphericalCameraManipulator* _camera_manipulator = nullptr;
 
+
     ViewState* _state = nullptr;
+
+    virtual ResearchVState* CreateResearchState();
+    virtual IdleVState* CreateIdleState();
+    virtual SellVState* CreateSellState();
+    virtual PlacementConfirmationVState* CreatePlacementConfirmationState();
+    virtual PaymentConfirmationVState* CreatePaymentConfirmationState();
+    virtual PostLastGenerationVState* CreatePostLastGenerationState();
+    virtual GameOverVState* CreateGameOverState();
 
     void ChangeState( ViewState* state );
 

@@ -9,6 +9,7 @@
 
 #include "constants.h"
 #include "text_renderer.h"
+#include "view_state.h"
 
 #include "../model/constants.h"
 
@@ -26,6 +27,8 @@ bool View::Init( Camera* camera, model::GameModel* model ) {
     _camera = camera;
     _camera_manipulator = new SphericalCameraManipulator();
     _camera_manipulator->SetCamera( camera );
+
+    _state = CreateIdleState();
 
     _model = model;
     _model->Start();
@@ -45,6 +48,8 @@ void View::Clean() {
     CleanTextures();
 
     delete _camera_manipulator;
+
+    delete _state;
 
     delete _model;
 }
@@ -101,7 +106,9 @@ void View::MouseMotion( const SDL_MouseMotionEvent& mouse ) {
                 card.pos.y.SetAnim( -1.0f + (1.0f + *card.pos.y) / 2.0f, card.base_pos.y, CARD_ADJUST_DURATION );
                 card.scale.Set( card.base_scale );
                 card.rotate.Set( card.base_rotate );
-            } else if ( card.state == CardWrapper::IDLE && hovered_card_index == i ) {
+            } else if ( _state->CanHoverHand() &&
+                        card.state == CardWrapper::IDLE &&
+                        hovered_card_index == i ) {
                 card.state = CardWrapper::HOVERED;
                 card.scale.Set( card.base_scale * 2.0f );
                 card.pos.y.Set( card.base_pos.y + 0.6f );
@@ -110,7 +117,15 @@ void View::MouseMotion( const SDL_MouseMotionEvent& mouse ) {
         }
     } else {
         CardWrapper& dragged_card = _hand[ _dragged_card_index ];
-        dragged_card.pos.Set( glm::vec2( x, y ) );
+
+        if ( y > CARD_DRAG_OUT_LINE_Y && !_state->CanDragCardOut( dragged_card ) ) {
+            dragged_card.state = CardWrapper::TO_HAND;
+            dragged_card.GoToBase( CARD_ADJUST_DURATION );
+
+            _dragged_card_index = -1;
+        } else {
+            dragged_card.pos.Set( glm::vec2( x, y ) );
+        }
     }
 }
 
@@ -120,7 +135,7 @@ void View::MouseDown( const SDL_MouseButtonEvent& mouse ) {
 
     auto [x, y] = CalculateMousePos( mouse.x, mouse.y );
     int hovered_card_index = CalculateHoveredCardByPos( x, y );
-    if ( hovered_card_index != -1 ) {
+    if ( hovered_card_index != -1 && _state->CanHoverHand() ) {
         _dragged_card_index = hovered_card_index;
         CardWrapper& dragged_card = _hand[ _dragged_card_index ];
         dragged_card.state = CardWrapper::DRAGGING;
@@ -131,12 +146,19 @@ void View::MouseDown( const SDL_MouseButtonEvent& mouse ) {
 }
 
 void View::MouseUp( const SDL_MouseButtonEvent& mouse ) {
-    if ( _dragged_card_index != -1) {
+    if ( _dragged_card_index != -1 ) {
+        auto [x, y] = CalculateMousePos( mouse.x, mouse.y );
         CardWrapper& dragged_card = _hand[ _dragged_card_index ];
-        dragged_card.state = CardWrapper::TO_HAND;
-        dragged_card.GoToBase( CARD_ADJUST_DURATION );
 
-        _dragged_card_index = -1;
+        if ( y <= CARD_DRAG_OUT_LINE_Y ) {
+            dragged_card.state = CardWrapper::TO_HAND;
+            dragged_card.GoToBase( CARD_ADJUST_DURATION );
+
+            _dragged_card_index = -1;
+        } else {
+            _dragged_card_index = -1;
+            _state->PlayCard( dragged_card );
+        }
     }
 }
 
@@ -155,6 +177,14 @@ void View::OtherEvent( const SDL_Event& event ) {
 #pragma endregion Events
 
 #pragma region State
+
+ResearchVState* View::CreateResearchState() { return new ResearchVState( *this ); }
+IdleVState* View::CreateIdleState() { return new IdleVState( *this ); }
+SellVState* View::CreateSellState() { return new SellVState( *this ); }
+PlacementConfirmationVState* View::CreatePlacementConfirmationState() { return new PlacementConfirmationVState( *this ); }
+PaymentConfirmationVState* View::CreatePaymentConfirmationState() { return new PaymentConfirmationVState( *this ); }
+PostLastGenerationVState* View::CreatePostLastGenerationState() { return new PostLastGenerationVState( *this ); }
+GameOverVState* View::CreateGameOverState() { return new GameOverVState( *this ); }
 
 void View::ChangeState( ViewState* state ) {
     if ( _state != nullptr )
