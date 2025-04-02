@@ -28,15 +28,15 @@ bool GameModelState::CanConvertHeatToTemperature() { return false; }
 
 bool GameModelState::InIdleState() { return false; }
 
-void GameModelState::SellCardSP( decks::Card* card ) { throw std::logic_error( "GameModelState::SellCardSP: GameModel was in an invalid state!" ); }
+void GameModelState::SellCardSP( const decks::Card* card ) { throw std::logic_error( "GameModelState::SellCardSP: GameModel was in an invalid state!" ); }
 void GameModelState::UsePowerPlantSP() { throw std::logic_error( "GameModelState::UsePowerPlantSP: GameModel was in an invalid state!" ); }
 void GameModelState::UseAsteroidSP() { throw std::logic_error( "GameModelState::UseAsteroidSP: GameModel was in an invalid state!" ); }
 void GameModelState::UseAquiferSP() { throw std::logic_error( "GameModelState::UseAquiferSP: GameModel was in an invalid state!" ); }
 void GameModelState::UseGreenerySP() { throw std::logic_error( "GameModelState::UseGreenerySP: GameModel was in an invalid state!" ); }
 void GameModelState::UseCitySP() { throw std::logic_error( "GameModelState::UseCitySP: GameModel was in an invalid state!" ); }
 
-void GameModelState::PlayCard( decks::Card* card ) { throw std::logic_error( "GameModelState::PlayCard: GameModel was in an invalid state!" ); }
-void GameModelState::UseAction( decks::ActiveCardWithAction* card ) { throw std::logic_error( "GameModelState::UseAction: GameModel was in an invalid state!" ); }
+void GameModelState::PlayCard( const decks::Card* card ) { throw std::logic_error( "GameModelState::PlayCard: GameModel was in an invalid state!" ); }
+void GameModelState::UseAction( const decks::ActiveCardWithAction* card ) { throw std::logic_error( "GameModelState::UseAction: GameModel was in an invalid state!" ); }
 void GameModelState::ToggleToBuyCard( int index ) { throw std::logic_error( "GameModelState::ToggleToBuyCard: GameModel was in an invalid state!" ); }
 int GameModelState::GetTotalCost() const { throw std::logic_error( "GameModelState::GetTotalCost: GameModel was in an invalid state!" ); }
 void GameModelState::ConfirmPurchases() { throw std::logic_error( "GameModelState::ConfirmPurchases: GameModel was in an invalid state!" ); }
@@ -242,9 +242,9 @@ bool IdleState::CanConvertHeatToTemperature() { return _model->_local_player->Ge
 
 bool IdleState::InIdleState() { return true; }
 
-void IdleState::SellCardSP( decks::Card* card ) {
+void IdleState::SellCardSP( const decks::Card* card ) {
     _model->_local_player->SellCard( card );
-    _model->_deck->DiscardCard( card );
+    _model->_deck->DiscardCard( const_cast<decks::Card*>( card ) );
 }
 
 void IdleState::UsePowerPlantSP() {
@@ -304,8 +304,8 @@ void IdleState::EndTurn() {
     // TODO
 }
 
-void IdleState::PlayCard( decks::Card* card ) { _model->_local_player->PlayCard( card ); }
-void IdleState::UseAction( decks::ActiveCardWithAction* card ) { _model->_local_player->UseAction( card ); }
+void IdleState::PlayCard( const decks::Card* card ) { _model->_local_player->PlayCard( card ); }
+void IdleState::UseAction( const decks::ActiveCardWithAction* card ) { _model->_local_player->UseAction( card ); }
 
 
 void IdleState::Player_OnConfirmSteelPayment( Player* player, int cost, std::function<void()> after_payment ) {

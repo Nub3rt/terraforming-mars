@@ -112,37 +112,39 @@ void Player::GetCard( decks::Card* card ) {
     _hand.push_back( card );
 }
 
-void Player::SellCard( decks::Card* card ) {
+void Player::SellCard( const decks::Card* card ) {
     auto it_to_card = std::find( _hand.cbegin(), _hand.cend(), card );
 
     if ( it_to_card == _hand.cend() )
         throw std::logic_error( "Player::SellCard: card was not in hand!" );
 
     _hand.erase( it_to_card );
-    card->Sell();
+    (*it_to_card)->Sell();
 
     GainResource( Resource::CREDIT, 1 );
 }
 
-void Player::PlayCard( decks::Card* card ) {
-    if ( std::find( _hand.cbegin(), _hand.cend(), card ) == _hand.cend() )
+void Player::PlayCard( const decks::Card* card ) {
+    auto it_to_card = std::find( _hand.cbegin(), _hand.cend(), card );
+
+    if ( it_to_card == _hand.cend() )
         throw std::logic_error( "Player::PlayCard: card was not in hand!" );
 
     if ( !card->CanBePlayed() )
         throw std::logic_error( "Player::PlayCard: card can not be played!" );
 
     if ( card->HasTag( Tag::BUILDING ) && _resources[ +Resource::STEEL ] > 0 ) {
-        ConfirmSteelPayment( card->GetCost(), std::bind( &Player::DoPlayCard, this, card ) );
+        ConfirmSteelPayment( card->GetCost(), std::bind( &Player::DoPlayCard, this, *it_to_card ) );
         return;
     }
 
     if ( card->HasTag( Tag::SPACE ) && _resources[ +Resource::TITANIUM ] > 0 ) {
-        ConfirmTitaniumPayment( card->GetCost(), std::bind( &Player::DoPlayCard, this, card ) );
+        ConfirmTitaniumPayment( card->GetCost(), std::bind( &Player::DoPlayCard, this, *it_to_card ) );
         return;
     }
 
     LoseResource( Resource::CREDIT, card->GetCost() );
-    DoPlayCard( card );
+    DoPlayCard( *it_to_card );
 }
 
 int Player::CalculateCardCost( const decks::Card* card, int base_cost ) const {
@@ -152,11 +154,13 @@ int Player::CalculateCardCost( const decks::Card* card, int base_cost ) const {
     return base_cost;
 }
 
-void Player::UseAction( decks::ActiveCardWithAction* card ) {
-    if ( std::find( _action_cards.cbegin(), _action_cards.cend(), card ) == _action_cards.cend() )
+void Player::UseAction( const decks::ActiveCardWithAction* card ) {
+    auto it_to_card = std::find( _action_cards.cbegin(), _action_cards.cend(), card );
+
+    if ( it_to_card == _action_cards.cend() )
         throw std::logic_error( "Player::UseAction: card was not played by this player!" );
 
-    card->UseAction();
+    (*it_to_card)->UseAction();
 }
 
 void Player::OnEffect( std::function<void( decks::ActiveCardWithEffect* )> effect ) {

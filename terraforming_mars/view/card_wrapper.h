@@ -21,11 +21,11 @@ public:
         TO_HAND,
     };
 
-    CardWrapper( model::decks::Card* card, bool drawn = true );
+    CardWrapper( const model::decks::Card* card, bool drawn = true );
     ~CardWrapper();
 
-    inline model::decks::Card* operator->() noexcept { return _card; }
-    inline model::decks::Card* operator*() noexcept { return _card; }
+    inline const model::decks::Card* operator->() noexcept { return _card; }
+    inline const model::decks::Card* operator*() noexcept { return _card; }
 
     void SetEase( Animatable<float>::ease_t );
     void SetDefaultEase();
@@ -45,7 +45,7 @@ public:
     Animatable<float> rotate;
 
 private:
-    model::decks::Card* _card;
+    const model::decks::Card* _card;
 
     static const glm::vec2 drawing_pos_1;
     static const glm::vec2 drawing_scale_1;

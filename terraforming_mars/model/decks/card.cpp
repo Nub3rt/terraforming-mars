@@ -65,9 +65,6 @@ bool Card::CanBePlayed() const {
 }
 
 void Card::Play() {
-    if ( !CanBePlayed() )
-        throw std::logic_error( "Card::Play: card cannot be played!" );
-
     _owner = _holder;
     ApplyImmediateEffects();
 }

@@ -43,11 +43,21 @@ public:
     inline int get_greenery_cost() const noexcept { return _greenery_cost; }
     inline int get_temperature_cost() const noexcept { return _temperature_cost; }
 
-    inline const std::vector<decks::Card*>& get_hand() const noexcept { return _hand; }
-    inline const std::vector<decks::EventCard*>& get_event_cards() const noexcept { return _event_cards; }
-    inline const std::vector<decks::AutomatedCard*>& get_automated_cards() const noexcept { return _automated_cards; }
-    inline const std::vector<decks::ActiveCardWithAction*>& get_action_cards() const noexcept { return _action_cards; }
-    inline const std::vector<decks::ActiveCardWithEffect*>& get_effect_cards() const noexcept { return _effect_cards; }
+    inline const std::vector<const decks::Card*>& get_hand() const noexcept {
+        return reinterpret_cast<const std::vector<const decks::Card*>&>( _hand );
+    }
+    inline const std::vector<const decks::EventCard*>& get_event_cards() const noexcept {
+        return reinterpret_cast<const std::vector<const decks::EventCard*>&>( _event_cards );
+    }
+    inline const std::vector<const decks::AutomatedCard*>& get_automated_cards() const noexcept {
+        return reinterpret_cast<const std::vector<const decks::AutomatedCard*>&>( _automated_cards );
+    }
+    inline const std::vector<const decks::ActiveCardWithAction*>& get_action_cards() const noexcept {
+        return reinterpret_cast<const std::vector<const decks::ActiveCardWithAction*>&>( _action_cards );
+    }
+    inline const std::vector<const decks::ActiveCardWithEffect*>& get_effect_cards() const noexcept {
+        return reinterpret_cast<const std::vector<const decks::ActiveCardWithEffect*>&>( _effect_cards );
+    }
 
     inline void DrawCard() { _on_draw_card.Invoke( this ); }
     inline void RaiseTR( int amount ) { _on_raise_tr.Invoke( this, amount ); }
@@ -89,11 +99,11 @@ public:
     void ConfirmTitaniumPayment( int cost, std::function<void()> after_payment );
 
     void GetCard( decks::Card* card );
-    void SellCard( decks::Card* card );
-    void PlayCard( decks::Card* card );
+    void SellCard( const decks::Card* card );
+    void PlayCard( const decks::Card* card );
     int CalculateCardCost( const decks::Card* card, int base_cost ) const;
 
-    void UseAction( decks::ActiveCardWithAction* card );
+    void UseAction( const decks::ActiveCardWithAction* card );
     void OnEffect( std::function<void( decks::ActiveCardWithEffect* )> effect );
 
 

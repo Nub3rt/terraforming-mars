@@ -97,7 +97,7 @@ bool GameModel::InIdleState() const { return _state->InIdleState(); }
 bool GameModel::CanPlayCards() const { return InIdleState(); }
 bool GameModel::CanUseActions() const { return InIdleState(); }
 
-void GameModel::SellCardSP( decks::Card* card ) { _state->SellCardSP( card ); }
+void GameModel::SellCardSP( const decks::Card* card ) { _state->SellCardSP( card ); }
 void GameModel::UsePowerPlantSP() { _state->UsePowerPlantSP(); }
 void GameModel::UseAsteroidSP() { _state->UseAsteroidSP(); }
 void GameModel::UseAquiferSP() { _state->UseAquiferSP(); }
@@ -106,8 +106,8 @@ void GameModel::UseCitySP() { _state->UseCitySP(); }
 void GameModel::ConvertPlantsToGreenery() { _state->ConvertPlantsToGreenery(); }
 void GameModel::ConvertHeatToTemperature() { _state->ConvertHeatToTemperature(); }
 
-void GameModel::PlayCard( decks::Card* card ) { _state->PlayCard( card ); }
-void GameModel::UseAction( decks::ActiveCardWithAction* card ) { _state->UseAction( card ); }
+void GameModel::PlayCard( const decks::Card* card ) { _state->PlayCard( card ); }
+void GameModel::UseAction( const decks::ActiveCardWithAction* card ) { _state->UseAction( card ); }
 
 void GameModel::ToggleToBuyCard( int index ) { _state->ToggleToBuyCard( index ); }
 int GameModel::GetTotalCost() const { return _state->GetTotalCost(); }

@@ -79,7 +79,7 @@ public:
     bool CanPlayCards() const;
     bool CanUseActions() const;
 
-    void SellCardSP( decks::Card* card );
+    void SellCardSP( const decks::Card* card );
     void UsePowerPlantSP();
     void UseAsteroidSP();
     void UseAquiferSP();
@@ -88,8 +88,8 @@ public:
     void ConvertPlantsToGreenery();
     void ConvertHeatToTemperature();
 
-    void PlayCard( decks::Card* card );
-    void UseAction( decks::ActiveCardWithAction* card );
+    void PlayCard( const decks::Card* card );
+    void UseAction( const decks::ActiveCardWithAction* card );
 
     // Research State
     void ToggleToBuyCard( int index );

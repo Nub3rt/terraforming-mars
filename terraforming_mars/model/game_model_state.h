@@ -31,7 +31,7 @@ public:
 
     virtual bool InIdleState();
 
-    virtual void SellCardSP( decks::Card* card );
+    virtual void SellCardSP( const decks::Card* card );
     virtual void UsePowerPlantSP();
     virtual void UseAsteroidSP();
     virtual void UseAquiferSP();
@@ -40,8 +40,8 @@ public:
     virtual void ConvertPlantsToGreenery();
     virtual void ConvertHeatToTemperature();
 
-    virtual void PlayCard( decks::Card* card );
-    virtual void UseAction( decks::ActiveCardWithAction* card );
+    virtual void PlayCard( const decks::Card* card );
+    virtual void UseAction( const decks::ActiveCardWithAction* card );
 
     virtual void ToggleToBuyCard( int index );
     virtual int GetTotalCost() const;
@@ -118,15 +118,15 @@ public:
 
     bool InIdleState() override;
 
-    void SellCardSP( decks::Card* card ) override;
+    void SellCardSP( const decks::Card* card ) override;
     void UsePowerPlantSP() override;
     void UseAsteroidSP() override;
     void UseAquiferSP() override;
     void UseGreenerySP() override;
     void UseCitySP() override;
 
-    void PlayCard( decks::Card* card ) override;
-    void UseAction( decks::ActiveCardWithAction* card ) override;
+    void PlayCard( const decks::Card* card ) override;
+    void UseAction( const decks::ActiveCardWithAction* card ) override;
     void ConvertPlantsToGreenery() override;
     void ConvertHeatToTemperature() override;
 

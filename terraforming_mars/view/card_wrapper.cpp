@@ -6,7 +6,7 @@
 
 namespace view
 {
-CardWrapper::CardWrapper( model::decks::Card* card, bool drawn ) : _card( card ) {
+CardWrapper::CardWrapper( const model::decks::Card* card, bool drawn ) : _card( card ) {
     if ( !drawn ) {
         pos = base_pos;
         scale = base_scale;
