@@ -67,10 +67,6 @@ public:
 
     ease_t ease = &glm::linearInterpolation<float>;
 
-    friend bool operator==( const Animatable<T>& lhs, const Animatable<T>& rhs ) {
-        return lhs._value == rhs._value;
-    }
-
 private:
     T _value;
 
@@ -122,10 +118,6 @@ public:
 
     Animatable<float> x;
     Animatable<float> y;
-
-    friend bool operator==( const Animatable<glm::vec2>& lhs, const Animatable<glm::vec2>& rhs ) {
-        return lhs._value == rhs._value;
-    }
 
 private:
     glm::vec2 _value;

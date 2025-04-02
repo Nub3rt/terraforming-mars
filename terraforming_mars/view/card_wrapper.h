@@ -17,8 +17,8 @@ public:
         IDLE,
         HOVERED,
         DRAGGING,
-        DRAWING_1,
-        DRAWING_2,
+        DRAWING,
+        TO_HAND,
     };
 
     CardWrapper( model::decks::Card* card, bool drawn = true );

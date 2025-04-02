@@ -16,7 +16,7 @@ CardWrapper::CardWrapper( model::decks::Card* card, bool drawn ) : _card( card )
         return;
     }
 
-    state = DRAWING_1;
+    state = DRAWING;
     SetEase( glm::quarticEaseOut<float> );
     pos.SetAnim( drawing_pos_1, drawing_pos_2, CARD_DRAW_DURATION );
     scale.SetAnim( drawing_scale_1, drawing_scale_2, CARD_DRAW_DURATION );
@@ -37,13 +37,13 @@ void CardWrapper::SetDefaultEase() {
 }
 
 void CardWrapper::Update( float delta ) {
-    if ( state == DRAWING_1 && !pos.Animating() ) {
-        state = DRAWING_2;
+    if ( state == DRAWING && !pos.Animating() ) {
+        state = TO_HAND;
         SetEase( glm::quarticEaseIn<float> );
         GoToBase( CARD_DRAW_DURATION * 0.7f );
     }
 
-    if ( state == DRAWING_2 && !pos.Animating() ) {
+    if ( state == TO_HAND && !pos.Animating() ) {
         state = IDLE;
         SetDefaultEase();
     }

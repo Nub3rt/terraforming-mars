@@ -87,7 +87,7 @@ protected:
     float _hand_start_x = 0.0f;
     float _hand_end_x = 0.0f;
     float _hand_top_y = -1.0f + 1.0f / 9.0f;
-    bool _card_hovered_last_frame = false;
+    int _dragged_card_index = -1;
 
 
     void RefreshHandPositions();
@@ -103,7 +103,9 @@ protected:
     void RenderHand();
     void RenderCard( CardWrapper& card, int index );
 
-    int CalculateHoveredCardByMousePos( float x, float y );
+    uint8_t GetStencilValue( float mouse_x, float mouse_y );
+    std::pair<float, float> CalculateMousePos( float mouse_x, float mouse_y );
+    int CalculateHoveredCardByPos( float x, float y );
     std::tuple<float, float, glm::vec3> CalculateParameterPosition( int parameter, int type );
     std::tuple<float, float, glm::vec3> CalculateResourcePosition( int resource, int type );
 

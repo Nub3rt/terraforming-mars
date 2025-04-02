@@ -54,6 +54,12 @@ void View::Update( const UpdateInfo& update_info ) {
 
     _camera_manipulator->Update( update_info.delta );
 
+    static auto& model_hand = _model->get_local_player()->get_hand();
+    if ( _elapsed > _hand.size() * 5.0f && _hand.size() != model_hand.size() ) {
+        _hand.emplace_back( model_hand[ _hand.size() ] );
+        RefreshHandPositions();
+    }
+
     for ( CardWrapper& card : _hand )
         card.Update( update_info.delta );
 }
@@ -80,40 +86,58 @@ void View::KeyboardUp( const SDL_KeyboardEvent& key ) {
 }
 
 void View::MouseMotion( const SDL_MouseMotionEvent& mouse ) {
-    _camera_manipulator->MouseMove( mouse );
+    auto [x, y] = CalculateMousePos( mouse.x, mouse.y );
 
-    uint8_t hovered_id;
-    glReadPixels( (GLint)mouse.x, _height - (GLint)mouse.y, 1, 1, GL_STENCIL_INDEX, GL_UNSIGNED_BYTE, &hovered_id );
+    if ( _dragged_card_index == -1 ) {
+        _camera_manipulator->MouseMove( mouse );
 
-    float mouse_x = mouse.x / _width * 2.0f - 1.0f;
-    float mouse_y = (_height - mouse.y) / _height * 2.0f - 1.0f;
+        int hovered_card_index = CalculateHoveredCardByPos( x, y );
 
-    int hovered_card_index = CalculateHoveredCardByMousePos( mouse_x, mouse_y );
+        for ( int i = 0; i < _hand.size(); ++i ) {
+            CardWrapper& card = _hand[ i ];
 
-    for ( int i = 0; i < _hand.size(); ++i ) {
-        CardWrapper& card = _hand[ i ];
-
-        if ( card.state == CardWrapper::HOVERED && hovered_card_index != i ) {
-            card.state = CardWrapper::IDLE;
-            card.pos.y.SetAnim( -1.0f + (1.0f + *card.pos.y) / 2.0f, card.base_pos.y, CARD_ADJUST_DURATION );
-            card.scale.Set( card.base_scale );
-            card.rotate.Set( card.base_rotate );
-        } else if ( card.state == CardWrapper::IDLE && hovered_card_index == i ) {
-            card.state = CardWrapper::HOVERED;
-            card.scale.Set( card.base_scale * 2.0f );
-            card.pos.y.Set( card.base_pos.y + 0.6f );
-            card.rotate.Set( 0.0f );
+            if ( card.state == CardWrapper::HOVERED && hovered_card_index != i ) {
+                card.state = CardWrapper::IDLE;
+                card.pos.y.SetAnim( -1.0f + (1.0f + *card.pos.y) / 2.0f, card.base_pos.y, CARD_ADJUST_DURATION );
+                card.scale.Set( card.base_scale );
+                card.rotate.Set( card.base_rotate );
+            } else if ( card.state == CardWrapper::IDLE && hovered_card_index == i ) {
+                card.state = CardWrapper::HOVERED;
+                card.scale.Set( card.base_scale * 2.0f );
+                card.pos.y.Set( card.base_pos.y + 0.6f );
+                card.rotate.Set( 0.0f );
+            }
         }
+    } else {
+        CardWrapper& dragged_card = _hand[ _dragged_card_index ];
+        dragged_card.pos.Set( glm::vec2( x, y ) );
     }
 }
 
 void View::MouseDown( const SDL_MouseButtonEvent& mouse ) {
-    uint8_t id;
-    glReadPixels( (GLint)mouse.x, _height - (GLint)mouse.y, 1, 1, GL_STENCIL_INDEX, GL_UNSIGNED_BYTE, &id );
+    uint8_t id = GetStencilValue( mouse.x, mouse.y );
     std::cout << std::to_string( id ) << std::endl;
+
+    auto [x, y] = CalculateMousePos( mouse.x, mouse.y );
+    int hovered_card_index = CalculateHoveredCardByPos( x, y );
+    if ( hovered_card_index != -1 ) {
+        _dragged_card_index = hovered_card_index;
+        CardWrapper& dragged_card = _hand[ _dragged_card_index ];
+        dragged_card.state = CardWrapper::DRAGGING;
+        dragged_card.pos.Set( glm::vec2( x, y ) );
+        dragged_card.scale.Set( CARD_BASE_SCALE );
+        dragged_card.rotate.Set( 0.0f );
+    }
 }
 
 void View::MouseUp( const SDL_MouseButtonEvent& mouse ) {
+    if ( _dragged_card_index != -1) {
+        CardWrapper& dragged_card = _hand[ _dragged_card_index ];
+        dragged_card.state = CardWrapper::TO_HAND;
+        dragged_card.GoToBase( CARD_ADJUST_DURATION );
+
+        _dragged_card_index = -1;
+    }
 }
 
 void View::MouseWheel( const SDL_MouseWheelEvent& wheel ) {
@@ -162,7 +186,7 @@ void View::RefreshHandPositions() {
         card.base_rotate = 0.0f;
 
         if ( card.state == CardWrapper::DRAGGING ||
-             card.state == CardWrapper::DRAWING_1 )
+             card.state == CardWrapper::DRAWING )
             return;
 
         if ( card.state == CardWrapper::IDLE ) {
@@ -182,7 +206,7 @@ void View::RefreshHandPositions() {
         card.base_rotate = 0.0f;
 
         if ( card.state == CardWrapper::DRAGGING ||
-             card.state == CardWrapper::DRAWING_1 )
+             card.state == CardWrapper::DRAWING )
             continue;
 
         if ( card.state == CardWrapper::IDLE ) {
@@ -466,17 +490,30 @@ void View::RenderCard( CardWrapper& card, int index ) {
     glDrawElements( GL_TRIANGLES, _rectangle_gpu.count, GL_UNSIGNED_INT, nullptr );
 }
 
-int view::View::CalculateHoveredCardByMousePos( float mouse_x, float mouse_y ) {
+uint8_t View::GetStencilValue( float mouse_x, float mouse_y ) {
+    uint8_t value;
+    glReadPixels( (GLint)mouse_x, _height - (GLint)mouse_y, 1, 1, GL_STENCIL_INDEX, GL_UNSIGNED_BYTE, &value );
+    return value;
+}
+
+std::pair<float, float> View::CalculateMousePos( float mouse_x, float mouse_y ) {
+    return {
+                   mouse_x  / _width  * 2.0f - 1.0f,
+        (_height - mouse_y) / _height * 2.0f - 1.0f
+    };
+}
+
+int view::View::CalculateHoveredCardByPos( float x, float y ) {
     static const float card_ratio = (float)CARD_TEXTURE_WIDTH / CARD_TEXTURE_HEIGHT;
     float card_width = CARD_BASE_SCALE.x * card_ratio / _width * _height;
 
-    if ( mouse_y > _hand_top_y ||
-         mouse_x < _hand_start_x - card_width ||
-         mouse_x >= _hand_end_x + card_width )
+    if ( y > _hand_top_y ||
+         x < _hand_start_x - card_width ||
+         x >= _hand_end_x + card_width )
         return -1;
 
     float interval_length = (_hand_end_x - _hand_start_x) / (_hand.size() - 1);
-    float at = (mouse_x - _hand_start_x + interval_length / 2.0f) / interval_length;
+    float at = (x - _hand_start_x + interval_length / 2.0f) / interval_length;
     return glm::clamp<int>( static_cast<int>( at ), 0, (int)_hand.size() - 1 );
 }
 
