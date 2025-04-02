@@ -23,7 +23,7 @@ class Player
 {
 public:
     template<typename... Args>
-    using Callback = std::function<void( Player*, Args... )>;
+    using CallbackPp = std::function<void( Player*, Args... )>;
 
     Player( int starting_tr, int starting_resource_production_amount );
     ~Player();
@@ -107,28 +107,28 @@ public:
     void OnEffect( std::function<void( decks::ActiveCardWithEffect* )> effect );
 
 
-    void SetOnDrawCardCallback( Callback<> callback ) { _on_draw_card.SetCallback( callback ); }
-    void SetOnRaiseTRCallback( Callback<int> callback ) { _on_raise_tr.SetCallback( callback ); }
+    inline void SetOnDrawCardCallback( CallbackPp<> callback ) { _on_draw_card.SetCallback( callback ); }
+    inline void SetOnRaiseTRCallback( CallbackPp<int> callback ) { _on_raise_tr.SetCallback( callback ); }
 
-    void SetOnRaiseTemperatureCallback( Callback<> callback ) { _on_raise_temperature.SetCallback( callback ); }
-    void SetOnPlaceOceanCallback( Callback<> callback ) { _on_place_ocean.SetCallback( callback ); }
-    void SetOnPlaceOceanOnNonOceanCallback( Callback<> callback ) { _on_place_ocean_on_non_ocean.SetCallback( callback ); }
-    void SetOnRaiseOxygenCallback( Callback<> callback ) { _on_raise_oxygen.SetCallback( callback ); }
+    inline void SetOnRaiseTemperatureCallback( CallbackPp<> callback ) { _on_raise_temperature.SetCallback( callback ); }
+    inline void SetOnPlaceOceanCallback( CallbackPp<> callback ) { _on_place_ocean.SetCallback( callback ); }
+    inline void SetOnPlaceOceanOnNonOceanCallback( CallbackPp<> callback ) { _on_place_ocean_on_non_ocean.SetCallback( callback ); }
+    inline void SetOnRaiseOxygenCallback( CallbackPp<> callback ) { _on_raise_oxygen.SetCallback( callback ); }
 
-    void SetOnPlaceGreeneryCallback( Callback<> callback ) { _on_place_greenery.SetCallback( callback ); }
-    void SetOnPlaceGreeneryOnOceanCallback( Callback<> callback ) { _on_place_greenery_on_ocean.SetCallback( callback ); }
-    void SetOnPlaceCityCallback( Callback<> callback ) { _on_place_city.SetCallback( callback ); }
-    void SetOnPlaceNoctisCityCallback( Callback<> callback ) { _on_place_noctis_city.SetCallback( callback ); }
-    void SetOnPlaceLonelyCityCallback( Callback<> callback ) { _on_place_lonely_city.SetCallback( callback ); }
-    void SetOnPlaceUrbanizedAreaCallback( Callback<> callback ) { _on_place_urbanized_area.SetCallback( callback ); }
+    inline void SetOnPlaceGreeneryCallback( CallbackPp<> callback ) { _on_place_greenery.SetCallback( callback ); }
+    inline void SetOnPlaceGreeneryOnOceanCallback( CallbackPp<> callback ) { _on_place_greenery_on_ocean.SetCallback( callback ); }
+    inline void SetOnPlaceCityCallback( CallbackPp<> callback ) { _on_place_city.SetCallback( callback ); }
+    inline void SetOnPlaceNoctisCityCallback( CallbackPp<> callback ) { _on_place_noctis_city.SetCallback( callback ); }
+    inline void SetOnPlaceLonelyCityCallback( CallbackPp<> callback ) { _on_place_lonely_city.SetCallback( callback ); }
+    inline void SetOnPlaceUrbanizedAreaCallback( CallbackPp<> callback ) { _on_place_urbanized_area.SetCallback( callback ); }
 
-    void SetOnResourceAmountChangedCallback( Callback<Resource, int> callback ) { _on_resource_amount_changed.SetCallback( callback ); }
-    void SetOnResourceProductionAmountChangedCallback( Callback<Resource, int> callback ) { _on_resource_production_amount_changed.SetCallback( callback ); }
-    void SetOnDestroyResourceCallback( Callback<Resource, int> callback ) { _on_destroy_resource.SetCallback( callback ); }
-    void SetOnDestroyResourceProductionCallback( Callback<Resource, int> callback ) { _on_destroy_resource_production.SetCallback( callback ); }
+    inline void SetOnResourceAmountChangedCallback( CallbackPp<Resource, int> callback ) { _on_resource_amount_changed.SetCallback( callback ); }
+    inline void SetOnResourceProductionAmountChangedCallback( CallbackPp<Resource, int> callback ) { _on_resource_production_amount_changed.SetCallback( callback ); }
+    inline void SetOnDestroyResourceCallback( CallbackPp<Resource, int> callback ) { _on_destroy_resource.SetCallback( callback ); }
+    inline void SetOnDestroyResourceProductionCallback( CallbackPp<Resource, int> callback ) { _on_destroy_resource_production.SetCallback( callback ); }
 
-    void SetOnConfirmSteelPaymentCallback( Callback <int, std::function<void()>> callback ) { _on_confirm_steel_payment.SetCallback( callback ); }
-    void SetOnConfirmTitaniumPaymentCallback( Callback <int, std::function<void()>> callback ) { _on_confirm_titanium_payment.SetCallback( callback ); }
+    inline void SetOnConfirmSteelPaymentCallback( CallbackPp <int, std::function<void()>> callback ) { _on_confirm_steel_payment.SetCallback( callback ); }
+    inline void SetOnConfirmTitaniumPaymentCallback( CallbackPp <int, std::function<void()>> callback ) { _on_confirm_titanium_payment.SetCallback( callback ); }
 
 private:
     int _tr;

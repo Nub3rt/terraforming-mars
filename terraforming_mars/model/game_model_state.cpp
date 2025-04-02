@@ -7,10 +7,12 @@
 #include <vector>
 
 #include "constants.h"
-#include "decks/deck.h"
 #include "game_model.h"
 #include "player.h"
 #include "resource.h"
+
+#include "decks/card.h"
+#include "decks/deck.h"
 
 namespace model
 {
@@ -181,12 +183,15 @@ void GameModelState::DoOnPlacementConfirmation( boards::TileType type, std::vect
 #pragma region ResearchState
 
 ResearchState::ResearchState( GameModel* model ) : GameModelState( model ), _cards(), _to_buy() {
+    std::array<const decks::Card*, RESEARCH_CARD_NUM> event_arg;
+
     for ( int i = 0; i < RESEARCH_CARD_NUM; ++i ) {
         _cards[ i ] = _model->_deck->DrawCard();
         _to_buy[ i ] = true;
+        event_arg[ i ] = _cards[ i ];
     }
 
-    _model->_on_confirm_research.Invoke( _cards );
+    _model->_on_confirm_research.Invoke( std::move( event_arg ) );
 }
 
 ResearchState::~ResearchState() {}

@@ -105,8 +105,8 @@ public:
     void EndTurn();
 
 
-    inline void SetOnDrawCard( Callback<decks::Card*> callback ) { _on_draw_card.SetCallback( callback ); }
-    inline void SetOnPlayCard( Callback<decks::Card*> callback ) { _on_play_card.SetCallback( callback ); }
+    inline void SetOnDrawCard( Callback<const decks::Card*> callback ) { _on_draw_card.SetCallback( callback ); }
+    inline void SetOnPlayCard( Callback<const decks::Card*> callback ) { _on_play_card.SetCallback( callback ); }
     inline void SetOnRaiseTR( Callback<int> callback ) { _on_raise_tr.SetCallback( callback ); }
     inline void SetOnRaiseTemperature( Callback<> callback ) { _on_raise_temperature.SetCallback( callback ); }
     inline void SetOnRaiseOxygen( Callback<> callback ) { _on_raise_oxygen.SetCallback( callback ); }
@@ -114,7 +114,7 @@ public:
     inline void SetOnResourceAmountChanged( Callback<Resource, int> callback ) { _on_resource_amount_changed.SetCallback( callback ); }
     inline void SetOnResourceProductionAmountChanged( Callback<Resource, int> callback ) { _on_resource_production_amount_changed.SetCallback( callback ); }
     inline void SetOnResearchConfirmed( Callback<std::array<bool, RESEARCH_CARD_NUM>> callback ) { _on_research_confirmed.SetCallback( callback ); }
-    inline void SetOnConfirmResearch( Callback<std::array<decks::Card*, RESEARCH_CARD_NUM>> callback ) { _on_confirm_research.SetCallback( callback ); }
+    inline void SetOnConfirmResearch( Callback<std::array<const decks::Card*, RESEARCH_CARD_NUM>> callback ) { _on_confirm_research.SetCallback( callback ); }
     inline void SetOnConfirmPayment( Callback<int, Resource, int> callback ) { _on_confirm_payment.SetCallback( callback ); }
     inline void SetOnConfirmPlacement( Callback<boards::TileType, std::vector<std::pair<int, int>>> callback ) { _on_confirm_placement.SetCallback( callback ); }
     inline void SetOnConfirmDestroyResource( Callback<Resource, int> callback ) { _on_confirm_destroy_resource.SetCallback( callback ); }
@@ -147,8 +147,8 @@ protected:
 
     std::mt19937 _random;
 
-    Event<decks::Card*> _on_draw_card;
-    Event<decks::Card*> _on_play_card;
+    Event<const decks::Card*> _on_draw_card;
+    Event<const decks::Card*> _on_play_card;
     Event<int> _on_raise_tr;
     Event<> _on_raise_temperature;
     Event<> _on_raise_oxygen;
@@ -157,7 +157,7 @@ protected:
     Event<Resource, int> _on_resource_production_amount_changed;
     Event<std::array<bool, RESEARCH_CARD_NUM>> _on_research_confirmed;
 
-    Event<std::array<decks::Card*, RESEARCH_CARD_NUM>> _on_confirm_research;
+    Event<std::array<const decks::Card*, RESEARCH_CARD_NUM>> _on_confirm_research;
     Event<int, Resource, int> _on_confirm_payment;
     Event<boards::TileType, std::vector<std::pair<int, int>>> _on_confirm_placement;
     Event<Resource, int> _on_confirm_destroy_resource;
