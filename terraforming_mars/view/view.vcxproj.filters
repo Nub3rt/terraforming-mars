@@ -33,6 +33,7 @@
     <ClCompile Include="text_renderer.cpp" />
     <ClCompile Include="builder.cpp" />
     <ClCompile Include="view_state.cpp" />
+    <ClCompile Include="animation.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="app.h" />
@@ -58,6 +59,8 @@
     <ClInclude Include="view.fwd.h" />
     <ClInclude Include="view_state.fwd.h" />
     <ClInclude Include="animatable.h" />
+    <ClInclude Include="animation.h" />
+    <ClInclude Include="animation.fwd.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\skybox.frag">

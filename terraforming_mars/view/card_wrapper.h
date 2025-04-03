@@ -21,7 +21,7 @@ public:
         TO_HAND,
     };
 
-    CardWrapper( const model::decks::Card* card, bool drawn = true );
+    CardWrapper( const model::decks::Card* card, bool drawn = false );
     ~CardWrapper();
 
     inline const model::decks::Card* operator->() noexcept { return _card; }

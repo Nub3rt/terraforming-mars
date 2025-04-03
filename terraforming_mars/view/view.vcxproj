@@ -129,6 +129,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="animation.cpp" />
     <ClCompile Include="builder.cpp" />
     <ClCompile Include="card_wrapper.cpp" />
     <ClCompile Include="gl_utils\camera.cpp" />
@@ -144,6 +145,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="animatable.h" />
+    <ClInclude Include="animation.fwd.h" />
+    <ClInclude Include="animation.h" />
     <ClInclude Include="app.h" />
     <ClInclude Include="builder.h" />
     <ClInclude Include="card_wrapper.h" />

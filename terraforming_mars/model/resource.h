@@ -4,7 +4,7 @@ namespace model
 {
 enum class Resource
 {
-    CREDIT = 1,
+    CREDIT = 0,
     STEEL,
     TITANIUM,
     PLANTS,

@@ -309,7 +309,10 @@ void IdleState::EndTurn() {
     // TODO
 }
 
-void IdleState::PlayCard( const decks::Card* card ) { _model->_local_player->PlayCard( card ); }
+void IdleState::PlayCard( const decks::Card* card ) {
+    _model->_local_player->PlayCard( card );
+    _model->_on_play_card.Invoke( card );
+}
 void IdleState::UseAction( const decks::ActiveCardWithAction* card ) { _model->_local_player->UseAction( card ); }
 
 

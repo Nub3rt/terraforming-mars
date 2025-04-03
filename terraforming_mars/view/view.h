@@ -1,9 +1,12 @@
 #pragma once
 
+#include "animation.fwd.h"
 #include "view.fwd.h"
 #include "view_state.fwd.h"
 
 #include <array>
+#include <optional>
+#include <queue>
 #include <utility>
 #include <vector>
 
@@ -16,6 +19,7 @@
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_opengl.h>
 
+#include "animatable.h"
 #include "card_wrapper.h"
 #include "constants.h"
 #include "tile_wrapper.h"
@@ -24,8 +28,10 @@
 #include "gl_utils/spherical_camera_manipulator.h"
 #include "gl_utils/gl_utils.h"
 
+#include "../model/constants.h"
 #include "../model/game_model.h"
 #include "../model/resource.h"
+#include "../model/boards/tile_type.h"
 
 namespace view
 {
@@ -39,6 +45,9 @@ class View
     friend class PaymentConfirmationVState;
     friend class PostLastGenerationVState;
     friend class GameOverVState;
+
+    friend class InstantAnimation;
+    friend class TextAnimation;
 
 public:
     View();
@@ -105,6 +114,32 @@ protected:
     float _hand_end_x = 0.0f;
     float _hand_top_y = -1.0f + 1.0f / 9.0f;
     int _dragged_card_index = -1;
+
+
+    void Model_OnDrawCard( const model::decks::Card* card );
+    void Model_OnPlayCard( const model::decks::Card* card );
+    void Model_OnRaiseTR( int amount );
+    void Model_OnRaiseTemperature();
+    void Model_OnRaiseOxygen();
+    void Model_OnPlaceTile( std::pair<int, int> pos );
+    void Model_OnResourceAmountChanged( model::Resource resource, int amount );
+    void Model_OnResourceProductionAmountChanged( model::Resource resource, int amount );
+    void Model_OnResearchConfirmed( std::array<bool, model::RESEARCH_CARD_NUM> selected );
+    void Model_OnConfirmResearch( std::array<const model::decks::Card*, model::RESEARCH_CARD_NUM> cards );
+    void Model_OnConfirmPayment( int amount, model::Resource resource, int resource_value );
+    void Model_OnConfirmPlacement( model::boards::TileType tile_type, std::vector<std::pair<int, int>> valid_positions );
+    void Model_OnConfirmDestroyResource( model::Resource resource, int amount );
+    void Model_OnConfirmDestroyResourceProduction( model::Resource resource, int amount );
+    void Model_OnGameEnd();
+
+    void CreateParameterAnimation( int parameter, std::string text );
+
+    std::queue<Animation*> _animation_queue;
+    std::optional<Animation*> _locking_animation = {};
+    std::vector<Animation*> _ongoing_animations;
+
+    void Render( InstantAnimation* animation );
+    void Render( TextAnimation* animation );
 
 
     void RefreshHandPositions();

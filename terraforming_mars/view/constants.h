@@ -9,11 +9,20 @@ inline constexpr int STARTING_WINDOW_HEIGHT = 900;
 
 inline constexpr float SKYBOX_ROTATE_SPEED = 0.01f;
 
+inline constexpr float BASE_TEXT_SCALE = 1.5f;
+inline constexpr glm::vec3 POSITIVE_TEXT_COLOR = glm::vec3( 0x0f, 0x86, 0x08 ) / 255.0f;
+inline constexpr glm::vec3 NEGATIVE_TEXT_COLOR = glm::vec3( 0xff, 0x08, 0x08 ) / 255.0f;
+inline constexpr glm::vec3 PRODUCTION_TEXT_COLOR = glm::vec3( 0xA8, 0x74, 0x4B ) / 255.0f;
+
 inline constexpr float HAND_BASE_Y = -1.12f;
 inline constexpr glm::vec2 CARD_BASE_SCALE = glm::vec2( 0.25f );
 inline constexpr float CARD_ADJUST_DURATION = 0.5;
 inline constexpr float CARD_DRAW_DURATION = 2.0f;
 inline constexpr float CARD_DRAG_OUT_LINE_Y = -0.5f;
+
+inline constexpr float ATTRIBUTE_CHANGED_LOCKOUT = 1.0f;
+inline constexpr float ATTRIBUTE_CHANGED_DURATION = 3.0f;
+inline constexpr float TEXT_FLOAT_DISTANCE = 0.5f;
 
 inline constexpr uint8_t STENCIL_NONE = 0xff;
 

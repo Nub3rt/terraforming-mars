@@ -1,17 +1,22 @@
 ﻿#include "view.h"
 
 #include <array>
+#include <format>
+#include <functional>
 #include <iostream>
 #include <stdexcept>
 
 #include <glm/glm.hpp>
 #include <imgui.h>
 
+#include "animation.h"
+#include "animatable.h"
 #include "constants.h"
 #include "text_renderer.h"
 #include "view_state.h"
 
 #include "../model/constants.h"
+#include "../model/resource.h"
 
 namespace view
 {
@@ -28,12 +33,38 @@ bool View::Init( Camera* camera, model::GameModel* model ) {
     _camera_manipulator = new SphericalCameraManipulator();
     _camera_manipulator->SetCamera( camera );
 
+
     _state = CreateIdleState();
 
+
     _model = model;
+
+    _model->SetOnDrawCard( std::bind_front( &View::Model_OnDrawCard, this ) );
+    _model->SetOnPlayCard( std::bind_front( &View::Model_OnPlayCard, this ) );
+    _model->SetOnRaiseTR( std::bind_front( &View::Model_OnRaiseTR, this ) );
+    _model->SetOnRaiseTemperature( std::bind_front( &View::Model_OnRaiseTemperature, this ) );
+    _model->SetOnRaiseOxygen( std::bind_front( &View::Model_OnRaiseOxygen, this ) );
+    _model->SetOnPlaceTile( std::bind_front( &View::Model_OnPlaceTile, this ) );
+    _model->SetOnResourceAmountChanged( std::bind_front( &View::Model_OnResourceAmountChanged, this ) );
+    _model->SetOnResourceProductionAmountChanged( std::bind_front( &View::Model_OnResourceProductionAmountChanged, this ) );
+    _model->SetOnResearchConfirmed( std::bind_front( &View::Model_OnResearchConfirmed, this ) );
+    _model->SetOnConfirmResearch( std::bind_front( &View::Model_OnConfirmResearch, this ) );
+    _model->SetOnConfirmPayment( std::bind_front( &View::Model_OnConfirmPayment, this ) );
+    _model->SetOnConfirmPlacement( std::bind_front( &View::Model_OnConfirmPlacement, this ) );
+    _model->SetOnConfirmDestroyResource( std::bind_front( &View::Model_OnConfirmDestroyResource, this ) );
+    _model->SetOnConfirmDestroyResourceProduction( std::bind_front( &View::Model_OnConfirmDestroyResourceProduction, this ) );
+    _model->SetOnGameEnd( std::bind_front( &View::Model_OnGameEnd, this ) );
+
+    _temperature = _model->Temperature();
+    _ocean_count = _model->OceanCount();
+    _oxygen_level = _model->Oxygen();
+    _tr = _model->get_local_player()->get_tr();
+    _resources = std::array<int, +model::Resource::MAX + 1>( _model->get_local_player()->get_resources() );
+    _resource_productions = std::array<int, +model::Resource::MAX + 1>( _model->get_local_player()->get_resource_productions() );
+
     _model->Start();
 
-    _tiles.clear();
+
     for ( const model::boards::Tile& tile : *_model->get_board() ) {
         _tiles.emplace_back( tile );
     }
@@ -59,14 +90,41 @@ void View::Update( const UpdateInfo& update_info ) {
 
     _camera_manipulator->Update( update_info.delta );
 
-    static auto& model_hand = _model->get_local_player()->get_hand();
-    if ( _elapsed > _hand.size() * 5.0f && _hand.size() != model_hand.size() ) {
-        _hand.emplace_back( model_hand[ _hand.size() ] );
-        RefreshHandPositions();
-    }
 
     for ( CardWrapper& card : _hand )
         card.Update( update_info.delta );
+
+    for ( auto it = _ongoing_animations.begin(); it != _ongoing_animations.end(); ) {
+        Animation* animation = *it;
+
+        if ( animation->IsOver() ) {
+            it = _ongoing_animations.erase( it );
+        } else {
+            animation->Update( update_info.delta );
+            ++it;
+        }
+    }
+
+    if ( _locking_animation ) {
+        Animation* l_anim = *_locking_animation;
+        l_anim->Update( update_info.delta );
+
+        if ( !l_anim->HasLockout() ) {
+            _locking_animation.reset();
+            _ongoing_animations.push_back( l_anim );
+        }
+    }
+
+    while ( !_locking_animation && _animation_queue.size() != 0 ) {
+        Animation* animation = _animation_queue.front();
+        _animation_queue.pop();
+
+        if ( animation->HasLockout() ) {
+            _locking_animation = animation;
+        } else {
+            _ongoing_animations.push_back( animation );
+        }
+    }
 }
 
 void View::Render() {
@@ -75,6 +133,12 @@ void View::Render() {
     glClear( GL_DEPTH_BUFFER_BIT );
 
     RenderHUD();
+
+    for ( Animation* animation : _ongoing_animations )
+        animation->Render( this );
+
+    if ( _locking_animation )
+        (*_locking_animation)->Render( this );
 }
 
 void View::RenderGUI() {
@@ -193,6 +257,131 @@ void View::ChangeState( ViewState* state ) {
     _state = state;
 }
 #pragma endregion State
+
+#pragma region Animation Queue
+
+void View::Model_OnDrawCard( const model::decks::Card* card ) {
+    _hand.emplace_back( card, true );
+    RefreshHandPositions();
+}
+
+void View::Model_OnPlayCard( const model::decks::Card* card ) {
+    // TODO
+}
+
+void View::Model_OnRaiseTR( int amount ) {
+    _animation_queue.push( new InstantAnimation( [ =, this ]() {
+        _tr += amount;
+    } ) );
+    CreateParameterAnimation( 3, std::format( "+{}", amount ) );
+}
+
+void View::Model_OnRaiseTemperature() {
+    _animation_queue.push( new InstantAnimation( [ this ]() {
+        _temperature += 2;
+    } ) );
+    CreateParameterAnimation( 0, "+2" );
+}
+
+void View::Model_OnRaiseOxygen() {
+    _animation_queue.push( new InstantAnimation( [ this ]() {
+        _oxygen_level += 1;
+    } ) );
+    CreateParameterAnimation( 2, "+1" );
+}
+
+void View::Model_OnPlaceTile( std::pair<int, int> pos ) { throw "not implemented"; }
+
+void View::Model_OnResourceAmountChanged( model::Resource resource, int amount ) {
+    _animation_queue.push( new InstantAnimation( [ =, this ]() {
+        _resources[ +resource ] += amount;
+    } ) );
+
+    auto [x, y, _] = CalculateResourcePosition( +resource, 2 );
+
+    if ( amount >= 0 )
+        _animation_queue.push( new TextAnimation(
+            ATTRIBUTE_CHANGED_LOCKOUT,
+            ATTRIBUTE_CHANGED_DURATION,
+            std::format( "+{}", amount ),
+            glm::vec2( x, y ), glm::vec2( x - TEXT_FLOAT_DISTANCE, y ),
+            glm::vec4( POSITIVE_TEXT_COLOR, 1.0f ), glm::vec4( POSITIVE_TEXT_COLOR, 0.0f ),
+            BASE_TEXT_SCALE
+        ) );
+    else
+        _animation_queue.push( new TextAnimation(
+            ATTRIBUTE_CHANGED_LOCKOUT,
+            ATTRIBUTE_CHANGED_DURATION,
+            std::to_string( amount ),
+            glm::vec2( x, y ), glm::vec2( x - TEXT_FLOAT_DISTANCE, y ),
+            glm::vec4( NEGATIVE_TEXT_COLOR, 1.0f ), glm::vec4( NEGATIVE_TEXT_COLOR, 0.0f ),
+            BASE_TEXT_SCALE
+        ) );
+}
+
+void View::Model_OnResourceProductionAmountChanged( model::Resource resource, int amount ) {
+    _animation_queue.push( new InstantAnimation( [ =, this ]() {
+        _resource_productions[ +resource ] += amount;
+    } ) );
+
+    auto [x, y, _] = CalculateResourcePosition( +resource, 0 );
+
+    if ( amount >= 0 )
+        _animation_queue.push( new TextAnimation(
+            ATTRIBUTE_CHANGED_LOCKOUT,
+            ATTRIBUTE_CHANGED_DURATION,
+            std::format( "+{}", amount ),
+            glm::vec2( x, y ), glm::vec2( x - TEXT_FLOAT_DISTANCE, y ),
+            glm::vec4( PRODUCTION_TEXT_COLOR, 1.0f ), glm::vec4( PRODUCTION_TEXT_COLOR, 0.0f ),
+            BASE_TEXT_SCALE
+        ) );
+    else
+        _animation_queue.push( new TextAnimation(
+            ATTRIBUTE_CHANGED_LOCKOUT,
+            ATTRIBUTE_CHANGED_DURATION,
+            std::to_string( amount ),
+            glm::vec2( x, y ), glm::vec2( x - TEXT_FLOAT_DISTANCE, y ),
+            glm::vec4( PRODUCTION_TEXT_COLOR, 1.0f ), glm::vec4( PRODUCTION_TEXT_COLOR, 0.0f ),
+            BASE_TEXT_SCALE
+        ) );
+}
+
+void View::Model_OnResearchConfirmed( std::array<bool, model::RESEARCH_CARD_NUM> selected ) { throw "not implemented"; }
+void View::Model_OnConfirmResearch( std::array<const model::decks::Card*, model::RESEARCH_CARD_NUM> cards ) { throw "not implemented"; }
+void View::Model_OnConfirmPayment( int amount, model::Resource resource, int resource_value ) { throw "not implemented"; }
+void View::Model_OnConfirmPlacement( model::boards::TileType tile_type, std::vector<std::pair<int, int>> valid_positions ) { throw "not implemented"; }
+void View::Model_OnConfirmDestroyResource( model::Resource resource, int amount ) { throw "not implemented"; }
+void View::Model_OnConfirmDestroyResourceProduction( model::Resource resource, int amount ) { throw "not implemented"; }
+void View::Model_OnGameEnd() { throw "not implemented"; }
+
+void View::CreateParameterAnimation( int parameter, std::string text ) {
+    auto [x, y, _] = CalculateParameterPosition( parameter, 1 );
+
+    _animation_queue.push( new TextAnimation(
+        ATTRIBUTE_CHANGED_LOCKOUT,
+        ATTRIBUTE_CHANGED_DURATION,
+        text,
+        glm::vec2( x, y ), glm::vec2( x - TEXT_FLOAT_DISTANCE, y ),
+        glm::vec4( POSITIVE_TEXT_COLOR, 1.0f ), glm::vec4( POSITIVE_TEXT_COLOR, 0.0f ),
+        BASE_TEXT_SCALE
+    ) );
+}
+
+void View::Render( InstantAnimation* animation ) {
+    animation->perform();
+}
+
+void View::Render( TextAnimation* animation ) {
+    TextRenderer::RenderTextCentered(
+        animation->text,
+        *animation->pos.x,
+        *animation->pos.y,
+        *animation->scale,
+        *animation->color
+    );
+}
+
+#pragma endregion Animation Queue
 
 void View::RefreshHandPositions() {
     static const float card_ratio = (float)CARD_TEXTURE_WIDTH / CARD_TEXTURE_HEIGHT;
@@ -346,7 +535,6 @@ void View::RenderGlobalParameters() {
         { _tr, -1 },
     }};
     for ( int i = 0; i < text_to_draw.size(); ++i ) {
-        static const float scale = 1.5f;
         auto& [current, max] = text_to_draw[ i ];
         glm::vec3 color = current == max ? glm::vec3( 0.0f, 1.0f, 0.0f ) : glm::vec3( 1.0f );
 
@@ -355,7 +543,7 @@ void View::RenderGlobalParameters() {
             std::to_string( current ),
             x,
             y,
-            scale,
+            BASE_TEXT_SCALE,
             color
         );
     }
@@ -411,7 +599,7 @@ void View::RenderResources() {
     glUniform1i( ul( "image" ), 0 );
 
     glBindTexture( GL_TEXTURE_2D, _production_box_texture.id );
-    for ( int i = 0; i < +model::Resource::MAX; ++i ) {
+    for ( int i = 0; i <= +model::Resource::MAX; ++i ) {
         auto [x, y, scale] = CalculateResourcePosition( i, 0 );
 
         glm::mat4 world = glm::translate( glm::vec3( x, y, 0.0f ) ) * glm::scale( scale );
@@ -426,12 +614,14 @@ void View::RenderResources() {
     glUniform1i( ul( "image" ), 0 );
 
     glBindTexture( GL_TEXTURE_2D, _resources_texture.id );
-    for ( int i = 0; i < +model::Resource::MAX; ++i ) {
+    for ( int i = 0; i <= +model::Resource::MAX; ++i ) {
         static const float stride_x = 1.0f / RESOURCE_TEXTURE_COLUMNS;
         static const float stride_y = 1.0f / RESOURCE_TEXTURE_ROWS;
-        int res_index = +model::Resource::MAX - i - 1;
-        int index_x = res_index % RESOURCE_TEXTURE_COLUMNS;
-        int index_y = res_index / RESOURCE_TEXTURE_COLUMNS;
+        //int res_index = +model::Resource::MAX - i;
+        //int index_x = res_index % RESOURCE_TEXTURE_COLUMNS;
+        //int index_y = res_index / RESOURCE_TEXTURE_COLUMNS;
+        int index_x = i % RESOURCE_TEXTURE_COLUMNS;
+        int index_y = i / RESOURCE_TEXTURE_COLUMNS;
 
         auto [x, y, scale] = CalculateResourcePosition( i, 1 );
 
@@ -452,24 +642,23 @@ void View::RenderResources() {
     glUseProgram( 0 );
 
 
-    for ( int i = 0; i < +model::Resource::MAX; ++i ) {
-        static const float scale = 1.5f;
+    for ( int i = 0; i <= +model::Resource::MAX; ++i ) {
 
         auto [x, y, _] = CalculateResourcePosition( i, 0 );
         TextRenderer::RenderTextCentered(
-            std::to_string( _resource_productions[ i + 1 ] ),
+            std::to_string( _resource_productions[ i ] ),
             x,
             y,
-            scale,
+            BASE_TEXT_SCALE,
             glm::vec3( 0.0f )
         );
 
         std::tie( x, y, _ ) = CalculateResourcePosition( i, 2 );
         TextRenderer::RenderTextCentered(
-            std::to_string( _resources[ i + 1 ] ),
+            std::to_string( _resources[ i ] ),
             x,
             y,
-            scale,
+            BASE_TEXT_SCALE,
             glm::vec3( 1.0f )
         );
     }
@@ -595,7 +784,7 @@ std::tuple<float, float, glm::vec3> View::CalculateResourcePosition( int resourc
     static const float spacing = size * 2.5f;
     return {
         1.0f - size - type * spacing / 2.0f,
-        resource * spacing + size * 2.0f - 1.0f,
+        (+model::Resource::MAX - resource) * spacing + size * 2.0f - 1.0f,
         glm::vec3( size / _width * _height , size, 1.0f )
     };
 }

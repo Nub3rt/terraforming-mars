@@ -4,7 +4,7 @@ namespace model
 {
 enum class Tag
 {
-    BUILDING = 1,
+    BUILDING = 0,
     SPACE,
     POWER,
     SCIENCE,
