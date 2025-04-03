@@ -15,7 +15,7 @@ inline constexpr glm::vec3 NEGATIVE_TEXT_COLOR = glm::vec3( 0xff, 0x08, 0x08 ) /
 inline constexpr glm::vec3 PRODUCTION_TEXT_COLOR = glm::vec3( 0xA8, 0x74, 0x4B ) / 255.0f;
 
 inline constexpr float HAND_BASE_Y = -1.12f;
-inline constexpr glm::vec2 CARD_BASE_SCALE = glm::vec2( 0.25f );
+inline constexpr float CARD_BASE_SCALE = 0.25f;
 inline constexpr float CARD_ADJUST_DURATION = 0.5;
 inline constexpr float CARD_DRAW_DURATION = 2.0f;
 inline constexpr float CARD_DRAG_OUT_LINE_Y = -0.5f;

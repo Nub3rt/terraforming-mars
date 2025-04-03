@@ -6,21 +6,12 @@
 
 namespace view
 {
-CardWrapper::CardWrapper( const model::decks::Card* card, bool drawn ) : _card( card ) {
-    if ( !drawn ) {
-        pos = base_pos;
-        scale = base_scale;
-        rotate = base_rotate;
+CardWrapper::CardWrapper( const model::decks::Card* card ) : _card( card ) {
+    pos = base_pos;
+    scale = base_scale;
+    rotate = base_rotate;
 
-        SetDefaultEase();
-        return;
-    }
-
-    state = DRAWING;
-    SetEase( glm::quarticEaseOut<float> );
-    pos.SetAnim( drawing_pos_1, drawing_pos_2, CARD_DRAW_DURATION );
-    scale.SetAnim( drawing_scale_1, drawing_scale_2, CARD_DRAW_DURATION );
-    rotate.SetAnim( drawing_rotate_1, drawing_rotate_2, CARD_DRAW_DURATION );
+    SetDefaultEase();
 }
 
 CardWrapper::~CardWrapper() {}
@@ -37,17 +28,6 @@ void CardWrapper::SetDefaultEase() {
 }
 
 void CardWrapper::Update( float delta ) {
-    if ( state == DRAWING && !pos.Animating() ) {
-        state = TO_HAND;
-        SetEase( glm::quarticEaseIn<float> );
-        GoToBase( CARD_DRAW_DURATION * 0.7f );
-    }
-
-    if ( state == TO_HAND && !pos.Animating() ) {
-        state = IDLE;
-        SetDefaultEase();
-    }
-
     pos.Update( delta );
     scale.Update( delta );
     rotate.Update( delta );
@@ -60,9 +40,9 @@ void CardWrapper::GoToBase( float duration ) {
 }
 
 const glm::vec2 CardWrapper::drawing_pos_1 = { 1.2f, -0.4f };
-const glm::vec2 CardWrapper::drawing_scale_1 = CARD_BASE_SCALE * 1.2f;
+const float CardWrapper::drawing_scale_1 = CARD_BASE_SCALE * 1.2f;
 const float CardWrapper::drawing_rotate_1 = 0.0f;
 const glm::vec2 CardWrapper::drawing_pos_2 = { 0.5f, 0.0f };
-const glm::vec2 CardWrapper::drawing_scale_2 = CARD_BASE_SCALE * 1.8f;
+const float CardWrapper::drawing_scale_2 = CARD_BASE_SCALE * 1.8f;
 const float CardWrapper::drawing_rotate_2 = 0.0f;
 }

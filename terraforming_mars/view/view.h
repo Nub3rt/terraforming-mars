@@ -48,6 +48,7 @@ class View
 
     friend class InstantAnimation;
     friend class TextAnimation;
+    friend class CardAnimation;
 
 public:
     View();
@@ -135,11 +136,13 @@ protected:
     void CreateParameterAnimation( int parameter, std::string text );
 
     std::queue<Animation*> _animation_queue;
+    std::vector<std::tuple<float, float, Animation*>> _timed_out_animations;
     std::optional<Animation*> _locking_animation = {};
     std::vector<Animation*> _ongoing_animations;
 
-    void Render( InstantAnimation* animation );
-    void Render( TextAnimation* animation );
+    void RenderAnimation( InstantAnimation* animation );
+    void RenderAnimation( TextAnimation* animation );
+    void RenderAnimation( CardAnimation* animation );
 
 
     void RefreshHandPositions();

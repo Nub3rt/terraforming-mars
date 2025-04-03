@@ -39,9 +39,13 @@ public:
         _value = value;
     }
 
-    inline void UpdateAnim( T value, float duration ) {
+    inline void UpdateAnim( T value, float duration, bool force_time = false ) {
         if ( _a ) {
             _a->end = value;
+            if ( force_time ) {
+                _a->elapsed = 0;
+                _a->duration = duration;
+            }
         } else {
             _a = { _value , value, 0.0f, duration };
         }
@@ -99,9 +103,9 @@ public:
         _value = value;
     }
 
-    inline void UpdateAnim( glm::vec2 value, float duration ) {
-        x.UpdateAnim( value.x, duration );
-        y.UpdateAnim( value.y, duration );
+    inline void UpdateAnim( glm::vec2 value, float duration, bool force_time = false ) {
+        x.UpdateAnim( value.x, duration, force_time );
+        y.UpdateAnim( value.y, duration, force_time );
         _value.x = *x;
         _value.y = *y;
     }
@@ -155,10 +159,10 @@ public:
         _value = value;
     }
 
-    inline void UpdateAnim( glm::vec3 value, float duration ) {
-        x.UpdateAnim( value.x, duration );
-        y.UpdateAnim( value.y, duration );
-        z.UpdateAnim( value.z, duration );
+    inline void UpdateAnim( glm::vec3 value, float duration, bool force_time = false ) {
+        x.UpdateAnim( value.x, duration, force_time );
+        y.UpdateAnim( value.y, duration, force_time );
+        z.UpdateAnim( value.z, duration, force_time );
         _value.x = *x;
         _value.y = *y;
         _value.z = *z;
@@ -219,11 +223,11 @@ public:
         _value = value;
     }
 
-    inline void UpdateAnim( glm::vec4 value, float duration ) {
-        x.UpdateAnim( value.x, duration );
-        y.UpdateAnim( value.y, duration );
-        z.UpdateAnim( value.z, duration );
-        w.UpdateAnim( value.w, duration );
+    inline void UpdateAnim( glm::vec4 value, float duration, bool force_time = false ) {
+        x.UpdateAnim( value.x, duration, force_time );
+        y.UpdateAnim( value.y, duration, force_time );
+        z.UpdateAnim( value.z, duration, force_time );
+        w.UpdateAnim( value.w, duration, force_time );
         _value.x = *x;
         _value.y = *y;
         _value.z = *z;

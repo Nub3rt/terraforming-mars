@@ -21,7 +21,7 @@ public:
         TO_HAND,
     };
 
-    CardWrapper( const model::decks::Card* card, bool drawn = false );
+    CardWrapper( const model::decks::Card* card );
     ~CardWrapper();
 
     inline const model::decks::Card* operator->() noexcept { return _card; }
@@ -37,21 +37,22 @@ public:
     State state = IDLE;
 
     glm::vec2 base_pos = glm::vec2( 0.0f, HAND_BASE_Y );
-    glm::vec2 base_scale = CARD_BASE_SCALE;
+    float base_scale = CARD_BASE_SCALE;
     float base_rotate = 0.0f;
 
     Animatable<glm::vec2> pos;
-    Animatable<glm::vec2> scale;
+    Animatable<float> scale;
     Animatable<float> rotate;
 
 private:
     const model::decks::Card* _card;
 
+public:
     static const glm::vec2 drawing_pos_1;
-    static const glm::vec2 drawing_scale_1;
+    static const float drawing_scale_1;
     static const float drawing_rotate_1;
     static const glm::vec2 drawing_pos_2;
-    static const glm::vec2 drawing_scale_2;
+    static const float drawing_scale_2;
     static const float drawing_rotate_2;
 };
 }

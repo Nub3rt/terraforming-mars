@@ -37,7 +37,7 @@ void InstantAnimation::Render( View* view ) {
     if ( _performed )
         throw std::logic_error( "InstantAnimation::Render: instant animation was already performed!" );
 
-    view->Render( this );
+    view->RenderAnimation( this );
     _performed = true;
 }
 
@@ -88,7 +88,7 @@ TextAnimation::TextAnimation( float lockout_time, float duration, std::string te
 }
 
 void TextAnimation::Render( View* view ) {
-    view->Render( this );
+    view->RenderAnimation( this );
 }
 
 bool TextAnimation::IsOver() const noexcept {
@@ -102,4 +102,70 @@ void TextAnimation::DoUpdate( float delta ) {
 }
 
 #pragma endregion TextAnimation
+
+#pragma region CardAnimation
+
+
+CardAnimation::CardAnimation( float duration, const model::decks::Card* card, glm::vec2 end_pos,
+    float end_scale, float end_rotate ) : Animation(), duration( duration ), card( card ),
+    end_pos( end_pos ), end_scale( end_scale ), end_rotate( end_rotate ),
+    start_pos(), start_scale(), start_rotate() {
+}
+
+CardAnimation::CardAnimation( float lockout_time, float duration, const model::decks::Card* card, glm::vec2 end_pos,
+    float end_scale, float end_rotate ) : Animation( lockout_time ), duration( duration ), card( card ),
+    end_pos( end_pos ), end_scale( end_scale ), end_rotate( end_rotate ),
+    start_pos(), start_scale(), start_rotate() {
+}
+
+CardAnimation::CardAnimation( float duration, const model::decks::Card* card, glm::vec2 start_pos, glm::vec2 end_pos,
+    float end_scale, float end_rotate ) : Animation(), duration( duration ), card( card ),
+    end_pos( end_pos ), end_scale( end_scale ), end_rotate( end_rotate ),
+    start_pos( start_pos ), start_scale(), start_rotate() {
+}
+
+CardAnimation::CardAnimation( float lockout_time, float duration, const model::decks::Card* card, glm::vec2 start_pos, glm::vec2 end_pos,
+    float end_scale, float end_rotate ) : Animation( lockout_time ), duration( duration ), card( card ),
+    end_pos( end_pos ), end_scale( end_scale ), end_rotate( end_rotate ),
+    start_pos( start_pos ), start_scale(), start_rotate() {
+}
+
+CardAnimation::CardAnimation( float duration, const model::decks::Card* card, glm::vec2 start_pos, glm::vec2 end_pos,
+    float start_scale, float end_scale, float end_rotate ) : Animation(), duration( duration ), card( card ),
+    end_pos( end_pos ), end_scale( end_scale ), end_rotate( end_rotate ),
+    start_pos( start_pos ), start_scale( start_scale ), start_rotate() {
+}
+
+CardAnimation::CardAnimation( float lockout_time, float duration, const model::decks::Card* card, glm::vec2 start_pos, glm::vec2 end_pos,
+    float start_scale, float end_scale, float end_rotate ) : Animation( lockout_time ), duration( duration ), card( card ),
+    end_pos( end_pos ), end_scale( end_scale ), end_rotate( end_rotate ),
+    start_pos( start_pos ), start_scale( start_scale ), start_rotate() {
+}
+
+CardAnimation::CardAnimation( float duration, const model::decks::Card* card, glm::vec2 start_pos, glm::vec2 end_pos,
+    float start_scale, float end_scale, float start_rotate, float end_rotate ) : Animation(), duration( duration ), card( card ),
+    end_pos( end_pos ), end_scale( end_scale ), end_rotate( end_rotate ),
+    start_pos( start_pos ), start_scale( start_scale ), start_rotate( start_rotate ) {
+}
+
+CardAnimation::CardAnimation( float lockout_time, float duration, const model::decks::Card* card, glm::vec2 start_pos, glm::vec2 end_pos,
+    float start_scale, float end_scale, float start_rotate, float end_rotate ) : Animation( lockout_time ), duration( duration ), card( card ),
+    end_pos( end_pos ), end_scale( end_scale ), end_rotate( end_rotate ),
+    start_pos( start_pos ), start_scale( start_scale ), start_rotate( start_rotate ) {}
+
+void CardAnimation::Render( View* view ) {
+    if ( _performed )
+        return;
+
+    view->RenderAnimation( this );
+    _performed = true;
+}
+
+bool CardAnimation::IsOver() const noexcept {
+    return _performed;
+}
+
+void CardAnimation::DoUpdate( float delta ) {}
+
+#pragma region CardAnimation
 }

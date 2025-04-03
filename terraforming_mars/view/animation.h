@@ -3,12 +3,14 @@
 #include "animation.fwd.h"
 #include "view.fwd.h"
 
-#include <string>
 #include <functional>
+#include <string>
+#include <optional>
 
 #include <glm/glm.hpp>
 
 #include "animatable.h"
+#include "card_wrapper.h"
 
 namespace view
 {
@@ -73,6 +75,49 @@ public:
     Animatable<float> scale;
 
 protected:
+    void DoUpdate( float delta ) override;
+};
+
+class CardAnimation : public Animation
+{
+public:
+    CardAnimation( float duration, const model::decks::Card* card, glm::vec2 end_pos,
+        float end_scale, float end_rotate );
+    CardAnimation( float lockout_time, float duration, const model::decks::Card* card, glm::vec2 end_pos,
+        float end_scale, float end_rotate );
+    CardAnimation( float duration, const model::decks::Card* card, glm::vec2 start_pos, glm::vec2 end_pos,
+        float end_scale, float end_rotate );
+    CardAnimation( float lockout_time, float duration, const model::decks::Card* card, glm::vec2 start_pos, glm::vec2 end_pos,
+        float end_scale, float end_rotate );
+    CardAnimation( float duration, const model::decks::Card* card, glm::vec2 start_pos, glm::vec2 end_pos,
+        float start_scale, float end_scale, float end_rotate );
+    CardAnimation( float lockout_time, float duration, const model::decks::Card* card, glm::vec2 start_pos, glm::vec2 end_pos,
+        float start_scale, float end_scale, float end_rotate );
+    CardAnimation( float duration, const model::decks::Card* card, glm::vec2 start_pos, glm::vec2 end_pos,
+        float start_scale, float end_scale, float start_rotate, float end_rotate );
+    CardAnimation( float lockout_time, float duration, const model::decks::Card* card, glm::vec2 start_pos, glm::vec2 end_pos,
+        float start_scale, float end_scale, float start_rotate, float end_rotate );
+
+    void Render( View* view ) override;
+    bool IsOver() const noexcept override;
+
+    float duration;
+    const model::decks::Card* card;
+
+    std::optional<glm::vec2> start_pos;
+    std::optional<float> start_scale;
+    std::optional<float> start_rotate;
+
+    glm::vec2 end_pos;
+    float end_scale;
+    float end_rotate;
+
+    Animatable<float>::ease_t ease;
+    bool force_time = false;
+
+protected:
+    bool _performed = false;
+
     void DoUpdate( float delta ) override;
 };
 }

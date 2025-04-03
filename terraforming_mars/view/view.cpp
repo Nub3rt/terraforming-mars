@@ -99,8 +99,21 @@ void View::Update( const UpdateInfo& update_info ) {
 
         if ( animation->IsOver() ) {
             it = _ongoing_animations.erase( it );
+            delete animation;
         } else {
             animation->Update( update_info.delta );
+            ++it;
+        }
+    }
+
+    for ( auto it = _timed_out_animations.begin(); it != _timed_out_animations.end(); ) {
+        auto& [elapsed, duration, animation] = *it;
+        elapsed += update_info.delta;
+
+        if ( duration <= elapsed ) {
+            _ongoing_animations.push_back( animation );
+            it = _timed_out_animations.erase( it );
+        } else {
             ++it;
         }
     }
@@ -261,8 +274,45 @@ void View::ChangeState( ViewState* state ) {
 #pragma region Animation Queue
 
 void View::Model_OnDrawCard( const model::decks::Card* card ) {
-    _hand.emplace_back( card, true );
-    RefreshHandPositions();
+    _animation_queue.push( new InstantAnimation( [ =, this ]() {
+        CardWrapper cw( card );
+        cw.state = CardWrapper::DRAWING;
+        _hand.push_back( std::move( cw ) );
+        RefreshHandPositions();
+    } ) );
+    CardAnimation* card_animation = new CardAnimation(
+        CARD_DRAW_DURATION, CARD_DRAW_DURATION,
+        card,
+        CardWrapper::drawing_pos_1,    CardWrapper::drawing_pos_2,
+        CardWrapper::drawing_scale_1,  CardWrapper::drawing_scale_2,
+        CardWrapper::drawing_rotate_1, CardWrapper::drawing_rotate_2
+    );
+    card_animation->ease = glm::quarticEaseOut<float>;
+    card_animation->force_time = true;
+    _animation_queue.push( card_animation );
+
+    _animation_queue.push( new InstantAnimation( [ this, c = card ]() {
+        auto it = std::find_if( _hand.rbegin(), _hand.rend(), [ c ]( CardWrapper& card ) { return *card == c; } );
+        if ( it == _hand.rend() )
+            throw std::logic_error( "View::RenderCardAnimation: Card being drawn was not found in hand!" );
+
+        CardWrapper& card = *it;
+
+        card.state = CardWrapper::TO_HAND;
+        card.SetEase( glm::quarticEaseIn<float> );
+        card.GoToBase( CARD_DRAW_DURATION * 0.7f );
+
+        _timed_out_animations.push_back( { 0.0f, CARD_DRAW_DURATION * 0.7f, new InstantAnimation( [ this, c ]() {
+            auto it = std::find_if( _hand.rbegin(), _hand.rend(), [ c ]( CardWrapper& card ) { return *card == c; } );
+            if ( it == _hand.rend() )
+                throw std::logic_error( "View::RenderCardAnimation: Card being drawn was not found in hand!" );
+
+            CardWrapper& card = *it;
+
+            card.state = CardWrapper::IDLE;
+            card.SetDefaultEase();
+        } ) } );
+    } ) );
 }
 
 void View::Model_OnPlayCard( const model::decks::Card* card ) {
@@ -367,11 +417,11 @@ void View::CreateParameterAnimation( int parameter, std::string text ) {
     ) );
 }
 
-void View::Render( InstantAnimation* animation ) {
+void View::RenderAnimation( InstantAnimation* animation ) {
     animation->perform();
 }
 
-void View::Render( TextAnimation* animation ) {
+void View::RenderAnimation( TextAnimation* animation ) {
     TextRenderer::RenderTextCentered(
         animation->text,
         *animation->pos.x,
@@ -379,6 +429,32 @@ void View::Render( TextAnimation* animation ) {
         *animation->scale,
         *animation->color
     );
+}
+
+void View::RenderAnimation( CardAnimation* animation ) {
+    auto it = std::find_if( _hand.rbegin(), _hand.rend(), [ c = animation->card ]( CardWrapper& card ) { return *card == c; } );
+    if ( it == _hand.rend() )
+        throw std::logic_error( "View::RenderCardAnimation: Card being drawn was not found in hand!" );
+
+    CardWrapper& card = *it;
+
+    if ( animation->start_pos )
+        card.pos.SetAnim( *animation->start_pos, animation->end_pos, animation->duration );
+    else
+        card.pos.UpdateAnim( animation->end_pos, animation->duration, animation->force_time );
+
+    if ( animation->start_scale )
+        card.scale.SetAnim( *animation->start_scale, animation->end_scale, animation->duration );
+    else
+        card.scale.UpdateAnim( animation->end_scale, animation->duration, animation->force_time );
+
+    if ( animation->start_rotate )
+        card.rotate.SetAnim( *animation->start_rotate, animation->end_rotate, animation->duration );
+    else
+        card.rotate.UpdateAnim( animation->end_rotate, animation->duration, animation->force_time );
+
+    if ( animation->ease )
+        card.SetEase( animation->ease );
 }
 
 #pragma endregion Animation Queue
@@ -389,7 +465,7 @@ void View::RefreshHandPositions() {
     static const float max_x =  0.6f;
     static const float mid_x = (min_x + max_x) / 2.0f;
     static const float spacing = 0.1f;
-    float card_width = CARD_BASE_SCALE.x * card_ratio / _width * _height;
+    float card_width = CARD_BASE_SCALE * card_ratio / _width * _height;
 
     if ( _hand.size() == 0 )
         return;
@@ -695,7 +771,7 @@ void View::RenderCard( CardWrapper& card, int index ) {
               card.state == CardWrapper::DRAGGING ?
         -0.1f : index / -1000.0f;
 
-    glm::vec3 scale( *card.scale.x * card_width, *card.scale.y, 1.0f );
+    glm::vec3 scale( *card.scale * card_width, *card.scale, 1.0f );
     glm::vec3 translate( *card.pos, z );
 
     glm::mat4 world = glm::translate( translate ) * glm::scale( scale );
@@ -724,7 +800,7 @@ std::pair<float, float> View::CalculateMousePos( float mouse_x, float mouse_y ) 
 
 int view::View::CalculateHoveredCardByPos( float x, float y ) {
     static const float card_ratio = (float)CARD_TEXTURE_WIDTH / CARD_TEXTURE_HEIGHT;
-    float card_width = CARD_BASE_SCALE.x * card_ratio / _width * _height;
+    float card_width = CARD_BASE_SCALE * card_ratio / _width * _height;
 
     if ( y > _hand_top_y ||
          x < _hand_start_x - card_width ||
