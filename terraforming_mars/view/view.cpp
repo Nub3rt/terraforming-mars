@@ -1,5 +1,6 @@
 ﻿#include "view.h"
 
+#include <algorithm>
 #include <array>
 #include <format>
 #include <functional>
@@ -198,6 +199,13 @@ void View::MouseMotion( const SDL_MouseMotionEvent& mouse ) {
         if ( y > CARD_DRAG_OUT_LINE_Y && !_state->CanDragCardOut( dragged_card ) ) {
             dragged_card.state = CardWrapper::TO_HAND;
             dragged_card.GoToBase( CARD_ADJUST_DURATION );
+            _timed_out_animations.emplace_back( 0.0f, CARD_ADJUST_DURATION, new InstantAnimation( [ this, c = *dragged_card ]() {
+                auto it = std::find_if( _hand.rbegin(), _hand.rend(), [ c ]( CardWrapper& card ) { return *card == c; } );
+                if ( it == _hand.rend() )
+                    throw std::logic_error( "View::RenderCardAnimation: Card being drawn was not found in hand!" );
+
+                it->state = CardWrapper::IDLE;
+            } ) );
 
             _dragged_card_index = -1;
         } else {
@@ -230,6 +238,13 @@ void View::MouseUp( const SDL_MouseButtonEvent& mouse ) {
         if ( y <= CARD_DRAG_OUT_LINE_Y ) {
             dragged_card.state = CardWrapper::TO_HAND;
             dragged_card.GoToBase( CARD_ADJUST_DURATION );
+            _timed_out_animations.emplace_back( 0.0f, CARD_ADJUST_DURATION, new InstantAnimation( [ this, c = *dragged_card ]() {
+                auto it = std::find_if( _hand.rbegin(), _hand.rend(), [ c ]( CardWrapper& card ) { return *card == c; } );
+                if ( it == _hand.rend() )
+                    throw std::logic_error( "View::RenderCardAnimation: Card being drawn was not found in hand!" );
+
+                it->state = CardWrapper::IDLE;
+            } ) );
 
             _dragged_card_index = -1;
         } else {
