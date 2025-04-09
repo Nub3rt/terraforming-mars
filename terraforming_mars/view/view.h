@@ -110,6 +110,7 @@ protected:
     std::vector<CardWrapper> _effects;
     std::vector<CardWrapper> _actions;
     std::vector<TileWrapper> _tiles;
+    std::vector<std::vector<TileWrapper*>> _indexable_tiles;
 
     int _stencil_starting_card = 0;
     float _hand_start_x = 0.0f;
@@ -182,7 +183,6 @@ protected:
     void InitGeometry();
     void CleanGeometry();
 
-    GLuint _orange_texture_id = 0;
     Texture _cards_texture = {};
     Texture _resources_texture = {};
     Texture _card_cover_texture = {};

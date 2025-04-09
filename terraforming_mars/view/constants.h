@@ -14,6 +14,12 @@ inline constexpr glm::vec3 POSITIVE_TEXT_COLOR = glm::vec3( 0x0f, 0x86, 0x08 ) /
 inline constexpr glm::vec3 NEGATIVE_TEXT_COLOR = glm::vec3( 0xff, 0x08, 0x08 ) / 255.0f;
 inline constexpr glm::vec3 PRODUCTION_TEXT_COLOR = glm::vec3( 0xA8, 0x74, 0x4B ) / 255.0f;
 
+inline constexpr glm::vec3 TILE_COLOR_EMPTY    = glm::vec3( 0xff, 0x55, 0x55 ) / 255.0f;
+inline constexpr glm::vec3 TILE_COLOR_OCEAN    = glm::vec3( 0x61, 0xa0, 0xcc ) / 255.0f;
+inline constexpr glm::vec3 TILE_COLOR_GREENERY = glm::vec3( 0x4e, 0x92, 0x42 ) / 255.0f;
+inline constexpr glm::vec3 TILE_COLOR_CITY     = glm::vec3( 0xe0, 0xe0, 0xe0 ) / 255.0f;
+inline constexpr float TILE_CHANGE_DURATION = 0.5f;
+
 inline constexpr float HAND_BASE_Y = -1.12f;
 inline constexpr float CARD_BASE_SCALE = 0.25f;
 inline constexpr float CARD_ADJUST_DURATION = 0.5;
@@ -29,7 +35,7 @@ inline constexpr float CARD_DRAW_SCALE_MIDDLE = CARD_BASE_SCALE * 1.8f;
 inline constexpr float CARD_DRAW_ROTATE_MIDDLE = 0.0f;
 inline constexpr float CARD_DRAG_OUT_LINE_Y = -0.5f;
 
-inline constexpr float ATTRIBUTE_CHANGED_LOCKOUT = 1.0f;
+inline constexpr float DEFAULT_LOCKOUT_DURATION = 1.0f;
 inline constexpr float ATTRIBUTE_CHANGED_DURATION = 3.0f;
 inline constexpr float TEXT_FLOAT_DISTANCE = 0.5f;
 

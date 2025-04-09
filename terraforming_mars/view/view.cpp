@@ -65,11 +65,25 @@ bool View::Init( Camera* camera, model::GameModel* model ) {
 
     _model->Start();
 
-
+    int max_size = 0;
     for ( const model::boards::Tile& tile : *_model->get_board() ) {
+        auto [q, r] = tile.get_indices();
+        if ( q > max_size )
+            max_size = q;
+        if ( r > max_size )
+            max_size = r;
+
         _tiles.emplace_back( tile );
     }
     _stencil_starting_card = STENCIL_STARTING_BOARD + (int)_tiles.size();
+
+    _indexable_tiles = std::vector<std::vector<TileWrapper*>>( max_size + 1,
+        std::vector<TileWrapper*>( max_size + 1, nullptr )
+    );
+    for ( TileWrapper& tile : _tiles ) {
+        auto [q, r] = tile->get_indices();
+        _indexable_tiles[ r ][ q ] = &tile;
+    }
 
     return true;
 }
@@ -91,6 +105,9 @@ void View::Update( const UpdateInfo& update_info ) {
 
     _camera_manipulator->Update( update_info.delta );
 
+
+    for ( TileWrapper& tile : _tiles )
+        tile.Update( update_info.delta );
 
     for ( CardWrapper* card : _hand )
         card->Update( update_info.delta );
@@ -305,7 +322,7 @@ void View::Model_OnDrawCard( const model::decks::Card* card ) {
     CardWrapper* card_wrapper = new CardWrapper( card );
     card_wrapper->state = CardWrapper::DRAWING;
 
-    CardDrawAnimation* animation = new CardDrawAnimation( card_wrapper );
+    CardDrawAnimation* animation = new CardDrawAnimation( card_wrapper, 50.0f );
     animation->SetOnStart( [ this, card_wrapper ]() {
         _hand.push_back( card_wrapper );
         RefreshHandPositions();
@@ -342,7 +359,17 @@ void View::Model_OnRaiseOxygen() {
     CreateParameterAnimation( 2, "+1" );
 }
 
-void View::Model_OnPlaceTile( std::pair<int, int> pos ) { throw "not implemented"; }
+void View::Model_OnPlaceTile( std::pair<int, int> pos ) {
+    auto& [q, r] = pos;
+    _animation_queue.push( new InstantAnimation( DEFAULT_LOCKOUT_DURATION, [ =, this ]() {
+        TileWrapper* tile = _indexable_tiles[ r ][ q ];
+
+        if ( tile == nullptr )
+            throw std::logic_error( "View::Model_OnPlaceTile: received invalid indices!" );
+
+        tile->OnTilePlaced();
+    } ) );
+}
 
 void View::Model_OnResourceAmountChanged( model::Resource resource, int amount ) {
     std::function<void()> on_start = [ =, this ]() {
@@ -353,7 +380,7 @@ void View::Model_OnResourceAmountChanged( model::Resource resource, int amount )
 
     if ( amount >= 0 )
         _animation_queue.push( (new TextAnimation(
-            ATTRIBUTE_CHANGED_LOCKOUT,
+            DEFAULT_LOCKOUT_DURATION,
             ATTRIBUTE_CHANGED_DURATION,
             std::format( "+{}", amount ),
             glm::vec2( x, y ), glm::vec2( x - TEXT_FLOAT_DISTANCE, y ),
@@ -362,7 +389,7 @@ void View::Model_OnResourceAmountChanged( model::Resource resource, int amount )
         ))->SetOnStart( on_start ) );
     else
         _animation_queue.push( (new TextAnimation(
-            ATTRIBUTE_CHANGED_LOCKOUT,
+            DEFAULT_LOCKOUT_DURATION,
             ATTRIBUTE_CHANGED_DURATION,
             std::to_string( amount ),
             glm::vec2( x, y ), glm::vec2( x - TEXT_FLOAT_DISTANCE, y ),
@@ -380,7 +407,7 @@ void View::Model_OnResourceProductionAmountChanged( model::Resource resource, in
 
     if ( amount >= 0 )
         _animation_queue.push( (new TextAnimation(
-            ATTRIBUTE_CHANGED_LOCKOUT,
+            DEFAULT_LOCKOUT_DURATION,
             ATTRIBUTE_CHANGED_DURATION,
             std::format( "+{}", amount ),
             glm::vec2( x, y ), glm::vec2( x - TEXT_FLOAT_DISTANCE, y ),
@@ -389,7 +416,7 @@ void View::Model_OnResourceProductionAmountChanged( model::Resource resource, in
         ))->SetOnStart( on_start ) );
     else
         _animation_queue.push( (new TextAnimation(
-            ATTRIBUTE_CHANGED_LOCKOUT,
+            DEFAULT_LOCKOUT_DURATION,
             ATTRIBUTE_CHANGED_DURATION,
             std::to_string( amount ),
             glm::vec2( x, y ), glm::vec2( x - TEXT_FLOAT_DISTANCE, y ),
@@ -410,7 +437,7 @@ void View::CreateParameterAnimation( int parameter, std::string text ) {
     auto [x, y, _] = CalculateParameterPosition( parameter, 1 );
 
     _animation_queue.push( new TextAnimation(
-        ATTRIBUTE_CHANGED_LOCKOUT,
+        DEFAULT_LOCKOUT_DURATION,
         ATTRIBUTE_CHANGED_DURATION,
         text,
         glm::vec2( x, y ), glm::vec2( x - TEXT_FLOAT_DISTANCE, y ),
@@ -549,9 +576,6 @@ void View::RenderBoard() {
 }
 
 void View::RenderHexagon( TileWrapper& tile, int id ) {
-    glActiveTexture( GL_TEXTURE0 );
-    glBindTexture( GL_TEXTURE_2D, _orange_texture_id );
-
     /*
     *  *----> q         Ʌ y
     *   \               |
@@ -572,15 +596,14 @@ void View::RenderHexagon( TileWrapper& tile, int id ) {
     glUniformMatrix4fv( ul( "world_it" ), 1, GL_FALSE, glm::value_ptr( glm::transpose( glm::inverse( world ) ) ) );
     glUniformMatrix4fv( ul( "view_proj" ), 1, GL_FALSE, glm::value_ptr( _camera->GetViewProj() ) );
 
-    glUniform1i( ul( "color" ), 0 );
+    glUniform1i( ul( "image" ), 0 );
+    glUniform3f( ul( "color" ), tile.color->r, tile.color->g, tile.color->b );
 
     SetStencilRef( id );
 
     glDrawElements( GL_TRIANGLES, _hexagon_gpu.count, GL_UNSIGNED_INT, nullptr );
 
     SetStencilRef();
-
-    glBindTexture( GL_TEXTURE_2D, 0 );
 }
 
 void View::RenderHUD() {
@@ -790,7 +813,7 @@ void View::RenderCard( CardWrapper& card, int index ) {
 
     float z = card.state == CardWrapper::HOVERED ||
               card.state == CardWrapper::DRAGGING ?
-        -0.1f : index / -1000.0f;
+        -0.1f : (index + 1) / -10000.0f;
 
     glm::vec3 scale( *card.scale * card_width, *card.scale, 1.0f );
     glm::vec3 translate( *card.pos, z );
@@ -959,19 +982,6 @@ void View::CleanGeometry() {
 }
 
 void View::InitTextures() {
-    glGenTextures( 1, &_orange_texture_id );
-    glBindTexture( GL_TEXTURE_2D, _orange_texture_id );
-    
-    unsigned char data[ 3 ] = { 0xff, 0x55, 0x55 };
-
-    glTexImage2D( GL_TEXTURE_2D, 0, GL_RGB, 1, 1, 0, GL_RGB, GL_UNSIGNED_BYTE, data );
-
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
-
-
     _cards_texture = LoadTexture( "assets/cards.png" );
     _resources_texture = LoadTexture( "assets/resources.png" );
     _card_cover_texture = LoadTexture( "assets/card_cover.png" );
@@ -981,13 +991,9 @@ void View::InitTextures() {
     _tr_texture = LoadTexture( "assets/tr.png" );
     _button_texture = LoadTexture( "assets/button.png" );
     _production_box_texture = LoadTexture( "assets/production_box.png" );
-
-
-    glBindTexture( GL_TEXTURE_2D, 0 );
 }
 
 void View::CleanTextures() {
-    glDeleteTextures( 1, &_orange_texture_id );
     glDeleteTextures( 1, &_cards_texture.id );
     glDeleteTextures( 1, &_resources_texture.id );
     glDeleteTextures( 1, &_card_cover_texture.id );

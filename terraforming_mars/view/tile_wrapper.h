@@ -1,6 +1,9 @@
 #pragma once
 
+#include "animatable.h"
+
 #include "../model/boards/tile.h"
+#include "../model/boards/tile_type.h"
 
 namespace view
 {
@@ -10,10 +13,17 @@ public:
     TileWrapper( const model::boards::Tile& tile );
     ~TileWrapper();
 
-    inline model::boards::Tile* operator->() noexcept { return &_tile; }
-    inline model::boards::Tile& operator*() noexcept { return _tile; }
+    inline const model::boards::Tile* operator->() noexcept { return &_tile; }
+    inline const model::boards::Tile& operator*() noexcept { return _tile; }
+
+    void OnTilePlaced();
+    void Update( float delta );
+
+    Animatable<glm::vec3> color;
 
 private:
-    model::boards::Tile _tile;
+    const model::boards::Tile& _tile;
+
+    static glm::vec3 GetColorForTileType( model::boards::TileType tile_type );
 };
 }
