@@ -9,9 +9,9 @@
 
 namespace view
 {
-Animation::Animation( float lockout_time )
-    : _lockout_time( lockout_time ) {
-}
+#pragma region Animation
+
+Animation::Animation( float lockout_time ) : _lockout_time( lockout_time ) {}
 
 void Animation::Update( float delta ) {
     if ( _lockout_time != 0.0f ) {
@@ -24,6 +24,8 @@ void Animation::Update( float delta ) {
 
     DoUpdate( delta );
 }
+
+#pragma region Animation
 
 #pragma region InstantAnimation
 
@@ -105,50 +107,49 @@ void TextAnimation::DoUpdate( float delta ) {
 
 #pragma region CardAnimation
 
-
-CardAnimation::CardAnimation( float duration, const model::decks::Card* card, glm::vec2 end_pos,
+CardAnimation::CardAnimation( float duration, CardWrapper* card, glm::vec2 end_pos,
     float end_scale, float end_rotate ) : Animation(), duration( duration ), card( card ),
     end_pos( end_pos ), end_scale( end_scale ), end_rotate( end_rotate ),
     start_pos(), start_scale(), start_rotate() {
 }
 
-CardAnimation::CardAnimation( float lockout_time, float duration, const model::decks::Card* card, glm::vec2 end_pos,
+CardAnimation::CardAnimation( float lockout_time, float duration, CardWrapper* card, glm::vec2 end_pos,
     float end_scale, float end_rotate ) : Animation( lockout_time ), duration( duration ), card( card ),
     end_pos( end_pos ), end_scale( end_scale ), end_rotate( end_rotate ),
     start_pos(), start_scale(), start_rotate() {
 }
 
-CardAnimation::CardAnimation( float duration, const model::decks::Card* card, glm::vec2 start_pos, glm::vec2 end_pos,
+CardAnimation::CardAnimation( float duration, CardWrapper* card, glm::vec2 start_pos, glm::vec2 end_pos,
     float end_scale, float end_rotate ) : Animation(), duration( duration ), card( card ),
     end_pos( end_pos ), end_scale( end_scale ), end_rotate( end_rotate ),
     start_pos( start_pos ), start_scale(), start_rotate() {
 }
 
-CardAnimation::CardAnimation( float lockout_time, float duration, const model::decks::Card* card, glm::vec2 start_pos, glm::vec2 end_pos,
+CardAnimation::CardAnimation( float lockout_time, float duration, CardWrapper* card, glm::vec2 start_pos, glm::vec2 end_pos,
     float end_scale, float end_rotate ) : Animation( lockout_time ), duration( duration ), card( card ),
     end_pos( end_pos ), end_scale( end_scale ), end_rotate( end_rotate ),
     start_pos( start_pos ), start_scale(), start_rotate() {
 }
 
-CardAnimation::CardAnimation( float duration, const model::decks::Card* card, glm::vec2 start_pos, glm::vec2 end_pos,
+CardAnimation::CardAnimation( float duration, CardWrapper* card, glm::vec2 start_pos, glm::vec2 end_pos,
     float start_scale, float end_scale, float end_rotate ) : Animation(), duration( duration ), card( card ),
     end_pos( end_pos ), end_scale( end_scale ), end_rotate( end_rotate ),
     start_pos( start_pos ), start_scale( start_scale ), start_rotate() {
 }
 
-CardAnimation::CardAnimation( float lockout_time, float duration, const model::decks::Card* card, glm::vec2 start_pos, glm::vec2 end_pos,
+CardAnimation::CardAnimation( float lockout_time, float duration, CardWrapper* card, glm::vec2 start_pos, glm::vec2 end_pos,
     float start_scale, float end_scale, float end_rotate ) : Animation( lockout_time ), duration( duration ), card( card ),
     end_pos( end_pos ), end_scale( end_scale ), end_rotate( end_rotate ),
     start_pos( start_pos ), start_scale( start_scale ), start_rotate() {
 }
 
-CardAnimation::CardAnimation( float duration, const model::decks::Card* card, glm::vec2 start_pos, glm::vec2 end_pos,
+CardAnimation::CardAnimation( float duration, CardWrapper* card, glm::vec2 start_pos, glm::vec2 end_pos,
     float start_scale, float end_scale, float start_rotate, float end_rotate ) : Animation(), duration( duration ), card( card ),
     end_pos( end_pos ), end_scale( end_scale ), end_rotate( end_rotate ),
     start_pos( start_pos ), start_scale( start_scale ), start_rotate( start_rotate ) {
 }
 
-CardAnimation::CardAnimation( float lockout_time, float duration, const model::decks::Card* card, glm::vec2 start_pos, glm::vec2 end_pos,
+CardAnimation::CardAnimation( float lockout_time, float duration, CardWrapper* card, glm::vec2 start_pos, glm::vec2 end_pos,
     float start_scale, float end_scale, float start_rotate, float end_rotate ) : Animation( lockout_time ), duration( duration ), card( card ),
     end_pos( end_pos ), end_scale( end_scale ), end_rotate( end_rotate ),
     start_pos( start_pos ), start_scale( start_scale ), start_rotate( start_rotate ) {}
@@ -167,5 +168,58 @@ bool CardAnimation::IsOver() const noexcept {
 
 void CardAnimation::DoUpdate( float delta ) {}
 
-#pragma region CardAnimation
+#pragma endregion CardAnimation
+
+#pragma region CardDrawAnimation
+
+CardDrawAnimation::CardDrawAnimation( CardWrapper* card )
+    : Animation( CARD_DRAW_LOCKOUT_DURATION ), card( card ) {}
+
+CardDrawAnimation::CardDrawAnimation( CardWrapper* card, float speed )
+    : CardDrawAnimation( card ) {
+    this->speed = speed;
+}
+
+void CardDrawAnimation::Render( View* view ) {
+    view->RenderAnimation( this );
+}
+
+bool CardDrawAnimation::IsOver() const noexcept {
+    return elapsed >= CARD_DRAW_TOTAL_DURATION;
+}
+
+void CardDrawAnimation::DoUpdate( float delta ) {
+    elapsed = fminf( elapsed + delta * speed, CARD_DRAW_TOTAL_DURATION );
+}
+
+#pragma endregion CardDrawAnimation
+
+#pragma region SequentialAnimation
+
+SequentialAnimation::SequentialAnimation( Animation* first, Animation* second )
+    : Animation( first->_lockout_time + second->_lockout_time ),
+    _first( first ), _second( second ) {}
+
+SequentialAnimation::SequentialAnimation( float lockout_time, Animation* first, Animation* second )
+    : Animation( lockout_time ), _first( first ), _second( second ) {}
+
+void SequentialAnimation::Render( View* view ) {
+    if ( !_first->IsOver() )
+        _first->Render( view );
+    else
+        _second->Render( view );
+}
+
+bool SequentialAnimation::IsOver() const noexcept {
+    return _second->IsOver();
+}
+
+void SequentialAnimation::DoUpdate( float delta ) {
+    if ( !_first->IsOver() )
+        _first->DoUpdate( delta );
+    else
+        _second->DoUpdate( delta );
+}
+
+#pragma endregion SequentialAnimation
 }

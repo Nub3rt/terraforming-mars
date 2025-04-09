@@ -16,14 +16,28 @@ namespace view
 {
 class Animation
 {
+    friend class SequentialAnimation;
+
 public:
     virtual ~Animation() = default;
 
     inline bool HasLockout() const noexcept { return _lockout_time != 0.0f; }
 
+    inline Animation* SetOnStart( std::function<void()> on_start ) {
+        this->on_start = on_start;
+        return this;
+    }
+    inline Animation* SetOnCompleted( std::function<void()> on_end ) {
+        this->on_end = on_end;
+        return this;
+    }
+
     void Update( float delta );
     virtual void Render( View* view ) = 0;
     virtual bool IsOver() const noexcept = 0;
+
+    std::function<void()> on_start;
+    std::function<void()> on_end;
 
 protected:
     float _lockout_time;
@@ -81,28 +95,28 @@ protected:
 class CardAnimation : public Animation
 {
 public:
-    CardAnimation( float duration, const model::decks::Card* card, glm::vec2 end_pos,
+    CardAnimation( float duration, CardWrapper* card, glm::vec2 end_pos,
         float end_scale, float end_rotate );
-    CardAnimation( float lockout_time, float duration, const model::decks::Card* card, glm::vec2 end_pos,
+    CardAnimation( float lockout_time, float duration, CardWrapper* card, glm::vec2 end_pos,
         float end_scale, float end_rotate );
-    CardAnimation( float duration, const model::decks::Card* card, glm::vec2 start_pos, glm::vec2 end_pos,
+    CardAnimation( float duration, CardWrapper* card, glm::vec2 start_pos, glm::vec2 end_pos,
         float end_scale, float end_rotate );
-    CardAnimation( float lockout_time, float duration, const model::decks::Card* card, glm::vec2 start_pos, glm::vec2 end_pos,
+    CardAnimation( float lockout_time, float duration, CardWrapper* card, glm::vec2 start_pos, glm::vec2 end_pos,
         float end_scale, float end_rotate );
-    CardAnimation( float duration, const model::decks::Card* card, glm::vec2 start_pos, glm::vec2 end_pos,
+    CardAnimation( float duration, CardWrapper* card, glm::vec2 start_pos, glm::vec2 end_pos,
         float start_scale, float end_scale, float end_rotate );
-    CardAnimation( float lockout_time, float duration, const model::decks::Card* card, glm::vec2 start_pos, glm::vec2 end_pos,
+    CardAnimation( float lockout_time, float duration, CardWrapper* card, glm::vec2 start_pos, glm::vec2 end_pos,
         float start_scale, float end_scale, float end_rotate );
-    CardAnimation( float duration, const model::decks::Card* card, glm::vec2 start_pos, glm::vec2 end_pos,
+    CardAnimation( float duration, CardWrapper* card, glm::vec2 start_pos, glm::vec2 end_pos,
         float start_scale, float end_scale, float start_rotate, float end_rotate );
-    CardAnimation( float lockout_time, float duration, const model::decks::Card* card, glm::vec2 start_pos, glm::vec2 end_pos,
+    CardAnimation( float lockout_time, float duration, CardWrapper* card, glm::vec2 start_pos, glm::vec2 end_pos,
         float start_scale, float end_scale, float start_rotate, float end_rotate );
 
     void Render( View* view ) override;
     bool IsOver() const noexcept override;
 
     float duration;
-    const model::decks::Card* card;
+    CardWrapper* card;
 
     std::optional<glm::vec2> start_pos;
     std::optional<float> start_scale;
@@ -117,6 +131,47 @@ public:
 
 protected:
     bool _performed = false;
+
+    void DoUpdate( float delta ) override;
+};
+
+class CardDrawAnimation : public Animation
+{
+public:
+    CardDrawAnimation( CardWrapper* card );
+    CardDrawAnimation( CardWrapper* card, float speed );
+
+    void Render( View* view ) override;
+    bool IsOver() const noexcept override;
+
+    float elapsed = 0.0f;
+    float speed = 1.0f;
+    CardWrapper* card;
+
+protected:
+    void DoUpdate( float delta ) override;
+};
+
+class SequentialAnimation : public Animation
+{
+public:
+    SequentialAnimation( Animation* first, Animation* second );
+    SequentialAnimation( float lockout_time, Animation* first, Animation* second );
+
+    inline Animation* SetOnSwap( std::function<void()> on_swap ) {
+        this->on_swap = on_swap;
+        return this;
+    }
+
+    void Render( View* view ) override;
+
+    bool IsOver() const noexcept override;
+
+    std::function<void()> on_swap;
+
+protected:
+    Animation* _first;
+    Animation* _second;
 
     void DoUpdate( float delta ) override;
 };

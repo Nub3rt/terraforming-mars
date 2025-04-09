@@ -17,7 +17,16 @@ inline constexpr glm::vec3 PRODUCTION_TEXT_COLOR = glm::vec3( 0xA8, 0x74, 0x4B )
 inline constexpr float HAND_BASE_Y = -1.12f;
 inline constexpr float CARD_BASE_SCALE = 0.25f;
 inline constexpr float CARD_ADJUST_DURATION = 0.5;
-inline constexpr float CARD_DRAW_DURATION = 2.0f;
+inline constexpr float CARD_DRAW_IN_DURATION = 2.0f;
+inline constexpr float CARD_DRAW_DOWN_DURATION = 1.5f;
+inline constexpr float CARD_DRAW_TOTAL_DURATION = CARD_DRAW_IN_DURATION + CARD_DRAW_DOWN_DURATION;
+inline constexpr float CARD_DRAW_LOCKOUT_DURATION = CARD_DRAW_IN_DURATION + 0.5f;
+inline constexpr glm::vec2 CARD_DRAW_POS_START = { 1.2f, -0.4f };
+inline constexpr float CARD_DRAW_SCALE_START = CARD_BASE_SCALE * 1.2f;
+inline constexpr float CARD_DRAW_ROTATE_START = 0.0f;
+inline constexpr glm::vec2 CARD_DRAW_POS_MIDDLE = { 0.5f, 0.0f };
+inline constexpr float CARD_DRAW_SCALE_MIDDLE = CARD_BASE_SCALE * 1.8f;
+inline constexpr float CARD_DRAW_ROTATE_MIDDLE = 0.0f;
 inline constexpr float CARD_DRAG_OUT_LINE_Y = -0.5f;
 
 inline constexpr float ATTRIBUTE_CHANGED_LOCKOUT = 1.0f;

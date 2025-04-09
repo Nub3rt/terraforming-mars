@@ -36,7 +36,7 @@ public:
 
     State state = IDLE;
 
-    glm::vec2 base_pos = glm::vec2( 0.0f, HAND_BASE_Y );
+    glm::vec2 base_pos = CARD_DRAW_POS_START;
     float base_scale = CARD_BASE_SCALE;
     float base_rotate = 0.0f;
 
@@ -46,13 +46,5 @@ public:
 
 private:
     const model::decks::Card* _card;
-
-public:
-    static const glm::vec2 drawing_pos_1;
-    static const float drawing_scale_1;
-    static const float drawing_rotate_1;
-    static const glm::vec2 drawing_pos_2;
-    static const float drawing_scale_2;
-    static const float drawing_rotate_2;
 };
 }

@@ -14,8 +14,8 @@ public:
     virtual ~ViewState();
 
     virtual bool CanHoverHand();
-    virtual bool CanDragCardOut( CardWrapper& card );
-    virtual void PlayCard( CardWrapper& card );
+    virtual bool CanDragCardOut( CardWrapper* card );
+    virtual void PlayCard( int index_in_hand );
 
 protected:
     ViewState( View& view );
@@ -36,9 +36,9 @@ public:
     IdleVState( View& view );
     virtual ~IdleVState();
 
-    virtual bool CanHoverHand();
-    virtual bool CanDragCardOut( CardWrapper& card );
-    virtual void PlayCard( CardWrapper& card );
+    bool CanHoverHand() override;
+    bool CanDragCardOut( CardWrapper* card ) override;
+    void PlayCard( int index_in_hand ) override;
 };
 
 class SellVState : public ViewState
@@ -54,7 +54,7 @@ public:
     PlacementConfirmationVState( View& view );
     virtual ~PlacementConfirmationVState();
 
-    virtual bool CanHoverHand();
+    bool CanHoverHand() override;
 };
 
 class PaymentConfirmationVState : public ViewState

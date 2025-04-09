@@ -38,11 +38,4 @@ void CardWrapper::GoToBase( float duration ) {
     scale.SetAnim( *scale, base_scale, duration );
     rotate.SetAnim( *rotate, base_rotate, duration );
 }
-
-const glm::vec2 CardWrapper::drawing_pos_1 = { 1.2f, -0.4f };
-const float CardWrapper::drawing_scale_1 = CARD_BASE_SCALE * 1.2f;
-const float CardWrapper::drawing_rotate_1 = 0.0f;
-const glm::vec2 CardWrapper::drawing_pos_2 = { 0.5f, 0.0f };
-const float CardWrapper::drawing_scale_2 = CARD_BASE_SCALE * 1.8f;
-const float CardWrapper::drawing_rotate_2 = 0.0f;
 }

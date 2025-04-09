@@ -49,6 +49,7 @@ class View
     friend class InstantAnimation;
     friend class TextAnimation;
     friend class CardAnimation;
+    friend class CardDrawAnimation;
 
 public:
     View();
@@ -103,7 +104,7 @@ protected:
     int _tr = 0;
     std::array<int, +model::Resource::MAX + 1> _resources;
     std::array<int, +model::Resource::MAX + 1> _resource_productions;
-    std::vector<CardWrapper> _hand;
+    std::vector<CardWrapper*> _hand;
     std::vector<CardWrapper> _events;
     std::vector<CardWrapper> _automated;
     std::vector<CardWrapper> _effects;
@@ -143,6 +144,7 @@ protected:
     void RenderAnimation( InstantAnimation* animation );
     void RenderAnimation( TextAnimation* animation );
     void RenderAnimation( CardAnimation* animation );
+    void RenderAnimation( CardDrawAnimation* animation );
 
 
     void RefreshHandPositions();

@@ -1,5 +1,10 @@
 #include "view_state.h"
 
+#include <stdexcept>
+
+#include "view.h"
+#include "card_wrapper.h"
+
 namespace view
 {
 #pragma region ViewState
@@ -8,9 +13,10 @@ ViewState::ViewState( View& view ) : _view( view ) {}
 ViewState::~ViewState() {}
 
 bool ViewState::CanHoverHand() { return false; }
-bool ViewState::CanDragCardOut( CardWrapper& card ) { return false; }
+bool ViewState::CanDragCardOut( CardWrapper* card ) { return false; }
 
-void ViewState::PlayCard( CardWrapper& card ) {
+void ViewState::PlayCard( int index_in_hand ) {
+    throw std::logic_error( "ViewState::PlayCard: View was in an invalid state!" );
 }
 
 #pragma endregion ViewState
@@ -29,15 +35,14 @@ IdleVState::~IdleVState() {}
 
 bool IdleVState::CanHoverHand() { return true; }
 
-bool IdleVState::CanDragCardOut( CardWrapper& card ) {
-    return card->CanBePlayed();
+bool IdleVState::CanDragCardOut( CardWrapper* card ) {
+    return (*card)->CanBePlayed();
 }
 
-void IdleVState::PlayCard( CardWrapper& card ) {
-    _view._model->PlayCard( *card );
+void IdleVState::PlayCard( int index_in_hand ) {
+    _view._model->PlayCard( **_view._hand[ index_in_hand ] );
 
-    ptrdiff_t index = &card - _view._hand.data();
-    _view._hand.erase( _view._hand.begin() + index );
+    _view._hand.erase( _view._hand.begin() + index_in_hand );
     _view.RefreshHandPositions();
 }
 

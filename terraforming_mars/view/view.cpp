@@ -92,13 +92,16 @@ void View::Update( const UpdateInfo& update_info ) {
     _camera_manipulator->Update( update_info.delta );
 
 
-    for ( CardWrapper& card : _hand )
-        card.Update( update_info.delta );
+    for ( CardWrapper* card : _hand )
+        card->Update( update_info.delta );
 
     for ( auto it = _ongoing_animations.begin(); it != _ongoing_animations.end(); ) {
         Animation* animation = *it;
 
         if ( animation->IsOver() ) {
+            if ( animation->on_end )
+                animation->on_end();
+
             it = _ongoing_animations.erase( it );
             delete animation;
         } else {
@@ -112,6 +115,9 @@ void View::Update( const UpdateInfo& update_info ) {
         elapsed += update_info.delta;
 
         if ( duration <= elapsed ) {
+            if ( animation->on_start )
+                animation->on_start();
+
             _ongoing_animations.push_back( animation );
             it = _timed_out_animations.erase( it );
         } else {
@@ -121,17 +127,31 @@ void View::Update( const UpdateInfo& update_info ) {
 
     if ( _locking_animation ) {
         Animation* l_anim = *_locking_animation;
-        l_anim->Update( update_info.delta );
 
-        if ( !l_anim->HasLockout() ) {
+        if ( l_anim->IsOver() ) {
             _locking_animation.reset();
-            _ongoing_animations.push_back( l_anim );
+
+            if ( l_anim->on_end )
+                l_anim->on_end();
+
+            delete l_anim;
+        } else {
+            if ( !l_anim->HasLockout() ) {
+                _locking_animation.reset();
+
+               _ongoing_animations.push_back( l_anim );
+            }
+
+            l_anim->Update( update_info.delta );
         }
     }
 
     while ( !_locking_animation && _animation_queue.size() != 0 ) {
         Animation* animation = _animation_queue.front();
         _animation_queue.pop();
+
+        if ( animation->on_start )
+            animation->on_start();
 
         if ( animation->HasLockout() ) {
             _locking_animation = animation;
@@ -177,7 +197,7 @@ void View::MouseMotion( const SDL_MouseMotionEvent& mouse ) {
         int hovered_card_index = CalculateHoveredCardByPos( x, y );
 
         for ( int i = 0; i < _hand.size(); ++i ) {
-            CardWrapper& card = _hand[ i ];
+            CardWrapper& card = *_hand[ i ];
 
             if ( card.state == CardWrapper::HOVERED && hovered_card_index != i ) {
                 card.state = CardWrapper::IDLE;
@@ -194,22 +214,18 @@ void View::MouseMotion( const SDL_MouseMotionEvent& mouse ) {
             }
         }
     } else {
-        CardWrapper& dragged_card = _hand[ _dragged_card_index ];
+        CardWrapper* dragged_card = _hand[ _dragged_card_index ];
 
         if ( y > CARD_DRAG_OUT_LINE_Y && !_state->CanDragCardOut( dragged_card ) ) {
-            dragged_card.state = CardWrapper::TO_HAND;
-            dragged_card.GoToBase( CARD_ADJUST_DURATION );
-            _timed_out_animations.emplace_back( 0.0f, CARD_ADJUST_DURATION, new InstantAnimation( [ this, c = *dragged_card ]() {
-                auto it = std::find_if( _hand.rbegin(), _hand.rend(), [ c ]( CardWrapper& card ) { return *card == c; } );
-                if ( it == _hand.rend() )
-                    throw std::logic_error( "View::RenderCardAnimation: Card being drawn was not found in hand!" );
-
-                it->state = CardWrapper::IDLE;
+            dragged_card->state = CardWrapper::TO_HAND;
+            dragged_card->GoToBase( CARD_ADJUST_DURATION );
+            _timed_out_animations.emplace_back( 0.0f, CARD_ADJUST_DURATION, new InstantAnimation( [ this, card = dragged_card ]() {
+                card->state = CardWrapper::IDLE;
             } ) );
 
             _dragged_card_index = -1;
         } else {
-            dragged_card.pos.Set( glm::vec2( x, y ) );
+            dragged_card->pos.Set( glm::vec2( x, y ) );
         }
     }
 }
@@ -222,7 +238,7 @@ void View::MouseDown( const SDL_MouseButtonEvent& mouse ) {
     int hovered_card_index = CalculateHoveredCardByPos( x, y );
     if ( hovered_card_index != -1 && _state->CanHoverHand() ) {
         _dragged_card_index = hovered_card_index;
-        CardWrapper& dragged_card = _hand[ _dragged_card_index ];
+        CardWrapper& dragged_card = *_hand[ _dragged_card_index ];
         dragged_card.state = CardWrapper::DRAGGING;
         dragged_card.pos.Set( glm::vec2( x, y ) );
         dragged_card.scale.Set( CARD_BASE_SCALE );
@@ -233,23 +249,19 @@ void View::MouseDown( const SDL_MouseButtonEvent& mouse ) {
 void View::MouseUp( const SDL_MouseButtonEvent& mouse ) {
     if ( _dragged_card_index != -1 ) {
         auto [x, y] = CalculateMousePos( mouse.x, mouse.y );
-        CardWrapper& dragged_card = _hand[ _dragged_card_index ];
+        CardWrapper* dragged_card = _hand[ _dragged_card_index ];
 
         if ( y <= CARD_DRAG_OUT_LINE_Y ) {
-            dragged_card.state = CardWrapper::TO_HAND;
-            dragged_card.GoToBase( CARD_ADJUST_DURATION );
-            _timed_out_animations.emplace_back( 0.0f, CARD_ADJUST_DURATION, new InstantAnimation( [ this, c = *dragged_card ]() {
-                auto it = std::find_if( _hand.rbegin(), _hand.rend(), [ c ]( CardWrapper& card ) { return *card == c; } );
-                if ( it == _hand.rend() )
-                    throw std::logic_error( "View::RenderCardAnimation: Card being drawn was not found in hand!" );
-
-                it->state = CardWrapper::IDLE;
+            dragged_card->state = CardWrapper::TO_HAND;
+            dragged_card->GoToBase( CARD_ADJUST_DURATION );
+            _timed_out_animations.emplace_back( 0.0f, CARD_ADJUST_DURATION, new InstantAnimation( [ this, card = dragged_card ]() {
+                card->state = CardWrapper::IDLE;
             } ) );
 
             _dragged_card_index = -1;
         } else {
+            _state->PlayCard( _dragged_card_index );
             _dragged_card_index = -1;
-            _state->PlayCard( dragged_card );
         }
     }
 }
@@ -284,50 +296,25 @@ void View::ChangeState( ViewState* state ) {
 
     _state = state;
 }
+
 #pragma endregion State
 
 #pragma region Animation Queue
 
 void View::Model_OnDrawCard( const model::decks::Card* card ) {
-    _animation_queue.push( new InstantAnimation( [ =, this ]() {
-        CardWrapper cw( card );
-        cw.state = CardWrapper::DRAWING;
-        _hand.push_back( std::move( cw ) );
+    CardWrapper* card_wrapper = new CardWrapper( card );
+    card_wrapper->state = CardWrapper::DRAWING;
+
+    CardDrawAnimation* animation = new CardDrawAnimation( card_wrapper );
+    animation->SetOnStart( [ this, card_wrapper ]() {
+        _hand.push_back( card_wrapper );
         RefreshHandPositions();
-    } ) );
-    CardAnimation* card_animation = new CardAnimation(
-        CARD_DRAW_DURATION, CARD_DRAW_DURATION,
-        card,
-        CardWrapper::drawing_pos_1,    CardWrapper::drawing_pos_2,
-        CardWrapper::drawing_scale_1,  CardWrapper::drawing_scale_2,
-        CardWrapper::drawing_rotate_1, CardWrapper::drawing_rotate_2
-    );
-    card_animation->ease = glm::quarticEaseOut<float>;
-    card_animation->force_time = true;
-    _animation_queue.push( card_animation );
+    } );
+    animation->SetOnCompleted( [ this, card_wrapper ]() {
+        card_wrapper->state = CardWrapper::IDLE;
+    } );
 
-    _animation_queue.push( new InstantAnimation( [ this, c = card ]() {
-        auto it = std::find_if( _hand.rbegin(), _hand.rend(), [ c ]( CardWrapper& card ) { return *card == c; } );
-        if ( it == _hand.rend() )
-            throw std::logic_error( "View::RenderCardAnimation: Card being drawn was not found in hand!" );
-
-        CardWrapper& card = *it;
-
-        card.state = CardWrapper::TO_HAND;
-        card.SetEase( glm::quarticEaseIn<float> );
-        card.GoToBase( CARD_DRAW_DURATION * 0.7f );
-
-        _timed_out_animations.push_back( { 0.0f, CARD_DRAW_DURATION * 0.7f, new InstantAnimation( [ this, c ]() {
-            auto it = std::find_if( _hand.rbegin(), _hand.rend(), [ c ]( CardWrapper& card ) { return *card == c; } );
-            if ( it == _hand.rend() )
-                throw std::logic_error( "View::RenderCardAnimation: Card being drawn was not found in hand!" );
-
-            CardWrapper& card = *it;
-
-            card.state = CardWrapper::IDLE;
-            card.SetDefaultEase();
-        } ) } );
-    } ) );
+    _animation_queue.push( animation );
 }
 
 void View::Model_OnPlayCard( const model::decks::Card* card ) {
@@ -358,57 +345,57 @@ void View::Model_OnRaiseOxygen() {
 void View::Model_OnPlaceTile( std::pair<int, int> pos ) { throw "not implemented"; }
 
 void View::Model_OnResourceAmountChanged( model::Resource resource, int amount ) {
-    _animation_queue.push( new InstantAnimation( [ =, this ]() {
+    std::function<void()> on_start = [ =, this ]() {
         _resources[ +resource ] += amount;
-    } ) );
+    };
 
     auto [x, y, _] = CalculateResourcePosition( +resource, 2 );
 
     if ( amount >= 0 )
-        _animation_queue.push( new TextAnimation(
+        _animation_queue.push( (new TextAnimation(
             ATTRIBUTE_CHANGED_LOCKOUT,
             ATTRIBUTE_CHANGED_DURATION,
             std::format( "+{}", amount ),
             glm::vec2( x, y ), glm::vec2( x - TEXT_FLOAT_DISTANCE, y ),
             glm::vec4( POSITIVE_TEXT_COLOR, 1.0f ), glm::vec4( POSITIVE_TEXT_COLOR, 0.0f ),
             BASE_TEXT_SCALE
-        ) );
+        ))->SetOnStart( on_start ) );
     else
-        _animation_queue.push( new TextAnimation(
+        _animation_queue.push( (new TextAnimation(
             ATTRIBUTE_CHANGED_LOCKOUT,
             ATTRIBUTE_CHANGED_DURATION,
             std::to_string( amount ),
             glm::vec2( x, y ), glm::vec2( x - TEXT_FLOAT_DISTANCE, y ),
             glm::vec4( NEGATIVE_TEXT_COLOR, 1.0f ), glm::vec4( NEGATIVE_TEXT_COLOR, 0.0f ),
             BASE_TEXT_SCALE
-        ) );
+        ))->SetOnStart( on_start ) );
 }
 
 void View::Model_OnResourceProductionAmountChanged( model::Resource resource, int amount ) {
-    _animation_queue.push( new InstantAnimation( [ =, this ]() {
+    std::function<void()> on_start = [ =, this ]() {
         _resource_productions[ +resource ] += amount;
-    } ) );
+    };
 
     auto [x, y, _] = CalculateResourcePosition( +resource, 0 );
 
     if ( amount >= 0 )
-        _animation_queue.push( new TextAnimation(
+        _animation_queue.push( (new TextAnimation(
             ATTRIBUTE_CHANGED_LOCKOUT,
             ATTRIBUTE_CHANGED_DURATION,
             std::format( "+{}", amount ),
             glm::vec2( x, y ), glm::vec2( x - TEXT_FLOAT_DISTANCE, y ),
             glm::vec4( PRODUCTION_TEXT_COLOR, 1.0f ), glm::vec4( PRODUCTION_TEXT_COLOR, 0.0f ),
             BASE_TEXT_SCALE
-        ) );
+        ))->SetOnStart( on_start ) );
     else
-        _animation_queue.push( new TextAnimation(
+        _animation_queue.push( (new TextAnimation(
             ATTRIBUTE_CHANGED_LOCKOUT,
             ATTRIBUTE_CHANGED_DURATION,
             std::to_string( amount ),
             glm::vec2( x, y ), glm::vec2( x - TEXT_FLOAT_DISTANCE, y ),
             glm::vec4( PRODUCTION_TEXT_COLOR, 1.0f ), glm::vec4( PRODUCTION_TEXT_COLOR, 0.0f ),
             BASE_TEXT_SCALE
-        ) );
+        ))->SetOnStart( on_start ) );
 }
 
 void View::Model_OnResearchConfirmed( std::array<bool, model::RESEARCH_CARD_NUM> selected ) { throw "not implemented"; }
@@ -447,11 +434,7 @@ void View::RenderAnimation( TextAnimation* animation ) {
 }
 
 void View::RenderAnimation( CardAnimation* animation ) {
-    auto it = std::find_if( _hand.rbegin(), _hand.rend(), [ c = animation->card ]( CardWrapper& card ) { return *card == c; } );
-    if ( it == _hand.rend() )
-        throw std::logic_error( "View::RenderCardAnimation: Card being drawn was not found in hand!" );
-
-    CardWrapper& card = *it;
+    CardWrapper& card = *animation->card;
 
     if ( animation->start_pos )
         card.pos.SetAnim( *animation->start_pos, animation->end_pos, animation->duration );
@@ -472,6 +455,28 @@ void View::RenderAnimation( CardAnimation* animation ) {
         card.SetEase( animation->ease );
 }
 
+void View::RenderAnimation( CardDrawAnimation* animation ) {
+    if ( animation->elapsed < CARD_DRAW_IN_DURATION ) {
+        static const std::function<float( float )> ease = glm::quarticEaseOut<float>;
+        float t = animation->elapsed / CARD_DRAW_IN_DURATION;
+        animation->card->pos.Set( CARD_DRAW_POS_START +
+            (CARD_DRAW_POS_MIDDLE - CARD_DRAW_POS_START) * ease( t ) );
+        animation->card->scale.Set( CARD_DRAW_SCALE_START +
+            (CARD_DRAW_SCALE_MIDDLE - CARD_DRAW_SCALE_START) * ease( t ) );
+        animation->card->rotate.Set( CARD_DRAW_ROTATE_START +
+            (CARD_DRAW_ROTATE_MIDDLE - CARD_DRAW_ROTATE_START) * ease( t ) );
+    } else {
+        static const std::function<float( float )> ease = glm::quarticEaseIn<float>;
+        float t = (animation->elapsed - CARD_DRAW_IN_DURATION) / CARD_DRAW_DOWN_DURATION;
+        animation->card->pos.Set( CARD_DRAW_POS_MIDDLE +
+            (animation->card->base_pos - CARD_DRAW_POS_MIDDLE) * ease( t ) );
+        animation->card->scale.Set( CARD_DRAW_SCALE_MIDDLE +
+            (animation->card->base_scale - CARD_DRAW_SCALE_MIDDLE) * ease( t ) );
+        animation->card->rotate.Set( CARD_DRAW_ROTATE_MIDDLE +
+            (animation->card->base_rotate - CARD_DRAW_ROTATE_MIDDLE) * ease( t ) );
+    }
+}
+
 #pragma endregion Animation Queue
 
 void View::RefreshHandPositions() {
@@ -489,7 +494,7 @@ void View::RefreshHandPositions() {
     _hand_end_x   = fminf( max_x, mid_x + (_hand.size() - 1) / 2.0f * spacing );
 
     if ( _hand.size() == 1 ) {
-        CardWrapper& card = _hand[ 0 ];
+        CardWrapper& card = *_hand[ 0 ];
         card.base_pos.x = mid_x;
         card.base_pos.y = HAND_BASE_Y;
         card.base_scale = CARD_BASE_SCALE;
@@ -509,7 +514,7 @@ void View::RefreshHandPositions() {
     }
 
     for ( int i = 0; i < _hand.size(); ++i ) {
-        CardWrapper& card = _hand[ i ];
+        CardWrapper& card = *_hand[ i ];
         card.base_pos.x = _hand_start_x + i * spacing;
         card.base_pos.y = HAND_BASE_Y;
         card.base_scale = CARD_BASE_SCALE;
@@ -764,7 +769,7 @@ void View::RenderHand() {
     glUniform1i( ul( "image" ), 0 );
 
     for ( int i = 0; i < _hand.size(); ++i )
-        RenderCard( _hand[ i ], i );
+        RenderCard( *_hand[ i ], i );
 
     glBindTexture( GL_TEXTURE_2D, 0 );
 
