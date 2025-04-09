@@ -143,7 +143,6 @@ void GameModelState::Player_OnPlaceNoctisCity( Player* player ) {
     if ( valid_positions.size() == 1 ) {
         auto& [q, r] = valid_positions[ 0 ];
         _model->_board->PlaceTile( q, r, player, boards::TileType::CITY );
-        _model->_on_place_tile.Invoke( valid_positions[ 0 ] );
         return;
     }
 
@@ -350,7 +349,6 @@ void PlacementConfirmationState::TilePlacementConfirmed( int q, int r ) {
         throw std::logic_error( std::format( "PlacementConfirmationState::TilePlacementConfirmed: indices q: {}, r: {} are not valid positions!", q, r ) );
 
     _model->_board->PlaceTile( q, r, _model->_local_player, _request->type );
-    _model->_on_place_tile.Invoke( std::pair<int, int>( q, r ) );
     if ( _request->type == boards::TileType::GREENERY )
         _model->_local_player->RaiseOxygen();
 
@@ -475,7 +473,6 @@ void PostLastGenerationPlacementConfirmationState::TilePlacementConfirmed( int q
         throw std::logic_error( std::format( "PostLastGenerationPlacementConfirmationState::TilePlacementConfirmed: indices q: {}, r: {} are not valid positions!", q, r ) );
 
     _model->_board->PlaceTile( q, r, _model->_local_player, boards::TileType::GREENERY );
-    _model->_on_place_tile.Invoke( std::pair<int, int>( q, r ) );
 
     _model->ChangeState( _model->CreatePostLastGenerationState() );
 }

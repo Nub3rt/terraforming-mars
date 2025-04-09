@@ -37,7 +37,7 @@ InstantAnimation::InstantAnimation( float lockout_time, std::function<void()> pe
 
 void InstantAnimation::Render( View* view ) {
     if ( _performed )
-        throw std::logic_error( "InstantAnimation::Render: instant animation was already performed!" );
+        return;
 
     view->RenderAnimation( this );
     _performed = true;
@@ -178,6 +178,7 @@ CardDrawAnimation::CardDrawAnimation( CardWrapper* card )
 CardDrawAnimation::CardDrawAnimation( CardWrapper* card, float speed )
     : CardDrawAnimation( card ) {
     this->speed = speed;
+    _lockout_time /= speed;
 }
 
 void CardDrawAnimation::Render( View* view ) {

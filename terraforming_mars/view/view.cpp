@@ -128,21 +128,21 @@ void View::Update( const UpdateInfo& update_info ) {
     if ( _locking_animation ) {
         Animation* l_anim = *_locking_animation;
 
-        if ( l_anim->IsOver() ) {
+        if ( l_anim->HasLockout() ) {
+            l_anim->Update( update_info.delta );
+        } else {
             _locking_animation.reset();
 
-            if ( l_anim->on_end )
-                l_anim->on_end();
+            if ( l_anim->IsOver() ) {
+                if ( l_anim->on_end )
+                    l_anim->on_end();
 
-            delete l_anim;
-        } else {
-            if ( !l_anim->HasLockout() ) {
-                _locking_animation.reset();
+                delete l_anim;
+            } else {
+                _ongoing_animations.push_back( l_anim );
 
-               _ongoing_animations.push_back( l_anim );
+                l_anim->Update( update_info.delta );
             }
-
-            l_anim->Update( update_info.delta );
         }
     }
 
@@ -484,14 +484,14 @@ void View::RefreshHandPositions() {
     static const float min_x = -0.6f;
     static const float max_x =  0.6f;
     static const float mid_x = (min_x + max_x) / 2.0f;
-    static const float spacing = 0.1f;
+    static const float base_spacing = 0.1f;
     float card_width = CARD_BASE_SCALE * card_ratio / _width * _height;
 
     if ( _hand.size() == 0 )
         return;
 
-    _hand_start_x = fmaxf( min_x, mid_x - (_hand.size() - 1) / 2.0f * spacing );
-    _hand_end_x   = fminf( max_x, mid_x + (_hand.size() - 1) / 2.0f * spacing );
+    _hand_start_x = fmaxf( min_x, mid_x - (_hand.size() - 1) / 2.0f * base_spacing );
+    _hand_end_x   = fminf( max_x, mid_x + (_hand.size() - 1) / 2.0f * base_spacing );
 
     if ( _hand.size() == 1 ) {
         CardWrapper& card = *_hand[ 0 ];
@@ -513,6 +513,7 @@ void View::RefreshHandPositions() {
         return;
     }
 
+    float spacing = (_hand_end_x - _hand_start_x) / (_hand.size() - 1);
     for ( int i = 0; i < _hand.size(); ++i ) {
         CardWrapper& card = *_hand[ i ];
         card.base_pos.x = _hand_start_x + i * spacing;

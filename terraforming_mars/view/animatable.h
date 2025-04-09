@@ -43,7 +43,7 @@ public:
         if ( _a ) {
             _a->end = value;
             if ( force_time ) {
-                _a->elapsed = 0;
+                _a->elapsed = 0.0f;
                 _a->duration = duration;
             }
         } else {

@@ -48,6 +48,10 @@ void GameModel::Initialize( boards::Board* board, decks::Deck* deck ) {
     _state = CreateIdleState();
 
     _board = board;
+    _board->SetOnTilePlacedCallback( [ this ]( int q, int r, const boards::Tile& tile ) {
+        _on_place_tile.Invoke( std::pair( q, r ) );
+    } );
+
     _deck = deck;
 
     _local_player = CreateLocalPlayer();
