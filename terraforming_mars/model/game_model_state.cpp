@@ -101,6 +101,7 @@ void GameModelState::Player_OnRaiseTemperature( Player* player ) {
     _model->_on_raise_temperature.Invoke();
     player->GetTR( 1 );
 }
+
 void GameModelState::Player_OnRaiseOxygen( Player* player ) {
     if ( _model->Oxygen() == MAX_OXYGEN_LEVEL )
         return;
@@ -109,7 +110,6 @@ void GameModelState::Player_OnRaiseOxygen( Player* player ) {
     _model->_on_raise_oxygen.Invoke();
     player->GetTR( 1 );
 }
-
 
 void GameModelState::Player_OnPlaceOcean( Player* player ) {
     std::vector<std::pair<int, int>> valid_positions = _model->_board->GetValidOceanTiles( player );
@@ -155,6 +155,11 @@ void GameModelState::Player_OnPlaceNoctisCity( Player* player ) {
     if ( valid_positions.size() == 1 ) {
         auto& [q, r] = valid_positions[ 0 ];
         _model->_board->PlaceTile( q, r, player, boards::TileType::CITY );
+
+        int oceans = (int)_model->_board->GetNeighbouringTilesOfType( q, r, boards::TileType::OCEAN ).size();
+        if ( oceans != 0 )
+            _model->_local_player->GainResource( Resource::CREDIT, oceans * 2 );
+
         return;
     }
 
@@ -362,6 +367,11 @@ void PlacementConfirmationState::TilePlacementConfirmed( int q, int r ) {
         throw std::logic_error( std::format( "PlacementConfirmationState::TilePlacementConfirmed: indices q: {}, r: {} are not valid positions!", q, r ) );
 
     _model->_board->PlaceTile( q, r, _model->_local_player, _request->type );
+
+    int oceans = (int)_model->_board->GetNeighbouringTilesOfType( q, r, boards::TileType::OCEAN ).size();
+    if ( oceans != 0 )
+        _model->_local_player->GainResource( Resource::CREDIT, oceans * 2 );
+
     if ( _request->type == boards::TileType::GREENERY )
         _model->_local_player->RaiseOxygen();
 

@@ -10,6 +10,7 @@ inline constexpr int STARTING_WINDOW_HEIGHT = 900;
 inline constexpr float SKYBOX_ROTATE_SPEED = 0.01f;
 
 inline constexpr float BASE_TEXT_SCALE = 1.5f;
+inline constexpr glm::vec3 BASE_TEXT_COLOR = glm::vec3( 0xff, 0xff, 0xff ) / 255.0f;
 inline constexpr glm::vec3 POSITIVE_TEXT_COLOR = glm::vec3( 0x0f, 0x86, 0x08 ) / 255.0f;
 inline constexpr glm::vec3 NEGATIVE_TEXT_COLOR = glm::vec3( 0xff, 0x08, 0x08 ) / 255.0f;
 inline constexpr glm::vec3 PRODUCTION_TEXT_COLOR = glm::vec3( 0xA8, 0x74, 0x4B ) / 255.0f;
@@ -18,6 +19,10 @@ inline constexpr glm::vec3 TILE_COLOR_EMPTY    = glm::vec3( 0xff, 0x55, 0x55 ) /
 inline constexpr glm::vec3 TILE_COLOR_OCEAN    = glm::vec3( 0x61, 0xa0, 0xcc ) / 255.0f;
 inline constexpr glm::vec3 TILE_COLOR_GREENERY = glm::vec3( 0x4e, 0x92, 0x42 ) / 255.0f;
 inline constexpr glm::vec3 TILE_COLOR_CITY     = glm::vec3( 0xe0, 0xe0, 0xe0 ) / 255.0f;
+inline constexpr glm::vec3 TILE_BORDER_COLOR_IDLE           = glm::vec3( 0xff, 0x6b, 0x08 ) / 255.0f;
+inline constexpr glm::vec3 TILE_BORDER_COLOR_FOR_OCEAN      = glm::vec3( 0x08, 0xe6, 0xff ) / 255.0f;
+inline constexpr glm::vec3 TILE_BORDER_COLOR_NON_SELECTABLE = glm::vec3( 0x60, 0x60, 0x60 ) / 255.0f;
+inline constexpr glm::vec3 TILE_BORDER_COLOR_SELECTABLE     = glm::vec3( 0xf0, 0xf0, 0xf0 ) / 255.0f;
 inline constexpr float TILE_CHANGE_DURATION = 0.5f;
 
 inline constexpr float HAND_BASE_Y = -1.12f;

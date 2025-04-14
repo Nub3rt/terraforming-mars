@@ -19,7 +19,9 @@ public:
     void OnTilePlaced();
     void Update( float delta );
 
+    bool selectable = false;
     Animatable<glm::vec3> color;
+    glm::vec3 border_color;
 
 private:
     const model::boards::Tile& _tile;

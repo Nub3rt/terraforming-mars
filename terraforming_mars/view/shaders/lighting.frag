@@ -9,13 +9,14 @@ out vec4 fs_out_col;
 
 uniform sampler2D image;
 uniform vec3 color;
+uniform vec3 border_color;
 
 void main() {
 //    vec4 tex = texture( image, vs_out_tex );
     vec4 tex = vec4( color, 1.0 );
 
-    if ( vs_out_on_edge > 0.97 ) {
-        tex = vec4( 1.0, 1.0, 1.0, 1.0 );
+    if ( vs_out_on_edge > 0.95 ) {
+        tex = vec4( border_color, 1.0 );
     }
 
     fs_out_col = tex;

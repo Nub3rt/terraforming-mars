@@ -178,6 +178,13 @@ void View::Update( const UpdateInfo& update_info ) {
     }
 
     _model->Update();
+
+    if ( _next_state != nullptr && !_locking_animation ) {
+        delete _state;
+        _state = _next_state;
+        _next_state = nullptr;
+        _state->Enter();
+    }
 }
 
 void View::Render() {
@@ -192,6 +199,8 @@ void View::Render() {
 
     if ( _locking_animation )
         (*_locking_animation)->Render( this );
+
+    _state->Render();
 }
 
 void View::RenderGUI() {
@@ -250,8 +259,8 @@ void View::MouseMotion( const SDL_MouseMotionEvent& mouse ) {
 }
 
 void View::MouseDown( const SDL_MouseButtonEvent& mouse ) {
-    uint8_t id = GetStencilValue( mouse.x, mouse.y );
-    std::cout << std::to_string( id ) << std::endl;
+    _mouse_down_stencil = GetStencilValue( mouse.x, mouse.y );
+    std::cout << std::to_string( _mouse_down_stencil ) << std::endl;
 
     auto [x, y] = CalculateMousePos( mouse.x, mouse.y );
     int hovered_card_index = CalculateHoveredCardByPos( x, y );
@@ -282,6 +291,40 @@ void View::MouseUp( const SDL_MouseButtonEvent& mouse ) {
             _state->PlayCard( _dragged_card_index );
             _dragged_card_index = -1;
         }
+    } else {
+        uint8_t stencil = GetStencilValue( mouse.x, mouse.y );
+        if ( stencil == _mouse_down_stencil ) {
+            switch ( stencil ) {
+                case STENCIL_NONE: break;
+                case 0x00:
+                    std::cerr << "View::MouseUp: Invalid stencil value received: 0!";
+                    break;
+                case STENCIL_MENU:
+
+                    break;
+                case STENCIL_END:
+
+                    break;
+                case STENCIL_EVENTS:
+
+                    break;
+                case STENCIL_AUTOMATED:
+
+                    break;
+                case STENCIL_EFFECTS:
+
+                    break;
+                case STENCIL_ACTIONS:
+
+                    break;
+                default: // tile/active card was clicked
+                    if ( stencil < STENCIL_STARTING_BOARD + _tiles.size() ) {
+                        _state->ClickedOnTile( _tiles[ stencil - STENCIL_STARTING_BOARD ] );
+                    } else {
+                        // TODO active cards
+                    }
+            }
+        }
     }
 }
 
@@ -304,16 +347,22 @@ void View::OtherEvent( const SDL_Event& event ) {
 ResearchVState* View::CreateResearchState() { return new ResearchVState( *this ); }
 IdleVState* View::CreateIdleState() { return new IdleVState( *this ); }
 SellVState* View::CreateSellState() { return new SellVState( *this ); }
-PlacementConfirmationVState* View::CreatePlacementConfirmationState() { return new PlacementConfirmationVState( *this ); }
+PlacementConfirmationVState* View::CreatePlacementConfirmationState( model::boards::TileType tile_type, std::vector<std::pair<int, int>> valid_positions ) { return new PlacementConfirmationVState( *this, tile_type, std::move( valid_positions ) ); }
 PaymentConfirmationVState* View::CreatePaymentConfirmationState() { return new PaymentConfirmationVState( *this ); }
 PostLastGenerationVState* View::CreatePostLastGenerationState() { return new PostLastGenerationVState( *this ); }
 GameOverVState* View::CreateGameOverState() { return new GameOverVState( *this ); }
 
-void View::ChangeState( ViewState* state ) {
-    if ( _state != nullptr )
-        delete _state;
+void View::RequestStateChange( ViewState* state ) {
+    if ( _next_state == nullptr )
+        _next_state = state;
+    else
+        throw std::logic_error( "View::RequestStateChange: another state change was already requested!" );
+}
 
+void View::RequestInstantStateChange( ViewState* state ) {
+    delete _state;
     _state = state;
+    _state->Enter();
 }
 
 #pragma endregion State
@@ -430,7 +479,11 @@ void View::Model_OnResourceProductionAmountChanged( model::Resource resource, in
 void View::Model_OnResearchConfirmed( std::array<bool, model::RESEARCH_CARD_NUM> selected ) { throw "not implemented"; }
 void View::Model_OnConfirmResearch( std::array<const model::decks::Card*, model::RESEARCH_CARD_NUM> cards ) { throw "not implemented"; }
 void View::Model_OnConfirmPayment( int amount, model::Resource resource, int resource_value ) { throw "not implemented"; }
-void View::Model_OnConfirmPlacement( model::boards::TileType tile_type, std::vector<std::pair<int, int>> valid_positions ) { throw "not implemented"; }
+
+void View::Model_OnConfirmPlacement( model::boards::TileType tile_type, std::vector<std::pair<int, int>> valid_positions ) {
+    RequestStateChange( CreatePlacementConfirmationState( tile_type, std::move( valid_positions ) ) );
+}
+
 void View::Model_OnConfirmDestroyResource( model::Resource resource, int amount ) { throw "not implemented"; }
 void View::Model_OnConfirmDestroyResourceProduction( model::Resource resource, int amount ) { throw "not implemented"; }
 void View::Model_OnGameEnd() { throw "not implemented"; }
@@ -600,6 +653,7 @@ void View::RenderHexagon( TileWrapper& tile, int id ) {
 
     glUniform1i( ul( "image" ), 0 );
     glUniform3f( ul( "color" ), tile.color->r, tile.color->g, tile.color->b );
+    glUniform3f( ul( "border_color" ), tile.border_color.r, tile.border_color.g, tile.border_color.b );
 
     SetStencilRef( id );
 
@@ -658,7 +712,7 @@ void View::RenderGlobalParameters() {
     }};
     for ( int i = 0; i < text_to_draw.size(); ++i ) {
         auto& [current, max] = text_to_draw[ i ];
-        glm::vec3 color = current == max ? glm::vec3( 0.0f, 1.0f, 0.0f ) : glm::vec3( 1.0f );
+        glm::vec3 color = current == max ? POSITIVE_TEXT_COLOR : BASE_TEXT_COLOR;
 
         auto [x, y, _] = CalculateParameterPosition( i, 1 );
         TextRenderer::RenderTextCentered(

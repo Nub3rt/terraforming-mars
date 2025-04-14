@@ -83,16 +83,18 @@ protected:
 
 
     ViewState* _state = nullptr;
+    ViewState* _next_state = nullptr;
 
     virtual ResearchVState* CreateResearchState();
     virtual IdleVState* CreateIdleState();
     virtual SellVState* CreateSellState();
-    virtual PlacementConfirmationVState* CreatePlacementConfirmationState();
+    virtual PlacementConfirmationVState* CreatePlacementConfirmationState( model::boards::TileType tile_type, std::vector<std::pair<int, int>> valid_positions );
     virtual PaymentConfirmationVState* CreatePaymentConfirmationState();
     virtual PostLastGenerationVState* CreatePostLastGenerationState();
     virtual GameOverVState* CreateGameOverState();
 
-    void ChangeState( ViewState* state );
+    void RequestStateChange( ViewState* state );
+    void RequestInstantStateChange( ViewState* state );
 
 
     model::GameModel* _model = nullptr;
@@ -117,6 +119,7 @@ protected:
     float _hand_end_x = 0.0f;
     float _hand_top_y = -1.0f + 1.0f / 9.0f;
     int _dragged_card_index = -1;
+    uint8_t _mouse_down_stencil = 0;
 
 
     void Model_OnDrawCard( const model::decks::Card* card );

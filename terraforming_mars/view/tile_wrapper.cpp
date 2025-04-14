@@ -12,11 +12,20 @@ namespace view
 {
 TileWrapper::TileWrapper( const model::boards::Tile& tile ) : _tile( tile ) {
     color = GetColorForTileType( _tile.get_type() );
+
+    if ( _tile.get_type() == model::boards::TileType::RESERVED_FOR_OCEAN )
+        border_color = TILE_BORDER_COLOR_FOR_OCEAN;
+    else
+        border_color = TILE_BORDER_COLOR_IDLE;
 }
+
 TileWrapper::~TileWrapper() {}
 
 void TileWrapper::OnTilePlaced() {
     color.UpdateAnim( GetColorForTileType( _tile.get_type() ), TILE_CHANGE_DURATION, true );
+
+    if ( _tile.get_type() != model::boards::TileType::RESERVED_FOR_OCEAN )
+        border_color = TILE_BORDER_COLOR_IDLE;
 }
 
 void TileWrapper::Update( float delta ) {
