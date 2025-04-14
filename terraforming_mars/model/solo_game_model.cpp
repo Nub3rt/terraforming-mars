@@ -73,13 +73,13 @@ void SoloIdleState::EndTurn() {
 
     if ( _model->_generation < SOLO_GAME_MAX_GENERATIONS && !_model->AreGlobalParametersFulfilled() ) {
         ++_model->_generation;
-        _model->ChangeState( _model->CreateResearchState() );
+        _model->RequestStateChange( _model->CreateResearchState() );
         return;
     }
 
     if ( CanConvertPlantsToGreenery() ) {
         _model->_in_post_last_generation = true;
-        _model->ChangeState( _model->CreatePostLastGenerationState() );
+        _model->RequestStateChange( _model->CreatePostLastGenerationState() );
         return;
     }
 

@@ -27,6 +27,9 @@ GameModel::~GameModel() {
     delete _local_player;
     delete _state;
 
+    if ( _next_state != nullptr )
+        delete _next_state;
+
     while ( !_queued_request.empty() ) {
         Request* request = _queued_request.front();
         _queued_request.pop();
@@ -67,6 +70,14 @@ void GameModel::Start() {
     _started = true;
 
     // TODO
+}
+
+void GameModel::Update() {
+    if ( _next_state != nullptr ) {
+        delete _state;
+        _state = _next_state;
+        _next_state = nullptr;
+    }
 }
 
 bool GameModel::IsTilePlaceable( const Player* player ) const {
@@ -156,11 +167,11 @@ PostLastGenerationState* GameModel::CreatePostLastGenerationState() { return new
 PostLastGenerationPlacementConfirmationState* GameModel::CreatePostLastGenerationPlacementConfirmationState( PostLastGenerationGreeneryPlacementRequest* request ) { return new PostLastGenerationPlacementConfirmationState( this, request ); }
 GameOverState* GameModel::CreateGameOverState() { return new GameOverState( this ); }
 
-void GameModel::ChangeState( GameModelState* state ) {
-    if ( _state != nullptr )
-        delete _state;
-
-    _state = state;
+void GameModel::RequestStateChange( GameModelState* state ) {
+    if ( _next_state == nullptr )
+        _next_state = state;
+    else
+        throw std::logic_error( "GameModel::RequestStateChange: another state change was already requested!" );
 }
 
 void GameModel::Player_OnDrawCard( Player* player ) { _state->Player_OnDrawCard( player ); }
@@ -191,9 +202,8 @@ void GameModel::Player_OnConfirmTitaniumPayment( Player* player, int cost, std::
 void GameModel::EndGame() {
     _game_ended = true;
     _on_game_end.Invoke();
-    ChangeState( CreateGameOverState() );
+    RequestStateChange( CreateGameOverState() );
 }
-
 #pragma region Requests
 
 GameModel::PlacementRequest::PlacementRequest( boards::TileType type, std::vector<std::pair<int, int>> valid_positions )

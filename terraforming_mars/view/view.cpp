@@ -176,6 +176,8 @@ void View::Update( const UpdateInfo& update_info ) {
             _ongoing_animations.push_back( animation );
         }
     }
+
+    _model->Update();
 }
 
 void View::Render() {

@@ -50,6 +50,7 @@ public:
 
     virtual void Initialize( boards::Board* board, decks::Deck* deck );
     virtual void Start();
+    virtual void Update();
 
     inline int get_generation() const { return _generation; }
     inline const boards::Board* get_board() const { return _board; }
@@ -136,6 +137,7 @@ protected:
     int _oxygen_level = 0;
 
     GameModelState* _state = nullptr;
+    GameModelState* _next_state = nullptr;
 
     Player* _local_player = nullptr;
 
@@ -178,7 +180,7 @@ protected:
     virtual PostLastGenerationPlacementConfirmationState* CreatePostLastGenerationPlacementConfirmationState( PostLastGenerationGreeneryPlacementRequest* request );
     virtual GameOverState* CreateGameOverState();
 
-    void ChangeState( GameModelState* state );
+    void RequestStateChange( GameModelState* state );
 
     virtual void EndGame();
 

@@ -52,18 +52,30 @@ void GameModelState::PaymentConfirmed( int credit, int resource ) { throw std::l
 void GameModelState::EndTurn() { throw std::logic_error( "GameModelState::EndTurn: GameModel was in an invalid state!" ); }
 
 void GameModelState::PerformRequest( GameModel::PlacementRequest* request ) {
-    _model->_on_confirm_placement.Invoke( request->type, request->valid_positions );
-    _model->ChangeState( _model->CreatePlacementConfirmationState( request ) );
+    if ( _model->_next_state == nullptr ) {
+        _model->_on_confirm_placement.Invoke( request->type, request->valid_positions );
+        _model->RequestStateChange( _model->CreatePlacementConfirmationState( request ) );
+    } else {
+        _model->_queued_request.push( request );
+    }
 }
 
 void GameModelState::PerformRequest( GameModel::PaymentRequest* request ) {
-    _model->_on_confirm_payment.Invoke( request->cost, request->resource, request->resource_value );
-    _model->ChangeState( _model->CreatePaymentConfirmationState( request ) );
+    if ( _model->_next_state == nullptr ) {
+        _model->_on_confirm_payment.Invoke( request->cost, request->resource, request->resource_value );
+        _model->RequestStateChange( _model->CreatePaymentConfirmationState( request ) );
+    } else {
+        _model->_queued_request.push( request );
+    }
 }
 
 void GameModelState::PerformRequest( GameModel::PostLastGenerationGreeneryPlacementRequest* request ) {
-    _model->_on_confirm_placement.Invoke( boards::TileType::GREENERY, request->valid_positions );
-    _model->ChangeState( _model->CreatePostLastGenerationPlacementConfirmationState( request ) );
+    if ( _model->_next_state == nullptr ) {
+        _model->_on_confirm_placement.Invoke( boards::TileType::GREENERY, request->valid_positions );
+        _model->RequestStateChange( _model->CreatePostLastGenerationPlacementConfirmationState( request ) );
+    } else {
+        _model->_queued_request.push( request );
+    }
 }
 
 void GameModelState::Player_OnDrawCard( Player* player ) {
@@ -220,7 +232,7 @@ void ResearchState::ConfirmPurchases() {
 
     _model->_on_research_confirmed.Invoke( std::move( _to_buy ) );
 
-    _model->ChangeState( _model->CreateIdleState() );
+    _model->RequestStateChange( _model->CreateIdleState() );
 }
 
 #pragma endregion ResearchState
@@ -312,6 +324,7 @@ void IdleState::PlayCard( const decks::Card* card ) {
     _model->_local_player->PlayCard( card );
     _model->_on_play_card.Invoke( card );
 }
+
 void IdleState::UseAction( const decks::ActiveCardWithAction* card ) { _model->_local_player->UseAction( card ); }
 
 
@@ -353,7 +366,7 @@ void PlacementConfirmationState::TilePlacementConfirmed( int q, int r ) {
         _model->_local_player->RaiseOxygen();
 
     if ( _model->_queued_request.empty() ) {
-        _model->ChangeState( _model->CreateIdleState() );
+        _model->RequestStateChange( _model->CreateIdleState() );
         return;
     }
 
@@ -401,7 +414,7 @@ void PaymentConfirmationState::PaymentConfirmed( int credit, int resource ) {
     _request->after_payment();
 
     if ( _model->_queued_request.empty() ) {
-        _model->ChangeState( _model->CreateIdleState() );
+        _model->RequestStateChange( _model->CreateIdleState() );
         return;
     }
 
@@ -474,7 +487,7 @@ void PostLastGenerationPlacementConfirmationState::TilePlacementConfirmed( int q
 
     _model->_board->PlaceTile( q, r, _model->_local_player, boards::TileType::GREENERY );
 
-    _model->ChangeState( _model->CreatePostLastGenerationState() );
+    _model->RequestStateChange( _model->CreatePostLastGenerationState() );
 }
 
 #pragma endregion PostLastGenerationPlacementConfirmationState
