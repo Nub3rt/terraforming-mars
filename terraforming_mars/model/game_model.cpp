@@ -150,10 +150,14 @@ void GameModel::SubscribeCallbacksOnPlayer( Player* player ) {
     player->SetOnPlaceLonelyCityCallback( std::bind_front( &GameModel::Player_OnPlaceLonelyCity, this ) );
     player->SetOnPlaceUrbanizedAreaCallback( std::bind_front( &GameModel::Player_OnPlaceUrbanizedArea, this ) );
 
-    player->SetOnResourceAmountChangedCallback( std::bind_front( &GameModel::Player_OnResourceAmountChanged, this ) );
-    player->SetOnResourceProductionAmountChangedCallback( std::bind_front( &GameModel::Player_OnResourceProductionAmountChanged, this ) );
-    player->SetOnDestroyResourceCallback( std::bind_front( &GameModel::Player_OnDestroyResource, this ) );
-    player->SetOnDestroyResourceProductionCallback( std::bind_front( &GameModel::Player_OnDestroyResourceProduction, this ) );
+    //player->SetOnResourceAmountChangedCallback( std::bind_front( &GameModel::Player_OnResourceAmountChanged, this ) );
+    //player->SetOnResourceProductionAmountChangedCallback( std::bind_front( &GameModel::Player_OnResourceProductionAmountChanged, this ) );
+    //player->SetOnDestroyResourceCallback( std::bind_front( &GameModel::Player_OnDestroyResource, this ) );
+    //player->SetOnDestroyResourceProductionCallback( std::bind_front( &GameModel::Player_OnDestroyResourceProduction, this ) );
+    player->SetOnResourceAmountChangedCallback( [ this ]( Player* player, Resource resource, int amount ) { Player_OnResourceAmountChanged( player, resource, amount ); } );
+    player->SetOnResourceProductionAmountChangedCallback( [ this ]( Player* player, Resource resource, int amount ) { Player_OnResourceProductionAmountChanged( player, resource, amount ); } );
+    player->SetOnDestroyResourceCallback( [ this ]( Player* player, Resource resource, int amount ) { Player_OnDestroyResource( player, resource, amount ); } );
+    player->SetOnDestroyResourceProductionCallback( [ this ]( Player* player, Resource resource, int amount ) { Player_OnDestroyResourceProduction( player, resource, amount ); } );
 
     player->SetOnConfirmSteelPaymentCallback( std::bind_front( &GameModel::Player_OnConfirmSteelPayment, this ) );
     player->SetOnConfirmTitaniumPaymentCallback( std::bind_front( &GameModel::Player_OnConfirmTitaniumPayment, this ) );
