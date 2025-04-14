@@ -41,6 +41,7 @@ bool View::Init( Camera* camera, model::GameModel* model ) {
     _model = model;
 
     _model->SetOnDrawCard( std::bind_front( &View::Model_OnDrawCard, this ) );
+    _model->SetOnDrawCards( std::bind_front( &View::Model_OnDrawCards, this ) );
     _model->SetOnPlayCard( std::bind_front( &View::Model_OnPlayCard, this ) );
     _model->SetOnRaiseTR( std::bind_front( &View::Model_OnRaiseTR, this ) );
     _model->SetOnRaiseTemperature( std::bind_front( &View::Model_OnRaiseTemperature, this ) );
@@ -370,10 +371,14 @@ void View::RequestInstantStateChange( ViewState* state ) {
 #pragma region Animation Queue
 
 void View::Model_OnDrawCard( const model::decks::Card* card ) {
+    Model_OnDrawCardSpeed( card, 1.0f );
+}
+
+void View::Model_OnDrawCardSpeed( const model::decks::Card* card, float speed ) {
     CardWrapper* card_wrapper = new CardWrapper( card );
     card_wrapper->state = CardWrapper::DRAWING;
 
-    CardDrawAnimation* animation = new CardDrawAnimation( card_wrapper, 50.0f );
+    CardDrawAnimation* animation = new CardDrawAnimation( card_wrapper, speed );
     animation->SetOnStart( [ this, card_wrapper ]() {
         _hand.push_back( card_wrapper );
         RefreshHandPositions();
@@ -385,41 +390,51 @@ void View::Model_OnDrawCard( const model::decks::Card* card ) {
     _animation_queue.push( animation );
 }
 
+void View::Model_OnDrawCards( std::vector<const model::decks::Card*> cards ) {
+    float speed = 1.0f;
+    for ( int i = 0; i < cards.size(); ++i ) {
+        speed *= 1.2f;
+        Model_OnDrawCardSpeed( cards[ i ], speed );
+    }
+}
+
 void View::Model_OnPlayCard( const model::decks::Card* card ) {
     // TODO
 }
 
 void View::Model_OnRaiseTR( int amount ) {
-    _animation_queue.push( new InstantAnimation( [ =, this ]() {
+    CreateParameterAnimation( 3, std::format( "+{}", amount ), [ =, this ]() {
         _tr += amount;
-    } ) );
-    CreateParameterAnimation( 3, std::format( "+{}", amount ) );
+    } );
 }
 
 void View::Model_OnRaiseTemperature() {
-    _animation_queue.push( new InstantAnimation( [ this ]() {
+    CreateParameterAnimation( 0, "+2", [ this ]() {
         _temperature += 2;
-    } ) );
-    CreateParameterAnimation( 0, "+2" );
+    } );
 }
 
 void View::Model_OnRaiseOxygen() {
-    _animation_queue.push( new InstantAnimation( [ this ]() {
+    CreateParameterAnimation( 2, "+1", [ this ]() {
         _oxygen_level += 1;
-    } ) );
-    CreateParameterAnimation( 2, "+1" );
+    } );
 }
 
 void View::Model_OnPlaceTile( std::pair<int, int> pos ) {
     auto& [q, r] = pos;
-    _animation_queue.push( new InstantAnimation( DEFAULT_LOCKOUT_DURATION, [ =, this ]() {
-        TileWrapper* tile = _indexable_tiles[ r ][ q ];
+    TileWrapper* tile = _indexable_tiles[ r ][ q ];
+    if ( tile == nullptr )
+        throw std::logic_error( "View::Model_OnPlaceTile: received invalid indices!" );
 
-        if ( tile == nullptr )
-            throw std::logic_error( "View::Model_OnPlaceTile: received invalid indices!" );
-
-        tile->OnTilePlaced();
-    } ) );
+    if ( (*tile)->get_type() == model::boards::TileType::OCEAN )
+        CreateParameterAnimation( 1, "+1", [ =, this ]() {
+            _ocean_count += 1;
+            tile->OnTilePlaced();
+        } );
+    else
+        _animation_queue.push( new InstantAnimation( DEFAULT_LOCKOUT_DURATION, [ =, this ]() {
+            tile->OnTilePlaced();
+        } ) );
 }
 
 void View::Model_OnResourceAmountChanged( model::Resource resource, int amount ) {
@@ -488,17 +503,17 @@ void View::Model_OnConfirmDestroyResource( model::Resource resource, int amount 
 void View::Model_OnConfirmDestroyResourceProduction( model::Resource resource, int amount ) { throw "not implemented"; }
 void View::Model_OnGameEnd() { throw "not implemented"; }
 
-void View::CreateParameterAnimation( int parameter, std::string text ) {
+void View::CreateParameterAnimation( int parameter, std::string text, std::function<void()> on_start ) {
     auto [x, y, _] = CalculateParameterPosition( parameter, 1 );
 
-    _animation_queue.push( new TextAnimation(
+    _animation_queue.push( (new TextAnimation(
         DEFAULT_LOCKOUT_DURATION,
         ATTRIBUTE_CHANGED_DURATION,
         text,
         glm::vec2( x, y ), glm::vec2( x - TEXT_FLOAT_DISTANCE, y ),
         glm::vec4( POSITIVE_TEXT_COLOR, 1.0f ), glm::vec4( POSITIVE_TEXT_COLOR, 0.0f ),
         BASE_TEXT_SCALE
-    ) );
+    ))->SetOnStart( on_start ) );
 }
 
 void View::RenderAnimation( InstantAnimation* animation ) {

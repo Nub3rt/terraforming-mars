@@ -372,6 +372,11 @@ void PlacementConfirmationState::TilePlacementConfirmed( int q, int r ) {
     if ( oceans != 0 )
         _model->_local_player->GainResource( Resource::CREDIT, oceans * 2 );
 
+    if ( _request->type == boards::TileType::OCEAN ) {
+        _model->_ocean_count += 1;
+        _model->_local_player->RaiseTR( 1 );
+    }
+
     if ( _request->type == boards::TileType::GREENERY )
         _model->_local_player->RaiseOxygen();
 

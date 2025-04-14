@@ -123,6 +123,8 @@ protected:
 
 
     void Model_OnDrawCard( const model::decks::Card* card );
+    void Model_OnDrawCardSpeed( const model::decks::Card* card, float speed );
+    void Model_OnDrawCards( std::vector<const model::decks::Card*> cards );
     void Model_OnPlayCard( const model::decks::Card* card );
     void Model_OnRaiseTR( int amount );
     void Model_OnRaiseTemperature();
@@ -138,7 +140,7 @@ protected:
     void Model_OnConfirmDestroyResourceProduction( model::Resource resource, int amount );
     void Model_OnGameEnd();
 
-    void CreateParameterAnimation( int parameter, std::string text );
+    void CreateParameterAnimation( int parameter, std::string text, std::function<void()> on_start );
 
     std::queue<Animation*> _animation_queue;
     std::vector<std::tuple<float, float, Animation*>> _timed_out_animations;

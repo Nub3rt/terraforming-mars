@@ -107,6 +107,7 @@ public:
 
 
     inline void SetOnDrawCard( Callback<const decks::Card*> callback ) { _on_draw_card.SetCallback( callback ); }
+    inline void SetOnDrawCards( Callback<std::vector<const decks::Card*>> callback ) { _on_draw_cards.SetCallback( callback ); }
     inline void SetOnPlayCard( Callback<const decks::Card*> callback ) { _on_play_card.SetCallback( callback ); }
     inline void SetOnRaiseTR( Callback<int> callback ) { _on_raise_tr.SetCallback( callback ); }
     inline void SetOnRaiseTemperature( Callback<> callback ) { _on_raise_temperature.SetCallback( callback ); }
@@ -150,6 +151,7 @@ protected:
     std::mt19937 _random;
 
     Event<const decks::Card*> _on_draw_card;
+    Event<std::vector<const decks::Card*>> _on_draw_cards;
     Event<const decks::Card*> _on_play_card;
     Event<int> _on_raise_tr;
     Event<> _on_raise_temperature;

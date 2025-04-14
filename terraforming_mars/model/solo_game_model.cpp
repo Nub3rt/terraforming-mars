@@ -43,9 +43,13 @@ void SoloGameModel::Initialize( boards::Board* board, decks::Deck* deck ) {
 void SoloGameModel::Start() {
     _local_player->GainResource( Resource::CREDIT, BEGINNER_CORPORATION_CREDITS );
 
+    std::vector<const decks::Card*> cards;
     for ( int i = 0; i < STARTING_CARD_COUNT; ++i ) {
-        _local_player->DrawCard();
+        decks::Card* card = _deck->DrawCard();
+        cards.emplace_back( card );
+        _local_player->GetCard( card );
     }
+    _on_draw_cards.Invoke( std::move( cards ) );
 }
 
 Player* SoloGameModel::CreateLocalPlayer() {
