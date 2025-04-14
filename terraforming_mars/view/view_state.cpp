@@ -118,6 +118,8 @@ void PlacementConfirmationVState::ColorBordersIdle() {
         tile.selectable = false;
         if ( tile->get_type() == model::boards::TileType::RESERVED_FOR_OCEAN )
             tile.border_color = TILE_BORDER_COLOR_FOR_OCEAN;
+        else if ( tile->get_type() == model::boards::TileType::RESERVED_FOR_NOCTIS )
+            tile.border_color = TILE_BORDER_COLOR_FOR_NOCTIS;
         else
             tile.border_color = TILE_BORDER_COLOR_IDLE;
     }

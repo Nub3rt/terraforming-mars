@@ -217,10 +217,10 @@ protected:
     class PlacementRequest : public Request
     {
     public:
-        PlacementRequest( boards::TileType type, std::vector<std::pair<int, int>> valid_positions );
+        PlacementRequest( boards::TileType type, std::function<std::vector<std::pair<int, int>>()> get_valid_positions );
 
         boards::TileType type;
-        std::vector<std::pair<int, int>> valid_positions;
+        std::function<std::vector<std::pair<int, int>>()> get_valid_positions;
 
         void Perform( GameModelState* state ) override;
     };

@@ -15,6 +15,8 @@ TileWrapper::TileWrapper( const model::boards::Tile& tile ) : _tile( tile ) {
 
     if ( _tile.get_type() == model::boards::TileType::RESERVED_FOR_OCEAN )
         border_color = TILE_BORDER_COLOR_FOR_OCEAN;
+    else if ( _tile.get_type() == model::boards::TileType::RESERVED_FOR_NOCTIS )
+        border_color = TILE_BORDER_COLOR_FOR_NOCTIS;
     else
         border_color = TILE_BORDER_COLOR_IDLE;
 }

@@ -156,7 +156,7 @@ void GameModel::SubscribeCallbacksOnPlayer( Player* player ) {
     player->SetOnDestroyResourceProductionCallback( std::bind_front( &GameModel::Player_OnDestroyResourceProduction, this ) );
 
     player->SetOnConfirmSteelPaymentCallback( std::bind_front( &GameModel::Player_OnConfirmSteelPayment, this ) );
-    player->SetOnConfirmSteelPaymentCallback( std::bind_front( &GameModel::Player_OnConfirmTitaniumPayment, this ) );
+    player->SetOnConfirmTitaniumPaymentCallback( std::bind_front( &GameModel::Player_OnConfirmTitaniumPayment, this ) );
 }
 
 IdleState* GameModel::CreateIdleState() { return new IdleState( this ); }
@@ -206,8 +206,8 @@ void GameModel::EndGame() {
 }
 #pragma region Requests
 
-GameModel::PlacementRequest::PlacementRequest( boards::TileType type, std::vector<std::pair<int, int>> valid_positions )
-    : type( type ), valid_positions( std::move( valid_positions ) ) {}
+GameModel::PlacementRequest::PlacementRequest( boards::TileType type, std::function<std::vector<std::pair<int, int>>()> get_valid_positions )
+    : type( type ), get_valid_positions( get_valid_positions ) {}
 
 void GameModel::PlacementRequest::Perform( GameModelState* state ) {
     state->PerformRequest( this );
