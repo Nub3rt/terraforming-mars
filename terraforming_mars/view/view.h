@@ -178,6 +178,7 @@ protected:
 
 
     GLuint _program_id = 0;
+    GLuint _program_card_id = 0;
     GLuint _program_rectangle_id = 0;
     GLuint _program_sprite_sheet_id = 0;
 

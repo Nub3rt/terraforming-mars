@@ -875,20 +875,39 @@ void View::RenderResources() {
 }
 
 void View::RenderHand() {
-    glUseProgram( _program_sprite_sheet_id );
+    glEnable( GL_BLEND );
+    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+
+    glUseProgram( _program_card_id );
     glBindVertexArray( _rectangle_gpu.vao_id );
 
     glActiveTexture( GL_TEXTURE0 );
     glBindTexture( GL_TEXTURE_2D, _cards_texture.id );
     glUniform1i( ul( "image" ), 0 );
+    glUniform1f( ul( "elapsed" ), _elapsed );
 
-    for ( int i = 0; i < _hand.size(); ++i )
-        RenderCard( *_hand[ i ], i );
+    std::optional<std::pair<CardWrapper*, int>> hovered;
+    std::optional<std::pair<CardWrapper*, int>> dragging;
+
+    for ( int i = 0; i < _hand.size(); ++i ) {
+        if ( _hand[ i ]->state == CardWrapper::HOVERED )
+            hovered = { _hand[ i ], i };
+        else if ( _hand[ i ]->state == CardWrapper::DRAGGING )
+            dragging = { _hand[ i ], i };
+        else
+            RenderCard( *_hand[ i ], i );
+    }
+    if ( hovered )
+        RenderCard( *hovered->first, hovered->second );
+    if ( dragging )
+        RenderCard( *dragging->first, dragging->second );
 
     glBindTexture( GL_TEXTURE_2D, 0 );
 
     glBindVertexArray( 0 );
     glUseProgram( 0 );
+
+    glDisable( GL_BLEND );
 }
 
 void View::RenderCard( CardWrapper& card, int index ) {
@@ -897,6 +916,16 @@ void View::RenderCard( CardWrapper& card, int index ) {
     int corrected_card_id = +card->get_card_id() - 1;
     int index_x = corrected_card_id % CARD_TEXTURE_COLUMNS;
     int index_y = corrected_card_id / CARD_TEXTURE_COLUMNS;
+
+    bool faded = card.visual == CardWrapper::FADED;
+    bool highlight = card.visual != CardWrapper::NONE && card.visual != CardWrapper::FADED;
+    glm::vec3 highlight_color;
+    if ( card.visual == CardWrapper::HIGHLIGHT )
+        highlight_color = CARD_HIGHLIGHT_COLOR;
+    else if ( card.visual == CardWrapper::ACTION_HIGHLIGHT )
+        highlight_color = CARD_ACTION_HIGHLIGHT_COLOR;
+    else
+        highlight_color = CARD_SELL_HIGHLIGHT_COLOR;
 
     static const float card_ratio = (float)CARD_TEXTURE_WIDTH / CARD_TEXTURE_HEIGHT;
     float card_width = card_ratio / _width * _height;
@@ -915,6 +944,10 @@ void View::RenderCard( CardWrapper& card, int index ) {
     glUniform1f( ul( "stride_y" ), stride_y );
     glUniform1i( ul( "index_x" ), index_x );
     glUniform1i( ul( "index_y" ), index_y );
+
+    glUniform1i( ul( "faded" ), faded );
+    glUniform1i( ul( "highlight" ), highlight );
+    glUniform3f( ul( "highlight_color" ), highlight_color.r, highlight_color.g, highlight_color.b );
 
     glDrawElements( GL_TRIANGLES, _rectangle_gpu.count, GL_UNSIGNED_INT, nullptr );
 }
@@ -1009,6 +1042,11 @@ void View::InitShaders() {
     AttachShader( _program_id, GL_FRAGMENT_SHADER, "shaders/lighting.frag" );
     LinkProgram( _program_id );
 
+    _program_card_id = glCreateProgram();
+    AttachShader( _program_card_id, GL_VERTEX_SHADER, "shaders/sprite_sheet.vert" );
+    AttachShader( _program_card_id, GL_FRAGMENT_SHADER, "shaders/card.frag" );
+    LinkProgram( _program_card_id );
+
     _program_rectangle_id = glCreateProgram();
     AttachShader( _program_rectangle_id, GL_VERTEX_SHADER, "shaders/rectangle.vert" );
     AttachShader( _program_rectangle_id, GL_FRAGMENT_SHADER, "shaders/rectangle.frag" );
@@ -1022,6 +1060,7 @@ void View::InitShaders() {
 
 void View::CleanShaders() {
     glDeleteProgram( _program_id );
+    glDeleteProgram( _program_card_id );
     glDeleteProgram( _program_rectangle_id );
     glDeleteProgram( _program_sprite_sheet_id );
 }

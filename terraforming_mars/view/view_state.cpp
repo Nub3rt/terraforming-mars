@@ -63,7 +63,7 @@ ResearchVState::ResearchVState( View& view, std::array<const model::decks::Card*
     : ViewState( view ), _cards(), _to_buy() {
     for ( int i = 0; i < model::RESEARCH_CARD_NUM; ++i ) {
         _cards[ i ] = new CardWrapper( cards[ i ] );
-        _to_buy[ i ] = false;
+        _to_buy[ i ] = true;
     }
 }
 ResearchVState::~ResearchVState() {
@@ -107,8 +107,11 @@ void ResearchVState::Update( float delta ) {
                 _cards[ i ]->Update( delta );
         }
 
-        if ( _elapsed >= CARD_DRAW_IN_DURATION + model::RESEARCH_CARD_NUM * delay )
+        if ( !_in_animation_over && _elapsed >= CARD_DRAW_IN_DURATION + model::RESEARCH_CARD_NUM * delay ) {
             _in_animation_over = true;
+            for ( CardWrapper* card : _cards )
+                card->visual = CardWrapper::ACTION_HIGHLIGHT;
+        }
     } else {
         for ( CardWrapper* card : *_non_boughts )
             card->Update( delta );
@@ -125,7 +128,10 @@ void ResearchVState::Update( float delta ) {
 }
 
 void ResearchVState::Render() {
-    glUseProgram( _view._program_sprite_sheet_id );
+    glEnable( GL_BLEND );
+    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+
+    glUseProgram( _view._program_card_id );
     glBindVertexArray( _view._rectangle_gpu.vao_id );
 
     glActiveTexture( GL_TEXTURE0 );
@@ -136,7 +142,7 @@ void ResearchVState::Render() {
         if ( _in_animation_over )
             _view.SetStencilRef( STENCIL_STARTING_RESEARCH + i );
 
-        _view.RenderCard( *_cards[ i ], i );
+        _view.RenderCard( *_cards[ i ], -i );
 
         if ( _in_animation_over )
             _view.SetStencilRef();
@@ -147,9 +153,11 @@ void ResearchVState::Render() {
     glBindVertexArray( 0 );
     glUseProgram( 0 );
 
+    glDisable( GL_BLEND );
+
     if ( _in_animation_over && !_non_boughts )
         TextRenderer::RenderTextCentered(
-            std::format( "Current Research cost: {}", _view._model->GetTotalCost() ),
+            std::format( "Current Research Cost: {}", _view._model->GetTotalCost() ),
             BASE_HINT_POS.x, BASE_HINT_POS.y,
             BASE_TEXT_SCALE,
             BASE_TEXT_COLOR
@@ -167,7 +175,7 @@ void ResearchVState::ToggleToBuyCard( int index ) {
     _view._model->ToggleToBuyCard( index );
     _to_buy[ index ] = !_to_buy[ index ];
     _cards[ index ]->visual = _to_buy[ index ] ? CardWrapper::ACTION_HIGHLIGHT
-                                               : CardWrapper::NONE;
+                                               : CardWrapper::FADED;
 }
 
 void ResearchVState::Model_OnResearchConfirmed( std::array<bool, model::RESEARCH_CARD_NUM> selected ) {
@@ -209,14 +217,14 @@ IdleVState::~IdleVState() {}
 
 void IdleVState::Update( float delta ) {
     for ( CardWrapper* card : _view._hand ) {
-        card->visual = (*card)->CanBePlayed() ? CardWrapper::HIGHLIGHT
-                                              : CardWrapper::NONE;
+        card->visual = CanDragCardsOut() && (*card)->CanBePlayed() ?
+            CardWrapper::HIGHLIGHT : CardWrapper::NONE;
     }
 }
 
 bool IdleVState::CanClickEndButton() { return _view._model->InIdleState(); }
 bool IdleVState::CanHoverHand() { return true; }
-bool IdleVState::CanDragCardsOut() { return true; }
+bool IdleVState::CanDragCardsOut() { return _view._model->InIdleState(); }
 bool IdleVState::CanPlayCard( CardWrapper* card ) { return (*card)->CanBePlayed(); }
 
 void IdleVState::PlayCard( int index_in_hand ) {

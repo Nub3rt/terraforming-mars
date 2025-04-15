@@ -163,6 +163,7 @@
     <ClInclude Include="view_state.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="shaders\card.frag" />
     <None Include="shaders\lighting.frag" />
     <None Include="shaders\pos_norm_tex.vert" />
     <None Include="shaders\rectangle.frag" />
