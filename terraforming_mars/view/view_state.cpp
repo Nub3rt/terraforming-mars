@@ -4,6 +4,7 @@
 #include <stdexcept>
 #include <utility>
 
+#include "animation.h"
 #include "card_wrapper.h"
 #include "constants.h"
 #include "text_renderer.h"
@@ -21,23 +22,183 @@ ViewState::~ViewState() {}
 
 void ViewState::Enter() {}
 
+void ViewState::Update( float delta ) {}
 void ViewState::Render() {}
 
-bool ViewState::CanHoverHand() { return true; }
-bool ViewState::CanDragCardOut( CardWrapper* card ) { return false; }
+std::string ViewState::GetEndButtonText() { return "End Generation"; }
+
+bool ViewState::CanClickEndButton() { return false; }
+bool ViewState::CanHoverHand() { return false; }
+bool ViewState::CanDragCardsOut() { return false; }
+bool ViewState::CanPlayCard( CardWrapper* card ) { return false; }
 
 void ViewState::PlayCard( int index_in_hand ) {
     throw std::logic_error( "ViewState::PlayCard: View was in an invalid state!" );
 }
 
+void ViewState::ToggleToBuyCard( int index ) {
+    throw std::logic_error( "ViewState::ToggleToBuyCard: View was in an invalid state!" );
+}
+
+void ViewState::ClickedEndButton() {
+    if ( !CanClickEndButton() )
+        throw std::logic_error( "ViewState::ClickedEndButton: button could not be clicked in this state!" );
+
+    DoClickedEndButton();
+}
+
 void ViewState::ClickedOnTile( TileWrapper& tile ) {}
+
+void ViewState::Model_OnResearchConfirmed( std::array<bool, model::RESEARCH_CARD_NUM> selected ) {
+    throw std::logic_error( "ViewState::Model_OnResearchConfirmed: View was in an invalid state!" );
+}
+
+void ViewState::DoClickedEndButton() {}
 
 #pragma endregion ViewState
 
 #pragma region ResearchState
 
-ResearchVState::ResearchVState( View& view ) : ViewState( view ) {}
-ResearchVState::~ResearchVState() {}
+ResearchVState::ResearchVState( View& view, std::array<const model::decks::Card*, model::RESEARCH_CARD_NUM> cards )
+    : ViewState( view ), _cards(), _to_buy() {
+    for ( int i = 0; i < model::RESEARCH_CARD_NUM; ++i ) {
+        _cards[ i ] = new CardWrapper( cards[ i ] );
+        _to_buy[ i ] = false;
+    }
+}
+ResearchVState::~ResearchVState() {
+    if ( !_non_boughts ) {
+        for ( CardWrapper* card : _cards )
+            delete card;
+    } else {
+        for ( CardWrapper* card : *_non_boughts )
+            delete card;
+    }
+}
+
+void ResearchVState::Enter() {
+    static const float spacing = 0.35f;
+    static const float length = spacing * (model::RESEARCH_CARD_NUM - 1);
+    static const float start_x = 0.0f - length / 2.0f;
+    static const float y = 0.0f;
+
+    for ( int i = 0; i < model::RESEARCH_CARD_NUM; ++i ) {
+        glm::vec2 start_pos = CARD_DRAW_POS_START;
+        start_pos.x += spacing * i;
+        _cards[ i ]->pos.SetAnim( start_pos, glm::vec2( start_x + spacing * i, y ), CARD_DRAW_IN_DURATION );
+        _cards[ i ]->scale.SetAnim( RESEARCH_CARD_SCALE, RESEARCH_CARD_SCALE, CARD_DRAW_IN_DURATION );
+        _cards[ i ]->rotate.SetAnim( CARD_DRAW_ROTATE_START, RESEARCH_CARD_ROTATE, CARD_DRAW_IN_DURATION );
+    }
+
+    for ( CardWrapper* card : _cards ) {
+        card->state = CardWrapper::DRAWING;
+        card->visual = CardWrapper::NONE;
+        card->SetEase( glm::quarticEaseOut<float> );
+    }
+}
+
+void ResearchVState::Update( float delta ) {
+    _elapsed += delta;
+    static const float delay = 0.5f;
+
+    if ( !_non_boughts ) {
+        for ( int i = 0; i < model::RESEARCH_CARD_NUM; ++i ) {
+            if ( _elapsed >= i * delay )
+                _cards[ i ]->Update( delta );
+        }
+
+        if ( _elapsed >= CARD_DRAW_IN_DURATION + model::RESEARCH_CARD_NUM * delay )
+            _in_animation_over = true;
+    } else {
+        for ( CardWrapper* card : *_non_boughts )
+            card->Update( delta );
+
+        if ( _elapsed > CARD_DRAW_DOWN_DURATION ) {
+            for ( CardWrapper* card : _cards ) {
+                card->state = CardWrapper::IDLE;
+                card->SetDefaultEase();
+            }
+
+            _view.RequestInstantStateChange( _view.CreateIdleState() );
+        }
+    }
+}
+
+void ResearchVState::Render() {
+    glUseProgram( _view._program_sprite_sheet_id );
+    glBindVertexArray( _view._rectangle_gpu.vao_id );
+
+    glActiveTexture( GL_TEXTURE0 );
+    glBindTexture( GL_TEXTURE_2D, _view._cards_texture.id );
+    glUniform1i( ul( "image" ), 0 );
+
+    for ( int i = 0; i < model::RESEARCH_CARD_NUM; ++i ) {
+        if ( _in_animation_over )
+            _view.SetStencilRef( STENCIL_STARTING_RESEARCH + i );
+
+        _view.RenderCard( *_cards[ i ], i );
+
+        if ( _in_animation_over )
+            _view.SetStencilRef();
+    }
+
+    glBindTexture( GL_TEXTURE_2D, 0 );
+
+    glBindVertexArray( 0 );
+    glUseProgram( 0 );
+
+    if ( _in_animation_over && !_non_boughts )
+        TextRenderer::RenderTextCentered(
+            std::format( "Current Research cost: {}", _view._model->GetTotalCost() ),
+            BASE_HINT_POS.x, BASE_HINT_POS.y,
+            BASE_TEXT_SCALE,
+            BASE_TEXT_COLOR
+        );
+}
+
+std::string ResearchVState::GetEndButtonText() {
+    return "Confirm";
+}
+
+bool ResearchVState::CanClickEndButton() { return _in_animation_over && !_non_boughts; }
+bool ResearchVState::CanHoverHand() { return true; }
+
+void ResearchVState::ToggleToBuyCard( int index ) {
+    _view._model->ToggleToBuyCard( index );
+    _to_buy[ index ] = !_to_buy[ index ];
+    _cards[ index ]->visual = _to_buy[ index ] ? CardWrapper::ACTION_HIGHLIGHT
+                                               : CardWrapper::NONE;
+}
+
+void ResearchVState::Model_OnResearchConfirmed( std::array<bool, model::RESEARCH_CARD_NUM> selected ) {
+    _non_boughts = std::vector<CardWrapper*>();
+    size_t index = _view._hand.size();
+
+    for ( int i = 0; i < model::RESEARCH_CARD_NUM; ++i ) {
+        CardWrapper* card = _cards[ i ];
+        card->visual = CardWrapper::NONE;
+        card->SetEase( glm::quarticEaseIn<float> );
+
+        if ( selected[ i ] ) {
+            _view._hand.push_back( card );
+        } else {
+            card->pos.y.UpdateAnim( CARD_DRAW_UP_Y, CARD_DRAW_DOWN_DURATION );
+            _non_boughts->push_back( card );
+        }
+    }
+
+    _view.RefreshHandPositions();
+    while ( index < _view._hand.size() ) {
+        _view._hand[ index ]->GoToBase( CARD_DRAW_DOWN_DURATION );
+        ++index;
+    }
+
+    _elapsed = 0.0f;
+}
+
+void ResearchVState::DoClickedEndButton() {
+    _view._model->ConfirmPurchases();
+}
 
 #pragma endregion ResearchState
 
@@ -46,15 +207,37 @@ ResearchVState::~ResearchVState() {}
 IdleVState::IdleVState( View& view ) : ViewState( view ) {}
 IdleVState::~IdleVState() {}
 
-bool IdleVState::CanDragCardOut( CardWrapper* card ) {
-    return (*card)->CanBePlayed();
+void IdleVState::Update( float delta ) {
+    for ( CardWrapper* card : _view._hand ) {
+        card->visual = (*card)->CanBePlayed() ? CardWrapper::HIGHLIGHT
+                                              : CardWrapper::NONE;
+    }
 }
+
+bool IdleVState::CanClickEndButton() { return _view._model->InIdleState(); }
+bool IdleVState::CanHoverHand() { return true; }
+bool IdleVState::CanDragCardsOut() { return true; }
+bool IdleVState::CanPlayCard( CardWrapper* card ) { return (*card)->CanBePlayed(); }
 
 void IdleVState::PlayCard( int index_in_hand ) {
     _view._model->PlayCard( **_view._hand[ index_in_hand ] );
 
     _view._hand.erase( _view._hand.begin() + index_in_hand );
     _view.RefreshHandPositions();
+}
+
+void IdleVState::DoClickedEndButton() {
+    _view._animation_queue.push( new TextAnimation(
+        DEFAULT_LOCKOUT_DURATION,
+        ATTRIBUTE_CHANGED_DURATION,
+        "Performing Production Phase...",
+        BASE_HINT_POS, BASE_HINT_POS,
+        glm::vec4( BASE_TEXT_COLOR, 1.0f ),
+        glm::vec4( BASE_TEXT_COLOR, 0.0f ),
+        BASE_TEXT_SCALE
+    ) );
+
+    _view._model->EndTurn();
 }
 
 #pragma endregion IdleState
@@ -94,14 +277,14 @@ void PlacementConfirmationVState::Render() {
     }
     TextRenderer::RenderTextCentered(
         std::format( "Placing tile: {}", name ),
-        0.0f, 0.9f,
+        BASE_HINT_POS.x, BASE_HINT_POS.y,
         BASE_TEXT_SCALE,
         BASE_TEXT_COLOR
     );
 }
 
 bool PlacementConfirmationVState::CanHoverHand() {
-    return false;
+    return true;
 }
 
 void PlacementConfirmationVState::ClickedOnTile( TileWrapper& tile ) {

@@ -185,7 +185,13 @@ void View::Update( const UpdateInfo& update_info ) {
         _state = _next_state;
         _next_state = nullptr;
         _state->Enter();
-    }
+    } else
+        _state->Update( update_info.delta );
+
+    if ( _mouse_hover_stencil == STENCIL_END && _state->CanClickEndButton() )
+        _end_button_hovered = true;
+    else
+        _end_button_hovered = false;
 }
 
 void View::Render() {
@@ -218,6 +224,8 @@ void View::KeyboardUp( const SDL_KeyboardEvent& key ) {
 }
 
 void View::MouseMotion( const SDL_MouseMotionEvent& mouse ) {
+    _mouse_hover_stencil = GetStencilValue( mouse.x, mouse.y );
+
     auto [x, y] = CalculateMousePos( mouse.x, mouse.y );
 
     if ( _dragged_card_index == -1 ) {
@@ -245,7 +253,7 @@ void View::MouseMotion( const SDL_MouseMotionEvent& mouse ) {
     } else {
         CardWrapper* dragged_card = _hand[ _dragged_card_index ];
 
-        if ( y > CARD_DRAG_OUT_LINE_Y && !_state->CanDragCardOut( dragged_card ) ) {
+        if ( y > CARD_DRAG_OUT_LINE_Y && !_state->CanPlayCard( dragged_card ) ) {
             dragged_card->state = CardWrapper::TO_HAND;
             dragged_card->GoToBase( CARD_ADJUST_DURATION );
             _timed_out_animations.emplace_back( 0.0f, CARD_ADJUST_DURATION, new InstantAnimation( [ this, card = dragged_card ]() {
@@ -265,7 +273,7 @@ void View::MouseDown( const SDL_MouseButtonEvent& mouse ) {
 
     auto [x, y] = CalculateMousePos( mouse.x, mouse.y );
     int hovered_card_index = CalculateHoveredCardByPos( x, y );
-    if ( hovered_card_index != -1 && _state->CanHoverHand() ) {
+    if ( hovered_card_index != -1 && _state->CanDragCardsOut() ) {
         _dragged_card_index = hovered_card_index;
         CardWrapper& dragged_card = *_hand[ _dragged_card_index ];
         dragged_card.state = CardWrapper::DRAGGING;
@@ -304,7 +312,8 @@ void View::MouseUp( const SDL_MouseButtonEvent& mouse ) {
 
                     break;
                 case STENCIL_END:
-
+                    if ( _state->CanClickEndButton() )
+                        _state->ClickedEndButton();
                     break;
                 case STENCIL_EVENTS:
 
@@ -318,8 +327,10 @@ void View::MouseUp( const SDL_MouseButtonEvent& mouse ) {
                 case STENCIL_ACTIONS:
 
                     break;
-                default: // tile/active card was clicked
-                    if ( stencil < STENCIL_STARTING_BOARD + _tiles.size() ) {
+                default: // research cards/tile/active card was clicked
+                    if ( stencil < STENCIL_STARTING_BOARD ) {
+                        _state->ToggleToBuyCard( stencil - STENCIL_STARTING_RESEARCH );
+                    } else if ( stencil < STENCIL_STARTING_BOARD + _tiles.size() ) {
                         _state->ClickedOnTile( _tiles[ stencil - STENCIL_STARTING_BOARD ] );
                     } else {
                         // TODO active cards
@@ -345,7 +356,7 @@ void View::OtherEvent( const SDL_Event& event ) {
 
 #pragma region State
 
-ResearchVState* View::CreateResearchState() { return new ResearchVState( *this ); }
+ResearchVState* View::CreateResearchState( std::array<const model::decks::Card*, model::RESEARCH_CARD_NUM> cards ) { return new ResearchVState( *this, std::move( cards ) ); }
 IdleVState* View::CreateIdleState() { return new IdleVState( *this ); }
 SellVState* View::CreateSellState() { return new SellVState( *this ); }
 PlacementConfirmationVState* View::CreatePlacementConfirmationState( model::boards::TileType tile_type, std::vector<std::pair<int, int>> valid_positions ) { return new PlacementConfirmationVState( *this, tile_type, std::move( valid_positions ) ); }
@@ -393,7 +404,7 @@ void View::Model_OnDrawCardSpeed( const model::decks::Card* card, float speed ) 
 void View::Model_OnDrawCards( std::vector<const model::decks::Card*> cards ) {
     float speed = 1.0f;
     for ( int i = 0; i < cards.size(); ++i ) {
-        speed *= 1.2f;
+        speed += 0.2f;
         Model_OnDrawCardSpeed( cards[ i ], speed );
     }
 }
@@ -491,8 +502,14 @@ void View::Model_OnResourceProductionAmountChanged( model::Resource resource, in
         ))->SetOnStart( on_start ) );
 }
 
-void View::Model_OnResearchConfirmed( std::array<bool, model::RESEARCH_CARD_NUM> selected ) { throw "not implemented"; }
-void View::Model_OnConfirmResearch( std::array<const model::decks::Card*, model::RESEARCH_CARD_NUM> cards ) { throw "not implemented"; }
+void View::Model_OnResearchConfirmed( std::array<bool, model::RESEARCH_CARD_NUM> selected ) {
+    _state->Model_OnResearchConfirmed( selected );
+}
+
+void View::Model_OnConfirmResearch( std::array<const model::decks::Card*, model::RESEARCH_CARD_NUM> cards ) {
+    RequestStateChange( CreateResearchState( std::move( cards ) ) );
+}
+
 void View::Model_OnConfirmPayment( int amount, model::Resource resource, int resource_value ) { throw "not implemented"; }
 
 void View::Model_OnConfirmPlacement( model::boards::TileType tile_type, std::vector<std::pair<int, int>> valid_positions ) {
@@ -749,6 +766,8 @@ void View::RenderEndButton() {
     float x = 1.0f - size - spacing / button_ratio;
     float y = 0.0f;
     glm::vec3 scale( size * button_ratio, size * _width / _height * ratio_modifier, 1.0f );
+    if ( _end_button_hovered )
+        scale *= 1.1;
 
     glUseProgram( _program_rectangle_id );
     glBindVertexArray( _rectangle_gpu.vao_id );
@@ -774,10 +793,10 @@ void View::RenderEndButton() {
 
     static const glm::vec3 color = glm::vec3( 1280.f, 58.0f, 47.0f ) / 255.0f;
     TextRenderer::RenderTextCentered(
-        "End Generation",
+        _state->GetEndButtonText(),
         x,
         y,
-        1.0f,
+        _end_button_hovered ? 1.1f : 1.0f,
         color
     );
 }

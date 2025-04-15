@@ -63,8 +63,10 @@ void Player::DestroyResourceProduction( Resource resource, int amount ) { _on_de
 
 void Player::PerformProductionPhase() {
     int energy_amount = _resources[ +Resource::ENERGY ];
-    LoseResource( Resource::ENERGY, energy_amount );
-    GainResource( Resource::HEAT, energy_amount );
+    if ( energy_amount != 0 ) {
+        LoseResource( Resource::ENERGY, energy_amount );
+        GainResource( Resource::HEAT, energy_amount );
+    }
 
     GainResource( Resource::CREDIT, _tr + _resource_productions[ +Resource::CREDIT ] );
     for ( int r = +Resource::STEEL; r <= +Resource::MAX; ++r )

@@ -246,7 +246,9 @@ int ResearchState::GetTotalCost() const {
 }
 
 void ResearchState::ConfirmPurchases() {
-    _model->_local_player->LoseResource( Resource::CREDIT, GetTotalCost() );
+    int total_cost = GetTotalCost();
+    if ( total_cost != 0 )
+        _model->_local_player->LoseResource( Resource::CREDIT, total_cost );
 
     for ( int i = 0; i < RESEARCH_CARD_NUM; ++i )
         if ( _to_buy[ i ] )

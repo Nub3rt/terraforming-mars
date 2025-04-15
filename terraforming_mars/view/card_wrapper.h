@@ -21,6 +21,15 @@ public:
         TO_HAND,
     };
 
+    enum Visuals
+    {
+        NONE,
+        HIGHLIGHT,
+        ACTION_HIGHLIGHT,
+        SELL_HIGHLIGHT,
+        FADED,
+    };
+
     CardWrapper( const model::decks::Card* card );
     ~CardWrapper();
 
@@ -35,6 +44,7 @@ public:
     void GoToBase( float duration );
 
     State state = IDLE;
+    Visuals visual = NONE;
 
     glm::vec2 base_pos = CARD_DRAW_POS_START;
     float base_scale = CARD_BASE_SCALE;

@@ -2,6 +2,8 @@
 
 #include <glm/glm.hpp>
 
+#include "../model/constants.h"
+
 namespace view
 {
 inline constexpr int STARTING_WINDOW_WIDTH = 1600;
@@ -9,6 +11,7 @@ inline constexpr int STARTING_WINDOW_HEIGHT = 900;
 
 inline constexpr float SKYBOX_ROTATE_SPEED = 0.01f;
 
+inline constexpr glm::vec2 BASE_HINT_POS = glm::vec2( 0.0f, 0.9f );
 inline constexpr float BASE_TEXT_SCALE = 1.5f;
 inline constexpr glm::vec3 BASE_TEXT_COLOR = glm::vec3( 0xff, 0xff, 0xff ) / 255.0f;
 inline constexpr glm::vec3 POSITIVE_TEXT_COLOR = glm::vec3( 0x0f, 0x86, 0x08 ) / 255.0f;
@@ -41,6 +44,10 @@ inline constexpr float CARD_DRAW_SCALE_MIDDLE = CARD_BASE_SCALE * 1.8f;
 inline constexpr float CARD_DRAW_ROTATE_MIDDLE = 0.0f;
 inline constexpr float CARD_DRAG_OUT_LINE_Y = -0.5f;
 
+inline constexpr float RESEARCH_CARD_SCALE = CARD_DRAW_SCALE_MIDDLE * 0.8;
+inline constexpr float RESEARCH_CARD_ROTATE = 0.0f;
+inline constexpr float CARD_DRAW_UP_Y = 1.5f;
+
 inline constexpr float DEFAULT_LOCKOUT_DURATION = 1.0f;
 inline constexpr float ATTRIBUTE_CHANGED_DURATION = 3.0f;
 inline constexpr float TEXT_FLOAT_DISTANCE = 0.5f;
@@ -53,7 +60,8 @@ inline constexpr uint8_t STENCIL_EVENTS    = 0x03;
 inline constexpr uint8_t STENCIL_AUTOMATED = 0x04;
 inline constexpr uint8_t STENCIL_EFFECTS   = 0x05;
 inline constexpr uint8_t STENCIL_ACTIONS   = 0x06;
-inline constexpr uint8_t STENCIL_STARTING_BOARD = 0x07;
+inline constexpr uint8_t STENCIL_STARTING_RESEARCH = 0x07;
+inline constexpr uint8_t STENCIL_STARTING_BOARD = STENCIL_STARTING_RESEARCH + model::RESEARCH_CARD_NUM;
 
 
 inline constexpr int CARD_TEXTURE_ROWS = 13;

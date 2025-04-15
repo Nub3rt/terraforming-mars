@@ -16,7 +16,6 @@ CardWrapper::CardWrapper( const model::decks::Card* card ) : _card( card ) {
 
 CardWrapper::~CardWrapper() {}
 
-
 void CardWrapper::SetEase( Animatable<float>::ease_t ease ) {
     pos.SetEase( ease );
     scale.SetEase( ease );
