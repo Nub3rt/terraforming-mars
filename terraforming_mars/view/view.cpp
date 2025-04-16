@@ -211,6 +211,7 @@ void View::Render() {
 }
 
 void View::RenderGUI() {
+    _state->RenderGUI();
 }
 
 #pragma region Events
@@ -360,7 +361,7 @@ ResearchVState* View::CreateResearchState( std::array<const model::decks::Card*,
 IdleVState* View::CreateIdleState() { return new IdleVState( *this ); }
 SellVState* View::CreateSellState() { return new SellVState( *this ); }
 PlacementConfirmationVState* View::CreatePlacementConfirmationState( model::boards::TileType tile_type, std::vector<std::pair<int, int>> valid_positions ) { return new PlacementConfirmationVState( *this, tile_type, std::move( valid_positions ) ); }
-PaymentConfirmationVState* View::CreatePaymentConfirmationState() { return new PaymentConfirmationVState( *this ); }
+PaymentConfirmationVState* View::CreatePaymentConfirmationState( int amount, model::Resource resource, int resource_value ) { return new PaymentConfirmationVState( *this, amount, resource, resource_value ); }
 PostLastGenerationVState* View::CreatePostLastGenerationState() { return new PostLastGenerationVState( *this ); }
 GameOverVState* View::CreateGameOverState() { return new GameOverVState( *this ); }
 
@@ -507,10 +508,12 @@ void View::Model_OnResearchConfirmed( std::array<bool, model::RESEARCH_CARD_NUM>
 }
 
 void View::Model_OnConfirmResearch( std::array<const model::decks::Card*, model::RESEARCH_CARD_NUM> cards ) {
-    RequestStateChange( CreateResearchState( std::move( cards ) ) );
+    RequestStateChange( CreateResearchState( cards ) );
 }
 
-void View::Model_OnConfirmPayment( int amount, model::Resource resource, int resource_value ) { throw "not implemented"; }
+void View::Model_OnConfirmPayment( int amount, model::Resource resource, int resource_value ) {
+    RequestStateChange( CreatePaymentConfirmationState( amount, resource, resource_value ) );
+}
 
 void View::Model_OnConfirmPlacement( model::boards::TileType tile_type, std::vector<std::pair<int, int>> valid_positions ) {
     RequestStateChange( CreatePlacementConfirmationState( tile_type, std::move( valid_positions ) ) );

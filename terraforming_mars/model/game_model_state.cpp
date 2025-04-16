@@ -447,8 +447,10 @@ void PaymentConfirmationState::PaymentConfirmed( int credit, int resource ) {
         throw std::logic_error( std::format( "PaymentConfirmationState::PaymentConfirmed: values received do not satisfy the cost!\n\
 \tcredit + resource * resource_value < cost: {} + {} * {} < {}", credit, resource, _request->resource_value, _request->cost ) );
 
-    _model->_local_player->LoseResource( Resource::CREDIT, credit );
-    _model->_local_player->LoseResource( _request->resource, resource );
+    if ( credit != 0 )
+        _model->_local_player->LoseResource( Resource::CREDIT, credit );
+    if ( resource != 0 )
+        _model->_local_player->LoseResource( _request->resource, resource );
     _request->after_payment();
 
     if ( _model->_queued_request.empty() ) {

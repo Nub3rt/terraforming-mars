@@ -14,6 +14,7 @@
 #include "view.h"
 
 #include "../model/constants.h"
+#include "../model/resource.h"
 #include "../model/boards/tile_type.h"
 
 namespace view
@@ -27,6 +28,7 @@ public:
 
     virtual void Update( float delta );
     virtual void Render();
+    virtual void RenderGUI();
 
     virtual std::string GetEndButtonText();
 
@@ -131,8 +133,27 @@ protected:
 class PaymentConfirmationVState : public ViewState
 {
 public:
-    PaymentConfirmationVState( View& view );
+    PaymentConfirmationVState( View& view, int amount, model::Resource resource, int resource_value );
     virtual ~PaymentConfirmationVState();
+
+    void Enter() override;
+
+    void RenderGUI() override;
+
+protected:
+    int _amount;
+    std::string _resource;
+    int _resource_value;
+
+    int _min_credit;
+    int _max_credit;
+    int _min_resource;
+    int _max_resource;
+    int _current_credit;
+    int _current_resource;
+
+    static int CalculateResourceNeeded( int credit, int amount, int resource_value );
+    static int CalculateCreditNeeded( int resource, int amount, int resource_value );
 };
 
 class PostLastGenerationVState : public ViewState

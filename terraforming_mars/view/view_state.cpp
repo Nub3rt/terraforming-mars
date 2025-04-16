@@ -4,6 +4,8 @@
 #include <stdexcept>
 #include <utility>
 
+#include <imgui.h>
+
 #include "animation.h"
 #include "card_wrapper.h"
 #include "constants.h"
@@ -24,6 +26,7 @@ void ViewState::Enter() {}
 
 void ViewState::Update( float delta ) {}
 void ViewState::Render() {}
+void ViewState::RenderGUI() {}
 
 std::string ViewState::GetEndButtonText() { return "End Generation"; }
 
@@ -330,8 +333,85 @@ void PlacementConfirmationVState::ColorBordersSelectable() {
 
 #pragma region PaymentConfirmationState
 
-PaymentConfirmationVState::PaymentConfirmationVState( View& view ) : ViewState( view ) {}
+PaymentConfirmationVState::PaymentConfirmationVState( View& view, int amount, model::Resource resource, int resource_value )
+    : ViewState( view ), _amount( amount ), _resource_value( resource_value ) {
+    switch ( resource ) {
+        case model::Resource::STEEL:
+            _resource = "STEEL";
+            break;
+        case model::Resource::TITANIUM:
+            _resource = "TITANIUM";
+            break;
+        default:
+            throw std::logic_error( "PaymentConfirmationVState::ctor: resource type was not supported!" );
+    }
+
+    int credits = _view._model->get_local_player()->GetResource( model::Resource::CREDIT );
+    int resources = _view._model->get_local_player()->GetResource( resource );
+
+    _max_credit = glm::min( credits, _amount );
+    _min_resource = CalculateResourceNeeded( _max_credit, _amount, _resource_value );
+
+    if ( resources * _resource_value <= _amount ) {
+        _max_resource = resources;
+        _current_resource = _max_resource;
+        _min_credit = _amount - resources * _resource_value;
+        _current_credit = _min_credit;
+    } else {
+        _current_resource = glm::max( _amount / _resource_value, _min_resource );
+        _max_resource = _current_resource;
+        _current_credit = glm::min( _amount - _current_resource * _resource_value, _max_credit );
+        _min_credit = 0;
+        if ( _current_credit != 0 )
+            ++_max_resource;
+    }
+}
+
 PaymentConfirmationVState::~PaymentConfirmationVState() {}
+
+void PaymentConfirmationVState::Enter() {
+    for ( CardWrapper* card : _view._hand )
+        card->visual = CardWrapper::NONE;
+}
+
+void PaymentConfirmationVState::RenderGUI() {
+    ImGui::SetNextWindowSize( ImVec2( 360, 0 ) );
+    if ( ImGui::Begin( "Confirm Payment", NULL, ImGuiWindowFlags_NoCollapse ) ) {
+        int total = _current_credit + _current_resource * _resource_value;
+        ImGui::Text( "Cost to pay: %i", _amount );
+        ImGui::Text( "Can pay with: %s", _resource.c_str() );
+        ImGui::Text( "Value of your resources: %i", _resource_value );
+        ImGui::Separator();
+        ImGui::Text( "%i + %i * %i = %i", _current_credit, _current_resource, _resource_value, total );
+        if ( ImGui::SliderInt( "Credit", &_current_credit, _min_credit, _max_credit ) ) {
+            _current_resource = CalculateResourceNeeded( _current_credit, _amount, _resource_value );
+        }
+        if ( ImGui::SliderInt( "Resource", &_current_resource, _min_resource, _max_resource ) ) {
+            _current_credit = CalculateCreditNeeded( _current_resource, _amount, _resource_value );
+        }
+
+        if ( total > _amount ) {
+            static const ImVec4 color( NEGATIVE_TEXT_COLOR.r, NEGATIVE_TEXT_COLOR.g, NEGATIVE_TEXT_COLOR.b, 1.0f );
+            ImGui::TextColored( color, "WARNING! You are paying more than you need!" );
+        }
+        if ( total < _amount )
+            throw std::logic_error( "PaymentConfirmationState::RenderGUI: total payment was lover than the cost!" );
+
+        if ( ImGui::Button( "Confirm Payment", ImVec2( 120, 30 ) ) ) {
+            _view._model->PaymentConfirmed( _current_credit, _current_resource );
+            _view.RequestInstantStateChange( _view.CreateIdleState() );
+        }
+    }
+    ImGui::End();
+}
+
+int PaymentConfirmationVState::CalculateResourceNeeded( int credit, int amount, int resource_value ) {
+    return (glm::max( amount - credit, 0 ) + resource_value - 1) / resource_value;
+}
+
+int PaymentConfirmationVState::CalculateCreditNeeded( int resource, int amount, int resource_value ) {
+    return glm::max( amount - resource * resource_value, 0 );
+}
 
 #pragma endregion PaymentConfirmationState
 

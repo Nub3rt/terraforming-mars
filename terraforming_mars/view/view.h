@@ -89,7 +89,7 @@ protected:
     virtual IdleVState* CreateIdleState();
     virtual SellVState* CreateSellState();
     virtual PlacementConfirmationVState* CreatePlacementConfirmationState( model::boards::TileType tile_type, std::vector<std::pair<int, int>> valid_positions );
-    virtual PaymentConfirmationVState* CreatePaymentConfirmationState();
+    virtual PaymentConfirmationVState* CreatePaymentConfirmationState( int amount, model::Resource resource, int resource_value );
     virtual PostLastGenerationVState* CreatePostLastGenerationState();
     virtual GameOverVState* CreateGameOverState();
 
