@@ -120,8 +120,8 @@ void Player::SellCard( const decks::Card* card ) {
     if ( it_to_card == _hand.cend() )
         throw std::logic_error( "Player::SellCard: card was not in hand!" );
 
-    _hand.erase( it_to_card );
     (*it_to_card)->Sell();
+    _hand.erase( it_to_card );
 
     GainResource( Resource::CREDIT, 1 );
 }

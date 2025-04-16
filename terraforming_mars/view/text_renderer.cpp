@@ -49,11 +49,13 @@ void TextRenderer::Resize( int w, int h ) {
 void TextRenderer::Clean() {
     glDeleteProgram( _program_id );
 
+    glDeleteBuffers( 1, &_vbo_id );
+    glDeleteBuffers( 1, &_vao_id );
+
     for ( auto& [_, c] : _characters )
         glDeleteTextures( 1, &c.texture_id );
 
-    glDeleteBuffers( 1, &_vbo_id );
-    glDeleteBuffers( 1, &_vao_id );
+    _characters.clear();
 }
 
 bool TextRenderer::LoadFont( std::string font, FT_UInt font_size ) {

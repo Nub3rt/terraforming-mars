@@ -229,7 +229,12 @@ ResearchState::ResearchState( GameModel* model ) : GameModelState( model ), _car
     _model->_on_confirm_research.Invoke( std::move( event_arg ) );
 }
 
-ResearchState::~ResearchState() {}
+ResearchState::~ResearchState() {
+    if ( !_completed ) {
+        for ( decks::Card* card : _cards )
+            delete card;
+    }
+}
 
 void ResearchState::ToggleToBuyCard( int index ) {
     _to_buy[ index ] = !_to_buy[ index ];
@@ -255,6 +260,8 @@ void ResearchState::ConfirmPurchases() {
             _model->_local_player->GetCard( _cards[ i ] );
         else
             _model->_deck->DiscardCard( _cards[ i ] );
+
+    _completed = true;
 
     _model->_on_research_confirmed.Invoke( std::move( _to_buy ) );
 

@@ -31,6 +31,8 @@ public:
     virtual void RenderGUI();
 
     virtual std::string GetEndButtonText();
+    virtual CardWrapper::Visual GetCardUnderPlayLineVisual( CardWrapper* card );
+    virtual CardWrapper::Visual GetCardOverPlayLineVisual( CardWrapper* card );
 
     virtual bool CanClickEndButton();
     virtual bool CanHoverHand();
@@ -92,6 +94,9 @@ public:
 
     void Update( float delta ) override;
 
+    CardWrapper::Visual GetCardUnderPlayLineVisual( CardWrapper* card ) override;
+    CardWrapper::Visual GetCardOverPlayLineVisual( CardWrapper* card ) override;
+
     bool CanClickEndButton() override;
     bool CanHoverHand() override;
     bool CanDragCardsOut() override;
@@ -139,6 +144,8 @@ public:
     void Enter() override;
 
     void RenderGUI() override;
+
+    bool CanHoverHand() override;
 
 protected:
     int _amount;

@@ -94,9 +94,29 @@ void View::Clean() {
     CleanGeometry();
     CleanTextures();
 
+    while ( !_animation_queue.empty() ) {
+        Animation* animation = _animation_queue.front();
+        _animation_queue.pop();
+        delete animation;
+    }
+
+    for ( auto& [_1, _2, animation] : _timed_out_animations )
+        delete animation;
+
+    if ( _locking_animation )
+        delete *_locking_animation;
+
+    for ( Animation* animation : _ongoing_animations )
+        delete animation;
+
+    for ( CardWrapper* card : _hand )
+        delete card;
+
     delete _camera_manipulator;
 
     delete _state;
+    if ( _next_state != nullptr )
+        delete _next_state;
 
     delete _model;
 }
@@ -237,15 +257,15 @@ void View::MouseMotion( const SDL_MouseMotionEvent& mouse ) {
         for ( int i = 0; i < _hand.size(); ++i ) {
             CardWrapper& card = *_hand[ i ];
 
-            if ( card.state == CardWrapper::HOVERED && hovered_card_index != i ) {
-                card.state = CardWrapper::IDLE;
+            if ( card.state == CardWrapper::State::HOVERED && hovered_card_index != i ) {
+                card.state = CardWrapper::State::IDLE;
                 card.pos.y.SetAnim( -1.0f + (1.0f + *card.pos.y) / 2.0f, card.base_pos.y, CARD_ADJUST_DURATION );
                 card.scale.Set( card.base_scale );
                 card.rotate.Set( card.base_rotate );
             } else if ( _state->CanHoverHand() &&
-                        card.state == CardWrapper::IDLE &&
+                        card.state == CardWrapper::State::IDLE &&
                         hovered_card_index == i ) {
-                card.state = CardWrapper::HOVERED;
+                card.state = CardWrapper::State::HOVERED;
                 card.scale.Set( card.base_scale * 2.0f );
                 card.pos.y.Set( card.base_pos.y + 0.6f );
                 card.rotate.Set( 0.0f );
@@ -254,16 +274,21 @@ void View::MouseMotion( const SDL_MouseMotionEvent& mouse ) {
     } else {
         CardWrapper* dragged_card = _hand[ _dragged_card_index ];
 
-        if ( y > CARD_DRAG_OUT_LINE_Y && !_state->CanPlayCard( dragged_card ) ) {
-            dragged_card->state = CardWrapper::TO_HAND;
-            dragged_card->GoToBase( CARD_ADJUST_DURATION );
-            _timed_out_animations.emplace_back( 0.0f, CARD_ADJUST_DURATION, new InstantAnimation( [ this, card = dragged_card ]() {
-                card->state = CardWrapper::IDLE;
-            } ) );
+        dragged_card->pos.Set( glm::vec2( x, y ) );
+        if ( y > CARD_DRAG_OUT_LINE_Y ) {
+            dragged_card->visual = _state->GetCardOverPlayLineVisual( dragged_card );
 
-            _dragged_card_index = -1;
+            if ( !_state->CanDragCardsOut() || !_state->CanPlayCard( dragged_card ) ) {
+                dragged_card->state = CardWrapper::State::TO_HAND;
+                dragged_card->GoToBase( CARD_ADJUST_DURATION );
+                _timed_out_animations.emplace_back( 0.0f, CARD_ADJUST_DURATION, new InstantAnimation( [ this, card = dragged_card ]() {
+                    card->state = CardWrapper::State::IDLE;
+                } ) );
+
+                _dragged_card_index = -1;
+            }
         } else {
-            dragged_card->pos.Set( glm::vec2( x, y ) );
+            dragged_card->visual = _state->GetCardUnderPlayLineVisual( dragged_card );
         }
     }
 }
@@ -277,7 +302,7 @@ void View::MouseDown( const SDL_MouseButtonEvent& mouse ) {
     if ( hovered_card_index != -1 && _state->CanDragCardsOut() ) {
         _dragged_card_index = hovered_card_index;
         CardWrapper& dragged_card = *_hand[ _dragged_card_index ];
-        dragged_card.state = CardWrapper::DRAGGING;
+        dragged_card.state = CardWrapper::State::DRAGGING;
         dragged_card.pos.Set( glm::vec2( x, y ) );
         dragged_card.scale.Set( CARD_BASE_SCALE );
         dragged_card.rotate.Set( 0.0f );
@@ -290,10 +315,10 @@ void View::MouseUp( const SDL_MouseButtonEvent& mouse ) {
         CardWrapper* dragged_card = _hand[ _dragged_card_index ];
 
         if ( y <= CARD_DRAG_OUT_LINE_Y ) {
-            dragged_card->state = CardWrapper::TO_HAND;
+            dragged_card->state = CardWrapper::State::TO_HAND;
             dragged_card->GoToBase( CARD_ADJUST_DURATION );
             _timed_out_animations.emplace_back( 0.0f, CARD_ADJUST_DURATION, new InstantAnimation( [ this, card = dragged_card ]() {
-                card->state = CardWrapper::IDLE;
+                card->state = CardWrapper::State::IDLE;
             } ) );
 
             _dragged_card_index = -1;
@@ -388,7 +413,7 @@ void View::Model_OnDrawCard( const model::decks::Card* card ) {
 
 void View::Model_OnDrawCardSpeed( const model::decks::Card* card, float speed ) {
     CardWrapper* card_wrapper = new CardWrapper( card );
-    card_wrapper->state = CardWrapper::DRAWING;
+    card_wrapper->state = CardWrapper::State::DRAWING;
 
     CardDrawAnimation* animation = new CardDrawAnimation( card_wrapper, speed );
     animation->SetOnStart( [ this, card_wrapper ]() {
@@ -396,7 +421,7 @@ void View::Model_OnDrawCardSpeed( const model::decks::Card* card, float speed ) 
         RefreshHandPositions();
     } );
     animation->SetOnCompleted( [ this, card_wrapper ]() {
-        card_wrapper->state = CardWrapper::IDLE;
+        card_wrapper->state = CardWrapper::State::IDLE;
     } );
 
     _animation_queue.push( animation );
@@ -617,11 +642,11 @@ void View::RefreshHandPositions() {
         card.base_scale = CARD_BASE_SCALE;
         card.base_rotate = 0.0f;
 
-        if ( card.state == CardWrapper::DRAGGING ||
-             card.state == CardWrapper::DRAWING )
+        if ( card.state == CardWrapper::State::DRAGGING ||
+             card.state == CardWrapper::State::DRAWING )
             return;
 
-        if ( card.state == CardWrapper::IDLE ) {
+        if ( card.state == CardWrapper::State::IDLE ) {
             card.GoToBase( CARD_ADJUST_DURATION );
             return;
         }
@@ -638,11 +663,11 @@ void View::RefreshHandPositions() {
         card.base_scale = CARD_BASE_SCALE;
         card.base_rotate = 0.0f;
 
-        if ( card.state == CardWrapper::DRAGGING ||
-             card.state == CardWrapper::DRAWING )
+        if ( card.state == CardWrapper::State::DRAGGING ||
+             card.state == CardWrapper::State::DRAWING )
             continue;
 
-        if ( card.state == CardWrapper::IDLE ) {
+        if ( card.state == CardWrapper::State::IDLE ) {
             card.GoToBase( CARD_ADJUST_DURATION );
             continue;
         }
@@ -893,9 +918,9 @@ void View::RenderHand() {
     std::optional<std::pair<CardWrapper*, int>> dragging;
 
     for ( int i = 0; i < _hand.size(); ++i ) {
-        if ( _hand[ i ]->state == CardWrapper::HOVERED )
+        if ( _hand[ i ]->state == CardWrapper::State::HOVERED )
             hovered = { _hand[ i ], i };
-        else if ( _hand[ i ]->state == CardWrapper::DRAGGING )
+        else if ( _hand[ i ]->state == CardWrapper::State::DRAGGING )
             dragging = { _hand[ i ], i };
         else
             RenderCard( *_hand[ i ], i );
@@ -920,12 +945,12 @@ void View::RenderCard( CardWrapper& card, int index ) {
     int index_x = corrected_card_id % CARD_TEXTURE_COLUMNS;
     int index_y = corrected_card_id / CARD_TEXTURE_COLUMNS;
 
-    bool faded = card.visual == CardWrapper::FADED;
-    bool highlight = card.visual != CardWrapper::NONE && card.visual != CardWrapper::FADED;
+    bool faded = card.visual == CardWrapper::Visual::FADED;
+    bool highlight = card.visual != CardWrapper::Visual::NONE && card.visual != CardWrapper::Visual::FADED;
     glm::vec3 highlight_color;
-    if ( card.visual == CardWrapper::HIGHLIGHT )
+    if ( card.visual == CardWrapper::Visual::HIGHLIGHT )
         highlight_color = CARD_HIGHLIGHT_COLOR;
-    else if ( card.visual == CardWrapper::ACTION_HIGHLIGHT )
+    else if ( card.visual == CardWrapper::Visual::ACTION_HIGHLIGHT )
         highlight_color = CARD_ACTION_HIGHLIGHT_COLOR;
     else
         highlight_color = CARD_SELL_HIGHLIGHT_COLOR;
@@ -933,8 +958,8 @@ void View::RenderCard( CardWrapper& card, int index ) {
     static const float card_ratio = (float)CARD_TEXTURE_WIDTH / CARD_TEXTURE_HEIGHT;
     float card_width = card_ratio / _width * _height;
 
-    float z = card.state == CardWrapper::HOVERED ||
-              card.state == CardWrapper::DRAGGING ?
+    float z = card.state == CardWrapper::State::HOVERED ||
+              card.state == CardWrapper::State::DRAGGING ?
         -0.1f : (index + 1) / -10000.0f;
 
     glm::vec3 scale( *card.scale * card_width, *card.scale, 1.0f );

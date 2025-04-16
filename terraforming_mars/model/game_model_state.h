@@ -98,6 +98,8 @@ public:
     void ConfirmPurchases() override;
 
 protected:
+    bool _completed = false;
+
     std::array<decks::Card*, RESEARCH_CARD_NUM> _cards;
     std::array<bool, RESEARCH_CARD_NUM> _to_buy;
 };

@@ -42,7 +42,7 @@ inline constexpr float CARD_DRAW_ROTATE_START = 0.0f;
 inline constexpr glm::vec2 CARD_DRAW_POS_MIDDLE = { 0.5f, 0.0f };
 inline constexpr float CARD_DRAW_SCALE_MIDDLE = CARD_BASE_SCALE * 1.8f;
 inline constexpr float CARD_DRAW_ROTATE_MIDDLE = 0.0f;
-inline constexpr float CARD_DRAG_OUT_LINE_Y = -0.5f;
+inline constexpr float CARD_DRAG_OUT_LINE_Y = -0.2f;
 
 inline constexpr glm::vec3 CARD_HIGHLIGHT_COLOR        = glm::vec3( 0x00, 0xff, 0x30 ) / 255.0f;
 inline constexpr glm::vec3 CARD_ACTION_HIGHLIGHT_COLOR = glm::vec3( 0x00, 0x80, 0xff ) / 255.0f;

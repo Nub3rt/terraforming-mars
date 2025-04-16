@@ -29,6 +29,8 @@ void ViewState::Render() {}
 void ViewState::RenderGUI() {}
 
 std::string ViewState::GetEndButtonText() { return "End Generation"; }
+CardWrapper::Visual ViewState::GetCardUnderPlayLineVisual( CardWrapper* card ) { throw std::logic_error( "ViewState::GetCardUnderPlayLineVisual: card drag is not supported in this state!" ); }
+CardWrapper::Visual ViewState::GetCardOverPlayLineVisual( CardWrapper* card ) { throw std::logic_error( "ViewState::GetCardOverPlayLineVisual: card drag is not supported in this state!" ); }
 
 bool ViewState::CanClickEndButton() { return false; }
 bool ViewState::CanHoverHand() { return false; }
@@ -94,8 +96,8 @@ void ResearchVState::Enter() {
     }
 
     for ( CardWrapper* card : _cards ) {
-        card->state = CardWrapper::DRAWING;
-        card->visual = CardWrapper::NONE;
+        card->state = CardWrapper::State::DRAWING;
+        card->visual = CardWrapper::Visual::NONE;
         card->SetEase( glm::quarticEaseOut<float> );
     }
 }
@@ -113,7 +115,7 @@ void ResearchVState::Update( float delta ) {
         if ( !_in_animation_over && _elapsed >= CARD_DRAW_IN_DURATION + model::RESEARCH_CARD_NUM * delay ) {
             _in_animation_over = true;
             for ( CardWrapper* card : _cards )
-                card->visual = CardWrapper::ACTION_HIGHLIGHT;
+                card->visual = CardWrapper::Visual::ACTION_HIGHLIGHT;
         }
     } else {
         for ( CardWrapper* card : *_non_boughts )
@@ -121,7 +123,7 @@ void ResearchVState::Update( float delta ) {
 
         if ( _elapsed > CARD_DRAW_DOWN_DURATION ) {
             for ( CardWrapper* card : _cards ) {
-                card->state = CardWrapper::IDLE;
+                card->state = CardWrapper::State::IDLE;
                 card->SetDefaultEase();
             }
 
@@ -177,8 +179,8 @@ bool ResearchVState::CanHoverHand() { return true; }
 void ResearchVState::ToggleToBuyCard( int index ) {
     _view._model->ToggleToBuyCard( index );
     _to_buy[ index ] = !_to_buy[ index ];
-    _cards[ index ]->visual = _to_buy[ index ] ? CardWrapper::ACTION_HIGHLIGHT
-                                               : CardWrapper::FADED;
+    _cards[ index ]->visual = _to_buy[index] ? CardWrapper::Visual::ACTION_HIGHLIGHT
+                                             : CardWrapper::Visual::FADED;
 }
 
 void ResearchVState::Model_OnResearchConfirmed( std::array<bool, model::RESEARCH_CARD_NUM> selected ) {
@@ -187,7 +189,7 @@ void ResearchVState::Model_OnResearchConfirmed( std::array<bool, model::RESEARCH
 
     for ( int i = 0; i < model::RESEARCH_CARD_NUM; ++i ) {
         CardWrapper* card = _cards[ i ];
-        card->visual = CardWrapper::NONE;
+        card->visual = CardWrapper::Visual::NONE;
         card->SetEase( glm::quarticEaseIn<float> );
 
         if ( selected[ i ] ) {
@@ -220,8 +222,9 @@ IdleVState::~IdleVState() {}
 
 void IdleVState::Update( float delta ) {
     for ( CardWrapper* card : _view._hand ) {
-        card->visual = CanDragCardsOut() && (*card)->CanBePlayed() ?
-            CardWrapper::HIGHLIGHT : CardWrapper::NONE;
+        if ( card->state != CardWrapper::State::DRAGGING )
+            card->visual = CanDragCardsOut() && (*card)->CanBePlayed() ?
+                CardWrapper::Visual::HIGHLIGHT : CardWrapper::Visual::NONE;
     }
 }
 
@@ -229,6 +232,14 @@ bool IdleVState::CanClickEndButton() { return _view._model->InIdleState(); }
 bool IdleVState::CanHoverHand() { return true; }
 bool IdleVState::CanDragCardsOut() { return _view._model->InIdleState(); }
 bool IdleVState::CanPlayCard( CardWrapper* card ) { return (*card)->CanBePlayed(); }
+
+CardWrapper::Visual IdleVState::GetCardUnderPlayLineVisual( CardWrapper* card ) {
+    return (*card)->CanBePlayed() ? CardWrapper::Visual::HIGHLIGHT
+                                  : CardWrapper::Visual::NONE;
+}
+CardWrapper::Visual IdleVState::GetCardOverPlayLineVisual( CardWrapper* card ) {
+    return CardWrapper::Visual::ACTION_HIGHLIGHT;
+}
 
 void IdleVState::PlayCard( int index_in_hand ) {
     _view._model->PlayCard( **_view._hand[ index_in_hand ] );
@@ -371,7 +382,7 @@ PaymentConfirmationVState::~PaymentConfirmationVState() {}
 
 void PaymentConfirmationVState::Enter() {
     for ( CardWrapper* card : _view._hand )
-        card->visual = CardWrapper::NONE;
+        card->visual = CardWrapper::Visual::NONE;
 }
 
 void PaymentConfirmationVState::RenderGUI() {
@@ -404,6 +415,8 @@ void PaymentConfirmationVState::RenderGUI() {
     }
     ImGui::End();
 }
+
+bool PaymentConfirmationVState::CanHoverHand() { return true; }
 
 int PaymentConfirmationVState::CalculateResourceNeeded( int credit, int amount, int resource_value ) {
     return (glm::max( amount - credit, 0 ) + resource_value - 1) / resource_value;

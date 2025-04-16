@@ -12,7 +12,7 @@ namespace view
 class CardWrapper
 {
 public:
-    enum State
+    enum class State
     {
         IDLE,
         HOVERED,
@@ -21,7 +21,7 @@ public:
         TO_HAND,
     };
 
-    enum Visuals
+    enum class Visual
     {
         NONE,
         HIGHLIGHT,
@@ -43,8 +43,8 @@ public:
 
     void GoToBase( float duration );
 
-    State state = IDLE;
-    Visuals visual = NONE;
+    State state = State::IDLE;
+    Visual visual = Visual::NONE;
 
     glm::vec2 base_pos = CARD_DRAW_POS_START;
     float base_scale = CARD_BASE_SCALE;

@@ -16,6 +16,7 @@
 namespace view
 {
 App::App() : _camera(), _builder( BUILDER_SEED ) {
+    SDL_LogInfo( SDL_LOG_CATEGORY_APPLICATION, "Seed of the application: %d", BUILDER_SEED );
 }
 #undef BUILDER_SEED
 
