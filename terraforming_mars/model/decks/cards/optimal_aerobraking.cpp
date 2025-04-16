@@ -1,9 +1,9 @@
-#include "optimal_aerobraking.h"
+#include "optimal_aerobraking.hpp"
 
-#include "../active_card_with_effect.h"
-#include "../card_id.h"
-#include "../../player.h"
-#include "../../tag.h"
+#include "../active_card_with_effect.hpp"
+#include "../card_id.hpp"
+#include "../../player.hpp"
+#include "../../tag.hpp"
 
 namespace model::decks::cards
 {

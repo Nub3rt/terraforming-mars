@@ -1,6 +1,6 @@
-﻿#include "spherical_camera_manipulator.h"
+﻿#include "spherical_camera_manipulator.hpp"
 
-#include "Camera.h"
+#include "Camera.hpp"
 
 #include <SDL3/SDL.h>
 

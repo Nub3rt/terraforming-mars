@@ -1,4 +1,4 @@
-﻿#include "view.h"
+﻿#include "view.hpp"
 
 #include <algorithm>
 #include <array>
@@ -10,14 +10,14 @@
 #include <glm/glm.hpp>
 #include <imgui.h>
 
-#include "animation.h"
-#include "animatable.h"
-#include "constants.h"
-#include "text_renderer.h"
-#include "view_state.h"
+#include "animation.hpp"
+#include "animatable.hpp"
+#include "constants.hpp"
+#include "text_renderer.hpp"
+#include "view_state.hpp"
 
-#include "../model/constants.h"
-#include "../model/resource.h"
+#include "../model/constants.hpp"
+#include "../model/resource.hpp"
 
 namespace view
 {

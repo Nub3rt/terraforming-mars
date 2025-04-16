@@ -1,8 +1,8 @@
-#include "card_wrapper.h"
+#include "card_wrapper.hpp"
 
 #include <glm/gtx/easing.hpp>
 
-#include "../model/decks/card.h"
+#include "../model/decks/card.hpp"
 
 namespace view
 {

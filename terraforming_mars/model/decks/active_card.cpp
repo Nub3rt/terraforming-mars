@@ -1,7 +1,7 @@
-#include "active_card.h"
+#include "active_card.hpp"
 
-#include "card.h"
-#include "card_id.h"
+#include "card.hpp"
+#include "card_id.hpp"
 
 namespace model::decks
 {

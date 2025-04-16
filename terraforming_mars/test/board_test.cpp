@@ -1,11 +1,11 @@
-#include "pch.h"
+#include "pch.hpp"
 
 #include "gtest/gtest-typed-test.h"
 
 #include <algorithm>
 
-#include "../model/boards/tile.h"
-#include "../model/boards/tile_type.h"
+#include "../model/boards/tile.hpp"
+#include "../model/boards/tile_type.hpp"
 
 using namespace model;
 using namespace model::boards;

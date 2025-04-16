@@ -1,10 +1,10 @@
-#include "pch.h"
+#include "pch.hpp"
 
 #include <string>
 
-#include "../model/decks/card.h"
-#include "../model/decks/cards/_cards.h"
-#include "../model/decks/availability.h"
+#include "../model/decks/card.hpp"
+#include "../model/decks/cards/_cards.hpp"
+#include "../model/decks/availability.hpp"
 
 using namespace model;
 using namespace model::decks;

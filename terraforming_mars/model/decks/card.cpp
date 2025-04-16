@@ -1,11 +1,11 @@
-#include "card.h"
+#include "card.hpp"
 
 #include <stdexcept>
 
-#include "card_id.h"
-#include "../game_model.h"
-#include "../player.h"
-#include "../resource.h"
+#include "card_id.hpp"
+#include "../game_model.hpp"
+#include "../player.hpp"
+#include "../resource.hpp"
 
 namespace model::decks
 {

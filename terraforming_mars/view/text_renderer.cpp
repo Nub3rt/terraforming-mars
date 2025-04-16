@@ -1,6 +1,6 @@
 // Based on: https://learnopengl.com/In-Practice/Text-Rendering
 
-#include "text_renderer.h"
+#include "text_renderer.hpp"
 
 #include <iostream>
 
@@ -13,8 +13,8 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
-#include "constants.h"
-#include "gl_utils/gl_utils.h"
+#include "constants.hpp"
+#include "gl_utils/gl_utils.hpp"
 
 namespace view
 {

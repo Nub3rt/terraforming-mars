@@ -1,11 +1,11 @@
-#include "rad_chem_factory.h"
+#include "rad_chem_factory.hpp"
 
-#include "../automated_card.h"
-#include "../card_id.h"
-#include "../../game_model.h"
-#include "../../player.h"
-#include "../../resource.h"
-#include "../../tag.h"
+#include "../automated_card.hpp"
+#include "../card_id.hpp"
+#include "../../game_model.hpp"
+#include "../../player.hpp"
+#include "../../resource.hpp"
+#include "../../tag.hpp"
 
 namespace model::decks::cards
 {

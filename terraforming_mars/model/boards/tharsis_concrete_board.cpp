@@ -1,14 +1,14 @@
-#include "tharsis_concrete_board.h"
+#include "tharsis_concrete_board.hpp"
 
 #include <array>
 #include <functional>
 #include <stdexcept>
 
-#include "concrete_board.h"
-#include "hexagonal_grid.h"
-#include "tile.h"
-#include "../constants.h"
-#include "../player.h"
+#include "concrete_board.hpp"
+#include "hexagonal_grid.hpp"
+#include "tile.hpp"
+#include "../constants.hpp"
+#include "../player.hpp"
 
 namespace model::boards
 {

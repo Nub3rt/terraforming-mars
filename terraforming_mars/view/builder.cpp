@@ -1,16 +1,16 @@
-#include "builder.h"
+#include "builder.hpp"
 
 #include <stdexcept>
 
-#include "gl_utils/camera.h"
-#include "view.h"
+#include "gl_utils/camera.hpp"
+#include "view.hpp"
 
-#include "../model/game_model.h"
-#include "../model/solo_game_model.h"
-#include "../model/boards/tharsis_concrete_board.h"
-#include "../model/decks/deck.h"
-#include "../model/decks/deck_provider.h"
-#include "../model/decks/reduced_basic_deck_provider.h"
+#include "../model/game_model.hpp"
+#include "../model/solo_game_model.hpp"
+#include "../model/boards/tharsis_concrete_board.hpp"
+#include "../model/decks/deck.hpp"
+#include "../model/decks/deck_provider.hpp"
+#include "../model/decks/reduced_basic_deck_provider.hpp"
 
 namespace view
 {

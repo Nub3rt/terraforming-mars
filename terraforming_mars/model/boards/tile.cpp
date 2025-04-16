@@ -1,9 +1,9 @@
-#include "tile.h"
+#include "tile.hpp"
 
 #include <functional>
 #include <stdexcept>
 
-#include "../player.h"
+#include "../player.hpp"
 
 namespace model::boards
 {

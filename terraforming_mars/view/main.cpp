@@ -10,9 +10,9 @@
 
 #include <iostream>
 
-#include "app.h"
-#include "constants.h"
-#include "text_renderer.h"
+#include "app.hpp"
+#include "constants.hpp"
+#include "text_renderer.hpp"
 
 int main( int argc, char* argv[] ) {
     srand( (unsigned int)time( NULL ) );

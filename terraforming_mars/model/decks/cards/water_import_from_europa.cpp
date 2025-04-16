@@ -1,13 +1,13 @@
-#include "water_import_from_europa.h"
+#include "water_import_from_europa.hpp"
 
 #include <functional>
 
-#include "../active_card_with_action.h"
-#include "../card_id.h"
-#include "../../game_model.h"
-#include "../../player.h"
-#include "../../resource.h"
-#include "../../tag.h"
+#include "../active_card_with_action.hpp"
+#include "../card_id.hpp"
+#include "../../game_model.hpp"
+#include "../../player.hpp"
+#include "../../resource.hpp"
+#include "../../tag.hpp"
 
 namespace model::decks::cards
 {

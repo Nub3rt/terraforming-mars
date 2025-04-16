@@ -1,10 +1,10 @@
-#include "reduced_basic_deck_provider.h"
+#include "reduced_basic_deck_provider.hpp"
 
 #include <vector>
 
-#include "card.h"
-#include "cards/_cards.h"
-#include "../game_model.h"
+#include "card.hpp"
+#include "cards/_cards.hpp"
+#include "../game_model.hpp"
 
 namespace model::decks
 {

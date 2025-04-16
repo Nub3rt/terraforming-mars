@@ -1,11 +1,11 @@
-#include "immigrant_city.h"
+#include "immigrant_city.hpp"
 
-#include "../active_card_with_effect.h"
-#include "../card_id.h"
-#include "../../game_model.h"
-#include "../../player.h"
-#include "../../resource.h"
-#include "../../tag.h"
+#include "../active_card_with_effect.hpp"
+#include "../card_id.hpp"
+#include "../../game_model.hpp"
+#include "../../player.hpp"
+#include "../../resource.hpp"
+#include "../../tag.hpp"
 
 namespace model::decks::cards
 {

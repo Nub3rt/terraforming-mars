@@ -1,11 +1,11 @@
-#include "animation.h"
+#include "animation.hpp"
 
 #include <stdexcept>
 #include <string>
 
 #include <glm/glm.hpp>
 
-#include "view.h"
+#include "view.hpp"
 
 namespace view
 {

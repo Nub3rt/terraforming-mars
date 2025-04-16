@@ -1,4 +1,4 @@
-#include "deck_provider.h"
+#include "deck_provider.hpp"
 
 namespace model::decks
 {

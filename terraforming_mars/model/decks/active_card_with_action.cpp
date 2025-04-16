@@ -1,10 +1,10 @@
-#include "active_card_with_action.h"
+#include "active_card_with_action.hpp"
 
 #include <stdexcept>
 
-#include "active_card.h"
-#include "availability.h"
-#include "card_id.h"
+#include "active_card.hpp"
+#include "availability.hpp"
+#include "card_id.hpp"
 
 namespace model::decks
 {

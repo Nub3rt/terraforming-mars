@@ -1,4 +1,4 @@
-#include "player.h"
+#include "player.hpp"
 
 #include <algorithm>
 #include <array>
@@ -6,14 +6,14 @@
 #include <stdexcept>
 #include <vector>
 
-#include "decks/card.h"
-#include "decks/active_card.h"
-#include "decks/active_card_with_action.h"
-#include "decks/active_card_with_effect.h"
-#include "decks/automated_card.h"
-#include "decks/event_card.h"
-#include "resource.h"
-#include "tag.h"
+#include "decks/card.hpp"
+#include "decks/active_card.hpp"
+#include "decks/active_card_with_action.hpp"
+#include "decks/active_card_with_effect.hpp"
+#include "decks/automated_card.hpp"
+#include "decks/event_card.hpp"
+#include "resource.hpp"
+#include "tag.hpp"
 
 namespace model
 {

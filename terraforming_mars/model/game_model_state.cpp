@@ -1,4 +1,4 @@
-#include "game_model_state.h"
+#include "game_model_state.hpp"
 
 #include <format>
 #include <functional>
@@ -6,13 +6,13 @@
 #include <utility>
 #include <vector>
 
-#include "constants.h"
-#include "game_model.h"
-#include "player.h"
-#include "resource.h"
+#include "constants.hpp"
+#include "game_model.hpp"
+#include "player.hpp"
+#include "resource.hpp"
 
-#include "decks/card.h"
-#include "decks/deck.h"
+#include "decks/card.hpp"
+#include "decks/deck.hpp"
 
 namespace model
 {

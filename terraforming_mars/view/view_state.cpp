@@ -1,4 +1,4 @@
-#include "view_state.h"
+#include "view_state.hpp"
 
 #include <format>
 #include <stdexcept>
@@ -6,14 +6,14 @@
 
 #include <imgui.h>
 
-#include "animation.h"
-#include "card_wrapper.h"
-#include "constants.h"
-#include "text_renderer.h"
-#include "tile_wrapper.h"
-#include "view.h"
+#include "animation.hpp"
+#include "card_wrapper.hpp"
+#include "constants.hpp"
+#include "text_renderer.hpp"
+#include "tile_wrapper.hpp"
+#include "view.hpp"
 
-#include "../model/boards/tile_type.h"
+#include "../model/boards/tile_type.hpp"
 
 namespace view
 {

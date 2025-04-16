@@ -1,14 +1,14 @@
-#include "solo_game_model.h"
+#include "solo_game_model.hpp"
 
 #include <random>
 #include <utility>
 #include <vector>
 
-#include "boards/board.h"
-#include "constants.h"
-#include "decks/deck.h"
-#include "player.h"
-#include "boards/tile_type.h"
+#include "boards/board.hpp"
+#include "constants.hpp"
+#include "decks/deck.hpp"
+#include "player.hpp"
+#include "boards/tile_type.hpp"
 
 namespace model
 {

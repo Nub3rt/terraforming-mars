@@ -1,11 +1,11 @@
-#include "tile_wrapper.h"
+#include "tile_wrapper.hpp"
 
 #include <stdexcept>
 
-#include "constants.h"
+#include "constants.hpp"
 
-#include "../model/boards/tile.h"
-#include "../model/boards/tile_type.h"
+#include "../model/boards/tile.hpp"
+#include "../model/boards/tile_type.hpp"
 
 
 namespace view

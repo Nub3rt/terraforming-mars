@@ -1,13 +1,13 @@
-#include "concrete_board.h"
+#include "concrete_board.hpp"
 
 #include <iostream>
 #include <vector>
 #include <functional>
 #include <stdexcept>
 
-#include "../player.h"
-#include "../resource.h"
-#include "tile_type.h"
+#include "../player.hpp"
+#include "../resource.hpp"
+#include "tile_type.hpp"
 
 namespace model::boards
 {

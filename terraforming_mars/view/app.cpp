@@ -1,11 +1,11 @@
-﻿#include "app.h"
+﻿#include "app.hpp"
 
 #include <imgui.h>
 
-#include "constants.h"
-#include "view.h"
-#include "gl_utils/gl_utils.h"
-#include "gl_utils/SDL_GLDebugMessageCallback.h"
+#include "constants.hpp"
+#include "view.hpp"
+#include "gl_utils/gl_utils.hpp"
+#include "gl_utils/SDL_GLDebugMessageCallback.hpp"
 
 #ifdef _DEBUG
 #  define BUILDER_SEED 42

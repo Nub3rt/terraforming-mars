@@ -1,7 +1,7 @@
-#include "pch.h"
+#include "pch.hpp"
 
-#include "../model/decks/card.h"
-#include "../model/decks/cards/_cards.h"
+#include "../model/decks/card.hpp"
+#include "../model/decks/cards/_cards.hpp"
 
 using namespace model;
 using namespace model::decks;

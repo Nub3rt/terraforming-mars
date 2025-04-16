@@ -1,15 +1,15 @@
-#include "game_model.h"
+#include "game_model.hpp"
 
 #include <stdexcept>
 
-#include "boards/board.h"
-#include "decks/card.h"
-#include "constants.h"
-#include "decks/active_card_with_action.h"
-#include "decks/deck.h"
-#include "event.h"
-#include "game_model_state.h"
-#include "player.h"
+#include "boards/board.hpp"
+#include "decks/card.hpp"
+#include "constants.hpp"
+#include "decks/active_card_with_action.hpp"
+#include "decks/deck.hpp"
+#include "event.hpp"
+#include "game_model_state.hpp"
+#include "player.hpp"
 
 namespace model
 {

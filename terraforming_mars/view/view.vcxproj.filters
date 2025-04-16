@@ -36,31 +36,31 @@
     <ClCompile Include="animation.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="app.h" />
-    <ClInclude Include="gl_utils\camera.h">
+    <ClInclude Include="app.hpp" />
+    <ClInclude Include="gl_utils\camera.hpp">
       <Filter>gl_utils</Filter>
     </ClInclude>
-    <ClInclude Include="gl_utils\gl_utils.h">
+    <ClInclude Include="gl_utils\gl_utils.hpp">
       <Filter>gl_utils</Filter>
     </ClInclude>
-    <ClInclude Include="gl_utils\SDL_GLDebugMessageCallback.h">
+    <ClInclude Include="gl_utils\SDL_GLDebugMessageCallback.hpp">
       <Filter>gl_utils</Filter>
     </ClInclude>
-    <ClInclude Include="gl_utils\spherical_camera_manipulator.h">
+    <ClInclude Include="gl_utils\spherical_camera_manipulator.hpp">
       <Filter>gl_utils</Filter>
     </ClInclude>
-    <ClInclude Include="view.h" />
-    <ClInclude Include="constants.h" />
-    <ClInclude Include="tile_wrapper.h" />
-    <ClInclude Include="card_wrapper.h" />
-    <ClInclude Include="text_renderer.h" />
-    <ClInclude Include="builder.h" />
-    <ClInclude Include="view_state.h" />
-    <ClInclude Include="view.fwd.h" />
-    <ClInclude Include="view_state.fwd.h" />
-    <ClInclude Include="animatable.h" />
-    <ClInclude Include="animation.h" />
-    <ClInclude Include="animation.fwd.h" />
+    <ClInclude Include="view.hpp" />
+    <ClInclude Include="constants.hpp" />
+    <ClInclude Include="tile_wrapper.hpp" />
+    <ClInclude Include="card_wrapper.hpp" />
+    <ClInclude Include="text_renderer.hpp" />
+    <ClInclude Include="builder.hpp" />
+    <ClInclude Include="view_state.hpp" />
+    <ClInclude Include="view.fwd.hpp" />
+    <ClInclude Include="view_state.fwd.hpp" />
+    <ClInclude Include="animatable.hpp" />
+    <ClInclude Include="animation.hpp" />
+    <ClInclude Include="animation.fwd.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\skybox.frag">
