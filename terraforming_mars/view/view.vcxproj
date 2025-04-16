@@ -136,6 +136,7 @@
     <ClCompile Include="gl_utils\gl_utils.cpp" />
     <ClCompile Include="gl_utils\SDL_GLDebugMessageCallback.cpp" />
     <ClCompile Include="gl_utils\spherical_camera_manipulator.cpp" />
+    <ClCompile Include="gl_utils\tm_camera_manipulator.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="app.cpp" />
     <ClCompile Include="text_renderer.cpp" />
@@ -152,9 +153,11 @@
     <ClInclude Include="card_wrapper.hpp" />
     <ClInclude Include="constants.hpp" />
     <ClInclude Include="gl_utils\camera.hpp" />
+    <ClInclude Include="gl_utils\camera_manipulator.hpp" />
     <ClInclude Include="gl_utils\gl_utils.hpp" />
     <ClInclude Include="gl_utils\SDL_GLDebugMessageCallback.hpp" />
     <ClInclude Include="gl_utils\spherical_camera_manipulator.hpp" />
+    <ClInclude Include="gl_utils\tm_camera_manipulator.hpp" />
     <ClInclude Include="text_renderer.hpp" />
     <ClInclude Include="tile_wrapper.hpp" />
     <ClInclude Include="view.fwd.hpp" />

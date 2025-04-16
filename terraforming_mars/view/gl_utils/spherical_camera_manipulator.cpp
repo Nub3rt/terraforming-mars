@@ -1,42 +1,36 @@
 ﻿#include "spherical_camera_manipulator.hpp"
 
-#include "Camera.hpp"
+#include <glm/glm.hpp>
 
 #include <SDL3/SDL.h>
 
+#include "camera.hpp"
+#include "camera_manipulator.hpp"
+
 namespace view
 {
-SphericalCameraManipulator::SphericalCameraManipulator() {}
-SphericalCameraManipulator::~SphericalCameraManipulator() {}
+SphericalCameraManipulator::SphericalCameraManipulator( Camera& camera )
+    : CameraManipulator( camera ) {
+    _center = _camera.GetAt();
 
-void SphericalCameraManipulator::SetCamera( Camera* camera ) {
-    _camera = camera;
-
-    if ( _camera == nullptr )
-        return;
-
-    _center = _camera->GetAt();
-    glm::vec3 to_aim = _center - _camera->GetEye();
+    glm::vec3 to_aim = _center - _camera.GetEye();
 
     _distance = glm::length( to_aim );
 
     _u = atan2f( to_aim.z, to_aim.x );
     _v = acosf( to_aim.y / _distance );
-
-    _world_up = _camera->GetWorldUp();
 }
 
-void SphericalCameraManipulator::Update( float delta ) {
-    if ( _camera == nullptr )
-        return;
+SphericalCameraManipulator::~SphericalCameraManipulator() {}
 
+void SphericalCameraManipulator::Update( float delta ) {
     glm::vec3 look_direction( cosf( _u ) * sinf( _v ),
                               cosf( _v ),
                               sinf( _u ) * sinf( _v ) );
 
     glm::vec3 eye = _center - _distance * look_direction;
 
-    glm::vec3 up = _camera->GetWorldUp();
+    glm::vec3 up = _camera.GetWorldUp();
 
     glm::vec3 right = glm::normalize( glm::cross( look_direction, up ) );
 
@@ -47,7 +41,7 @@ void SphericalCameraManipulator::Update( float delta ) {
     eye += delta_position;
     _center += delta_position;
 
-    _camera->SetView( eye, _center, _world_up );
+    _camera.SetView( eye, _center, up );
 }
 
 void SphericalCameraManipulator::KeyboardDown( const SDL_KeyboardEvent& key ) {
@@ -84,7 +78,6 @@ void SphericalCameraManipulator::KeyboardDown( const SDL_KeyboardEvent& key ) {
 }
 
 void SphericalCameraManipulator::KeyboardUp( const SDL_KeyboardEvent& key ) {
-
     switch ( key.key ) {
         case SDLK_LCTRL:
         case SDLK_RCTRL:
@@ -109,7 +102,7 @@ void SphericalCameraManipulator::KeyboardUp( const SDL_KeyboardEvent& key ) {
     }
 }
 
-void SphericalCameraManipulator::MouseMove( const SDL_MouseMotionEvent& mouse ) {
+void SphericalCameraManipulator::MouseMotion( const SDL_MouseMotionEvent& mouse ) {
     if ( mouse.state & SDL_BUTTON_LMASK ) {
         float du = mouse.xrel / 100.0f;
         float dv = mouse.yrel / 100.0f;

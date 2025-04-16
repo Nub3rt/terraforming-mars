@@ -25,7 +25,9 @@
 #include "tile_wrapper.hpp"
 
 #include "gl_utils/camera.hpp"
+#include "gl_utils/camera_manipulator.hpp"
 #include "gl_utils/spherical_camera_manipulator.hpp"
+#include "gl_utils/tm_camera_manipulator.hpp"
 #include "gl_utils/gl_utils.hpp"
 
 #include "../model/constants.hpp"
@@ -79,7 +81,9 @@ protected:
     float _elapsed = 0.0f;
 
     Camera* _camera = nullptr;
-    SphericalCameraManipulator* _camera_manipulator = nullptr;
+    CameraManipulator* _active_camera_manipulator = nullptr;
+    TMCameraManipulator* _tm_camera_manipulator = nullptr;
+    SphericalCameraManipulator* _editorial_camera_manipulator = nullptr;
 
 
     ViewState* _state = nullptr;

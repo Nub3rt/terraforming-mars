@@ -8,6 +8,7 @@
 #include <stdexcept>
 
 #include <glm/glm.hpp>
+#include <SDL3/SDL.h>
 #include <imgui.h>
 
 #include "animation.hpp"
@@ -31,8 +32,11 @@ bool View::Init( Camera* camera, model::GameModel* model ) {
 
 
     _camera = camera;
-    _camera_manipulator = new SphericalCameraManipulator();
-    _camera_manipulator->SetCamera( camera );
+
+    _tm_camera_manipulator = new TMCameraManipulator( *camera );
+    _editorial_camera_manipulator = new SphericalCameraManipulator( *camera );
+
+    _active_camera_manipulator = _tm_camera_manipulator;
 
 
     _state = CreateIdleState();
@@ -112,7 +116,8 @@ void View::Clean() {
     for ( CardWrapper* card : _hand )
         delete card;
 
-    delete _camera_manipulator;
+    delete _tm_camera_manipulator;
+    delete _editorial_camera_manipulator;
 
     delete _state;
     if ( _next_state != nullptr )
@@ -124,7 +129,7 @@ void View::Clean() {
 void View::Update( const UpdateInfo& update_info ) {
     _elapsed = update_info.elapsed;
 
-    _camera_manipulator->Update( update_info.delta );
+    _active_camera_manipulator->Update( update_info.delta );
 
 
     for ( TileWrapper& tile : _tiles )
@@ -237,11 +242,19 @@ void View::RenderGUI() {
 #pragma region Events
 
 void View::KeyboardDown( const SDL_KeyboardEvent& key ) {
-    _camera_manipulator->KeyboardDown( key );
+    if ( key.key == SDLK_F3 ) {
+        if ( !key.repeat ) {
+            if ( _active_camera_manipulator == _tm_camera_manipulator )
+                _active_camera_manipulator = _editorial_camera_manipulator;
+            else
+                _active_camera_manipulator = _tm_camera_manipulator;
+        }
+    } else
+        _active_camera_manipulator->KeyboardDown( key );
 }
 
 void View::KeyboardUp( const SDL_KeyboardEvent& key ) {
-    _camera_manipulator->KeyboardUp( key );
+    _active_camera_manipulator->KeyboardUp( key );
 }
 
 void View::MouseMotion( const SDL_MouseMotionEvent& mouse ) {
@@ -250,8 +263,6 @@ void View::MouseMotion( const SDL_MouseMotionEvent& mouse ) {
     auto [x, y] = CalculateMousePos( mouse.x, mouse.y );
 
     if ( _dragged_card_index == -1 ) {
-        _camera_manipulator->MouseMove( mouse );
-
         int hovered_card_index = CalculateHoveredCardByPos( x, y );
 
         for ( int i = 0; i < _hand.size(); ++i ) {
@@ -291,6 +302,8 @@ void View::MouseMotion( const SDL_MouseMotionEvent& mouse ) {
             dragged_card->visual = _state->GetCardUnderPlayLineVisual( dragged_card );
         }
     }
+
+    _active_camera_manipulator->MouseMotion( mouse );
 }
 
 void View::MouseDown( const SDL_MouseButtonEvent& mouse ) {
@@ -307,6 +320,8 @@ void View::MouseDown( const SDL_MouseButtonEvent& mouse ) {
         dragged_card.scale.Set( CARD_BASE_SCALE );
         dragged_card.rotate.Set( 0.0f );
     }
+
+    _active_camera_manipulator->MouseDown( mouse );
 }
 
 void View::MouseUp( const SDL_MouseButtonEvent& mouse ) {
@@ -364,18 +379,23 @@ void View::MouseUp( const SDL_MouseButtonEvent& mouse ) {
             }
         }
     }
+
+    _active_camera_manipulator->MouseUp( mouse );
 }
 
 void View::MouseWheel( const SDL_MouseWheelEvent& wheel ) {
-    _camera_manipulator->MouseWheel( wheel );
+    _active_camera_manipulator->MouseWheel( wheel );
 }
 
 void View::Resize( int w, int h ) {
     _width = w;
     _height = h;
+
+    _active_camera_manipulator->Resize( w, h );
 }
 
 void View::OtherEvent( const SDL_Event& event ) {
+    _active_camera_manipulator->OtherEvent( event );
 }
 
 #pragma endregion Events

@@ -34,6 +34,9 @@
     <ClCompile Include="builder.cpp" />
     <ClCompile Include="view_state.cpp" />
     <ClCompile Include="animation.cpp" />
+    <ClCompile Include="gl_utils\tm_camera_manipulator.cpp">
+      <Filter>gl_utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="app.hpp" />
@@ -61,6 +64,12 @@
     <ClInclude Include="animatable.hpp" />
     <ClInclude Include="animation.hpp" />
     <ClInclude Include="animation.fwd.hpp" />
+    <ClInclude Include="gl_utils\camera_manipulator.hpp">
+      <Filter>gl_utils</Filter>
+    </ClInclude>
+    <ClInclude Include="gl_utils\tm_camera_manipulator.hpp">
+      <Filter>gl_utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\skybox.frag">

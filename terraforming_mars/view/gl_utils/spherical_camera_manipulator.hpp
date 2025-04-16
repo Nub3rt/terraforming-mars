@@ -5,30 +5,25 @@
 #include <SDL3/SDL_events.h>
 
 #include "camera.hpp"
+#include "camera_manipulator.hpp"
 
 namespace view
 {
-class SphericalCameraManipulator
+class SphericalCameraManipulator : public CameraManipulator
 {
 public:
-    SphericalCameraManipulator();
+    SphericalCameraManipulator( Camera& camera );
 
     ~SphericalCameraManipulator();
 
-    void SetCamera( Camera* camera );
-    void Update( float delta );
+    void Update( float delta ) override;
 
-    inline void SetSpeed( float speed ) { _speed = speed; }
-    inline float GetSpeed() const noexcept { return _speed; }
+    void KeyboardDown( const SDL_KeyboardEvent& key ) override;
+    void KeyboardUp( const SDL_KeyboardEvent& key ) override;
+    void MouseMotion( const SDL_MouseMotionEvent& mouse ) override;
+    void MouseWheel( const SDL_MouseWheelEvent& wheel ) override;
 
-    void KeyboardDown( const SDL_KeyboardEvent& key );
-    void KeyboardUp( const SDL_KeyboardEvent& key );
-    void MouseMove( const SDL_MouseMotionEvent& mouse );
-    void MouseWheel( const SDL_MouseWheelEvent& wheel );
-
-private:
-    Camera* _camera = nullptr;
-
+protected:
     // The u spherical coordinate of the spherical coordinate pair (u,v) denoting the
     // current viewing direction from the view position _eye
     float _u = 0.0f;
@@ -42,9 +37,6 @@ private:
 
     // The center of model sphere
     glm::vec3 _center = glm::vec3( 0.0f );
-
-    // The world-up vector of the camera
-    glm::vec3 _world_up = glm::vec3( 0.0f, 1.0f, 0.0f );
 
     // The traversal speed of the camera
     float _speed = 16.0f;
