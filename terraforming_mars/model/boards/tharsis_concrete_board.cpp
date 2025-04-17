@@ -54,10 +54,14 @@ void TharsisConcreteBoard::PlaceTile( int q, int r, Player* player, TileType typ
     if ( tile.get_owner() != nullptr && tile.get_owner() != player )
         throw std::logic_error( "TharsisConcreteBoard::PlaceTile: tile has another owner!" );
 
-    tile.set_owner( player );
+    if ( type == TileType::OCEAN )
+        tile.set_owner( nullptr );
+    else
+        tile.set_owner( player );
+
     tile.set_type( type );
     _on_tile_placed.Invoke( q, r, tile );
-    tile.ApplyPlacementBonuses();
+    tile.ApplyPlacementBonuses( player );
 }
 
 void TharsisConcreteBoard::SetOwner( int q, int r, Player* player ) {

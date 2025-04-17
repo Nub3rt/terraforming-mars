@@ -58,12 +58,12 @@ TEST( TileTest, ApplyPlacementBonusTest ) {
     Tile tile( 4, 4, callback );
     Player player( 20, 0 );
 
-    EXPECT_THROW( { tile.ApplyPlacementBonuses(); }, std::logic_error );
+    EXPECT_THROW( { tile.ApplyPlacementBonuses( nullptr ); }, std::logic_error );
 
     EXPECT_EQ( false, flag );
 
     tile.set_owner( &player );
-    tile.ApplyPlacementBonuses();
+    tile.ApplyPlacementBonuses( &player );
 
     EXPECT_EQ( true, flag );
 }

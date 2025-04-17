@@ -62,6 +62,7 @@ bool View::Init( Camera* camera, model::GameModel* model ) {
     _model->SetOnConfirmDestroyResourceProduction( std::bind_front( &View::Model_OnConfirmDestroyResourceProduction, this ) );
     _model->SetOnGameEnd( std::bind_front( &View::Model_OnGameEnd, this ) );
 
+    _generation = _model->get_generation();
     _temperature = _model->Temperature();
     _ocean_count = _model->OceanCount();
     _oxygen_level = _model->Oxygen();
@@ -71,20 +72,21 @@ bool View::Init( Camera* camera, model::GameModel* model ) {
 
     _model->Start();
 
-    int max_size = 0;
+    int max_q = 0;
+    int max_r = 0;
     for ( const model::boards::Tile& tile : *_model->get_board() ) {
         auto [q, r] = tile.get_indices();
-        if ( q > max_size )
-            max_size = q;
-        if ( r > max_size )
-            max_size = r;
+        if ( q > max_q )
+            max_q = q;
+        if ( r > max_r )
+            max_r = r;
 
         _tiles.emplace_back( tile );
     }
     _stencil_starting_card = STENCIL_STARTING_BOARD + (int)_tiles.size();
 
-    _indexable_tiles = std::vector<std::vector<TileWrapper*>>( max_size + 1,
-        std::vector<TileWrapper*>( max_size + 1, nullptr )
+    _indexable_tiles = std::vector<std::vector<TileWrapper*>>( max_r + 1,
+        std::vector<TileWrapper*>( max_q + 1, nullptr )
     );
     for ( TileWrapper& tile : _tiles ) {
         auto [q, r] = tile->get_indices();
@@ -822,6 +824,15 @@ void View::RenderMenuButton() {
         y,
         _menu_button_hovered ? MOUSE_HOVER_SIZE_MULTIPLIER : 1.0f,
         BUTTON_TEXT_COLOR
+    );
+
+
+    TextRenderer::RenderTextCentered(
+        std::format( "Generation {}", _generation ),
+        x + 0.25f,
+        y,
+        BASE_TEXT_SCALE,
+        LIGHT_TEXT_COLOR
     );
 }
 

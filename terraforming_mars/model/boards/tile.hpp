@@ -18,7 +18,7 @@ public:
     inline void set_owner( Player* owner ) noexcept { _owner = owner; }
     inline std::pair<int, int> get_indices() const noexcept { return std::pair<int, int>( q, r ); }
     
-    void ApplyPlacementBonuses();
+    void ApplyPlacementBonuses( Player* player );
 
     const int q, r;
 

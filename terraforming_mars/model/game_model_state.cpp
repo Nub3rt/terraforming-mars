@@ -105,7 +105,7 @@ void GameModelState::Player_OnRaiseTemperature( Player* player ) {
 
     _model->_temperature += 2;
     _model->_on_raise_temperature.Invoke();
-    player->GetTR( 1 );
+    player->RaiseTR( 1 );
 }
 
 void GameModelState::Player_OnRaiseOxygen( Player* player ) {
@@ -114,7 +114,7 @@ void GameModelState::Player_OnRaiseOxygen( Player* player ) {
 
     _model->_oxygen_level += 1;
     _model->_on_raise_oxygen.Invoke();
-    player->GetTR( 1 );
+    player->RaiseTR( 1 );
 }
 
 void GameModelState::Player_OnPlaceOcean( Player* player ) {

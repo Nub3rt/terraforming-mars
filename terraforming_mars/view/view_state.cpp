@@ -97,6 +97,8 @@ void ResearchVState::Enter() {
     static const float start_x = 0.0f - length / 2.0f;
     static const float y = 0.0f;
 
+    _view._generation = _view._model->get_generation();
+
     for ( int i = 0; i < model::RESEARCH_CARD_NUM; ++i ) {
         glm::vec2 start_pos = CARD_DRAW_POS_START;
         start_pos.x += spacing * i;
