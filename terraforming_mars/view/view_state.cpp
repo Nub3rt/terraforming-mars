@@ -32,10 +32,20 @@ std::string ViewState::GetEndButtonText() { return "End Generation"; }
 CardWrapper::Visual ViewState::GetCardUnderPlayLineVisual( CardWrapper* card ) { throw std::logic_error( "ViewState::GetCardUnderPlayLineVisual: card drag is not supported in this state!" ); }
 CardWrapper::Visual ViewState::GetCardOverPlayLineVisual( CardWrapper* card ) { throw std::logic_error( "ViewState::GetCardOverPlayLineVisual: card drag is not supported in this state!" ); }
 
+bool ViewState::CanClickMenuButton() { return true; }
 bool ViewState::CanClickEndButton() { return false; }
 bool ViewState::CanHoverHand() { return false; }
 bool ViewState::CanDragCardsOut() { return false; }
 bool ViewState::CanPlayCard( CardWrapper* card ) { return false; }
+
+bool ViewState::CanUseSellPatentsSP() { return false; }
+bool ViewState::CanUsePowerPlantSP() { return false; }
+bool ViewState::CanUseAsteroidSP() { return false; }
+bool ViewState::CanUseAquiferSP() { return false; }
+bool ViewState::CanUseGreenerySP() { return false; }
+bool ViewState::CanUseCitySP() { return false; }
+bool ViewState::CanConvertPlants() { return false; }
+bool ViewState::CanConvertHeat() { return false; }
 
 void ViewState::PlayCard( int index_in_hand ) {
     throw std::logic_error( "ViewState::PlayCard: View was in an invalid state!" );
@@ -165,7 +175,7 @@ void ResearchVState::Render() {
             std::format( "Current Research Cost: {}", _view._model->GetTotalCost() ),
             BASE_HINT_POS.x, BASE_HINT_POS.y,
             BASE_TEXT_SCALE,
-            BASE_TEXT_COLOR
+            LIGHT_TEXT_COLOR
         );
 }
 
@@ -241,6 +251,15 @@ CardWrapper::Visual IdleVState::GetCardOverPlayLineVisual( CardWrapper* card ) {
     return CardWrapper::Visual::ACTION_HIGHLIGHT;
 }
 
+bool IdleVState::CanUseSellPatentsSP() { return _view._model->InIdleState(); }
+bool IdleVState::CanUsePowerPlantSP() { return _view._model->InIdleState() && _view._model->CanUsePowerPlantSP(); }
+bool IdleVState::CanUseAsteroidSP() { return _view._model->InIdleState() && _view._model->CanUseAsteroidSP(); }
+bool IdleVState::CanUseAquiferSP() { return _view._model->InIdleState() && _view._model->CanUseAquiferSP(); }
+bool IdleVState::CanUseGreenerySP() { return _view._model->InIdleState() && _view._model->CanUseGreenerySP(); }
+bool IdleVState::CanUseCitySP() { return _view._model->InIdleState() && _view._model->CanUseCitySP(); }
+bool IdleVState::CanConvertPlants() { return _view._model->InIdleState() && _view._model->CanConvertPlantsToGreenery(); }
+bool IdleVState::CanConvertHeat() { return _view._model->InIdleState() && _view._model->CanConvertHeatToTemperature(); }
+
 void IdleVState::PlayCard( int index_in_hand ) {
     _view._model->PlayCard( **_view._hand[ index_in_hand ] );
 
@@ -254,8 +273,8 @@ void IdleVState::DoClickedEndButton() {
         ATTRIBUTE_CHANGED_DURATION,
         "Performing Production Phase...",
         BASE_HINT_POS, BASE_HINT_POS,
-        glm::vec4( BASE_TEXT_COLOR, 1.0f ),
-        glm::vec4( BASE_TEXT_COLOR, 0.0f ),
+        glm::vec4( LIGHT_TEXT_COLOR, 1.0f ),
+        glm::vec4( LIGHT_TEXT_COLOR, 0.0f ),
         BASE_TEXT_SCALE
     ) );
 
@@ -301,7 +320,7 @@ void PlacementConfirmationVState::Render() {
         std::format( "Placing tile: {}", name ),
         BASE_HINT_POS.x, BASE_HINT_POS.y,
         BASE_TEXT_SCALE,
-        BASE_TEXT_COLOR
+        LIGHT_TEXT_COLOR
     );
 }
 
@@ -386,8 +405,9 @@ void PaymentConfirmationVState::Enter() {
 }
 
 void PaymentConfirmationVState::RenderGUI() {
-    ImGui::SetNextWindowSize( ImVec2( 360, 0 ) );
+    ImGui::SetNextWindowSize( ImVec2( 560, 0 ) );
     if ( ImGui::Begin( "Confirm Payment", NULL, ImGuiWindowFlags_NoCollapse ) ) {
+        ImGui::SetWindowFontScale( 1.5f );
         int total = _current_credit + _current_resource * _resource_value;
         ImGui::Text( "Cost to pay: %i", _amount );
         ImGui::Text( "Can pay with: %s", _resource.c_str() );
@@ -408,7 +428,7 @@ void PaymentConfirmationVState::RenderGUI() {
         if ( total < _amount )
             throw std::logic_error( "PaymentConfirmationState::RenderGUI: total payment was lover than the cost!" );
 
-        if ( ImGui::Button( "Confirm Payment", ImVec2( 120, 30 ) ) ) {
+        if ( ImGui::Button( "Confirm Payment", ImVec2( 180, 30 ) ) ) {
             _view._model->PaymentConfirmed( _current_credit, _current_resource );
             _view.RequestInstantStateChange( _view.CreateIdleState() );
         }

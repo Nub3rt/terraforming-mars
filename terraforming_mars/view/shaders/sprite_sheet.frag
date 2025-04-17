@@ -17,6 +17,6 @@ void main() {
     );
     fs_out_col = texture( image, pos );
 
-    if ( fs_out_col.a < 0.1 )
+    if ( fs_out_col.a < 0.5 )
         discard;
 }

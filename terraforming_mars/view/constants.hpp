@@ -13,7 +13,9 @@ inline constexpr float SKYBOX_ROTATE_SPEED = 0.01f;
 
 inline constexpr glm::vec2 BASE_HINT_POS = glm::vec2( 0.0f, 0.9f );
 inline constexpr float BASE_TEXT_SCALE = 1.5f;
-inline constexpr glm::vec3 BASE_TEXT_COLOR = glm::vec3( 0xff, 0xff, 0xff ) / 255.0f;
+inline constexpr float CREDIT_TEXT_SCALE = 1.0f;
+inline constexpr glm::vec3 LIGHT_TEXT_COLOR = glm::vec3( 0xff, 0xff, 0xff ) / 255.0f;
+inline constexpr glm::vec3 DARK_TEXT_COLOR = glm::vec3( 0x00, 0x00, 0x00 ) / 255.0f;
 inline constexpr glm::vec3 POSITIVE_TEXT_COLOR = glm::vec3( 0x0f, 0x86, 0x08 ) / 255.0f;
 inline constexpr glm::vec3 NEGATIVE_TEXT_COLOR = glm::vec3( 0xff, 0x08, 0x08 ) / 255.0f;
 inline constexpr glm::vec3 PRODUCTION_TEXT_COLOR = glm::vec3( 0xA8, 0x74, 0x4B ) / 255.0f;
@@ -64,7 +66,16 @@ inline constexpr uint8_t STENCIL_EVENTS    = 0x03;
 inline constexpr uint8_t STENCIL_AUTOMATED = 0x04;
 inline constexpr uint8_t STENCIL_EFFECTS   = 0x05;
 inline constexpr uint8_t STENCIL_ACTIONS   = 0x06;
-inline constexpr uint8_t STENCIL_STARTING_RESEARCH = 0x07;
+inline constexpr uint8_t STENCIL_SP_SELL_PATENTS   = 0x07;
+inline constexpr uint8_t STENCIL_SP_POWER_PLANT    = 0x08;
+inline constexpr uint8_t STENCIL_SP_ASTEROID       = 0x09;
+inline constexpr uint8_t STENCIL_SP_AQUIFER        = 0x0a;
+inline constexpr uint8_t STENCIL_SP_GREENERY       = 0x0b;
+inline constexpr uint8_t STENCIL_SP_CITY           = 0x0c;
+inline constexpr uint8_t STENCIL_SP_CONVERT_PLANTS = 0x0d;
+inline constexpr uint8_t STENCIL_SP_CONVERT_HEAT   = 0x0e;
+inline constexpr uint8_t STENCIL_STARTING_SP = STENCIL_SP_SELL_PATENTS;
+inline constexpr uint8_t STENCIL_STARTING_RESEARCH = 0x0f;
 inline constexpr uint8_t STENCIL_STARTING_BOARD = STENCIL_STARTING_RESEARCH + model::RESEARCH_CARD_NUM;
 
 
@@ -75,4 +86,9 @@ inline constexpr int CARD_TEXTURE_HEIGHT = 686;
 
 inline constexpr int RESOURCE_TEXTURE_ROWS = 1;
 inline constexpr int RESOURCE_TEXTURE_COLUMNS = 6;
+
+inline constexpr float HUD_BASE_Z = 0.8f;
+inline constexpr float MOUSE_HOVER_SIZE_MULTIPLIER = 1.1f;
+inline constexpr glm::vec3 BUTTON_TEXT_COLOR = glm::vec3( 1280.f, 58.0f, 47.0f ) / 255.0f;
+inline constexpr float PRODUCTION_RESOURCE_SHRINK = 0.6f;
 }

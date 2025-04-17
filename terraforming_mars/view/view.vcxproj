@@ -179,12 +179,15 @@
     <None Include="shaders\text.vert" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="assets\arrow.png" />
     <Image Include="assets\back.png" />
     <Image Include="assets\bottom.png" />
     <Image Include="assets\button.png" />
     <Image Include="assets\cards.png" />
     <Image Include="assets\card_cover.png" />
+    <Image Include="assets\city.png" />
     <Image Include="assets\front.png" />
+    <Image Include="assets\greenery.png" />
     <Image Include="assets\left.png" />
     <Image Include="assets\ocean.png" />
     <Image Include="assets\oxygen.png" />

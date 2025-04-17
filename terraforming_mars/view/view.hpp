@@ -125,6 +125,7 @@ protected:
     int _dragged_card_index = -1;
     uint8_t _mouse_hover_stencil = 0;
     uint8_t _mouse_down_stencil = 0;
+    bool _menu_button_hovered = false;
     bool _end_button_hovered = false;
 
 
@@ -166,17 +167,22 @@ protected:
 
     void RenderHUD();
     void RenderMenuButton();
+    void RenderSP();
     void RenderGlobalParameters();
     void RenderEndButton();
     void RenderResources();
     void RenderHand();
     void RenderCard( CardWrapper& card, int index );
+    void RenderDetail( float x, float y, glm::vec3 scale, float d_z = 0.0f );
+    void RenderResource( float x, float y, glm::vec3 scale, int resource, float d_z = 0.0f );
+    void RenderResourceProduction( float x, float y, glm::vec3 scale, int resource );
 
     uint8_t GetStencilValue( float mouse_x, float mouse_y );
     std::pair<float, float> CalculateMousePos( float mouse_x, float mouse_y );
     int CalculateHoveredCardByPos( float x, float y );
     std::tuple<float, float, glm::vec3> CalculateParameterPosition( int parameter, int type );
     std::tuple<float, float, glm::vec3> CalculateResourcePosition( int resource, int type );
+    std::tuple<float, float, glm::vec3> CalculateSPPosition( int sp, int right );
 
     inline void SetStencilRef( GLint ref = STENCIL_NONE ) { glStencilFunc( GL_ALWAYS, ref, 0xff ); }
 
@@ -202,8 +208,11 @@ protected:
     Texture _ocean_texture = {};
     Texture _oxygen_texture = {};
     Texture _tr_texture = {};
+    Texture _greenery_texture = {};
+    Texture _city_texture = {};
     Texture _button_texture = {};
     Texture _production_box_texture = {};
+    Texture _arrow_texture = {};
 
     void InitTextures();
     void CleanTextures();

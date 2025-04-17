@@ -34,12 +34,22 @@ public:
     virtual CardWrapper::Visual GetCardUnderPlayLineVisual( CardWrapper* card );
     virtual CardWrapper::Visual GetCardOverPlayLineVisual( CardWrapper* card );
 
+    virtual bool CanClickMenuButton();
     virtual bool CanClickEndButton();
     virtual bool CanHoverHand();
     virtual bool CanDragCardsOut();
     virtual bool CanPlayCard( CardWrapper* card );
     virtual void PlayCard( int index_in_hand );
     virtual void ToggleToBuyCard( int index );
+
+    virtual bool CanUseSellPatentsSP();
+    virtual bool CanUsePowerPlantSP();
+    virtual bool CanUseAsteroidSP();
+    virtual bool CanUseAquiferSP();
+    virtual bool CanUseGreenerySP();
+    virtual bool CanUseCitySP();
+    virtual bool CanConvertPlants();
+    virtual bool CanConvertHeat();
 
     void ClickedEndButton();
     virtual void ClickedOnTile( TileWrapper& tile );
@@ -102,6 +112,15 @@ public:
     bool CanDragCardsOut() override;
     bool CanPlayCard( CardWrapper* card ) override;
     void PlayCard( int index_in_hand ) override;
+
+    bool CanUseSellPatentsSP() override;
+    bool CanUsePowerPlantSP() override;
+    bool CanUseAsteroidSP() override;
+    bool CanUseAquiferSP() override;
+    bool CanUseGreenerySP() override;
+    bool CanUseCitySP() override;
+    bool CanConvertPlants() override;
+    bool CanConvertHeat() override;
 
 protected:
     void DoClickedEndButton() override;

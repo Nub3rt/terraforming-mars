@@ -170,5 +170,14 @@
     <Image Include="assets\tr.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="assets\arrow.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\city.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\greenery.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

@@ -6,6 +6,7 @@
 #include <functional>
 #include <iostream>
 #include <stdexcept>
+#include <tuple>
 
 #include <glm/glm.hpp>
 #include <SDL3/SDL.h>
@@ -213,10 +214,8 @@ void View::Update( const UpdateInfo& update_info ) {
     } else
         _state->Update( update_info.delta );
 
-    if ( _mouse_hover_stencil == STENCIL_END && _state->CanClickEndButton() )
-        _end_button_hovered = true;
-    else
-        _end_button_hovered = false;
+    _menu_button_hovered = _mouse_hover_stencil == STENCIL_MENU;
+    _end_button_hovered  = _mouse_hover_stencil == STENCIL_END;
 }
 
 void View::Render() {
@@ -350,7 +349,7 @@ void View::MouseUp( const SDL_MouseButtonEvent& mouse ) {
                     std::cerr << "View::MouseUp: Invalid stencil value received: 0!";
                     break;
                 case STENCIL_MENU:
-
+                    // TODO
                     break;
                 case STENCIL_END:
                     if ( _state->CanClickEndButton() )
@@ -744,6 +743,7 @@ void View::RenderHexagon( TileWrapper& tile, int id ) {
 
 void View::RenderHUD() {
     RenderMenuButton();
+    RenderSP();
     RenderGlobalParameters();
     RenderEndButton();
     RenderResources();
@@ -751,7 +751,311 @@ void View::RenderHUD() {
 }
 
 void View::RenderMenuButton() {
-    // TODO
+    static const float button_ratio = (float)_button_texture.height / _temperature_texture.width;
+    static const float size = 0.048f;
+    static const float spacing = size * 3.0f;
+    static const float width_modifier = 1.0f;
+
+    float x = -1.0f + (size + spacing / button_ratio) * width_modifier;
+    float y = 1.0f - size - spacing / button_ratio;
+    glm::vec3 scale( size * button_ratio * width_modifier, size * _width / _height, 1.0f );
+    if ( _menu_button_hovered && _state->CanClickMenuButton() )
+        scale *= 1.1;
+
+    glUseProgram( _program_rectangle_id );
+    glBindVertexArray( _rectangle_gpu.vao_id );
+
+    glActiveTexture( GL_TEXTURE0 );
+    glUniform1i( ul( "image" ), 0 );
+
+    glBindTexture( GL_TEXTURE_2D, _button_texture.id );
+
+    glm::mat4 world = glm::translate( glm::vec3( x, y, HUD_BASE_Z ) ) * glm::scale( scale );
+    glUniformMatrix4fv( ul( "world" ), 1, GL_FALSE, glm::value_ptr( world ) );
+
+    SetStencilRef( STENCIL_MENU );
+
+    glDrawElements( GL_TRIANGLES, _rectangle_gpu.count, GL_UNSIGNED_INT, nullptr );
+
+    SetStencilRef();
+
+    glBindTexture( GL_TEXTURE_2D, 0 );
+
+    glBindVertexArray( 0 );
+    glUseProgram( 0 );
+
+    TextRenderer::RenderTextCentered(
+        "Menu",
+        x,
+        y,
+        _menu_button_hovered ? MOUSE_HOVER_SIZE_MULTIPLIER : 1.0f,
+        BUTTON_TEXT_COLOR
+    );
+}
+
+void View::RenderSP() {
+    glUseProgram( _program_rectangle_id );
+    glBindVertexArray( _rectangle_gpu.vao_id );
+
+    glActiveTexture( GL_TEXTURE0 );
+    glUniform1i( ul( "image" ), 0 );
+
+    std::array<bool, 8> size_multipliers = {
+        _mouse_hover_stencil == STENCIL_SP_SELL_PATENTS   && _state->CanUseSellPatentsSP(),
+        _mouse_hover_stencil == STENCIL_SP_POWER_PLANT    && _state->CanUsePowerPlantSP(),
+        _mouse_hover_stencil == STENCIL_SP_ASTEROID       && _state->CanUseAsteroidSP(),
+        _mouse_hover_stencil == STENCIL_SP_AQUIFER        && _state->CanUseAquiferSP(),
+        _mouse_hover_stencil == STENCIL_SP_GREENERY       && _state->CanUseGreenerySP(),
+        _mouse_hover_stencil == STENCIL_SP_CITY           && _state->CanUseCitySP(),
+        _mouse_hover_stencil == STENCIL_SP_CONVERT_PLANTS && _state->CanConvertPlants(),
+        _mouse_hover_stencil == STENCIL_SP_CONVERT_HEAT   && _state->CanConvertHeat(),
+    };
+
+    // arrows
+
+    static const float arrow_ratio = (float)_arrow_texture.height / _arrow_texture.width;
+    glBindTexture( GL_TEXTURE_2D, _arrow_texture.id );
+    for ( int i = 0; i < 8; ++i ) {
+        auto [x, y, scale] = CalculateSPPosition( i, 1 );
+        scale.x /= arrow_ratio;
+        if ( size_multipliers[ i ] )
+            scale *= MOUSE_HOVER_SIZE_MULTIPLIER;
+
+        RenderDetail( x, y, scale );
+    }
+
+    // sell patents
+    {
+        static const int vertical_index = 0;
+        float size_multiplier = size_multipliers[ vertical_index ] ?
+            MOUSE_HOVER_SIZE_MULTIPLIER : 1.0f;
+
+        glBindTexture( GL_TEXTURE_2D, _card_cover_texture.id );
+
+        static const float card_ratio = (float)_card_cover_texture.height / _card_cover_texture.width;
+        auto [x, y, scale] = CalculateSPPosition( vertical_index, 0 );
+        scale.x /= card_ratio;
+        scale *= size_multiplier;
+
+        RenderDetail( x, y, scale );
+
+        glBindTexture( GL_TEXTURE_2D, _resources_texture.id );
+        std::tie( x, y, scale ) = CalculateSPPosition( vertical_index, 2 );
+
+        glUseProgram( _program_sprite_sheet_id );
+        RenderResource( x, y, scale * size_multiplier, +model::Resource::CREDIT );
+
+
+        TextRenderer::RenderTextCentered(
+            "1",
+            x, y,
+            CREDIT_TEXT_SCALE * size_multiplier,
+            DARK_TEXT_COLOR
+        );
+    }
+
+    // costs
+    static const std::vector<std::string> costs = { "0", "11", "14", "18", "23", "25" };
+
+    for ( int i = 1; i < 6; ++i ) {
+        glUseProgram( _program_sprite_sheet_id );
+        glBindVertexArray( _rectangle_gpu.vao_id );
+        glActiveTexture( GL_TEXTURE0 );
+
+        glBindTexture( GL_TEXTURE_2D, _resources_texture.id );
+
+        float size_multiplier = size_multipliers[ i ] ?
+            MOUSE_HOVER_SIZE_MULTIPLIER : 1.0f;
+
+        auto [x, y, scale] = CalculateSPPosition( i, 0 );
+        scale *= size_multiplier;
+
+        RenderResource( x, y, scale, +model::Resource::CREDIT );
+
+
+        TextRenderer::RenderTextCentered(
+            costs[ i ],
+            x, y,
+            CREDIT_TEXT_SCALE * size_multiplier,
+            DARK_TEXT_COLOR
+        );
+    }
+
+    // power plant
+    {
+        static const int vertical_index = 1;
+
+        auto [x, y, scale] = CalculateSPPosition( vertical_index, 2 );
+        if ( size_multipliers[ vertical_index ] )
+            scale *= MOUSE_HOVER_SIZE_MULTIPLIER;
+
+        RenderResourceProduction( x, y, scale, +model::Resource::ENERGY );
+    }
+
+    // asteroid
+    {
+        static const int vertical_index = 2;
+        static const float temperature_ratio = (float)_temperature_texture.height / _temperature_texture.width;
+
+        glUseProgram( _program_rectangle_id );
+        glBindVertexArray( _rectangle_gpu.vao_id );
+        glActiveTexture( GL_TEXTURE0 );
+
+        glBindTexture( GL_TEXTURE_2D, _temperature_texture.id );
+
+        auto [x, y, scale] = CalculateSPPosition( vertical_index, 2 );
+        scale.x /= temperature_ratio * 0.8f;
+        if ( size_multipliers[ vertical_index ] )
+            scale *= MOUSE_HOVER_SIZE_MULTIPLIER;
+
+        RenderDetail( x, y, scale );
+    }
+
+    // aquifer
+    {
+        static const int vertical_index = 3;
+        static const float ocean_ratio = (float)_ocean_texture.height / _ocean_texture.width;
+
+        glBindTexture( GL_TEXTURE_2D, _ocean_texture.id );
+
+        auto [x, y, scale] = CalculateSPPosition( vertical_index, 2 );
+        scale.y *= ocean_ratio;
+        if ( size_multipliers[ vertical_index ] )
+            scale *= MOUSE_HOVER_SIZE_MULTIPLIER;
+
+        RenderDetail( x, y, scale );
+    }
+
+    // greenery
+    {
+        static const int vertical_index = 4;
+        static const float greenery_ratio = (float)_greenery_texture.height / _greenery_texture.width;
+
+        glBindTexture( GL_TEXTURE_2D, _greenery_texture.id );
+
+        auto [x, y, scale] = CalculateSPPosition( vertical_index, 2 );
+        scale.y *= greenery_ratio;
+        if ( size_multipliers[ vertical_index ] )
+            scale *= MOUSE_HOVER_SIZE_MULTIPLIER;
+
+        RenderDetail( x, y, scale );
+    }
+
+    // city
+    {
+        static const int vertical_index = 5;
+        static const float city_ratio = (float)_city_texture.height / _city_texture.width;
+
+        float size_multiplier = size_multipliers[ vertical_index ] ?
+            MOUSE_HOVER_SIZE_MULTIPLIER : 1.0f;
+
+        glBindTexture( GL_TEXTURE_2D, _city_texture.id );
+
+        auto [x, y, scale] = CalculateSPPosition( vertical_index, 2 );
+        scale.y *= city_ratio;
+        scale *= size_multiplier;
+
+        RenderDetail( x, y, scale );
+
+        std::tie( x, y, scale ) = CalculateSPPosition( vertical_index, 3 );
+        scale *= size_multiplier;
+
+        RenderResourceProduction( x, y, scale, +model::Resource::CREDIT );
+
+        TextRenderer::RenderTextCentered(
+            "1",
+            x, y,
+            CREDIT_TEXT_SCALE * size_multiplier * PRODUCTION_RESOURCE_SHRINK,
+            DARK_TEXT_COLOR
+        );
+    }
+
+    // convert greenery
+    {
+        static const int vertical_index = 6;
+        static const float greenery_ratio = (float)_greenery_texture.height / _greenery_texture.width;
+
+        float size_multiplier = size_multipliers[ vertical_index ] ?
+            MOUSE_HOVER_SIZE_MULTIPLIER : 1.0f;
+
+        glUseProgram( _program_sprite_sheet_id );
+        glBindVertexArray( _rectangle_gpu.vao_id );
+        glActiveTexture( GL_TEXTURE0 );
+
+        glBindTexture( GL_TEXTURE_2D, _resources_texture.id );
+
+        auto [x, y, scale] = CalculateSPPosition( vertical_index, 0 );
+        scale *= size_multiplier;
+
+        RenderResource( x, y, scale, +model::Resource::PLANTS );
+
+        TextRenderer::RenderTextCentered(
+            std::to_string( _model->get_local_player()->get_greenery_cost() ),
+            x - 0.03f, y,
+            BASE_TEXT_SCALE * size_multiplier,
+            LIGHT_TEXT_COLOR
+        );
+
+
+        glUseProgram( _program_rectangle_id );
+        glBindVertexArray( _rectangle_gpu.vao_id );
+        glActiveTexture( GL_TEXTURE0 );
+
+        glBindTexture( GL_TEXTURE_2D, _greenery_texture.id );
+
+        std::tie( x, y, scale ) = CalculateSPPosition( vertical_index, 2 );
+        scale.y *= greenery_ratio;
+        if ( size_multipliers[ vertical_index ] )
+            scale *= MOUSE_HOVER_SIZE_MULTIPLIER;
+
+        RenderDetail( x, y, scale );
+    }
+
+    // convert heat
+    {
+        static const int vertical_index = 7;
+        static const float temperature_ratio = (float)_temperature_texture.height / _temperature_texture.width;
+
+        float size_multiplier = size_multipliers[ vertical_index ] ?
+            MOUSE_HOVER_SIZE_MULTIPLIER : 1.0f;
+
+        glUseProgram( _program_sprite_sheet_id );
+        glBindVertexArray( _rectangle_gpu.vao_id );
+        glActiveTexture( GL_TEXTURE0 );
+
+        glBindTexture( GL_TEXTURE_2D, _resources_texture.id );
+
+        auto [x, y, scale] = CalculateSPPosition( vertical_index, 0 );
+        scale *= size_multiplier;
+
+        RenderResource( x, y, scale, +model::Resource::HEAT );
+
+        TextRenderer::RenderTextCentered(
+            std::to_string( _model->get_local_player()->get_temperature_cost() ),
+            x - 0.03f, y,
+            BASE_TEXT_SCALE * size_multiplier,
+            LIGHT_TEXT_COLOR
+        );
+
+
+        glUseProgram( _program_rectangle_id );
+        glBindVertexArray( _rectangle_gpu.vao_id );
+        glActiveTexture( GL_TEXTURE0 );
+
+        glBindTexture( GL_TEXTURE_2D, _temperature_texture.id );
+
+        std::tie( x, y, scale ) = CalculateSPPosition( vertical_index, 2 );
+        scale.x /= temperature_ratio * 0.8f;
+        scale *= size_multiplier;
+
+        RenderDetail( x, y, scale );
+    }
+
+
+    glBindTexture( GL_TEXTURE_2D, 0 );
+
+    glBindVertexArray( 0 );
+    glUseProgram( 0 );
 }
 
 void View::RenderGlobalParameters() {
@@ -773,10 +1077,7 @@ void View::RenderGlobalParameters() {
 
         auto [x, y, scale] = CalculateParameterPosition( i, 0 );
 
-        glm::mat4 world = glm::translate( glm::vec3( x, y, 0.0f ) ) * glm::scale( scale );
-        glUniformMatrix4fv( ul( "world" ), 1, GL_FALSE, glm::value_ptr( world ) );
-
-        glDrawElements( GL_TRIANGLES, _rectangle_gpu.count, GL_UNSIGNED_INT, nullptr );
+        RenderDetail( x, y, scale );
     }
 
     glBindTexture( GL_TEXTURE_2D, 0 );
@@ -784,15 +1085,15 @@ void View::RenderGlobalParameters() {
     glBindVertexArray( 0 );
     glUseProgram( 0 );
 
-    std::array<std::pair<int, int>, 4> text_to_draw = {{
+    std::array<std::pair<int, int>, 4> text_to_draw = { {
         { _temperature, model::MAX_TEMPERATURE },
         { _ocean_count, model::MAX_OCEAN_COUNT },
         { _oxygen_level, model::MAX_OXYGEN_LEVEL },
         { _tr, -1 },
-    }};
+    } };
     for ( int i = 0; i < text_to_draw.size(); ++i ) {
         auto& [current, max] = text_to_draw[ i ];
-        glm::vec3 color = current == max ? POSITIVE_TEXT_COLOR : BASE_TEXT_COLOR;
+        glm::vec3 color = current == max ? POSITIVE_TEXT_COLOR : LIGHT_TEXT_COLOR;
 
         auto [x, y, _] = CalculateParameterPosition( i, 1 );
         TextRenderer::RenderTextCentered(
@@ -807,14 +1108,14 @@ void View::RenderGlobalParameters() {
 
 void View::RenderEndButton() {
     static const float button_ratio = (float)_button_texture.height / _temperature_texture.width;
-    static const float size = 0.06f;
-    static const float spacing = size * 2.5f;
-    static const float ratio_modifier = 0.8f;
+    static const float size = 0.048f;
+    static const float spacing = size * 3.0f;
+    static const float width_modifier = 1.25f;
 
-    float x = 1.0f - size - spacing / button_ratio;
+    float x = 1.0f - (size + spacing / button_ratio) * width_modifier;
     float y = 0.0f;
-    glm::vec3 scale( size * button_ratio, size * _width / _height * ratio_modifier, 1.0f );
-    if ( _end_button_hovered )
+    glm::vec3 scale( size * button_ratio * width_modifier, size * _width / _height, 1.0f );
+    if ( _end_button_hovered && _state->CanClickEndButton() )
         scale *= 1.1;
 
     glUseProgram( _program_rectangle_id );
@@ -825,7 +1126,7 @@ void View::RenderEndButton() {
 
     glBindTexture( GL_TEXTURE_2D, _button_texture.id );
 
-    glm::mat4 world = glm::translate( glm::vec3( x, y, 0.0f ) ) * glm::scale( scale );
+    glm::mat4 world = glm::translate( glm::vec3( x, y, HUD_BASE_Z ) ) * glm::scale( scale );
     glUniformMatrix4fv( ul( "world" ), 1, GL_FALSE, glm::value_ptr( world ) );
 
     SetStencilRef( STENCIL_END );
@@ -839,13 +1140,12 @@ void View::RenderEndButton() {
     glBindVertexArray( 0 );
     glUseProgram( 0 );
 
-    static const glm::vec3 color = glm::vec3( 1280.f, 58.0f, 47.0f ) / 255.0f;
     TextRenderer::RenderTextCentered(
         _state->GetEndButtonText(),
         x,
         y,
-        _end_button_hovered ? 1.1f : 1.0f,
-        color
+        _end_button_hovered ? MOUSE_HOVER_SIZE_MULTIPLIER : 1.0f,
+        BUTTON_TEXT_COLOR
     );
 }
 
@@ -860,10 +1160,7 @@ void View::RenderResources() {
     for ( int i = 0; i <= +model::Resource::MAX; ++i ) {
         auto [x, y, scale] = CalculateResourcePosition( i, 0 );
 
-        glm::mat4 world = glm::translate( glm::vec3( x, y, 0.0f ) ) * glm::scale( scale );
-        glUniformMatrix4fv( ul( "world" ), 1, GL_FALSE, glm::value_ptr( world ) );
-
-        glDrawElements( GL_TRIANGLES, _rectangle_gpu.count, GL_UNSIGNED_INT, nullptr );
+        RenderDetail( x, y, scale );
     }
 
 
@@ -873,25 +1170,9 @@ void View::RenderResources() {
 
     glBindTexture( GL_TEXTURE_2D, _resources_texture.id );
     for ( int i = 0; i <= +model::Resource::MAX; ++i ) {
-        static const float stride_x = 1.0f / RESOURCE_TEXTURE_COLUMNS;
-        static const float stride_y = 1.0f / RESOURCE_TEXTURE_ROWS;
-        //int res_index = +model::Resource::MAX - i;
-        //int index_x = res_index % RESOURCE_TEXTURE_COLUMNS;
-        //int index_y = res_index / RESOURCE_TEXTURE_COLUMNS;
-        int index_x = i % RESOURCE_TEXTURE_COLUMNS;
-        int index_y = i / RESOURCE_TEXTURE_COLUMNS;
-
         auto [x, y, scale] = CalculateResourcePosition( i, 1 );
 
-        glm::mat4 world = glm::translate( glm::vec3( x, y, 0.0f ) ) * glm::scale( scale );
-        glUniformMatrix4fv( ul( "world" ), 1, GL_FALSE, glm::value_ptr( world ) );
-
-        glUniform1f( ul( "stride_x" ), stride_x );
-        glUniform1f( ul( "stride_y" ), stride_y );
-        glUniform1i( ul( "index_x" ), index_x );
-        glUniform1i( ul( "index_y" ), index_y );
-
-        glDrawElements( GL_TRIANGLES, _rectangle_gpu.count, GL_UNSIGNED_INT, nullptr );
+        RenderResource( x, y, scale, i );
     }
 
     glBindTexture( GL_TEXTURE_2D, 0 );
@@ -1000,6 +1281,48 @@ void View::RenderCard( CardWrapper& card, int index ) {
     glDrawElements( GL_TRIANGLES, _rectangle_gpu.count, GL_UNSIGNED_INT, nullptr );
 }
 
+void View::RenderDetail( float x, float y, glm::vec3 scale, float d_z ) {
+    glm::mat4 world = glm::translate( glm::vec3( x, y, HUD_BASE_Z + d_z ) ) * glm::scale( scale );
+    glUniformMatrix4fv( ul( "world" ), 1, GL_FALSE, glm::value_ptr( world ) );
+
+    glDrawElements( GL_TRIANGLES, _rectangle_gpu.count, GL_UNSIGNED_INT, nullptr );
+}
+
+void View::RenderResource( float x, float y, glm::vec3 scale, int resource, float d_z ) {
+    static const float stride_x = 1.0f / RESOURCE_TEXTURE_COLUMNS;
+    static const float stride_y = 1.0f / RESOURCE_TEXTURE_ROWS;
+    int index_x = resource % RESOURCE_TEXTURE_COLUMNS;
+    int index_y = resource / RESOURCE_TEXTURE_COLUMNS;
+
+    glm::mat4 world = glm::translate( glm::vec3( x, y, HUD_BASE_Z + d_z ) ) * glm::scale( scale );
+    glUniformMatrix4fv( ul( "world" ), 1, GL_FALSE, glm::value_ptr( world ) );
+
+    glUniform1f( ul( "stride_x" ), stride_x );
+    glUniform1f( ul( "stride_y" ), stride_y );
+    glUniform1i( ul( "index_x" ), index_x );
+    glUniform1i( ul( "index_y" ), index_y );
+
+    glDrawElements( GL_TRIANGLES, _rectangle_gpu.count, GL_UNSIGNED_INT, nullptr );
+}
+
+void View::RenderResourceProduction( float x, float y, glm::vec3 scale, int resource ) {
+    glUseProgram( _program_rectangle_id );
+    glBindVertexArray( _rectangle_gpu.vao_id );
+    glActiveTexture( GL_TEXTURE0 );
+
+    glBindTexture( GL_TEXTURE_2D, _production_box_texture.id );
+
+    RenderDetail( x, y, scale );
+
+
+    glUseProgram( _program_sprite_sheet_id );
+    glBindTexture( GL_TEXTURE_2D, _resources_texture.id );
+
+    scale *= PRODUCTION_RESOURCE_SHRINK;
+
+    RenderResource( x, y, scale, +resource, -0.01f );
+}
+
 uint8_t View::GetStencilValue( float mouse_x, float mouse_y ) {
     uint8_t value;
     glReadPixels( (GLint)mouse_x, _height - (GLint)mouse_y, 1, 1, GL_STENCIL_INDEX, GL_UNSIGNED_BYTE, &value );
@@ -1073,9 +1396,29 @@ std::tuple<float, float, glm::vec3> View::CalculateParameterPosition( int parame
 std::tuple<float, float, glm::vec3> View::CalculateResourcePosition( int resource, int type ) {
     static const float size = 0.055f;
     static const float spacing = size * 2.5f;
+
     return {
         1.0f - size - type * spacing / 2.0f,
-        (+model::Resource::MAX - resource) * spacing + size * 2.0f - 1.0f,
+        -1.0f + (+model::Resource::MAX - resource) * spacing + size * 2.0f,
+        glm::vec3( size / _width * _height , size, 1.0f )
+    };
+}
+
+std::tuple<float, float, glm::vec3> View::CalculateSPPosition( int sp, int right ) {
+    static const float start = 0.2f;
+    static const float size = 0.055f;
+    static const float spacing = size * 3.0f;
+    static const float arrow_ratio = (float)_arrow_texture.height / _arrow_texture.width;
+
+    float x_adjust = 0.0f;
+    if ( right == 1 )
+        x_adjust = size / _width * _height / arrow_ratio / 2;
+    else if ( right > 1 )
+        x_adjust = size / _width * _height / arrow_ratio;
+
+    return {
+        -1.0f + size + right * spacing / 2.0f + x_adjust,
+        1.0f - start - sp * spacing - size * 2.0f,
         glm::vec3( size / _width * _height , size, 1.0f )
     };
 }
@@ -1166,8 +1509,11 @@ void View::InitTextures() {
     _ocean_texture = LoadTexture( "assets/ocean.png" );
     _oxygen_texture = LoadTexture( "assets/oxygen.png" );
     _tr_texture = LoadTexture( "assets/tr.png" );
+    _greenery_texture = LoadTexture( "assets/greenery.png" );
+    _city_texture = LoadTexture( "assets/city.png" );
     _button_texture = LoadTexture( "assets/button.png" );
     _production_box_texture = LoadTexture( "assets/production_box.png" );
+    _arrow_texture = LoadTexture( "assets/arrow.png" );
 }
 
 void View::CleanTextures() {
@@ -1178,7 +1524,11 @@ void View::CleanTextures() {
     glDeleteTextures( 1, &_ocean_texture.id );
     glDeleteTextures( 1, &_oxygen_texture.id );
     glDeleteTextures( 1, &_tr_texture.id );
+    glDeleteTextures( 1, &_greenery_texture.id );
+    glDeleteTextures( 1, &_city_texture.id );
+    glDeleteTextures( 1, &_button_texture.id );
     glDeleteTextures( 1, &_production_box_texture.id );
+    glDeleteTextures( 1, &_arrow_texture.id );
 }
 
 Texture View::LoadTexture( const std::filesystem::path& filename, GLint wrap_behaviour ) {

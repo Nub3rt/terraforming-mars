@@ -51,6 +51,7 @@ void main() {
             intensity = (1.0 - y) * multiplier;
 
         fs_out_col = vec4( highlight_color, intensity );
+        return;
     }
 
     if ( faded ) {
