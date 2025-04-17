@@ -11,6 +11,9 @@
     <Filter Include="shaders">
       <UniqueIdentifier>{bdbe3233-f8d0-4a92-a29c-5a917bf36fc2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="fonts">
+      <UniqueIdentifier>{22846d73-2be5-4bf8-b38f-4803dad09c28}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="app.cpp" />
@@ -107,24 +110,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="assets\back.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="assets\bottom.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="assets\front.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="assets\left.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="assets\right.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="assets\top.png">
-      <Filter>Resource Files</Filter>
-    </Image>
     <Image Include="assets\cards.png">
       <Filter>Resource Files</Filter>
     </Image>
@@ -179,5 +164,10 @@
     <Image Include="assets\greenery.png">
       <Filter>Resource Files</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="fonts\prototype.ttf">
+      <Filter>fonts</Filter>
+    </Font>
   </ItemGroup>
 </Project>

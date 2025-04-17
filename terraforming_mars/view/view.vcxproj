@@ -70,6 +70,12 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <CopyLocalDeploymentContent>true</CopyLocalDeploymentContent>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <CopyLocalDeploymentContent>true</CopyLocalDeploymentContent>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -166,48 +172,106 @@
     <ClInclude Include="view_state.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="shaders\card.frag" />
-    <None Include="shaders\lighting.frag" />
-    <None Include="shaders\pos_norm_tex.vert" />
-    <None Include="shaders\rectangle.frag" />
-    <None Include="shaders\rectangle.vert" />
-    <None Include="shaders\skybox.frag" />
-    <None Include="shaders\skybox.vert" />
-    <None Include="shaders\sprite_sheet.frag" />
-    <None Include="shaders\sprite_sheet.vert" />
-    <None Include="shaders\text.frag" />
-    <None Include="shaders\text.vert" />
+    <None Include="shaders\card.frag">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
+    <None Include="shaders\lighting.frag">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
+    <None Include="shaders\pos_norm_tex.vert">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
+    <None Include="shaders\rectangle.frag">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
+    <None Include="shaders\rectangle.vert">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
+    <None Include="shaders\skybox.frag">
+      <DeploymentContent>true</DeploymentContent>
+      <FileType>Document</FileType>
+    </None>
+    <None Include="shaders\skybox.vert">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
+    <None Include="shaders\sprite_sheet.frag">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
+    <None Include="shaders\sprite_sheet.vert">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
+    <None Include="shaders\text.frag">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
+    <None Include="shaders\text.vert">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="assets\arrow.png" />
-    <Image Include="assets\back.png" />
-    <Image Include="assets\bottom.png" />
-    <Image Include="assets\button.png" />
-    <Image Include="assets\cards.png" />
-    <Image Include="assets\card_cover.png" />
-    <Image Include="assets\city.png" />
-    <Image Include="assets\front.png" />
-    <Image Include="assets\greenery.png" />
-    <Image Include="assets\left.png" />
-    <Image Include="assets\ocean.png" />
-    <Image Include="assets\oxygen.png" />
-    <Image Include="assets\production_box.png" />
-    <Image Include="assets\resources.png" />
-    <Image Include="assets\right.png" />
-    <Image Include="assets\space_back.png" />
-    <Image Include="assets\space_bottom.png" />
-    <Image Include="assets\space_front.png" />
-    <Image Include="assets\space_left.png" />
-    <Image Include="assets\space_right.png" />
-    <Image Include="assets\space_top.png" />
-    <Image Include="assets\temperature.png" />
-    <Image Include="assets\top.png" />
-    <Image Include="assets\tr.png" />
+    <Image Include="assets\arrow.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="assets\button.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="assets\cards.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="assets\card_cover.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="assets\city.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="assets\greenery.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="assets\ocean.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="assets\oxygen.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="assets\production_box.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="assets\resources.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="assets\space_back.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="assets\space_bottom.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="assets\space_front.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="assets\space_left.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="assets\space_right.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="assets\space_top.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="assets\temperature.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="assets\tr.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\model\model.vcxproj">
       <Project>{59cc3f5d-ba83-45db-82bd-2ef2e503be8b}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="fonts\prototype.ttf">
+      <DeploymentContent>true</DeploymentContent>
+    </Font>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
