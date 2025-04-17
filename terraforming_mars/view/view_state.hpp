@@ -131,6 +131,21 @@ class SellVState : public ViewState
 public:
     SellVState( View& view );
     virtual ~SellVState();
+
+    virtual void Enter();
+    virtual void Render();
+
+    virtual std::string GetEndButtonText();
+    CardWrapper::Visual GetCardUnderPlayLineVisual( CardWrapper* card ) override;
+    CardWrapper::Visual GetCardOverPlayLineVisual( CardWrapper* card ) override;
+
+    bool CanClickEndButton() override;
+    bool CanHoverHand() override;
+    bool CanDragCardsOut() override;
+    bool CanPlayCard( CardWrapper* card ) override;
+    void PlayCard( int index_in_hand ) override;
+
+    void DoClickedEndButton() override;
 };
 
 class PlacementConfirmationVState : public ViewState

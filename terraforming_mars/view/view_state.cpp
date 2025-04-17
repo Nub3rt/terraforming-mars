@@ -290,6 +290,46 @@ void IdleVState::DoClickedEndButton() {
 SellVState::SellVState( View& view ) : ViewState( view ) {}
 SellVState::~SellVState() {}
 
+void SellVState::Enter() {
+    for ( CardWrapper* card : _view._hand )
+        card->visual = CardWrapper::Visual::SELL_HIGHLIGHT;
+}
+
+void SellVState::Render() {
+    TextRenderer::RenderTextCentered(
+        std::format( "Selling Patents" ),
+        BASE_HINT_POS.x, BASE_HINT_POS.y,
+        BASE_TEXT_SCALE,
+        LIGHT_TEXT_COLOR
+    );
+}
+
+std::string SellVState::GetEndButtonText() { return "Done"; }
+
+CardWrapper::Visual SellVState::GetCardUnderPlayLineVisual( CardWrapper* card ) {
+    return CardWrapper::Visual::SELL_HIGHLIGHT;
+}
+
+CardWrapper::Visual SellVState::GetCardOverPlayLineVisual( CardWrapper* card ) {
+    return CardWrapper::Visual::FADED;
+}
+
+bool SellVState::CanClickEndButton() { return true; }
+bool SellVState::CanHoverHand() { return true; }
+bool SellVState::CanDragCardsOut() { return true; }
+bool SellVState::CanPlayCard( CardWrapper* card ) { return true; }
+
+void SellVState::PlayCard( int index_in_hand ) {
+    _view._model->SellCardSP( **_view._hand[ index_in_hand ] );
+
+    _view._hand.erase( _view._hand.begin() + index_in_hand );
+    _view.RefreshHandPositions();
+}
+
+void SellVState::DoClickedEndButton() {
+    _view.RequestInstantStateChange( _view.CreateIdleState() );
+}
+
 #pragma endregion SellState
 
 #pragma region PlacementConfirmationState
