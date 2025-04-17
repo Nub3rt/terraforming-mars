@@ -346,7 +346,7 @@ void View::MouseUp( const SDL_MouseButtonEvent& mouse ) {
             switch ( stencil ) {
                 case STENCIL_NONE: break;
                 case 0x00:
-                    std::cerr << "View::MouseUp: Invalid stencil value received: 0!";
+                    std::cerr << "View::MouseUp: Invalid stencil value received: 0x00!";
                     break;
                 case STENCIL_MENU:
                     // TODO
@@ -366,6 +366,38 @@ void View::MouseUp( const SDL_MouseButtonEvent& mouse ) {
                     break;
                 case STENCIL_ACTIONS:
 
+                    break;
+                case STENCIL_SP_SELL_PATENTS:
+                    if ( _state->CanUseSellPatentsSP() )
+                        RequestInstantStateChange( CreateSellState() );
+                    break;
+                case STENCIL_SP_POWER_PLANT:
+                    if ( _state->CanUsePowerPlantSP() )
+                        _model->UsePowerPlantSP();
+                    break;
+                case STENCIL_SP_ASTEROID:
+                    if ( _state->CanUseAsteroidSP() )
+                        _model->UseAsteroidSP();
+                    break;
+                case STENCIL_SP_AQUIFER:
+                    if ( _state->CanUseAquiferSP() )
+                        _model->UseAquiferSP();
+                    break;
+                case STENCIL_SP_GREENERY:
+                    if ( _state->CanUseGreenerySP() )
+                        _model->UseGreenerySP();
+                    break;
+                case STENCIL_SP_CITY:
+                    if ( _state->CanUseCitySP() )
+                        _model->UseCitySP();
+                    break;
+                case STENCIL_SP_CONVERT_PLANTS:
+                    if ( _state->CanConvertPlants() )
+                        _model->ConvertPlantsToGreenery();
+                    break;
+                case STENCIL_SP_CONVERT_HEAT:
+                    if ( _state->CanConvertHeat() )
+                        _model->ConvertHeatToTemperature();
                     break;
                 default: // research cards/tile/active card was clicked
                     if ( stencil < STENCIL_STARTING_BOARD ) {
@@ -1051,6 +1083,53 @@ void View::RenderSP() {
         RenderDetail( x, y, scale );
     }
 
+    // make them clickable
+    {
+        // save state
+        GLboolean color_mask[ 4 ];
+        glGetBooleanv( GL_COLOR_WRITEMASK, color_mask );
+
+        GLboolean stencil_test_enabled;
+        glGetBooleanv( GL_STENCIL_TEST, &stencil_test_enabled );
+
+        GLint stencil_func[ 3 ];
+        glGetIntegerv( GL_STENCIL_FAIL, &stencil_func[ 0 ] );
+        glGetIntegerv( GL_STENCIL_PASS_DEPTH_FAIL, &stencil_func[ 1 ] );
+        glGetIntegerv( GL_STENCIL_PASS_DEPTH_PASS, &stencil_func[ 2 ] );
+
+
+        // set up
+        glColorMask( GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE );
+
+        glEnable( GL_STENCIL_TEST );
+        glStencilOp( GL_REPLACE, GL_REPLACE, GL_REPLACE );
+
+
+        // draw
+        glUseProgram( _program_rectangle_id );
+        glBindVertexArray( _rectangle_gpu.vao_id );
+        glActiveTexture( GL_TEXTURE0 );
+
+        glBindTexture( GL_TEXTURE_2D, _button_texture.id );
+
+        for ( int i = 0; i < 8; ++i ) {
+            auto [x, y, scale] = CalculateSPButtonPosition( i );
+
+            SetStencilRef( STENCIL_STARTING_SP + i );
+
+            RenderDetail( x, y, scale );
+        }
+        SetStencilRef();
+
+
+        // restore state
+        glColorMask( color_mask[ 0 ], color_mask[ 1 ], color_mask[ 2 ], color_mask[ 3 ] );
+
+        if ( !stencil_test_enabled )
+            glDisable( GL_STENCIL_TEST );
+        glStencilOp( stencil_func[ 0 ], stencil_func[ 1 ], stencil_func[ 2 ] );
+    }
+
 
     glBindTexture( GL_TEXTURE_2D, 0 );
 
@@ -1112,10 +1191,12 @@ void View::RenderEndButton() {
     static const float spacing = size * 3.0f;
     static const float width_modifier = 1.25f;
 
+    bool grow = _end_button_hovered && _state->CanClickEndButton();
+
     float x = 1.0f - (size + spacing / button_ratio) * width_modifier;
     float y = 0.0f;
     glm::vec3 scale( size * button_ratio * width_modifier, size * _width / _height, 1.0f );
-    if ( _end_button_hovered && _state->CanClickEndButton() )
+    if ( grow )
         scale *= 1.1;
 
     glUseProgram( _program_rectangle_id );
@@ -1144,7 +1225,7 @@ void View::RenderEndButton() {
         _state->GetEndButtonText(),
         x,
         y,
-        _end_button_hovered ? MOUSE_HOVER_SIZE_MULTIPLIER : 1.0f,
+        grow ? MOUSE_HOVER_SIZE_MULTIPLIER : 1.0f,
         BUTTON_TEXT_COLOR
     );
 }
@@ -1420,6 +1501,22 @@ std::tuple<float, float, glm::vec3> View::CalculateSPPosition( int sp, int right
         -1.0f + size + right * spacing / 2.0f + x_adjust,
         1.0f - start - sp * spacing - size * 2.0f,
         glm::vec3( size / _width * _height , size, 1.0f )
+    };
+}
+
+std::tuple<float, float, glm::vec3> View::CalculateSPButtonPosition( int sp ) {
+    static const float size = 0.055f;
+    static const float spacing = size * 3.0f;
+
+    auto [start_x, _1, _2] = CalculateSPPosition( sp, 0 );
+    auto [end_x, y, scale] = CalculateSPPosition( sp, sp == 5 ? 3 : 2 );
+    scale.x *= (end_x - start_x) / spacing * 3.0f;
+    scale *= 1.3f;
+
+    return {
+        (end_x + start_x) / 2.0f,
+        y,
+        scale
     };
 }
 

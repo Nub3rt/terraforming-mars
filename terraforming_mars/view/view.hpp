@@ -183,6 +183,7 @@ protected:
     std::tuple<float, float, glm::vec3> CalculateParameterPosition( int parameter, int type );
     std::tuple<float, float, glm::vec3> CalculateResourcePosition( int resource, int type );
     std::tuple<float, float, glm::vec3> CalculateSPPosition( int sp, int right );
+    std::tuple<float, float, glm::vec3> CalculateSPButtonPosition( int sp );
 
     inline void SetStencilRef( GLint ref = STENCIL_NONE ) { glStencilFunc( GL_ALWAYS, ref, 0xff ); }
 
