@@ -224,5 +224,7 @@ protected:
     static const std::initializer_list<VertexAttributeDescriptor> _vertex_pos_tex_attribute_list;
     static const std::initializer_list<VertexAttributeDescriptor> _vertex_attribute_list;
     static const std::initializer_list<VertexAttributeDescriptor> _vertex_plus_attribute_list;
+
+    bool _debug = false;
 };
 }

@@ -17,6 +17,11 @@ namespace view
 {
 App::App() : _camera(), _builder( BUILDER_SEED ) {
     SDL_LogInfo( SDL_LOG_CATEGORY_APPLICATION, "Seed of the application: %d", BUILDER_SEED );
+
+    GLint stencil_bits;
+    glGetIntegerv( GL_STENCIL_BITS, &stencil_bits );
+
+    SDL_LogInfo( SDL_LOG_CATEGORY_APPLICATION, "Stencil buffer size: %d", stencil_bits );
 }
 #undef BUILDER_SEED
 

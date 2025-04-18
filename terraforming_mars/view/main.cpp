@@ -10,6 +10,7 @@
 #include <imgui_impl_opengl3.h>
 
 #include <iostream>
+#include <stdexcept>
 
 #include "app.hpp"
 #include "constants.hpp"
@@ -127,7 +128,7 @@ int main( int argc, char* argv[] ) {
     }
 
 
-    {
+    try {
         bool quit = false;
         bool show_imgui = true;
 
@@ -217,10 +218,18 @@ int main( int argc, char* argv[] ) {
             ImGui_ImplOpenGL3_RenderDrawData( ImGui::GetDrawData() );
             SDL_GL_SwapWindow( window );
         }
-
-        app.Clean();
-        view::TextRenderer::Clean();
+    } catch ( const std::exception& e ) {
+        SDL_LogError( SDL_LOG_CATEGORY_APPLICATION, "Exception in application!\n\t%s", e.what() );
+    } catch ( const std::string& e ) {
+        SDL_LogError( SDL_LOG_CATEGORY_APPLICATION, "Exception in application!\n\t%s", e.c_str() );
+    } catch ( const char* e ) {
+        SDL_LogError( SDL_LOG_CATEGORY_APPLICATION, "Exception in application!\n\t%s", e );
+    } catch ( ... ) {
+        SDL_LogError( SDL_LOG_CATEGORY_APPLICATION, "Unknown exception in application!" );
     }
+
+    app.Clean();
+    view::TextRenderer::Clean();
 
 
     ImGui_ImplOpenGL3_Shutdown();

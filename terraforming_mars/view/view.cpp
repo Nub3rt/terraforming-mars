@@ -238,6 +238,50 @@ void View::Render() {
 
 void View::RenderGUI() {
     _state->RenderGUI();
+
+    if ( _debug ) {
+        if ( ImGui::Begin( "Debug" ) ) {
+            model::Player* player = const_cast<model::Player*>( _model->get_local_player() );
+
+            static int resource = 0;
+            static int amount = 25;
+            ImGui::Text( "0 = Credit, 1 = Steel, ..." );
+            ImGui::SliderInt( "Resource", &resource, +model::Resource::CREDIT, +model::Resource::MAX );
+            ImGui::SliderInt( "Amount", &amount, 0, 50 );
+            if ( ImGui::Button( "Gain Resources" ) )
+                player->GainResource( static_cast<model::Resource>( resource ), amount );
+            if ( ImGui::Button( "Gain Resource Production" ) )
+                player->GainResourceProduction( static_cast<model::Resource>( resource ), amount );
+
+            ImGui::Separator();
+
+            static int tr_amount = 1;
+            ImGui::SliderInt( "TR", &tr_amount, 0, 10 );
+            if ( ImGui::Button( "Gain TR" ) )
+                player->RaiseTR( tr_amount );
+
+            ImGui::Separator();
+
+            if ( ImGui::Button( "Draw card" ) )
+                player->DrawCard();
+
+            if ( ImGui::Button( "Raise Temperature" ) )
+                player->RaiseTemperature();
+
+            if ( ImGui::Button( "Place Ocean" ) )
+                player->PlaceOcean();
+
+            if ( ImGui::Button( "Raise Oxygen" ) )
+                player->RaiseOxygen();
+
+            if ( ImGui::Button( "Place Greenery" ) )
+                player->PlaceGreenery();
+
+            if ( ImGui::Button( "Place City" ) )
+                player->PlaceCity();
+        }
+        ImGui::End();
+    }
 }
 
 #pragma region Events
@@ -252,6 +296,13 @@ void View::KeyboardDown( const SDL_KeyboardEvent& key ) {
         }
     } else
         _active_camera_manipulator->KeyboardDown( key );
+
+    if ( key.key == SDLK_D &&
+         key.mod & SDL_KMOD_CTRL &&
+         !(key.mod & (SDL_KMOD_SHIFT | SDL_KMOD_ALT | SDL_KMOD_GUI)) ) {
+        if ( !key.repeat )
+            _debug = !_debug;
+    }
 }
 
 void View::KeyboardUp( const SDL_KeyboardEvent& key ) {
@@ -307,9 +358,10 @@ void View::MouseMotion( const SDL_MouseMotionEvent& mouse ) {
     _active_camera_manipulator->MouseMotion( mouse );
 }
 
-void View::MouseDown( const SDL_MouseButtonEvent& mouse ) {
+void View::MouseDown( const SDL_MouseButtonEvent& mouse )   {
     _mouse_down_stencil = GetStencilValue( mouse.x, mouse.y );
-    std::cout << std::to_string( _mouse_down_stencil ) << std::endl;
+
+    SDL_LogInfo( SDL_LOG_CATEGORY_APPLICATION, "View::MouseDown: Stencil value of mouse click: %d", _mouse_down_stencil );
 
     auto [x, y] = CalculateMousePos( mouse.x, mouse.y );
     int hovered_card_index = CalculateHoveredCardByPos( x, y );
@@ -348,7 +400,7 @@ void View::MouseUp( const SDL_MouseButtonEvent& mouse ) {
             switch ( stencil ) {
                 case STENCIL_NONE: break;
                 case 0x00:
-                    std::cerr << "View::MouseUp: Invalid stencil value received: 0x00!";
+                    SDL_LogError( SDL_LOG_CATEGORY_ERROR, "View::MouseUp: Invalid stencil value received : 0x00!" );
                     break;
                 case STENCIL_MENU:
                     // TODO
