@@ -226,6 +226,9 @@
     <Image Include="assets\greenery.png">
       <DeploymentContent>true</DeploymentContent>
     </Image>
+    <Image Include="assets\mars.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
     <Image Include="assets\ocean.png">
       <DeploymentContent>true</DeploymentContent>
     </Image>

@@ -3,6 +3,7 @@
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
 #include <SDL3/SDL_opengl.h>
+#include <SDL3_image/SDL_image.h>
 
 #include <imgui.h>
 #include <imgui_impl_sdl3.h>
@@ -43,16 +44,27 @@ int main( int argc, char* argv[] ) {
 
     SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 24 );
 
+    SDL_GL_SetAttribute( SDL_GL_STENCIL_SIZE, 8 );
 
-    SDL_Window* window = SDL_CreateWindow( "Terraforming Mars",
-                                           view::STARTING_WINDOW_WIDTH,
-                                           view::STARTING_WINDOW_HEIGHT,
-                                           SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE );
+    SDL_Window* window = SDL_CreateWindow(
+        "Terraforming Mars",
+        view::STARTING_WINDOW_WIDTH,
+        view::STARTING_WINDOW_HEIGHT,
+        SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE
+    );
 
     if ( window == nullptr ) {
         SDL_LogError( SDL_LOG_CATEGORY_ERROR, "[Window creation] Error during the SDL initialization: %s", SDL_GetError() );
         return 1;
     }
+
+    SDL_Surface* icon = IMG_Load( "assets/mars.png" );
+    if ( icon ) {
+        SDL_SetWindowIcon( window, icon );
+
+        SDL_DestroySurface( icon );
+    } else
+        SDL_LogError( SDL_LOG_CATEGORY_ERROR, "[Window Icon] Error during loading icon!" );
 
 
     SDL_GLContext context = SDL_GL_CreateContext( window );

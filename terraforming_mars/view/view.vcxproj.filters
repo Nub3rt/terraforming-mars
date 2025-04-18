@@ -164,6 +164,9 @@
     <Image Include="assets\greenery.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="assets\mars.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Font Include="fonts\prototype.ttf">
