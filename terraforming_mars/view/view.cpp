@@ -321,6 +321,13 @@ void View::KeyboardDown( const SDL_KeyboardEvent& key ) {
             case SDLK_P:
                 _state->ClickedEffect();
                 break;
+
+            case SDLK_LEFT:
+                _state->ClickedLeft();
+                break;
+            case SDLK_RIGHT:
+                _state->ClickedRight();
+                break;
         }
     }
 }
@@ -472,6 +479,12 @@ void View::MouseUp( const SDL_MouseButtonEvent& mouse ) {
                 case STENCIL_SP_CONVERT_HEAT:
                     if ( _state->CanConvertHeat() )
                         _model->ConvertHeatToTemperature();
+                    break;
+                case STENCIL_LEFT:
+                    _state->ClickedLeft();
+                    break;
+                case STENCIL_RIGHT:
+                    _state->ClickedRight();
                     break;
                 default: // research cards/tile/misc was clicked
                     if ( stencil < STENCIL_STARTING_BOARD ) {
@@ -1432,7 +1445,7 @@ void View::RenderPanels() {
     } else
         glBindTexture( GL_TEXTURE_2D, _action_closed_texture.id );
 
-    glm::mat4 world = glm::translate( glm::vec3( 0.0f, 0.0f, HUD_BASE_Z - 0.11f ) );
+    glm::mat4 world = glm::translate( glm::vec3( 0.0f, 0.0f, PANEL_BASE_Z - 0.01f ) );
     glUniformMatrix4fv( ul( "world" ), 1, GL_FALSE, glm::value_ptr( world ) );
 
     SetStencilRef( STENCIL_ACTIONS );
@@ -1446,7 +1459,7 @@ void View::RenderPanels() {
     } else
         glBindTexture( GL_TEXTURE_2D, _event_closed_texture.id );
 
-    world = glm::translate( glm::vec3( 0.0f, 0.0f, HUD_BASE_Z - 0.12f ) );
+    world = glm::translate( glm::vec3( 0.0f, 0.0f, PANEL_BASE_Z - 0.02f ) );
     glUniformMatrix4fv( ul( "world" ), 1, GL_FALSE, glm::value_ptr( world ) );
 
     SetStencilRef( STENCIL_EVENTS );
@@ -1460,7 +1473,7 @@ void View::RenderPanels() {
     } else
         glBindTexture( GL_TEXTURE_2D, _automated_closed_texture.id );
 
-    world = glm::translate( glm::vec3( 0.0f, 0.0f, HUD_BASE_Z - 0.13f ) );
+    world = glm::translate( glm::vec3( 0.0f, 0.0f, PANEL_BASE_Z - 0.03f ) );
     glUniformMatrix4fv( ul( "world" ), 1, GL_FALSE, glm::value_ptr( world ) );
 
     SetStencilRef( STENCIL_AUTOMATED );
@@ -1474,7 +1487,7 @@ void View::RenderPanels() {
     } else
         glBindTexture( GL_TEXTURE_2D, _effect_closed_texture.id );
 
-    world = glm::translate( glm::vec3( 0.0f, 0.0f, HUD_BASE_Z - 0.14f ) );
+    world = glm::translate( glm::vec3( 0.0f, 0.0f, PANEL_BASE_Z - 0.04f ) );
     glUniformMatrix4fv( ul( "world" ), 1, GL_FALSE, glm::value_ptr( world ) );
 
     SetStencilRef( STENCIL_EFFECTS );
@@ -1691,17 +1704,20 @@ std::tuple<float, float, glm::vec3> View::CalculateSPButtonPosition( int sp ) {
 }
 
 void View::SetPlayedCardParams( std::vector<CardWrapper>& cards ) {
-    static const float spacing = 0.35f;
-    static const float length = spacing * (model::RESEARCH_CARD_NUM - 1);
-    static const float start_x = 0.0f - length / 2.0f;
+    static const float spacing_x = 0.35f;
+    static const float length_x = spacing_x * (PANEL_COLUMNS - 1);
+    static const float start_x = 0.0f - length_x / 2.0f;
+    static const float spacing_y = 0.8f;
+    static const float length_y = spacing_y * (PANEL_ROWS - 1);
+    static const float start_y = 0.0f + length_y / 2.0f;
 
     int index = static_cast<int>( cards.size() - 1 );
     CardWrapper& card = cards[ index ];
 
-    int x = index % 4;
-    int y = index / 4 % 2;
+    int x = index % PANEL_COLUMNS;
+    int y = index / PANEL_COLUMNS % PANEL_ROWS;
 
-    card.pos.Set( glm::vec2( start_x + spacing * x, y == 0 ? 0.4f : -0.4f ) );
+    card.pos.Set( glm::vec2( start_x + spacing_x * x, start_y - spacing_y * y ) );
     card.scale.Set( RESEARCH_CARD_SCALE );
     card.rotate.Set( RESEARCH_CARD_ROTATE );
 }

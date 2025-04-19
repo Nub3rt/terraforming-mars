@@ -75,7 +75,9 @@ inline constexpr uint8_t STENCIL_SP_CITY           = 0x0c;
 inline constexpr uint8_t STENCIL_SP_CONVERT_PLANTS = 0x0d;
 inline constexpr uint8_t STENCIL_SP_CONVERT_HEAT   = 0x0e;
 inline constexpr uint8_t STENCIL_STARTING_SP = STENCIL_SP_SELL_PATENTS;
-inline constexpr uint8_t STENCIL_STARTING_RESEARCH = 0x0f;
+inline constexpr uint8_t STENCIL_LEFT  = 0x0f;
+inline constexpr uint8_t STENCIL_RIGHT = 0x10;
+inline constexpr uint8_t STENCIL_STARTING_RESEARCH = 0x11;
 inline constexpr uint8_t STENCIL_STARTING_BOARD = STENCIL_STARTING_RESEARCH + model::RESEARCH_CARD_NUM;
 
 
@@ -91,4 +93,9 @@ inline constexpr float HUD_BASE_Z = 0.8f;
 inline constexpr float MOUSE_HOVER_SIZE_MULTIPLIER = 1.1f;
 inline constexpr glm::vec3 BUTTON_TEXT_COLOR = glm::vec3( 1280.f, 58.0f, 47.0f ) / 255.0f;
 inline constexpr float PRODUCTION_RESOURCE_SHRINK = 0.6f;
+
+inline constexpr float PANEL_BASE_Z = HUD_BASE_Z - 0.1f;
+inline constexpr int PANEL_ROWS = 2;
+inline constexpr int PANEL_COLUMNS = 4;
+inline constexpr int PANEL_ITEMS = PANEL_ROWS * PANEL_COLUMNS;
 }

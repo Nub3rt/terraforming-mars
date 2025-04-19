@@ -72,6 +72,8 @@ void ViewState::ClickedAction() {}
 void ViewState::ClickedEvent() {}
 void ViewState::ClickedAutomated() {}
 void ViewState::ClickedEffect() {}
+void ViewState::ClickedLeft() {}
+void ViewState::ClickedRight() {}
 void ViewState::ClickedMisc( int index ) {}
 
 void ViewState::Model_OnResearchConfirmed( std::array<bool, model::RESEARCH_CARD_NUM> selected ) {
@@ -253,16 +255,16 @@ void IdleVState::Update( float delta ) {
 void IdleVState::Render() {
     switch ( _panel ) {
         case Panel::ACTION:
-            RenderPanelCards( _view._action_cards, true );
+            RenderPanelCards( _view._action_cards, _view._page_nums[ 0 ], true );
             break;
         case Panel::EVENT:
-            RenderPanelCards( _view._event_cards, false );
+            RenderPanelCards( _view._event_cards, _view._page_nums[ 1 ], false );
             break;
         case Panel::AUTOMATED:
-            RenderPanelCards( _view._automated_cards, false );
+            RenderPanelCards( _view._automated_cards, _view._page_nums[ 2 ], false );
             break;
         case Panel::EFFECT:
-            RenderPanelCards( _view._effect_cards, false );
+            RenderPanelCards( _view._effect_cards, _view._page_nums[ 3 ], false );
             break;
     }
 }
@@ -295,8 +297,6 @@ void IdleVState::ClickedAction() {
     if ( !_view._model->InIdleState() )
         return;
 
-    _page = 0;
-
     if ( _panel == Panel::ACTION )
         _panel = Panel::NONE;
     else
@@ -306,8 +306,6 @@ void IdleVState::ClickedAction() {
 void IdleVState::ClickedEvent() {
     if ( !_view._model->InIdleState() )
         return;
-
-    _page = 0;
 
     if ( _panel == Panel::EVENT )
         _panel = Panel::NONE;
@@ -319,8 +317,6 @@ void IdleVState::ClickedAutomated() {
     if ( !_view._model->InIdleState() )
         return;
 
-    _page = 0;
-
     if ( _panel == Panel::AUTOMATED )
         _panel = Panel::NONE;
     else
@@ -331,12 +327,44 @@ void IdleVState::ClickedEffect() {
     if ( !_view._model->InIdleState() )
         return;
 
-    _page = 0;
-
     if ( _panel == Panel::EFFECT )
         _panel = Panel::NONE;
     else
         _panel = Panel::EFFECT;
+}
+
+void IdleVState::ClickedLeft() {
+    switch ( _panel ) {
+        case Panel::ACTION:
+            TurnPageLeft( (int)_view._action_cards.size(), _view._page_nums[ 0 ] );
+            break;
+        case Panel::EVENT:
+            TurnPageLeft( (int)_view._event_cards.size(), _view._page_nums[ 1 ] );
+            break;
+        case Panel::AUTOMATED:
+            TurnPageLeft( (int)_view._automated_cards.size(), _view._page_nums[ 2 ] );
+            break;
+        case Panel::EFFECT:
+            TurnPageLeft( (int)_view._effect_cards.size(), _view._page_nums[ 3 ] );
+            break;
+    }
+}
+
+void IdleVState::ClickedRight() {
+    switch ( _panel ) {
+        case Panel::ACTION:
+            TurnPageRight( (int)_view._action_cards.size(), _view._page_nums[ 0 ] );
+            break;
+        case Panel::EVENT:
+            TurnPageRight( (int)_view._event_cards.size(), _view._page_nums[ 1 ] );
+            break;
+        case Panel::AUTOMATED:
+            TurnPageRight( (int)_view._automated_cards.size(), _view._page_nums[ 2 ] );
+            break;
+        case Panel::EFFECT:
+            TurnPageRight( (int)_view._effect_cards.size(), _view._page_nums[ 3 ] );
+            break;
+    }
 }
 
 void IdleVState::ClickedMisc( int index ) {
@@ -358,7 +386,7 @@ void IdleVState::PlayCard( int index_in_hand ) {
     _view.RefreshHandPositions();
 }
 
-void IdleVState::RenderPanelCards( std::vector<CardWrapper>& cards, bool actions ) {
+void IdleVState::RenderPanelCards( std::vector<CardWrapper>& cards, int page_num, bool actions ) {
     if ( cards.size() == 0 )
         return;
 
@@ -373,8 +401,8 @@ void IdleVState::RenderPanelCards( std::vector<CardWrapper>& cards, bool actions
     glUniform1i( ul( "image" ), 0 );
     glUniform1f( ul( "elapsed" ), _view._elapsed );
 
-    int from = _page * 8;
-    int to = glm::min<int>( (int)cards.size(), from + 8 );
+    int from = page_num * PANEL_ITEMS;
+    int to = glm::min<int>( (int)cards.size(), from + PANEL_ITEMS );
 
     for ( int i = from; i < to; ++i ) {
         CardWrapper& card = cards[ i ];
@@ -393,22 +421,60 @@ void IdleVState::RenderPanelCards( std::vector<CardWrapper>& cards, bool actions
                     throw std::logic_error( "IdleVState::RenderPanelCards: Unknown Availability received!" );
             }
 
-            _view.SetStencilRef( _view._stencil_starting_misc + i % 8 );
+            _view.SetStencilRef( _view._stencil_starting_misc + i % PANEL_ITEMS );
         }
 
 
-        _view.RenderCard( card, i );
+        _view.RenderCard( card, -i );
     }
 
-    if ( actions )
-        _view.SetStencilRef();
+    glDisable( GL_BLEND );
+
+
+    glUseProgram( _view._program_rectangle_id );
+
+    glBindTexture( GL_TEXTURE_2D, _view._arrow_texture.id );
+
+    static const float arrow_ratio = (float)_view._arrow_texture.height / _view._arrow_texture.width;
+    auto [_1, _2, scale] = _view.CalculateSPPosition( 0, 1 );
+    scale.x /= arrow_ratio;
+
+    glm::mat4 translate = glm::translate( glm::vec3( 0.725f, 0.0f, PANEL_BASE_Z - 0.1f ) );
+
+    if ( page_num > GetLeftmostPageNum( (int)cards.size() ) ) {
+        static const glm::mat4 mirror = glm::rotate( glm::pi<float>(), glm::vec3( 0.0f, 0.0f, 1.0f ) );
+
+        glm::vec3 left_scale = _view._mouse_hover_stencil == STENCIL_LEFT ?
+            scale * MOUSE_HOVER_SIZE_MULTIPLIER : scale;
+
+        glm::mat4 arrow_scale = glm::scale( left_scale );
+        glUniformMatrix4fv( ul( "world" ), 1, GL_FALSE, glm::value_ptr( mirror * translate * arrow_scale ) );
+
+        _view.SetStencilRef( STENCIL_LEFT );
+
+        glDrawElements( GL_TRIANGLES, _view._rectangle_gpu.count, GL_UNSIGNED_INT, nullptr );
+
+    }
+
+    if ( page_num < GetRightmostPageNum((int) cards.size() ) ) {
+        glm::vec3 right_scale = _view._mouse_hover_stencil == STENCIL_RIGHT ?
+            scale * MOUSE_HOVER_SIZE_MULTIPLIER : scale;
+
+        glm::mat4 arrow_scale = glm::scale( right_scale );
+        glUniformMatrix4fv( ul( "world" ), 1, GL_FALSE, glm::value_ptr( translate * arrow_scale ) );
+
+        _view.SetStencilRef( STENCIL_RIGHT );
+
+        glDrawElements( GL_TRIANGLES, _view._rectangle_gpu.count, GL_UNSIGNED_INT, nullptr );
+    }
+
+
+    _view.SetStencilRef();
 
     glBindTexture( GL_TEXTURE_2D, 0 );
 
     glBindVertexArray( 0 );
     glUseProgram( 0 );
-
-    glDisable( GL_BLEND );
 }
 
 void IdleVState::DoClickedEndButton() {
@@ -425,6 +491,27 @@ void IdleVState::DoClickedEndButton() {
     ) );
 
     _view._model->EndTurn();
+}
+
+void IdleVState::TurnPageLeft( int card_count, int& page_num ) {
+    if ( page_num > GetLeftmostPageNum( card_count ) )
+        --page_num;
+}
+
+void IdleVState::TurnPageRight( int card_count, int& page_num ) {
+    if ( page_num < GetRightmostPageNum( card_count ) )
+        ++page_num;
+}
+
+int IdleVState::GetLeftmostPageNum( int card_count ) {
+    return 0;
+}
+
+int IdleVState::GetRightmostPageNum( int card_count ) {
+    if ( card_count % PANEL_ITEMS == 0 )
+        return card_count / PANEL_ITEMS - 1;
+    else
+        return card_count / PANEL_ITEMS;
 }
 
 #pragma endregion IdleState

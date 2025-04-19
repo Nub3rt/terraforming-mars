@@ -59,6 +59,8 @@ public:
     virtual void ClickedEvent();
     virtual void ClickedAutomated();
     virtual void ClickedEffect();
+    virtual void ClickedLeft();
+    virtual void ClickedRight();
     virtual void ClickedMisc( int index );
 
     virtual void Model_OnResearchConfirmed( std::array<bool, model::RESEARCH_CARD_NUM> selected );
@@ -135,15 +137,21 @@ public:
     void ClickedEvent() override;
     void ClickedAutomated() override;
     void ClickedEffect() override;
+    void ClickedLeft() override;
+    void ClickedRight() override;
     void ClickedMisc( int index ) override;
 
 protected:
     Panel _panel = Panel::NONE;
-    int _page = 0;
 
-    void RenderPanelCards( std::vector<CardWrapper>& cards, bool actions );
+    void RenderPanelCards( std::vector<CardWrapper>& cards, int page_num, bool actions );
 
     void DoClickedEndButton() override;
+    void TurnPageLeft( int card_count, int& page );
+    void TurnPageRight( int card_count, int& page );
+
+    int GetLeftmostPageNum( int card_count );
+    int GetRightmostPageNum( int card_count );
 };
 
 class SellVState : public ViewState

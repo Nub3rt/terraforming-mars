@@ -127,6 +127,7 @@ protected:
     uint8_t _mouse_down_stencil = 0;
     bool _menu_button_hovered = false;
     bool _end_button_hovered = false;
+    std::array<int, 4> _page_nums = { 0, 0, 0, 0 };
 
 
     void Model_OnDrawCard( const model::decks::Card* card );
