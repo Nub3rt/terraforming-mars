@@ -36,14 +36,14 @@ void GameModelState::UseAsteroidSP() { throw std::logic_error( "GameModelState::
 void GameModelState::UseAquiferSP() { throw std::logic_error( "GameModelState::UseAquiferSP: GameModel was in an invalid state!" ); }
 void GameModelState::UseGreenerySP() { throw std::logic_error( "GameModelState::UseGreenerySP: GameModel was in an invalid state!" ); }
 void GameModelState::UseCitySP() { throw std::logic_error( "GameModelState::UseCitySP: GameModel was in an invalid state!" ); }
+void GameModelState::ConvertPlantsToGreenery() { throw std::logic_error( "GameModelState::ConvertPlantsToGreenery: GameModel was in an invalid state!" ); }
+void GameModelState::ConvertHeatToTemperature() { throw std::logic_error( "GameModelState::ConvertHeatToTemperature: GameModel was in an invalid state!" ); }
 
 void GameModelState::PlayCard( const decks::Card* card ) { throw std::logic_error( "GameModelState::PlayCard: GameModel was in an invalid state!" ); }
-void GameModelState::UseAction( const decks::ActiveCardWithAction* card ) { throw std::logic_error( "GameModelState::UseAction: GameModel was in an invalid state!" ); }
+
 void GameModelState::ToggleToBuyCard( int index ) { throw std::logic_error( "GameModelState::ToggleToBuyCard: GameModel was in an invalid state!" ); }
 int GameModelState::GetTotalCost() const { throw std::logic_error( "GameModelState::GetTotalCost: GameModel was in an invalid state!" ); }
 void GameModelState::ConfirmPurchases() { throw std::logic_error( "GameModelState::ConfirmPurchases: GameModel was in an invalid state!" ); }
-void GameModelState::ConvertPlantsToGreenery() { throw std::logic_error( "GameModelState::ConvertPlantsToGreenery: GameModel was in an invalid state!" ); }
-void GameModelState::ConvertHeatToTemperature() { throw std::logic_error( "GameModelState::ConvertHeatToTemperature: GameModel was in an invalid state!" ); }
 
 void GameModelState::TilePlacementConfirmed( int q, int r ) { throw std::logic_error( "GameModelState::TilePlacementConfirmed: GameModel was in an invalid state!" ); }
 
@@ -354,11 +354,9 @@ void IdleState::EndTurn() {
 }
 
 void IdleState::PlayCard( const decks::Card* card ) {
-    _model->_local_player->PlayCard( card );
     _model->_on_play_card.Invoke( card );
+    _model->_local_player->PlayCard( card );
 }
-
-void IdleState::UseAction( const decks::ActiveCardWithAction* card ) { _model->_local_player->UseAction( card ); }
 
 
 void IdleState::Player_OnConfirmSteelPayment( Player* player, int cost, std::function<void()> after_payment ) {

@@ -103,7 +103,8 @@ public:
     void PlayCard( const decks::Card* card );
     int CalculateCardCost( const decks::Card* card, int base_cost ) const;
 
-    void UseAction( const decks::ActiveCardWithAction* card );
+    decks::Availability ActionStatus( const decks::Card* card ) const;
+    void UseAction( const decks::Card* card );
     void OnEffect( std::function<void( decks::ActiveCardWithEffect* )> effect );
 
 

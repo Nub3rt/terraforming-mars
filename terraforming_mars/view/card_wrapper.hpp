@@ -6,6 +6,7 @@
 #include "constants.hpp"
 
 #include "../model/decks/card.hpp"
+#include "../model/decks/active_card_with_action.hpp"
 
 namespace view
 {

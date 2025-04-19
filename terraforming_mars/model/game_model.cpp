@@ -122,7 +122,17 @@ void GameModel::ConvertPlantsToGreenery() { _state->ConvertPlantsToGreenery(); }
 void GameModel::ConvertHeatToTemperature() { _state->ConvertHeatToTemperature(); }
 
 void GameModel::PlayCard( const decks::Card* card ) { _state->PlayCard( card ); }
-void GameModel::UseAction( const decks::ActiveCardWithAction* card ) { _state->UseAction( card ); }
+
+decks::Availability GameModel::ActionStatus( const decks::Card* card ) const {
+    return _local_player->ActionStatus( card );
+}
+
+void GameModel::UseAction( const decks::Card* card ) {
+    if ( !CanUseActions() )
+        throw std::logic_error( "GameModel::UseAction: GameModel was in an invalid state!" );
+
+    _local_player->UseAction( card );
+}
 
 void GameModel::ToggleToBuyCard( int index ) { _state->ToggleToBuyCard( index ); }
 int GameModel::GetTotalCost() const { return _state->GetTotalCost(); }

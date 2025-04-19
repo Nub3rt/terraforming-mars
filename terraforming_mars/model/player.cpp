@@ -156,7 +156,16 @@ int Player::CalculateCardCost( const decks::Card* card, int base_cost ) const {
     return base_cost;
 }
 
-void Player::UseAction( const decks::ActiveCardWithAction* card ) {
+decks::Availability Player::ActionStatus( const decks::Card* card ) const {
+    auto it_to_card = std::find( _action_cards.cbegin(), _action_cards.cend(), card );
+
+    if ( it_to_card == _action_cards.cend() )
+        throw std::logic_error( "Player::ActionStatus: card was not played by this player!" );
+
+    return (*it_to_card)->Availability();
+}
+
+void Player::UseAction( const decks::Card* card ) {
     auto it_to_card = std::find( _action_cards.cbegin(), _action_cards.cend(), card );
 
     if ( it_to_card == _action_cards.cend() )

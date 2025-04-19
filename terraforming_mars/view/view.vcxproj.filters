@@ -73,6 +73,7 @@
     <ClInclude Include="gl_utils\tm_camera_manipulator.hpp">
       <Filter>gl_utils</Filter>
     </ClInclude>
+    <ClInclude Include="panel.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\skybox.frag">
@@ -165,6 +166,30 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="assets\mars.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\action_closed.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\action_open.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\automated_closed.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\automated_open.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\effect_closed.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\effect_open.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\event_closed.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\event_open.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

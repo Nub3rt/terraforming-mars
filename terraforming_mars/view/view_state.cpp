@@ -9,10 +9,14 @@
 #include "animation.hpp"
 #include "card_wrapper.hpp"
 #include "constants.hpp"
+#include "panel.hpp"
 #include "text_renderer.hpp"
 #include "tile_wrapper.hpp"
 #include "view.hpp"
 
+#include "../model/decks/card.hpp"
+#include "../model/decks/active_card_with_action.hpp"
+#include "../model/decks/availability.hpp"
 #include "../model/boards/tile_type.hpp"
 
 namespace view
@@ -31,6 +35,7 @@ void ViewState::RenderGUI() {}
 std::string ViewState::GetEndButtonText() { return "End Generation"; }
 CardWrapper::Visual ViewState::GetCardUnderPlayLineVisual( CardWrapper* card ) { throw std::logic_error( "ViewState::GetCardUnderPlayLineVisual: card drag is not supported in this state!" ); }
 CardWrapper::Visual ViewState::GetCardOverPlayLineVisual( CardWrapper* card ) { throw std::logic_error( "ViewState::GetCardOverPlayLineVisual: card drag is not supported in this state!" ); }
+Panel ViewState::GetPanelStatus() { return Panel::NONE; }
 
 bool ViewState::CanClickMenuButton() { return true; }
 bool ViewState::CanClickEndButton() { return false; }
@@ -63,6 +68,11 @@ void ViewState::ClickedEndButton() {
 }
 
 void ViewState::ClickedOnTile( TileWrapper& tile ) {}
+void ViewState::ClickedAction() {}
+void ViewState::ClickedEvent() {}
+void ViewState::ClickedAutomated() {}
+void ViewState::ClickedEffect() {}
+void ViewState::ClickedMisc( int index ) {}
 
 void ViewState::Model_OnResearchConfirmed( std::array<bool, model::RESEARCH_CARD_NUM> selected ) {
     throw std::logic_error( "ViewState::Model_OnResearchConfirmed: View was in an invalid state!" );
@@ -240,9 +250,26 @@ void IdleVState::Update( float delta ) {
     }
 }
 
+void IdleVState::Render() {
+    switch ( _panel ) {
+        case Panel::ACTION:
+            RenderPanelCards( _view._action_cards, true );
+            break;
+        case Panel::EVENT:
+            RenderPanelCards( _view._event_cards, false );
+            break;
+        case Panel::AUTOMATED:
+            RenderPanelCards( _view._automated_cards, false );
+            break;
+        case Panel::EFFECT:
+            RenderPanelCards( _view._effect_cards, false );
+            break;
+    }
+}
+
 bool IdleVState::CanClickEndButton() { return _view._model->InIdleState(); }
 bool IdleVState::CanHoverHand() { return true; }
-bool IdleVState::CanDragCardsOut() { return _view._model->InIdleState(); }
+bool IdleVState::CanDragCardsOut() { return _view._model->CanPlayCards(); }
 bool IdleVState::CanPlayCard( CardWrapper* card ) { return (*card)->CanBePlayed(); }
 
 CardWrapper::Visual IdleVState::GetCardUnderPlayLineVisual( CardWrapper* card ) {
@@ -253,6 +280,8 @@ CardWrapper::Visual IdleVState::GetCardOverPlayLineVisual( CardWrapper* card ) {
     return CardWrapper::Visual::ACTION_HIGHLIGHT;
 }
 
+Panel IdleVState::GetPanelStatus() { return _panel; }
+
 bool IdleVState::CanUseSellPatentsSP() { return _view._model->InIdleState(); }
 bool IdleVState::CanUsePowerPlantSP() { return _view._model->InIdleState() && _view._model->CanUsePowerPlantSP(); }
 bool IdleVState::CanUseAsteroidSP() { return _view._model->InIdleState() && _view._model->CanUseAsteroidSP(); }
@@ -262,6 +291,66 @@ bool IdleVState::CanUseCitySP() { return _view._model->InIdleState() && _view._m
 bool IdleVState::CanConvertPlants() { return _view._model->InIdleState() && _view._model->CanConvertPlantsToGreenery(); }
 bool IdleVState::CanConvertHeat() { return _view._model->InIdleState() && _view._model->CanConvertHeatToTemperature(); }
 
+void IdleVState::ClickedAction() {
+    if ( !_view._model->InIdleState() )
+        return;
+
+    _page = 0;
+
+    if ( _panel == Panel::ACTION )
+        _panel = Panel::NONE;
+    else
+        _panel = Panel::ACTION;
+}
+
+void IdleVState::ClickedEvent() {
+    if ( !_view._model->InIdleState() )
+        return;
+
+    _page = 0;
+
+    if ( _panel == Panel::EVENT )
+        _panel = Panel::NONE;
+    else
+        _panel = Panel::EVENT;
+}
+
+void IdleVState::ClickedAutomated() {
+    if ( !_view._model->InIdleState() )
+        return;
+
+    _page = 0;
+
+    if ( _panel == Panel::AUTOMATED )
+        _panel = Panel::NONE;
+    else
+        _panel = Panel::AUTOMATED;
+}
+
+void IdleVState::ClickedEffect() {
+    if ( !_view._model->InIdleState() )
+        return;
+
+    _page = 0;
+
+    if ( _panel == Panel::EFFECT )
+        _panel = Panel::NONE;
+    else
+        _panel = Panel::EFFECT;
+}
+
+void IdleVState::ClickedMisc( int index ) {
+    if ( _panel != Panel::ACTION )
+        throw std::logic_error( "IdleState::ClickedMisc: actions panel was not shown!" );
+
+    const model::decks::Card* card = *_view._action_cards[ index ];
+    if ( _view._model->CanUseActions() &&
+         _view._model->ActionStatus( card ) == model::decks::Availability::CAN_BE_USED ) {
+        _panel = Panel::NONE;
+        _view._model->UseAction( card );
+    }
+}
+
 void IdleVState::PlayCard( int index_in_hand ) {
     _view._model->PlayCard( **_view._hand[ index_in_hand ] );
 
@@ -269,7 +358,62 @@ void IdleVState::PlayCard( int index_in_hand ) {
     _view.RefreshHandPositions();
 }
 
+void IdleVState::RenderPanelCards( std::vector<CardWrapper>& cards, bool actions ) {
+    if ( cards.size() == 0 )
+        return;
+
+    glEnable( GL_BLEND );
+    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+
+    glUseProgram( _view._program_card_id );
+    glBindVertexArray( _view._rectangle_gpu.vao_id );
+
+    glActiveTexture( GL_TEXTURE0 );
+    glBindTexture( GL_TEXTURE_2D, _view._cards_texture.id );
+    glUniform1i( ul( "image" ), 0 );
+    glUniform1f( ul( "elapsed" ), _view._elapsed );
+
+    int from = _page * 8;
+    int to = glm::min<int>( (int)cards.size(), from + 8 );
+
+    for ( int i = from; i < to; ++i ) {
+        CardWrapper& card = cards[ i ];
+        if ( actions ) {
+            switch ( _view._model->ActionStatus( *card ) ) {
+                case model::decks::Availability::NOT_USABLE:
+                    card.visual = CardWrapper::Visual::NONE;
+                    break;
+                case model::decks::Availability::CAN_BE_USED:
+                    card.visual = CardWrapper::Visual::ACTION_HIGHLIGHT;
+                    break;
+                case model::decks::Availability::USED:
+                    card.visual = CardWrapper::Visual::FADED;
+                    break;
+                default:
+                    throw std::logic_error( "IdleVState::RenderPanelCards: Unknown Availability received!" );
+            }
+
+            _view.SetStencilRef( _view._stencil_starting_misc + i % 8 );
+        }
+
+
+        _view.RenderCard( card, i );
+    }
+
+    if ( actions )
+        _view.SetStencilRef();
+
+    glBindTexture( GL_TEXTURE_2D, 0 );
+
+    glBindVertexArray( 0 );
+    glUseProgram( 0 );
+
+    glDisable( GL_BLEND );
+}
+
 void IdleVState::DoClickedEndButton() {
+    _panel = Panel::NONE;
+
     _view._animation_queue.push( new TextAnimation(
         DEFAULT_LOCKOUT_DURATION,
         ATTRIBUTE_CHANGED_DURATION,

@@ -11,7 +11,7 @@ inline constexpr int STARTING_WINDOW_HEIGHT = 900;
 
 inline constexpr float SKYBOX_ROTATE_SPEED = 0.01f;
 
-inline constexpr glm::vec2 BASE_HINT_POS = glm::vec2( 0.0f, 0.9f );
+inline constexpr glm::vec2 BASE_HINT_POS = glm::vec2( 0.0f, 0.8f );
 inline constexpr float BASE_TEXT_SCALE = 1.5f;
 inline constexpr float CREDIT_TEXT_SCALE = 1.0f;
 inline constexpr glm::vec3 LIGHT_TEXT_COLOR = glm::vec3( 0xff, 0xff, 0xff ) / 255.0f;
@@ -60,12 +60,12 @@ inline constexpr float TEXT_FLOAT_DISTANCE = 0.5f;
 
 inline constexpr uint8_t STENCIL_NONE = 0xff;
 
-inline constexpr uint8_t STENCIL_MENU      = 0x01;
+inline constexpr uint8_t STENCIL_MENU = 0x01;
 inline constexpr uint8_t STENCIL_END       = 0x02;
-inline constexpr uint8_t STENCIL_EVENTS    = 0x03;
-inline constexpr uint8_t STENCIL_AUTOMATED = 0x04;
-inline constexpr uint8_t STENCIL_EFFECTS   = 0x05;
-inline constexpr uint8_t STENCIL_ACTIONS   = 0x06;
+inline constexpr uint8_t STENCIL_ACTIONS   = 0x03;
+inline constexpr uint8_t STENCIL_EVENTS    = 0x04;
+inline constexpr uint8_t STENCIL_AUTOMATED = 0x05;
+inline constexpr uint8_t STENCIL_EFFECTS   = 0x06;
 inline constexpr uint8_t STENCIL_SP_SELL_PATENTS   = 0x07;
 inline constexpr uint8_t STENCIL_SP_POWER_PLANT    = 0x08;
 inline constexpr uint8_t STENCIL_SP_ASTEROID       = 0x09;

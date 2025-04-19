@@ -164,6 +164,7 @@
     <ClInclude Include="gl_utils\SDL_GLDebugMessageCallback.hpp" />
     <ClInclude Include="gl_utils\spherical_camera_manipulator.hpp" />
     <ClInclude Include="gl_utils\tm_camera_manipulator.hpp" />
+    <ClInclude Include="panel.hpp" />
     <ClInclude Include="text_renderer.hpp" />
     <ClInclude Include="tile_wrapper.hpp" />
     <ClInclude Include="view.fwd.hpp" />
@@ -208,7 +209,19 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Image Include="assets\action_closed.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="assets\action_open.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
     <Image Include="assets\arrow.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="assets\automated_closed.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="assets\automated_open.png">
       <DeploymentContent>true</DeploymentContent>
     </Image>
     <Image Include="assets\button.png">
@@ -221,6 +234,18 @@
       <DeploymentContent>true</DeploymentContent>
     </Image>
     <Image Include="assets\city.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="assets\effect_closed.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="assets\effect_open.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="assets\event_closed.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="assets\event_open.png">
       <DeploymentContent>true</DeploymentContent>
     </Image>
     <Image Include="assets\greenery.png">

@@ -41,7 +41,6 @@ public:
     virtual void ConvertHeatToTemperature();
 
     virtual void PlayCard( const decks::Card* card );
-    virtual void UseAction( const decks::ActiveCardWithAction* card );
 
     virtual void ToggleToBuyCard( int index );
     virtual int GetTotalCost() const;
@@ -117,6 +116,8 @@ public:
     bool CanUseCitySP() override;
     bool CanConvertPlantsToGreenery() override;
     bool CanConvertHeatToTemperature() override;
+    void ConvertPlantsToGreenery() override;
+    void ConvertHeatToTemperature() override;
 
     bool InIdleState() override;
 
@@ -128,9 +129,6 @@ public:
     void UseCitySP() override;
 
     void PlayCard( const decks::Card* card ) override;
-    void UseAction( const decks::ActiveCardWithAction* card ) override;
-    void ConvertPlantsToGreenery() override;
-    void ConvertHeatToTemperature() override;
 
     void EndTurn() override;
 

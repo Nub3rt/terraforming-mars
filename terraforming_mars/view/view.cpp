@@ -15,6 +15,7 @@
 #include "animation.hpp"
 #include "animatable.hpp"
 #include "constants.hpp"
+#include "panel.hpp"
 #include "text_renderer.hpp"
 #include "view_state.hpp"
 
@@ -83,7 +84,7 @@ bool View::Init( Camera* camera, model::GameModel* model ) {
 
         _tiles.emplace_back( tile );
     }
-    _stencil_starting_card = STENCIL_STARTING_BOARD + (int)_tiles.size();
+    _stencil_starting_misc = STENCIL_STARTING_BOARD + (int)_tiles.size();
 
     _indexable_tiles = std::vector<std::vector<TileWrapper*>>( max_r + 1,
         std::vector<TileWrapper*>( max_q + 1, nullptr )
@@ -227,13 +228,15 @@ void View::Render() {
 
     RenderHUD();
 
+    _state->Render();
+
+    RenderHand();
+
     for ( Animation* animation : _ongoing_animations )
         animation->Render( this );
 
     if ( _locking_animation )
         (*_locking_animation)->Render( this );
-
-    _state->Render();
 }
 
 void View::RenderGUI() {
@@ -302,6 +305,23 @@ void View::KeyboardDown( const SDL_KeyboardEvent& key ) {
          !(key.mod & (SDL_KMOD_SHIFT | SDL_KMOD_ALT | SDL_KMOD_GUI)) ) {
         if ( !key.repeat )
             _debug = !_debug;
+    }
+
+    if ( !(key.mod & (SDL_KMOD_CTRL | SDL_KMOD_SHIFT | SDL_KMOD_ALT | SDL_KMOD_GUI)) ) {
+        switch ( key.key ) {
+            case SDLK_U:
+                _state->ClickedAction();
+                break;
+            case SDLK_I:
+                _state->ClickedEvent();
+                break;
+            case SDLK_O:
+                _state->ClickedAutomated();
+                break;
+            case SDLK_P:
+                _state->ClickedEffect();
+                break;
+        }
     }
 }
 
@@ -409,17 +429,17 @@ void View::MouseUp( const SDL_MouseButtonEvent& mouse ) {
                     if ( _state->CanClickEndButton() )
                         _state->ClickedEndButton();
                     break;
+                case STENCIL_ACTIONS:
+                    _state->ClickedAction();
+                    break;
                 case STENCIL_EVENTS:
-
+                    _state->ClickedEvent();
                     break;
                 case STENCIL_AUTOMATED:
-
+                    _state->ClickedAutomated();
                     break;
                 case STENCIL_EFFECTS:
-
-                    break;
-                case STENCIL_ACTIONS:
-
+                    _state->ClickedEffect();
                     break;
                 case STENCIL_SP_SELL_PATENTS:
                     if ( _state->CanUseSellPatentsSP() )
@@ -453,13 +473,13 @@ void View::MouseUp( const SDL_MouseButtonEvent& mouse ) {
                     if ( _state->CanConvertHeat() )
                         _model->ConvertHeatToTemperature();
                     break;
-                default: // research cards/tile/active card was clicked
+                default: // research cards/tile/misc was clicked
                     if ( stencil < STENCIL_STARTING_BOARD ) {
                         _state->ToggleToBuyCard( stencil - STENCIL_STARTING_RESEARCH );
                     } else if ( stencil < STENCIL_STARTING_BOARD + _tiles.size() ) {
                         _state->ClickedOnTile( _tiles[ stencil - STENCIL_STARTING_BOARD ] );
                     } else {
-                        // TODO active cards
+                        _state->ClickedMisc( stencil - _stencil_starting_misc );
                     }
             }
         }
@@ -541,7 +561,20 @@ void View::Model_OnDrawCards( std::vector<const model::decks::Card*> cards ) {
 }
 
 void View::Model_OnPlayCard( const model::decks::Card* card ) {
-    // TODO
+    if ( card->IsActiveWithAction() ) {
+        _action_cards.emplace_back( card );
+        SetPlayedCardParams( _action_cards );
+    } else if ( card->IsEvent() ) {
+        _event_cards.emplace_back( card );
+        SetPlayedCardParams( _event_cards );
+    } else if ( card->IsAutomated() ) {
+        _automated_cards.emplace_back( card );
+        SetPlayedCardParams( _automated_cards );
+    } else if ( card->IsActiveWithEffect() ) {
+        _effect_cards.emplace_back( card );
+        SetPlayedCardParams( _effect_cards );
+    } else
+        throw std::logic_error( "View::Model_OnPlayCard: card was not of any of the four types! (This should never happen.)" );
 }
 
 void View::Model_OnRaiseTR( int amount ) {
@@ -828,19 +861,27 @@ void View::RenderHexagon( TileWrapper& tile, int id ) {
 }
 
 void View::RenderHUD() {
+    TextRenderer::RenderText(
+        std::format( "Generation {}", _generation ),
+        -0.99f,
+        -0.97f,
+        BASE_TEXT_SCALE,
+        LIGHT_TEXT_COLOR
+    );
+
     RenderMenuButton();
     RenderSP();
     RenderGlobalParameters();
     RenderEndButton();
     RenderResources();
-    RenderHand();
+    RenderPanels();
 }
 
 void View::RenderMenuButton() {
     static const float button_ratio = (float)_button_texture.height / _temperature_texture.width;
     static const float size = 0.048f;
     static const float spacing = size * 3.0f;
-    static const float width_modifier = 1.0f;
+    static const float width_modifier = 0.8f;
 
     float x = -1.0f + (size + spacing / button_ratio) * width_modifier;
     float y = 1.0f - size - spacing / button_ratio;
@@ -876,15 +917,6 @@ void View::RenderMenuButton() {
         y,
         _menu_button_hovered ? MOUSE_HOVER_SIZE_MULTIPLIER : 1.0f,
         BUTTON_TEXT_COLOR
-    );
-
-
-    TextRenderer::RenderTextCentered(
-        std::format( "Generation {}", _generation ),
-        x + 0.25f,
-        y,
-        BASE_TEXT_SCALE,
-        LIGHT_TEXT_COLOR
     );
 }
 
@@ -1383,6 +1415,81 @@ void View::RenderHand() {
     glDisable( GL_BLEND );
 }
 
+void View::RenderPanels() {
+    glUseProgram( _program_rectangle_id );
+    glBindVertexArray( _rectangle_gpu.vao_id );
+
+    glActiveTexture( GL_TEXTURE0 );
+    glUniform1i( ul( "image" ), 0 );
+
+    Panel panel = _state->GetPanelStatus();
+    std::optional<std::reference_wrapper<std::vector<CardWrapper>>> cards;
+
+
+    if ( panel == Panel::ACTION ) {
+        cards = _action_cards;
+        glBindTexture( GL_TEXTURE_2D, _action_open_texture.id );
+    } else
+        glBindTexture( GL_TEXTURE_2D, _action_closed_texture.id );
+
+    glm::mat4 world = glm::translate( glm::vec3( 0.0f, 0.0f, HUD_BASE_Z - 0.11f ) );
+    glUniformMatrix4fv( ul( "world" ), 1, GL_FALSE, glm::value_ptr( world ) );
+
+    SetStencilRef( STENCIL_ACTIONS );
+
+    glDrawElements( GL_TRIANGLES, _rectangle_gpu.count, GL_UNSIGNED_INT, nullptr );
+
+
+    if ( panel == Panel::EVENT ) {
+        cards = _event_cards;
+        glBindTexture( GL_TEXTURE_2D, _event_open_texture.id );
+    } else
+        glBindTexture( GL_TEXTURE_2D, _event_closed_texture.id );
+
+    world = glm::translate( glm::vec3( 0.0f, 0.0f, HUD_BASE_Z - 0.12f ) );
+    glUniformMatrix4fv( ul( "world" ), 1, GL_FALSE, glm::value_ptr( world ) );
+
+    SetStencilRef( STENCIL_EVENTS );
+
+    glDrawElements( GL_TRIANGLES, _rectangle_gpu.count, GL_UNSIGNED_INT, nullptr );
+
+
+    if ( panel == Panel::AUTOMATED ) {
+        cards = _automated_cards;
+        glBindTexture( GL_TEXTURE_2D, _automated_open_texture.id );
+    } else
+        glBindTexture( GL_TEXTURE_2D, _automated_closed_texture.id );
+
+    world = glm::translate( glm::vec3( 0.0f, 0.0f, HUD_BASE_Z - 0.13f ) );
+    glUniformMatrix4fv( ul( "world" ), 1, GL_FALSE, glm::value_ptr( world ) );
+
+    SetStencilRef( STENCIL_AUTOMATED );
+
+    glDrawElements( GL_TRIANGLES, _rectangle_gpu.count, GL_UNSIGNED_INT, nullptr );
+
+
+    if ( panel == Panel::EFFECT ) {
+        cards = _effect_cards;
+        glBindTexture( GL_TEXTURE_2D, _effect_open_texture.id );
+    } else
+        glBindTexture( GL_TEXTURE_2D, _effect_closed_texture.id );
+
+    world = glm::translate( glm::vec3( 0.0f, 0.0f, HUD_BASE_Z - 0.14f ) );
+    glUniformMatrix4fv( ul( "world" ), 1, GL_FALSE, glm::value_ptr( world ) );
+
+    SetStencilRef( STENCIL_EFFECTS );
+
+    glDrawElements( GL_TRIANGLES, _rectangle_gpu.count, GL_UNSIGNED_INT, nullptr );
+
+
+    SetStencilRef();
+
+    glBindTexture( GL_TEXTURE_2D, 0 );
+
+    glBindVertexArray( 0 );
+    glUseProgram( 0 );
+}
+
 void View::RenderCard( CardWrapper& card, int index ) {
     static const float stride_x = 1.0f / CARD_TEXTURE_COLUMNS;
     static const float stride_y = 1.0f / CARD_TEXTURE_ROWS;
@@ -1583,6 +1690,22 @@ std::tuple<float, float, glm::vec3> View::CalculateSPButtonPosition( int sp ) {
     };
 }
 
+void View::SetPlayedCardParams( std::vector<CardWrapper>& cards ) {
+    static const float spacing = 0.35f;
+    static const float length = spacing * (model::RESEARCH_CARD_NUM - 1);
+    static const float start_x = 0.0f - length / 2.0f;
+
+    int index = static_cast<int>( cards.size() - 1 );
+    CardWrapper& card = cards[ index ];
+
+    int x = index % 4;
+    int y = index / 4 % 2;
+
+    card.pos.Set( glm::vec2( start_x + spacing * x, y == 0 ? 0.4f : -0.4f ) );
+    card.scale.Set( RESEARCH_CARD_SCALE );
+    card.rotate.Set( RESEARCH_CARD_ROTATE );
+}
+
 #pragma endregion Rendering
 
 #pragma region Init and Clean
@@ -1664,31 +1787,55 @@ void View::CleanGeometry() {
 void View::InitTextures() {
     _cards_texture = LoadTexture( "assets/cards.png" );
     _resources_texture = LoadTexture( "assets/resources.png" );
-    _card_cover_texture = LoadTexture( "assets/card_cover.png" );
+
     _temperature_texture = LoadTexture( "assets/temperature.png" );
-    _ocean_texture = LoadTexture( "assets/ocean.png" );
     _oxygen_texture = LoadTexture( "assets/oxygen.png" );
     _tr_texture = LoadTexture( "assets/tr.png" );
+
+    _ocean_texture = LoadTexture( "assets/ocean.png" );
     _greenery_texture = LoadTexture( "assets/greenery.png" );
     _city_texture = LoadTexture( "assets/city.png" );
+
     _button_texture = LoadTexture( "assets/button.png" );
     _production_box_texture = LoadTexture( "assets/production_box.png" );
     _arrow_texture = LoadTexture( "assets/arrow.png" );
+    _card_cover_texture = LoadTexture( "assets/card_cover.png" );
+
+    _action_closed_texture = LoadTexture( "assets/action_closed.png" );
+    _action_open_texture = LoadTexture( "assets/action_open.png" );
+    _event_closed_texture = LoadTexture( "assets/event_closed.png" );
+    _event_open_texture = LoadTexture( "assets/event_open.png" );
+    _automated_closed_texture = LoadTexture( "assets/automated_closed.png" );
+    _automated_open_texture = LoadTexture( "assets/automated_open.png" );
+    _effect_closed_texture = LoadTexture( "assets/effect_closed.png" );
+    _effect_open_texture = LoadTexture( "assets/effect_open.png" );
 }
 
 void View::CleanTextures() {
     glDeleteTextures( 1, &_cards_texture.id );
     glDeleteTextures( 1, &_resources_texture.id );
-    glDeleteTextures( 1, &_card_cover_texture.id );
+
     glDeleteTextures( 1, &_temperature_texture.id );
-    glDeleteTextures( 1, &_ocean_texture.id );
     glDeleteTextures( 1, &_oxygen_texture.id );
     glDeleteTextures( 1, &_tr_texture.id );
+
+    glDeleteTextures( 1, &_ocean_texture.id );
     glDeleteTextures( 1, &_greenery_texture.id );
     glDeleteTextures( 1, &_city_texture.id );
+
     glDeleteTextures( 1, &_button_texture.id );
     glDeleteTextures( 1, &_production_box_texture.id );
     glDeleteTextures( 1, &_arrow_texture.id );
+    glDeleteTextures( 1, &_card_cover_texture.id );
+
+    glDeleteTextures( 1, &_action_closed_texture.id );
+    glDeleteTextures( 1, &_action_open_texture.id );
+    glDeleteTextures( 1, &_event_closed_texture.id );
+    glDeleteTextures( 1, &_event_open_texture.id );
+    glDeleteTextures( 1, &_automated_closed_texture.id );
+    glDeleteTextures( 1, &_automated_open_texture.id );
+    glDeleteTextures( 1, &_effect_closed_texture.id );
+    glDeleteTextures( 1, &_effect_open_texture.id );
 }
 
 Texture View::LoadTexture( const std::filesystem::path& filename, GLint wrap_behaviour ) {

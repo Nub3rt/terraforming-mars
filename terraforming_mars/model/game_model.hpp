@@ -12,12 +12,15 @@
 #include <random>
 #include <utility>
 
-#include "decks/active_card_with_action.hpp"
-#include "boards/board.hpp"
 #include "constants.hpp"
 #include "event.hpp"
 #include "resource.hpp"
+
+#include "boards/board.hpp"
 #include "boards/tile_type.hpp"
+
+#include "decks/availability.hpp"
+#include "decks/card.hpp"
 
 namespace model
 {
@@ -76,7 +79,7 @@ public:
     bool CanConvertPlantsToGreenery() const;
     bool CanConvertHeatToTemperature() const;
 
-    bool InIdleState() const; // can play cards, can use actions;
+    bool InIdleState() const; // can play cards, can use actions, can use SP-s
     bool CanPlayCards() const;
     bool CanUseActions() const;
 
@@ -90,7 +93,9 @@ public:
     void ConvertHeatToTemperature();
 
     void PlayCard( const decks::Card* card );
-    void UseAction( const decks::ActiveCardWithAction* card );
+
+    decks::Availability ActionStatus( const decks::Card* card ) const;
+    void UseAction( const decks::Card* card );
 
     // Research State
     void ToggleToBuyCard( int index );

@@ -111,14 +111,14 @@ protected:
     std::array<int, +model::Resource::MAX + 1> _resources;
     std::array<int, +model::Resource::MAX + 1> _resource_productions;
     std::vector<CardWrapper*> _hand;
-    std::vector<CardWrapper> _events;
-    std::vector<CardWrapper> _automated;
-    std::vector<CardWrapper> _effects;
-    std::vector<CardWrapper> _actions;
+    std::vector<CardWrapper> _action_cards;
+    std::vector<CardWrapper> _event_cards;
+    std::vector<CardWrapper> _automated_cards;
+    std::vector<CardWrapper> _effect_cards;
     std::vector<TileWrapper> _tiles;
     std::vector<std::vector<TileWrapper*>> _indexable_tiles;
 
-    int _stencil_starting_card = 0;
+    int _stencil_starting_misc = 0;
     float _hand_start_x = 0.0f;
     float _hand_end_x = 0.0f;
     float _hand_top_y = -1.0f + 1.0f / 9.0f;
@@ -172,6 +172,8 @@ protected:
     void RenderEndButton();
     void RenderResources();
     void RenderHand();
+    void RenderPanels();
+
     void RenderCard( CardWrapper& card, int index );
     void RenderDetail( float x, float y, glm::vec3 scale, float d_z = 0.0f );
     void RenderResource( float x, float y, glm::vec3 scale, int resource, float d_z = 0.0f );
@@ -186,6 +188,7 @@ protected:
     std::tuple<float, float, glm::vec3> CalculateSPButtonPosition( int sp );
 
     inline void SetStencilRef( GLint ref = STENCIL_NONE ) { glStencilFunc( GL_ALWAYS, ref, 0xff ); }
+    void SetPlayedCardParams( std::vector<CardWrapper>& cards );
 
 
     GLuint _program_id = 0;
@@ -204,16 +207,28 @@ protected:
 
     Texture _cards_texture = {};
     Texture _resources_texture = {};
-    Texture _card_cover_texture = {};
+
     Texture _temperature_texture = {};
-    Texture _ocean_texture = {};
     Texture _oxygen_texture = {};
     Texture _tr_texture = {};
+
+    Texture _ocean_texture = {};
     Texture _greenery_texture = {};
     Texture _city_texture = {};
+
     Texture _button_texture = {};
     Texture _production_box_texture = {};
     Texture _arrow_texture = {};
+    Texture _card_cover_texture = {};
+
+    Texture _action_closed_texture = {};
+    Texture _action_open_texture = {};
+    Texture _event_closed_texture = {};
+    Texture _event_open_texture = {};
+    Texture _automated_closed_texture = {};
+    Texture _automated_open_texture = {};
+    Texture _effect_closed_texture = {};
+    Texture _effect_open_texture = {};
 
     void InitTextures();
     void CleanTextures();

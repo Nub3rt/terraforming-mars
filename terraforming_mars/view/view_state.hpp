@@ -10,6 +10,7 @@
 #include <vector>
 
 #include "card_wrapper.hpp"
+#include "panel.hpp"
 #include "tile_wrapper.hpp"
 #include "view.hpp"
 
@@ -33,6 +34,7 @@ public:
     virtual std::string GetEndButtonText();
     virtual CardWrapper::Visual GetCardUnderPlayLineVisual( CardWrapper* card );
     virtual CardWrapper::Visual GetCardOverPlayLineVisual( CardWrapper* card );
+    virtual Panel GetPanelStatus();
 
     virtual bool CanClickMenuButton();
     virtual bool CanClickEndButton();
@@ -53,6 +55,11 @@ public:
 
     void ClickedEndButton();
     virtual void ClickedOnTile( TileWrapper& tile );
+    virtual void ClickedAction();
+    virtual void ClickedEvent();
+    virtual void ClickedAutomated();
+    virtual void ClickedEffect();
+    virtual void ClickedMisc( int index );
 
     virtual void Model_OnResearchConfirmed( std::array<bool, model::RESEARCH_CARD_NUM> selected );
 
@@ -103,9 +110,11 @@ public:
     virtual ~IdleVState();
 
     void Update( float delta ) override;
+    void Render() override;
 
     CardWrapper::Visual GetCardUnderPlayLineVisual( CardWrapper* card ) override;
     CardWrapper::Visual GetCardOverPlayLineVisual( CardWrapper* card ) override;
+    Panel GetPanelStatus() override;
 
     bool CanClickEndButton() override;
     bool CanHoverHand() override;
@@ -122,7 +131,18 @@ public:
     bool CanConvertPlants() override;
     bool CanConvertHeat() override;
 
+    void ClickedAction() override;
+    void ClickedEvent() override;
+    void ClickedAutomated() override;
+    void ClickedEffect() override;
+    void ClickedMisc( int index ) override;
+
 protected:
+    Panel _panel = Panel::NONE;
+    int _page = 0;
+
+    void RenderPanelCards( std::vector<CardWrapper>& cards, bool actions );
+
     void DoClickedEndButton() override;
 };
 
