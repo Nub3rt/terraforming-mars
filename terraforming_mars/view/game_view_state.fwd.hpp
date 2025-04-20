@@ -2,7 +2,7 @@
 
 namespace view
 {
-class ViewState;
+class GameViewState;
 class ResearchVState;
 class IdleVState;
 class SellVState;

@@ -29,6 +29,7 @@ bool GameModelState::CanConvertPlantsToGreenery() { return false; }
 bool GameModelState::CanConvertHeatToTemperature() { return false; }
 
 bool GameModelState::InIdleState() { return false; }
+bool GameModelState::InPostLastGenerationState() { return false; }
 
 void GameModelState::SellCardSP( const decks::Card* card ) { throw std::logic_error( "GameModelState::SellCardSP: GameModel was in an invalid state!" ); }
 void GameModelState::UsePowerPlantSP() { throw std::logic_error( "GameModelState::UsePowerPlantSP: GameModel was in an invalid state!" ); }
@@ -49,6 +50,7 @@ void GameModelState::TilePlacementConfirmed( int q, int r ) { throw std::logic_e
 
 void GameModelState::PaymentConfirmed( int credit, int resource ) { throw std::logic_error( "GameModelState::PaymentConfirmed: GameModel was in an invalid state!" ); }
 
+bool GameModelState::CanEndTurn() { return true; }
 void GameModelState::EndTurn() { throw std::logic_error( "GameModelState::EndTurn: GameModel was in an invalid state!" ); }
 
 void GameModelState::PerformRequest( GameModel::PlacementRequest* request ) {
@@ -349,6 +351,7 @@ void IdleState::ConvertHeatToTemperature() {
     _model->_local_player->RaiseTemperature();
 }
 
+bool IdleState::CanEndTurn() { return true; }
 void IdleState::EndTurn() {
     // TODO
 }
@@ -495,6 +498,8 @@ bool PostLastGenerationState::CanConvertPlantsToGreenery() {
            _model->_board->GetValidGreeneryTiles( _model->_local_player ).size() > 0;
 }
 
+bool PostLastGenerationState::InPostLastGenerationState() { return true; }
+
 void PostLastGenerationState::ConvertPlantsToGreenery() {
     if ( !CanConvertPlantsToGreenery() )
         throw std::logic_error( "IdleState::ConvertPlantsToGreenery: cannot convert resources at this time!" );
@@ -503,13 +508,16 @@ void PostLastGenerationState::ConvertPlantsToGreenery() {
     _model->_local_player->PlaceGreenery();
 }
 
+bool PostLastGenerationState::CanEndTurn() { return true; }
 void PostLastGenerationState::EndTurn() {
     // TODO
 }
 
 void PostLastGenerationState::DoOnPlacementConfirmation( boards::TileType type, std::function<std::vector<std::pair<int, int>>()> get_valid_positions ) {
-    GameModel::PlacementRequest* request = new GameModel::PlacementRequest( type, get_valid_positions );
-    PerformRequest( request );
+    GameModel::PostLastGenerationGreeneryPlacementRequest* request = new GameModel::PostLastGenerationGreeneryPlacementRequest( get_valid_positions() );
+    PostLastGenerationPlacementConfirmationState* state = _model->CreatePostLastGenerationPlacementConfirmationState( request );
+    _model->_on_confirm_placement.Invoke( type, request->valid_positions );
+    _model->RequestStateChange( state );
 }
 
 #pragma endregion PostLastGenerationState
@@ -525,6 +533,8 @@ PostLastGenerationPlacementConfirmationState::PostLastGenerationPlacementConfirm
 PostLastGenerationPlacementConfirmationState::~PostLastGenerationPlacementConfirmationState() {
     delete _request;
 }
+
+bool PostLastGenerationPlacementConfirmationState::InPostLastGenerationState() { return true; }
 
 void PostLastGenerationPlacementConfirmationState::TilePlacementConfirmed( int q, int r ) {
     if ( std::find( _request->valid_positions.cbegin(), _request->valid_positions.cend(), std::pair<int, int>( q, r ) ) == _request->valid_positions.cend() )

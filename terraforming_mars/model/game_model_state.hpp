@@ -30,6 +30,7 @@ public:
     virtual bool CanConvertHeatToTemperature();
 
     virtual bool InIdleState();
+    virtual bool InPostLastGenerationState();
 
     virtual void SellCardSP( const decks::Card* card );
     virtual void UsePowerPlantSP();
@@ -50,6 +51,7 @@ public:
 
     virtual void PaymentConfirmed( int credit, int resource );
 
+    virtual bool CanEndTurn();
     virtual void EndTurn();
 
     void PerformRequest( GameModel::PlacementRequest* request );
@@ -130,6 +132,7 @@ public:
 
     void PlayCard( const decks::Card* card ) override;
 
+    bool CanEndTurn() override;
     void EndTurn() override;
 
     void Player_OnConfirmSteelPayment( Player* player, int cost, std::function<void()> after_payment ) override;
@@ -183,8 +186,11 @@ public:
 
     bool CanConvertPlantsToGreenery() override;
 
+    bool InPostLastGenerationState() override;
+
     virtual void ConvertPlantsToGreenery();
 
+    bool CanEndTurn() override;
     void EndTurn() override;
 
 protected:
@@ -196,6 +202,8 @@ class PostLastGenerationPlacementConfirmationState : public GameModelState
 public:
     PostLastGenerationPlacementConfirmationState( GameModel* model, GameModel::PostLastGenerationGreeneryPlacementRequest* request );
     ~PostLastGenerationPlacementConfirmationState();
+
+    bool InPostLastGenerationState() override;
 
     void TilePlacementConfirmed( int q, int r ) override;
 

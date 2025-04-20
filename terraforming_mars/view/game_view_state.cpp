@@ -1,4 +1,4 @@
-#include "view_state.hpp"
+#include "game_view_state.hpp"
 
 #include <format>
 #include <stdexcept>
@@ -12,7 +12,7 @@
 #include "panel.hpp"
 #include "text_renderer.hpp"
 #include "tile_wrapper.hpp"
-#include "view.hpp"
+#include "game_view.hpp"
 
 #include "../model/decks/card.hpp"
 #include "../model/decks/active_card_with_action.hpp"
@@ -21,73 +21,73 @@
 
 namespace view
 {
-#pragma region ViewState
+#pragma region GameViewState
 
-ViewState::ViewState( View& view ) : _view( view ) {}
-ViewState::~ViewState() {}
+GameViewState::GameViewState( GameView& view ) : _view( view ) {}
+GameViewState::~GameViewState() {}
 
-void ViewState::Enter() {}
+void GameViewState::Enter() {}
 
-void ViewState::Update( float delta ) {}
-void ViewState::Render() {}
-void ViewState::RenderGUI() {}
+void GameViewState::Update( float delta ) {}
+void GameViewState::Render() {}
+void GameViewState::RenderGUI() {}
 
-std::string ViewState::GetEndButtonText() { return "End Generation"; }
-CardWrapper::Visual ViewState::GetCardUnderPlayLineVisual( CardWrapper* card ) { throw std::logic_error( "ViewState::GetCardUnderPlayLineVisual: card drag is not supported in this state!" ); }
-CardWrapper::Visual ViewState::GetCardOverPlayLineVisual( CardWrapper* card ) { throw std::logic_error( "ViewState::GetCardOverPlayLineVisual: card drag is not supported in this state!" ); }
-Panel ViewState::GetPanelStatus() { return Panel::NONE; }
+std::string GameViewState::GetEndButtonText() { return "End Generation"; }
+CardWrapper::Visual GameViewState::GetCardUnderPlayLineVisual( CardWrapper* card ) { throw std::logic_error( "GameViewState::GetCardUnderPlayLineVisual: card drag is not supported in this state!" ); }
+CardWrapper::Visual GameViewState::GetCardOverPlayLineVisual( CardWrapper* card ) { throw std::logic_error( "GameViewState::GetCardOverPlayLineVisual: card drag is not supported in this state!" ); }
+Panel GameViewState::GetPanelStatus() { return Panel::NONE; }
 
-bool ViewState::CanClickMenuButton() { return true; }
-bool ViewState::CanClickEndButton() { return false; }
-bool ViewState::CanHoverHand() { return false; }
-bool ViewState::CanDragCardsOut() { return false; }
-bool ViewState::CanPlayCard( CardWrapper* card ) { return false; }
+bool GameViewState::CanClickMenuButton() { return true; }
+bool GameViewState::CanClickEndButton() { return false; }
+bool GameViewState::CanHoverHand() { return false; }
+bool GameViewState::CanDragCardsOut() { return false; }
+bool GameViewState::CanPlayCard( CardWrapper* card ) { return false; }
 
-bool ViewState::CanUseSellPatentsSP() { return false; }
-bool ViewState::CanUsePowerPlantSP() { return false; }
-bool ViewState::CanUseAsteroidSP() { return false; }
-bool ViewState::CanUseAquiferSP() { return false; }
-bool ViewState::CanUseGreenerySP() { return false; }
-bool ViewState::CanUseCitySP() { return false; }
-bool ViewState::CanConvertPlants() { return false; }
-bool ViewState::CanConvertHeat() { return false; }
+bool GameViewState::CanUseSellPatentsSP() { return false; }
+bool GameViewState::CanUsePowerPlantSP() { return false; }
+bool GameViewState::CanUseAsteroidSP() { return false; }
+bool GameViewState::CanUseAquiferSP() { return false; }
+bool GameViewState::CanUseGreenerySP() { return false; }
+bool GameViewState::CanUseCitySP() { return false; }
+bool GameViewState::CanConvertPlants() { return false; }
+bool GameViewState::CanConvertHeat() { return false; }
 
-void ViewState::PlayCard( int index_in_hand ) {
-    throw std::logic_error( "ViewState::PlayCard: View was in an invalid state!" );
+void GameViewState::PlayCard( int index_in_hand ) {
+    throw std::logic_error( "GameViewState::PlayCard: GameView was in an invalid state!" );
 }
 
-void ViewState::ToggleToBuyCard( int index ) {
-    throw std::logic_error( "ViewState::ToggleToBuyCard: View was in an invalid state!" );
+void GameViewState::ToggleToBuyCard( int index ) {
+    throw std::logic_error( "GameViewState::ToggleToBuyCard: GameView was in an invalid state!" );
 }
 
-void ViewState::ClickedEndButton() {
+void GameViewState::ClickedEndButton() {
     if ( !CanClickEndButton() )
-        throw std::logic_error( "ViewState::ClickedEndButton: button could not be clicked in this state!" );
+        throw std::logic_error( "GameViewState::ClickedEndButton: button could not be clicked in this state!" );
 
     DoClickedEndButton();
 }
 
-void ViewState::ClickedOnTile( TileWrapper& tile ) {}
-void ViewState::ClickedAction() {}
-void ViewState::ClickedEvent() {}
-void ViewState::ClickedAutomated() {}
-void ViewState::ClickedEffect() {}
-void ViewState::ClickedLeft() {}
-void ViewState::ClickedRight() {}
-void ViewState::ClickedMisc( int index ) {}
+void GameViewState::ClickedOnTile( TileWrapper& tile ) {}
+void GameViewState::ClickedAction() {}
+void GameViewState::ClickedEvent() {}
+void GameViewState::ClickedAutomated() {}
+void GameViewState::ClickedEffect() {}
+void GameViewState::ClickedLeft() {}
+void GameViewState::ClickedRight() {}
+void GameViewState::ClickedMisc( int index ) {}
 
-void ViewState::Model_OnResearchConfirmed( std::array<bool, model::RESEARCH_CARD_NUM> selected ) {
-    throw std::logic_error( "ViewState::Model_OnResearchConfirmed: View was in an invalid state!" );
+void GameViewState::Model_OnResearchConfirmed( std::array<bool, model::RESEARCH_CARD_NUM> selected ) {
+    throw std::logic_error( "GameViewState::Model_OnResearchConfirmed: GameView was in an invalid state!" );
 }
 
-void ViewState::DoClickedEndButton() {}
+void GameViewState::DoClickedEndButton() {}
 
-#pragma endregion ViewState
+#pragma endregion GameViewState
 
 #pragma region ResearchState
 
-ResearchVState::ResearchVState( View& view, std::array<const model::decks::Card*, model::RESEARCH_CARD_NUM> cards )
-    : ViewState( view ), _cards(), _to_buy() {
+ResearchVState::ResearchVState( GameView& view, std::array<const model::decks::Card*, model::RESEARCH_CARD_NUM> cards )
+    : GameViewState( view ), _cards(), _to_buy() {
     for ( int i = 0; i < model::RESEARCH_CARD_NUM; ++i ) {
         _cards[ i ] = new CardWrapper( cards[ i ] );
         _to_buy[ i ] = true;
@@ -241,7 +241,7 @@ void ResearchVState::DoClickedEndButton() {
 
 #pragma region IdleState
 
-IdleVState::IdleVState( View& view ) : ViewState( view ) {}
+IdleVState::IdleVState( GameView& view ) : GameViewState( view ) {}
 IdleVState::~IdleVState() {}
 
 void IdleVState::Update( float delta ) {
@@ -269,7 +269,7 @@ void IdleVState::Render() {
     }
 }
 
-bool IdleVState::CanClickEndButton() { return _view._model->InIdleState(); }
+bool IdleVState::CanClickEndButton() { return _view._model->InIdleState() || _view._model->InPostLastGenerationState() && _view._model->CanEndTurn(); }
 bool IdleVState::CanHoverHand() { return true; }
 bool IdleVState::CanDragCardsOut() { return _view._model->CanPlayCards(); }
 bool IdleVState::CanPlayCard( CardWrapper* card ) { return (*card)->CanBePlayed(); }
@@ -285,13 +285,13 @@ CardWrapper::Visual IdleVState::GetCardOverPlayLineVisual( CardWrapper* card ) {
 Panel IdleVState::GetPanelStatus() { return _panel; }
 
 bool IdleVState::CanUseSellPatentsSP() { return _view._model->InIdleState(); }
-bool IdleVState::CanUsePowerPlantSP() { return _view._model->InIdleState() && _view._model->CanUsePowerPlantSP(); }
-bool IdleVState::CanUseAsteroidSP() { return _view._model->InIdleState() && _view._model->CanUseAsteroidSP(); }
-bool IdleVState::CanUseAquiferSP() { return _view._model->InIdleState() && _view._model->CanUseAquiferSP(); }
-bool IdleVState::CanUseGreenerySP() { return _view._model->InIdleState() && _view._model->CanUseGreenerySP(); }
-bool IdleVState::CanUseCitySP() { return _view._model->InIdleState() && _view._model->CanUseCitySP(); }
-bool IdleVState::CanConvertPlants() { return _view._model->InIdleState() && _view._model->CanConvertPlantsToGreenery(); }
-bool IdleVState::CanConvertHeat() { return _view._model->InIdleState() && _view._model->CanConvertHeatToTemperature(); }
+bool IdleVState::CanUsePowerPlantSP() { return _view._model->CanUsePowerPlantSP(); }
+bool IdleVState::CanUseAsteroidSP() { return _view._model->CanUseAsteroidSP(); }
+bool IdleVState::CanUseAquiferSP() { return _view._model->CanUseAquiferSP(); }
+bool IdleVState::CanUseGreenerySP() { return _view._model->CanUseGreenerySP(); }
+bool IdleVState::CanUseCitySP() { return _view._model->CanUseCitySP(); }
+bool IdleVState::CanConvertPlants() { return _view._model->CanConvertPlantsToGreenery(); }
+bool IdleVState::CanConvertHeat() { return _view._model->CanConvertHeatToTemperature(); }
 
 void IdleVState::ClickedAction() {
     if ( !_view._model->InIdleState() )
@@ -518,7 +518,7 @@ int IdleVState::GetRightmostPageNum( int card_count ) {
 
 #pragma region SellState
 
-SellVState::SellVState( View& view ) : ViewState( view ) {}
+SellVState::SellVState( GameView& view ) : GameViewState( view ) {}
 SellVState::~SellVState() {}
 
 void SellVState::Enter() {
@@ -565,8 +565,8 @@ void SellVState::DoClickedEndButton() {
 
 #pragma region PlacementConfirmationState
 
-PlacementConfirmationVState::PlacementConfirmationVState( View& view, model::boards::TileType tile_type, std::vector<std::pair<int, int>> valid_positions )
-    : ViewState( view ), _tile_type( tile_type ), _valid_positions( valid_positions ) {}
+PlacementConfirmationVState::PlacementConfirmationVState( GameView& view, model::boards::TileType tile_type, std::vector<std::pair<int, int>> valid_positions )
+    : GameViewState( view ), _tile_type( tile_type ), _valid_positions( valid_positions ) {}
 
 PlacementConfirmationVState::~PlacementConfirmationVState() {}
 
@@ -636,8 +636,8 @@ void PlacementConfirmationVState::ColorBordersSelectable() {
 
 #pragma region PaymentConfirmationState
 
-PaymentConfirmationVState::PaymentConfirmationVState( View& view, int amount, model::Resource resource, int resource_value )
-    : ViewState( view ), _amount( amount ), _resource_value( resource_value ) {
+PaymentConfirmationVState::PaymentConfirmationVState( GameView& view, int amount, model::Resource resource, int resource_value )
+    : GameViewState( view ), _amount( amount ), _resource_value( resource_value ) {
     switch ( resource ) {
         case model::Resource::STEEL:
             _resource = "STEEL";
@@ -723,15 +723,17 @@ int PaymentConfirmationVState::CalculateCreditNeeded( int resource, int amount, 
 
 #pragma region PostLastGenerationState
 
-PostLastGenerationVState::PostLastGenerationVState( View& view ) : ViewState( view ) {}
+PostLastGenerationVState::PostLastGenerationVState( GameView& view ) : GameViewState( view ) {}
 PostLastGenerationVState::~PostLastGenerationVState() {}
 
 #pragma endregion PostLastGenerationState
 
 #pragma region GameOverState
 
-GameOverVState::GameOverVState( View& view ) : ViewState( view ) {}
+GameOverVState::GameOverVState( GameView& view ) : GameViewState( view ) {}
 GameOverVState::~GameOverVState() {}
+
+bool GameOverVState::CanHoverHand() { return true; }
 
 #pragma endregion GameOverState
 }

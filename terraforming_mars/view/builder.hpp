@@ -3,7 +3,7 @@
 #include <random>
 
 #include "gl_utils/camera.hpp"
-#include "view.hpp"
+#include "game_view.hpp"
 
 #include "../model/game_model.hpp"
 #include "../model/boards/concrete_board.hpp"
@@ -23,7 +23,7 @@ public:
 
     Builder& SoloGameView();
 
-    View* GetResult( Camera* camera );
+    GameView* GetResult( Camera* camera );
 
 protected:
     std::mt19937 _random;
@@ -32,6 +32,6 @@ protected:
     model::boards::ConcreteBoard* _concrete_board = nullptr;
     model::decks::DeckProvider* _deck_provider = nullptr;
 
-    View* _view = nullptr;
+    GameView* _view = nullptr;
 };
 }

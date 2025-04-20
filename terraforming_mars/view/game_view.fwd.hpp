@@ -2,5 +2,5 @@
 
 namespace view
 {
-class View;
+class GameView;
 }

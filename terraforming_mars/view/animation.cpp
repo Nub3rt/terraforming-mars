@@ -5,7 +5,7 @@
 
 #include <glm/glm.hpp>
 
-#include "view.hpp"
+#include "game_view.hpp"
 
 namespace view
 {
@@ -35,7 +35,7 @@ InstantAnimation::InstantAnimation( std::function<void()> perform )
 InstantAnimation::InstantAnimation( float lockout_time, std::function<void()> perform )
     : Animation( lockout_time ), perform( perform ) {}
 
-void InstantAnimation::Render( View* view ) {
+void InstantAnimation::Render( GameView* view ) {
     if ( _performed )
         return;
 
@@ -89,7 +89,7 @@ TextAnimation::TextAnimation( float lockout_time, float duration, std::string te
     scale.UpdateAnim( end_scale, duration );
 }
 
-void TextAnimation::Render( View* view ) {
+void TextAnimation::Render( GameView* view ) {
     view->RenderAnimation( this );
 }
 
@@ -154,7 +154,7 @@ CardAnimation::CardAnimation( float lockout_time, float duration, CardWrapper* c
     end_pos( end_pos ), end_scale( end_scale ), end_rotate( end_rotate ),
     start_pos( start_pos ), start_scale( start_scale ), start_rotate( start_rotate ) {}
 
-void CardAnimation::Render( View* view ) {
+void CardAnimation::Render( GameView* view ) {
     if ( _performed )
         return;
 
@@ -181,7 +181,7 @@ CardDrawAnimation::CardDrawAnimation( CardWrapper* card, float speed )
     _lockout_time /= speed;
 }
 
-void CardDrawAnimation::Render( View* view ) {
+void CardDrawAnimation::Render( GameView* view ) {
     view->RenderAnimation( this );
 }
 
@@ -204,7 +204,7 @@ SequentialAnimation::SequentialAnimation( Animation* first, Animation* second )
 SequentialAnimation::SequentialAnimation( float lockout_time, Animation* first, Animation* second )
     : Animation( lockout_time ), _first( first ), _second( second ) {}
 
-void SequentialAnimation::Render( View* view ) {
+void SequentialAnimation::Render( GameView* view ) {
     if ( !_first->IsOver() )
         _first->Render( view );
     else

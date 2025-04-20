@@ -82,6 +82,7 @@ public:
     bool InIdleState() const; // can play cards, can use actions, can use SP-s
     bool CanPlayCards() const;
     bool CanUseActions() const;
+    bool InPostLastGenerationState();
 
     void SellCardSP( const decks::Card* card );
     void UsePowerPlantSP();
@@ -108,6 +109,7 @@ public:
     // Payment Confirmation State
     void PaymentConfirmed( int credit, int resource );
 
+    bool CanEndTurn();
     void EndTurn();
 
     int GetLocalPlayerVPs();

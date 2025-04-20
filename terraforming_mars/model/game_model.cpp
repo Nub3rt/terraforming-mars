@@ -112,6 +112,8 @@ bool GameModel::InIdleState() const { return _state->InIdleState(); }
 bool GameModel::CanPlayCards() const { return InIdleState(); }
 bool GameModel::CanUseActions() const { return InIdleState(); }
 
+bool GameModel::InPostLastGenerationState() { return _state->InPostLastGenerationState(); }
+
 void GameModel::SellCardSP( const decks::Card* card ) { _state->SellCardSP( card ); }
 void GameModel::UsePowerPlantSP() { _state->UsePowerPlantSP(); }
 void GameModel::UseAsteroidSP() { _state->UseAsteroidSP(); }
@@ -141,6 +143,8 @@ void GameModel::ConfirmPurchases() { _state->ConfirmPurchases(); }
 void GameModel::TilePlacementConfirmed( int q, int r ) { _state->TilePlacementConfirmed( q, r ); }
 void GameModel::PaymentConfirmed( int credit, int resource ) { _state->PaymentConfirmed( credit, resource ); }
 
+
+bool GameModel::CanEndTurn() { return _state->CanEndTurn(); }
 void GameModel::EndTurn() { _state->EndTurn(); }
 
 int GameModel::GetLocalPlayerVPs() {

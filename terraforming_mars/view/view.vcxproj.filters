@@ -30,16 +30,18 @@
     <ClCompile Include="gl_utils\spherical_camera_manipulator.cpp">
       <Filter>gl_utils</Filter>
     </ClCompile>
-    <ClCompile Include="view.cpp" />
+    <ClCompile Include="game_view.cpp" />
     <ClCompile Include="tile_wrapper.cpp" />
     <ClCompile Include="card_wrapper.cpp" />
     <ClCompile Include="text_renderer.cpp" />
     <ClCompile Include="builder.cpp" />
-    <ClCompile Include="view_state.cpp" />
+    <ClCompile Include="game_view_state.cpp" />
     <ClCompile Include="animation.cpp" />
     <ClCompile Include="gl_utils\tm_camera_manipulator.cpp">
       <Filter>gl_utils</Filter>
     </ClCompile>
+    <ClCompile Include="view.cpp" />
+    <ClCompile Include="solo_game_view.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="app.hpp" />
@@ -55,15 +57,15 @@
     <ClInclude Include="gl_utils\spherical_camera_manipulator.hpp">
       <Filter>gl_utils</Filter>
     </ClInclude>
-    <ClInclude Include="view.hpp" />
+    <ClInclude Include="game_view.hpp" />
     <ClInclude Include="constants.hpp" />
     <ClInclude Include="tile_wrapper.hpp" />
     <ClInclude Include="card_wrapper.hpp" />
     <ClInclude Include="text_renderer.hpp" />
     <ClInclude Include="builder.hpp" />
-    <ClInclude Include="view_state.hpp" />
-    <ClInclude Include="view.fwd.hpp" />
-    <ClInclude Include="view_state.fwd.hpp" />
+    <ClInclude Include="game_view_state.hpp" />
+    <ClInclude Include="game_view.fwd.hpp" />
+    <ClInclude Include="game_view_state.fwd.hpp" />
     <ClInclude Include="animatable.hpp" />
     <ClInclude Include="animation.hpp" />
     <ClInclude Include="animation.fwd.hpp" />
@@ -74,6 +76,8 @@
       <Filter>gl_utils</Filter>
     </ClInclude>
     <ClInclude Include="panel.hpp" />
+    <ClInclude Include="view.hpp" />
+    <ClInclude Include="solo_game_view.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\skybox.frag">

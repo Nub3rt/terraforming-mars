@@ -3,7 +3,8 @@
 #include <stdexcept>
 
 #include "gl_utils/camera.hpp"
-#include "view.hpp"
+#include "game_view.hpp"
+#include "solo_game_view.hpp"
 
 #include "../model/game_model.hpp"
 #include "../model/solo_game_model.hpp"
@@ -58,12 +59,12 @@ Builder& Builder::SoloGameView() {
     if ( _view != nullptr )
         delete _view;
 
-    _view = new View();
+    _view = new view::SoloGameView();
 
     return *this;
 }
 
-View* Builder::GetResult( Camera* camera ) {
+GameView* Builder::GetResult( Camera* camera ) {
     if ( _model == nullptr || _view == nullptr ||
          _concrete_board == nullptr || _deck_provider == nullptr ) {
         throw std::logic_error( "Builder::GetResult: some components missing!" );
@@ -76,7 +77,7 @@ View* Builder::GetResult( Camera* camera ) {
 
     delete _deck_provider;
 
-    View* result = _view;
+    GameView* result = _view;
     _concrete_board = nullptr;
     _deck_provider = nullptr;
     _model = nullptr;

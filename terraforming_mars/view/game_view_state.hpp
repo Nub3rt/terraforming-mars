@@ -1,7 +1,7 @@
 #pragma once
 
-#include "view_state.fwd.hpp"
-#include "view.fwd.hpp"
+#include "game_view.fwd.hpp"
+#include "game_view_state.fwd.hpp"
 
 #include <array>
 #include <optional>
@@ -20,10 +20,10 @@
 
 namespace view
 {
-class ViewState
+class GameViewState
 {
 public:
-    virtual ~ViewState();
+    virtual ~GameViewState();
 
     virtual void Enter();
 
@@ -66,17 +66,17 @@ public:
     virtual void Model_OnResearchConfirmed( std::array<bool, model::RESEARCH_CARD_NUM> selected );
 
 protected:
-    ViewState( View& view );
+    GameViewState( GameView& view );
 
     virtual void DoClickedEndButton();
 
-    View& _view;
+    GameView& _view;
 };
 
-class ResearchVState : public ViewState
+class ResearchVState : public GameViewState
 {
 public:
-    ResearchVState( View& view, std::array<const model::decks::Card*, model::RESEARCH_CARD_NUM> cards );
+    ResearchVState( GameView& view, std::array<const model::decks::Card*, model::RESEARCH_CARD_NUM> cards );
     virtual ~ResearchVState();
 
     void Enter() override;
@@ -105,10 +105,10 @@ protected:
     void DoClickedEndButton() override;
 };
 
-class IdleVState : public ViewState
+class IdleVState : public GameViewState
 {
 public:
-    IdleVState( View& view );
+    IdleVState( GameView& view );
     virtual ~IdleVState();
 
     void Update( float delta ) override;
@@ -154,10 +154,10 @@ protected:
     int GetRightmostPageNum( int card_count );
 };
 
-class SellVState : public ViewState
+class SellVState : public GameViewState
 {
 public:
-    SellVState( View& view );
+    SellVState( GameView& view );
     virtual ~SellVState();
 
     virtual void Enter();
@@ -176,10 +176,10 @@ public:
     void DoClickedEndButton() override;
 };
 
-class PlacementConfirmationVState : public ViewState
+class PlacementConfirmationVState : public GameViewState
 {
 public:
-    PlacementConfirmationVState( View& view, model::boards::TileType tile_type, std::vector<std::pair<int, int>> valid_positions );
+    PlacementConfirmationVState( GameView& view, model::boards::TileType tile_type, std::vector<std::pair<int, int>> valid_positions );
     virtual ~PlacementConfirmationVState();
 
     void Enter() override;
@@ -197,10 +197,10 @@ protected:
     void ColorBordersSelectable();
 };
 
-class PaymentConfirmationVState : public ViewState
+class PaymentConfirmationVState : public GameViewState
 {
 public:
-    PaymentConfirmationVState( View& view, int amount, model::Resource resource, int resource_value );
+    PaymentConfirmationVState( GameView& view, int amount, model::Resource resource, int resource_value );
     virtual ~PaymentConfirmationVState();
 
     void Enter() override;
@@ -225,17 +225,19 @@ protected:
     static int CalculateCreditNeeded( int resource, int amount, int resource_value );
 };
 
-class PostLastGenerationVState : public ViewState
+class PostLastGenerationVState : public GameViewState
 {
 public:
-    PostLastGenerationVState( View& view );
+    PostLastGenerationVState( GameView& view );
     virtual ~PostLastGenerationVState();
 };
 
-class GameOverVState : public ViewState
+class GameOverVState : public GameViewState
 {
 public:
-    GameOverVState( View& view );
+    GameOverVState( GameView& view );
     virtual ~GameOverVState();
+
+    bool CanHoverHand() override;
 };
 }

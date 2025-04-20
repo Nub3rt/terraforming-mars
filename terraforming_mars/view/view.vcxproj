@@ -145,10 +145,12 @@
     <ClCompile Include="gl_utils\tm_camera_manipulator.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="app.cpp" />
+    <ClCompile Include="solo_game_view.cpp" />
     <ClCompile Include="text_renderer.cpp" />
     <ClCompile Include="tile_wrapper.cpp" />
+    <ClCompile Include="game_view.cpp" />
     <ClCompile Include="view.cpp" />
-    <ClCompile Include="view_state.cpp" />
+    <ClCompile Include="game_view_state.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="animatable.hpp" />
@@ -165,12 +167,14 @@
     <ClInclude Include="gl_utils\spherical_camera_manipulator.hpp" />
     <ClInclude Include="gl_utils\tm_camera_manipulator.hpp" />
     <ClInclude Include="panel.hpp" />
+    <ClInclude Include="solo_game_view.hpp" />
     <ClInclude Include="text_renderer.hpp" />
     <ClInclude Include="tile_wrapper.hpp" />
-    <ClInclude Include="view.fwd.hpp" />
+    <ClInclude Include="game_view.fwd.hpp" />
+    <ClInclude Include="game_view.hpp" />
     <ClInclude Include="view.hpp" />
-    <ClInclude Include="view_state.fwd.hpp" />
-    <ClInclude Include="view_state.hpp" />
+    <ClInclude Include="game_view_state.fwd.hpp" />
+    <ClInclude Include="game_view_state.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\card.frag">

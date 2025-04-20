@@ -1,7 +1,7 @@
 #pragma once
 
 #include "animation.fwd.hpp"
-#include "view.fwd.hpp"
+#include "game_view.fwd.hpp"
 
 #include <functional>
 #include <string>
@@ -33,7 +33,7 @@ public:
     }
 
     void Update( float delta );
-    virtual void Render( View* view ) = 0;
+    virtual void Render( GameView* view ) = 0;
     virtual bool IsOver() const noexcept = 0;
 
     std::function<void()> on_start;
@@ -53,7 +53,7 @@ public:
     InstantAnimation( std::function<void()> perform );
     InstantAnimation( float lockout_time, std::function<void()> perform );
 
-    void Render( View* view ) override;
+    void Render( GameView* view ) override;
     bool IsOver() const noexcept override;
 
     std::function<void()> perform;
@@ -80,7 +80,7 @@ public:
     TextAnimation( float lockout_time, float duration, std::string text, glm::vec2 start_pos, glm::vec2 end_pos,
         glm::vec4 start_color, glm::vec4 end_color, float start_scale, float end_scale );
 
-    void Render( View* view ) override;
+    void Render( GameView* view ) override;
     bool IsOver() const noexcept override;
 
     std::string text;
@@ -112,7 +112,7 @@ public:
     CardAnimation( float lockout_time, float duration, CardWrapper* card, glm::vec2 start_pos, glm::vec2 end_pos,
         float start_scale, float end_scale, float start_rotate, float end_rotate );
 
-    void Render( View* view ) override;
+    void Render( GameView* view ) override;
     bool IsOver() const noexcept override;
 
     float duration;
@@ -141,7 +141,7 @@ public:
     CardDrawAnimation( CardWrapper* card );
     CardDrawAnimation( CardWrapper* card, float speed );
 
-    void Render( View* view ) override;
+    void Render( GameView* view ) override;
     bool IsOver() const noexcept override;
 
     float elapsed = 0.0f;
@@ -163,7 +163,7 @@ public:
         return this;
     }
 
-    void Render( View* view ) override;
+    void Render( GameView* view ) override;
 
     bool IsOver() const noexcept override;
 

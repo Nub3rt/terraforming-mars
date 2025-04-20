@@ -3,7 +3,7 @@
 #include <imgui.h>
 
 #include "constants.hpp"
-#include "view.hpp"
+#include "game_view.hpp"
 #include "gl_utils/gl_utils.hpp"
 #include "gl_utils/SDL_GLDebugMessageCallback.hpp"
 

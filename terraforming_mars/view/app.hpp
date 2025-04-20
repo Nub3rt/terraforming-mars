@@ -10,7 +10,7 @@
 #include <SDL3/SDL_opengl.h>
 
 #include "builder.hpp"
-#include "view.hpp"
+#include "game_view.hpp"
 
 #include "gl_utils/camera.hpp"
 #include "gl_utils/spherical_camera_manipulator.hpp"
@@ -44,7 +44,7 @@ public:
 protected:
     float _elapsed = 0.0f;
 
-    View* _view = nullptr;
+    GameView* _view = nullptr;
     Camera _camera;
 
     Builder _builder;
