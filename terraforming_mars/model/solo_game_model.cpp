@@ -47,7 +47,7 @@ void SoloGameModel::Start() {
     for ( int i = 0; i < STARTING_CARD_COUNT; ++i ) {
         decks::Card* card = _deck->DrawCard();
         cards.emplace_back( card );
-        _local_player->GetCard( card );
+        _local_player->GainCard( card );
     }
     _on_draw_cards.Invoke( std::move( cards ) );
 }

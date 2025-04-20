@@ -51,18 +51,18 @@ TEST_F( CardsTest, OwnerLogicTest ) {
     EXPECT_THROW( { player.SellCard( comet ); }, std::logic_error ); // Sell
     EXPECT_THROW( { player.PlayCard( comet ); }, std::logic_error ); // Play
 
-    player.GetCard( comet ); // Buy
-    EXPECT_THROW( { player.GetCard( comet ); }, std::logic_error ); // Buy
+    player.GainCard( comet ); // Buy
+    EXPECT_THROW( { player.GainCard( comet ); }, std::logic_error ); // Buy
 
     player.SellCard( comet ); // Sell
     EXPECT_THROW( { player.SellCard( comet ); }, std::logic_error ); // Sell
     EXPECT_THROW( { player.PlayCard( comet ); }, std::logic_error ); // Play
 
-    player.GetCard( comet ); // Buy
-    EXPECT_THROW( { player.GetCard( comet ); }, std::logic_error ); // Buy
+    player.GainCard( comet ); // Buy
+    EXPECT_THROW( { player.GainCard( comet ); }, std::logic_error ); // Buy
 
     player.PlayCard( comet ); // Play
-    EXPECT_THROW( { player.GetCard( comet ); }, std::logic_error ); // Buy
+    EXPECT_THROW( { player.GainCard( comet ); }, std::logic_error ); // Buy
     EXPECT_THROW( { player.SellCard( comet ); }, std::logic_error ); // Sell
     EXPECT_THROW( { player.PlayCard( comet ); }, std::logic_error ); // Plays
 }
@@ -105,7 +105,7 @@ TEST_F( CardsTest, EventTest ) {
     } );
     player.SetOnPlaceOceanCallback( [ &ocean_count ]( Player* ) { ++ocean_count; } );
 
-    player.GetCard( comet );
+    player.GainCard( comet );
 
     EXPECT_EQ( 0, resource_count );
     EXPECT_EQ( 0, temperature_count );
@@ -165,7 +165,7 @@ TEST_F( CardsTest, AutomatedTest ) {
         EXPECT_EQ( 1, amount );
     } );
 
-    player.GetCard( swp );
+    player.GainCard( swp );
 
     EXPECT_EQ( 0, resource_count );
     EXPECT_EQ( 0, resource_production_count );
@@ -223,7 +223,7 @@ TEST_F( CardsTest, ActiveWithActionTest ) {
         EXPECT_EQ( 1, amount );
     } );
 
-    player.GetCard( eqmag );
+    player.GainCard( eqmag );
 
     EXPECT_EQ( 0, resource_count );
     EXPECT_EQ( 0, resource_production_count );
@@ -300,7 +300,7 @@ TEST_F( CardsTest, ActiveWithEffectTest ) {
     EXPECT_FALSE( rovcon->HasTag( Tag::CITY ) );
     EXPECT_FALSE( rovcon->HasTag( Tag::EVENT ) );
 
-    player.GetCard( rovcon );
+    player.GainCard( rovcon );
     player.PlayCard( rovcon );
 
     int resource_count = 0;

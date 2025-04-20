@@ -59,6 +59,9 @@ public:
         return reinterpret_cast<const std::vector<const decks::ActiveCardWithEffect*>&>( _effect_cards );
     }
 
+    int GetResource( Resource resource ) const;
+    int GetResourceProduction( Resource resource ) const;
+
     inline void DrawCard() { _on_draw_card.Invoke( this ); }
     inline void RaiseTR( int amount ) { _on_raise_tr.Invoke( this, amount ); }
     inline void RaiseTemperature() { _on_raise_temperature.Invoke( this ); }
@@ -72,10 +75,7 @@ public:
     inline void PlaceLonelyCity() { _on_place_lonely_city.Invoke( this ); }
     inline void PlaceUrbanizedArea() { _on_place_urbanized_area.Invoke( this ); }
 
-    void GetTR( int amount );
-
-    int GetResource( Resource resource ) const;
-    int GetResourceProduction( Resource resource ) const;
+    void GainTR( int amount );
 
     void GainResource( Resource resource, int amount );
     void GainResourceProduction( Resource resource, int amount );
@@ -98,7 +98,7 @@ public:
     void ConfirmSteelPayment( int cost, std::function<void()> after_payment );
     void ConfirmTitaniumPayment( int cost, std::function<void()> after_payment );
 
-    void GetCard( decks::Card* card );
+    void GainCard( decks::Card* card );
     void SellCard( const decks::Card* card );
     void PlayCard( const decks::Card* card );
     int CalculateCardCost( const decks::Card* card, int base_cost ) const;

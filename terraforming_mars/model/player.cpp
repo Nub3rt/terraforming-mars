@@ -36,10 +36,10 @@ Player::~Player() {
         delete card;
 }
 
-void Player::GetTR( int amount ) { _tr += amount; }
-
 int Player::GetResource( Resource resource ) const { return _resources[ +resource ]; }
 int Player::GetResourceProduction( Resource resource ) const { return _resource_productions[ +resource ]; }
+
+void Player::GainTR( int amount ) { _tr += amount; }
 
 void Player::GainResource( Resource resource, int amount ) {
     _resources[ +resource ] += amount;
@@ -109,7 +109,7 @@ void Player::ConfirmTitaniumPayment( int cost, std::function<void()> after_payme
     _on_confirm_titanium_payment.Invoke( this, cost, std::move( after_payment ) );
 }
 
-void Player::GetCard( decks::Card* card ) {
+void Player::GainCard( decks::Card* card ) {
     card->Buy( this );
     _hand.push_back( card );
 }

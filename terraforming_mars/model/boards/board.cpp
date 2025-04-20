@@ -145,16 +145,18 @@ std::vector<std::pair<int, int>> Board::GetValidUrbanizedAreaTiles( const Player
 }
 
 int Board::CalculateBoardVPs( Player* player ) const {
-    int vp = 0;
+    int vps = 0;
     for ( auto it = begin(); it != end(); ++it ) {
         auto [q, r] = it->get_indices();
         const Tile& tile = get_tile( q, r );
         if ( tile.get_owner() == player ) {
             if ( tile.get_type() == TileType::GREENERY )
-                ++vp;
+                ++vps;
             else if ( tile.get_type() == TileType::CITY )
-                vp += GetNeighbouringTilesOfType( q, r, TileType::GREENERY ).size();
+                vps += (int)GetNeighbouringTilesOfType( q, r, TileType::GREENERY ).size();
         }
     }
+
+    return vps;
 }
 }

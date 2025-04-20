@@ -90,12 +90,12 @@ void GameModelState::Player_OnDrawCard( Player* player ) {
     if ( card == nullptr )
         return;
 
-    player->GetCard( card );
+    player->GainCard( card );
     _model->_on_draw_card.Invoke( card );
 }
 
 void GameModelState::Player_OnRaiseTR( Player* player, int amount ) {
-    player->GetTR( amount );
+    player->GainTR( amount );
     _model->_on_raise_tr.Invoke( amount );
 }
 
@@ -257,7 +257,7 @@ void ResearchState::ConfirmPurchases() {
 
     for ( int i = 0; i < RESEARCH_CARD_NUM; ++i )
         if ( _to_buy[ i ] )
-            _model->_local_player->GetCard( _cards[ i ] );
+            _model->_local_player->GainCard( _cards[ i ] );
         else
             _model->_deck->DiscardCard( _cards[ i ] );
 
