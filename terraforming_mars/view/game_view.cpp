@@ -833,15 +833,9 @@ void GameView::RefreshHandPositions() {
 #pragma region Rendering
 
 void GameView::RenderBoard() {
-    glUseProgram( _program_id );
-    glBindVertexArray( _hexagon_gpu.vao_id );
-
     for ( int i = 0; i < _tiles.size(); ++i) {
         RenderHexagon( _tiles[i], STENCIL_STARTING_BOARD + i );
     }
-
-    glBindVertexArray( 0 );
-    glUseProgram( 0 );
 }
 
 void GameView::RenderHexagon( TileWrapper& tile, int id ) {
@@ -853,6 +847,11 @@ void GameView::RenderHexagon( TileWrapper& tile, int id ) {
     *      V r          *----> x
     */
 
+    glUseProgram( _program_id );
+    glBindVertexArray( _hexagon_gpu.vao_id );
+
+    glActiveTexture( GL_TEXTURE0 );
+
     auto& [q_o, r_o] = GetBoardOrigin();
     float q = tile->q - q_o;
     float r = tile->r - r_o;
@@ -860,10 +859,11 @@ void GameView::RenderHexagon( TileWrapper& tile, int id ) {
     float x = glm::root_three<float>() * q + glm::root_three<float>() / 2.0f * r;
     float y = 3.0f / 2.0f * -r;
     glm::mat4 world = glm::translate( glm::vec3( x, y, 0.0f ) );
+    glm::mat4 view_proj = _camera->GetViewProj();
 
     glUniformMatrix4fv( ul( "world" ), 1, GL_FALSE, glm::value_ptr( world ) );
     glUniformMatrix4fv( ul( "world_it" ), 1, GL_FALSE, glm::value_ptr( glm::transpose( glm::inverse( world ) ) ) );
-    glUniformMatrix4fv( ul( "view_proj" ), 1, GL_FALSE, glm::value_ptr( _camera->GetViewProj() ) );
+    glUniformMatrix4fv( ul( "view_proj" ), 1, GL_FALSE, glm::value_ptr( view_proj ) );
 
     glUniform1i( ul( "image" ), 0 );
     glUniform3f( ul( "color" ), tile.color->r, tile.color->g, tile.color->b );
@@ -873,7 +873,99 @@ void GameView::RenderHexagon( TileWrapper& tile, int id ) {
 
     glDrawElements( GL_TRIANGLES, _hexagon_gpu.count, GL_UNSIGNED_INT, nullptr );
 
+
+    if ( tile->IsEmpty() ) {
+        static const float d_x_1 = 0.0f;
+        static const float d_y_1 = 0.55f;
+        static const float d_x_2 = d_x_1 - 0.45f;
+        static const float d_y_2 = d_y_1 - 0.25f;
+        static const float d_z = 0.25f;
+
+        static const float size = 0.2f;
+        static const glm::mat4 scale = glm::scale( glm::vec3( size, size, 1.0f ) );
+        static const float card_ratio = (float)CARD_TEXTURE_WIDTH / CARD_TEXTURE_HEIGHT;
+        static const glm::mat4 card_scale = glm::scale( glm::vec3( size * card_ratio, size, 1.0f ) );
+        static const float stride_x = 1.0f / RESOURCE_TEXTURE_COLUMNS;
+        static const float stride_y = 1.0f / RESOURCE_TEXTURE_ROWS;
+
+        if ( tile->get_bonus_1() ) {
+            static const glm::mat4 icon_translate = glm::translate( glm::vec3( d_x_1, d_y_1, d_z ) );
+            model::Resource resource = *tile->get_bonus_1();
+
+            if ( resource == model::Resource::CARD ) {
+                glUseProgram( _program_rectangle_id );
+                glBindVertexArray( _rectangle_gpu.vao_id );
+
+                glBindTexture( GL_TEXTURE_2D, _card_cover_texture.id );
+
+                glm::mat4 card_world = view_proj * icon_translate * world * card_scale;
+                glUniformMatrix4fv( ul( "world" ), 1, GL_FALSE, glm::value_ptr( card_world ) );
+
+                glDrawElements( GL_TRIANGLES, _rectangle_gpu.count, GL_UNSIGNED_INT, nullptr );
+            } else {
+                glUseProgram( _program_sprite_sheet_id );
+                glBindVertexArray( _rectangle_gpu.vao_id );
+
+                glBindTexture( GL_TEXTURE_2D, _resources_texture.id );
+
+                int index_x = +resource % RESOURCE_TEXTURE_COLUMNS;
+                int index_y = +resource / RESOURCE_TEXTURE_COLUMNS;
+
+                glm::mat4 resource_world = view_proj * icon_translate * world * scale;
+                glUniformMatrix4fv( ul( "world" ), 1, GL_FALSE, glm::value_ptr( resource_world ) );
+
+                glUniform1f( ul( "stride_x" ), stride_x );
+                glUniform1f( ul( "stride_y" ), stride_y );
+                glUniform1i( ul( "index_x" ), index_x );
+                glUniform1i( ul( "index_y" ), index_y );
+
+                glDrawElements( GL_TRIANGLES, _rectangle_gpu.count, GL_UNSIGNED_INT, nullptr );
+            }
+        }
+
+        if ( tile->get_bonus_2() ) {
+            static const glm::mat4 icon_translate = glm::translate( glm::vec3( d_x_2, d_y_2, d_z ) );
+            model::Resource resource = *tile->get_bonus_2();
+
+            if ( resource == model::Resource::CARD ) {
+                glUseProgram( _program_rectangle_id );
+                glBindVertexArray( _rectangle_gpu.vao_id );
+
+                glBindTexture( GL_TEXTURE_2D, _card_cover_texture.id );
+
+                glm::mat4 card_world = view_proj * icon_translate * world * card_scale;
+                glUniformMatrix4fv( ul( "world" ), 1, GL_FALSE, glm::value_ptr( card_world ) );
+
+                glDrawElements( GL_TRIANGLES, _rectangle_gpu.count, GL_UNSIGNED_INT, nullptr );
+            } else {
+                glUseProgram( _program_sprite_sheet_id );
+                glBindVertexArray( _rectangle_gpu.vao_id );
+
+                glBindTexture( GL_TEXTURE_2D, _resources_texture.id );
+
+                int index_x = +resource % RESOURCE_TEXTURE_COLUMNS;
+                int index_y = +resource / RESOURCE_TEXTURE_COLUMNS;
+
+                glm::mat4 resource_world = view_proj * icon_translate * world * scale;
+                glUniformMatrix4fv( ul( "world" ), 1, GL_FALSE, glm::value_ptr( resource_world ) );
+
+                glUniform1f( ul( "stride_x" ), stride_x );
+                glUniform1f( ul( "stride_y" ), stride_y );
+                glUniform1i( ul( "index_x" ), index_x );
+                glUniform1i( ul( "index_y" ), index_y );
+
+                glDrawElements( GL_TRIANGLES, _rectangle_gpu.count, GL_UNSIGNED_INT, nullptr );
+            }
+        }
+    }
+
+
     SetStencilRef();
+
+    glBindTexture( GL_TEXTURE_2D, 0 );
+
+    glBindVertexArray( 0 );
+    glUseProgram( 0 );
 }
 
 void GameView::RenderHUD() {

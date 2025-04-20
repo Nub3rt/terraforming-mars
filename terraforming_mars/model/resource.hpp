@@ -10,7 +10,9 @@ enum class Resource
     PLANTS,
     ENERGY,
     HEAT,
-    MAX = HEAT
+    MAX = HEAT,
+
+    CARD,
 };
 
 constexpr inline int operator+( Resource resource ) {

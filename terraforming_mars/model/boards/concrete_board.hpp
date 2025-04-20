@@ -33,7 +33,7 @@ protected:
     Event<int, int, const Tile&> _on_tile_placed;
 
 
-    static const std::function<void( Player* )>& get_noop();
+    static const std::function<void( Player* )>& get_nop();
     static const std::function<void( Player* )>& get_draw_one_card();
     static const std::function<void( Player* )>& get_draw_two_cards();
     static const std::function<void( Player* )>& get_gain_one_plants();

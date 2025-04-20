@@ -40,7 +40,7 @@ std::vector<std::pair<int, int>> ConcreteBoard::GetNeighbouringTilesOfTypeRange(
 const std::pair<int, int>* ConcreteBoard::NoctisCityIndex() const { return nullptr; }
 
 
-const std::function<void( Player* )>& ConcreteBoard::get_noop() {
+const std::function<void( Player* )>& ConcreteBoard::get_nop() {
     static const std::function<void( Player* )> callback = []( Player* player ) {};
     return callback;
 }
