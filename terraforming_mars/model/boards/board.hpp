@@ -98,6 +98,8 @@ public:
 
     inline void SetOnTilePlacedCallback( std::function<void( int, int, const Tile& )> callback ) { _concrete_board->SetOnTilePlacedCallback( callback ); }
 
+    int CalculateBoardVPs( Player* player ) const;
+
     inline ConcreteBoard::IteratorWrapper begin() const { return _concrete_board->begin(); }
     inline ConcreteBoard::IteratorWrapper end() const { return _concrete_board->end(); }
 

@@ -110,6 +110,8 @@ public:
 
     void EndTurn();
 
+    int GetLocalPlayerVPs();
+
 
     inline void SetOnDrawCard( Callback<const decks::Card*> callback ) { _on_draw_card.SetCallback( callback ); }
     inline void SetOnDrawCards( Callback<std::vector<const decks::Card*>> callback ) { _on_draw_cards.SetCallback( callback ); }

@@ -143,4 +143,18 @@ std::vector<std::pair<int, int>> Board::GetValidUrbanizedAreaTiles( const Player
 
     return tiles_with_min_two_city_neighbours;
 }
+
+int Board::CalculateBoardVPs( Player* player ) const {
+    int vp = 0;
+    for ( auto it = begin(); it != end(); ++it ) {
+        auto [q, r] = it->get_indices();
+        const Tile& tile = get_tile( q, r );
+        if ( tile.get_owner() == player ) {
+            if ( tile.get_type() == TileType::GREENERY )
+                ++vp;
+            else if ( tile.get_type() == TileType::CITY )
+                vp += GetNeighbouringTilesOfType( q, r, TileType::GREENERY ).size();
+        }
+    }
+}
 }

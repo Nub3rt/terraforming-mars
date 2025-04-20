@@ -107,6 +107,8 @@ public:
     void UseAction( const decks::Card* card );
     void OnEffect( std::function<void( decks::ActiveCardWithEffect* )> effect );
 
+    int CalculateCardVPs() const;
+
 
     inline void SetOnDrawCardCallback( CallbackPp<> callback ) { _on_draw_card.SetCallback( callback ); }
     inline void SetOnRaiseTRCallback( CallbackPp<int> callback ) { _on_raise_tr.SetCallback( callback ); }

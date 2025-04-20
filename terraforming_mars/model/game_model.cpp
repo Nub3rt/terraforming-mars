@@ -143,6 +143,22 @@ void GameModel::PaymentConfirmed( int credit, int resource ) { _state->PaymentCo
 
 void GameModel::EndTurn() { _state->EndTurn(); }
 
+int GameModel::GetLocalPlayerVPs() {
+    int vps = 0;
+
+    vps += _local_player->get_tr();
+
+    // TODO awards
+
+    // TODO milestones
+
+    vps += _board->CalculateBoardVPs( _local_player );
+
+    vps += _local_player->CalculateCardVPs();
+
+    return vps;
+}
+
 void GameModel::SubscribeCallbacksOnPlayer( Player* player ) {
     player->SetOnDrawCardCallback( std::bind_front( &GameModel::Player_OnDrawCard, this ) );
 
@@ -211,7 +227,7 @@ void GameModel::Player_OnDestroyResourceProduction( Player* player, Resource res
 void GameModel::Player_OnConfirmSteelPayment( Player* player, int cost, std::function<void()> after_payment )
     { _state->Player_OnConfirmSteelPayment( player, cost, after_payment ); }
 void GameModel::Player_OnConfirmTitaniumPayment( Player* player, int cost, std::function<void()> after_payment )
-    { _state->Player_OnConfirmTitaniumPayment( player, cost, after_payment); }
+    { _state->Player_OnConfirmTitaniumPayment( player, cost, after_payment ); }
 
 void GameModel::EndGame() {
     _game_ended = true;

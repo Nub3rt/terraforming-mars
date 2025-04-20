@@ -179,6 +179,21 @@ void Player::OnEffect( std::function<void( decks::ActiveCardWithEffect* )> effec
         effect( card );
 }
 
+int Player::CalculateCardVPs() const {
+    int vps = 0;
+
+    for ( decks::EventCard* card : _event_cards )
+        vps += card->CountVPs();
+
+    for ( decks::AutomatedCard* card : _automated_cards )
+        vps += card->CountVPs();
+
+    for ( decks::ActiveCard* card : _active_cards )
+        vps += card->CountVPs();
+
+    return vps;
+}
+
 void Player::DoPlayCard( decks::Card* card ) {
     auto it_to_card = std::find( _hand.cbegin(), _hand.cend(), card );
     if ( it_to_card == _hand.cend() )
