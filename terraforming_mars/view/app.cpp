@@ -4,26 +4,18 @@
 
 #include "constants.hpp"
 #include "game_view.hpp"
+
 #include "gl_utils/gl_utils.hpp"
 #include "gl_utils/SDL_GLDebugMessageCallback.hpp"
 
-#ifdef _DEBUG
-#  define BUILDER_SEED 42
-#else
-#  define BUILDER_SEED rand()
-#endif _DEBUG
-
 namespace view
 {
-App::App() : _camera(), _builder( BUILDER_SEED ) {
-    SDL_LogInfo( SDL_LOG_CATEGORY_APPLICATION, "Seed of the application: %d", BUILDER_SEED );
-
+App::App() : _camera() {
     GLint stencil_bits;
     glGetIntegerv( GL_STENCIL_BITS, &stencil_bits );
 
     SDL_LogInfo( SDL_LOG_CATEGORY_APPLICATION, "Stencil buffer size: %d", stencil_bits );
 }
-#undef BUILDER_SEED
 
 App::~App() {
 }
@@ -53,17 +45,23 @@ bool App::Init() {
     glClearStencil( STENCIL_NONE );
 
 
-    _camera.SetView(
-        glm::vec3( 0.0f, 0.0f, 40.0f ),
-        glm::vec3( 0.0f, 0.0f, 0.0f ),
-        glm::vec3( 0.0f, 1.0f, 0.0f )
-    );
+    _menu_view = new MenuView();
 
-    _view = _builder.SoloGameModel()
-                    .TharsisBoard()
-                    .ReducedBasicDeck()
-                    .SoloGameView()
-                    .GetResult( &_camera );
+    _menu_view->SetNewGame( [ this ]( GameView* game_view ) {
+        if ( _game_view != nullptr ) {
+            _game_view->Clean();
+            delete _game_view;
+        }
+        _game_view = game_view;
+    } );
+    _menu_view->SetEnterGame( [ this ]() {
+        _current_view = _game_view;
+    } );
+    _menu_view->SetQuit( [ this ]() { _quit.Invoke(); } );
+
+    _menu_view->Init( &_camera );
+
+    _current_view = _menu_view;
 
     return true;
 }
@@ -74,14 +72,14 @@ void App::Clean() {
     CleanSkyboxTextures();
 
 
-    _view->Clean();
-    delete _view;
+    _menu_view->Clean();
+    delete _menu_view;
 }
 
 void App::Update( const UpdateInfo& update_info ) {
     _elapsed = update_info.elapsed;
 
-    _view->Update( update_info );
+    _current_view->Update( update_info );
 }
 
 void App::Render() {
@@ -89,51 +87,46 @@ void App::Render() {
 
     RenderSkybox();
 
-    _view->Render();
+    _current_view->Render();
 }
 
 void App::RenderGUI() {
-    //if ( ImGui::Begin( "Info" ) ) {
-    //    ImGui::LabelText( std::to_string( _elapsed ).c_str(), "Elapsed time" );
-    //}
-    //ImGui::End();
-
-    _view->RenderGUI();
+    _current_view->RenderGUI();
 }
 
 void App::KeyboardDown( const SDL_KeyboardEvent& key ) {
-    _view->KeyboardDown( key );
+    _current_view->KeyboardDown( key );
 }
 
 void App::KeyboardUp( const SDL_KeyboardEvent& key ) {
-    _view->KeyboardUp( key );
+    _current_view->KeyboardUp( key );
 }
 
 void App::MouseMotion( const SDL_MouseMotionEvent& mouse ) {
-    _view->MouseMotion( mouse );
+    _current_view->MouseMotion( mouse );
 }
 
 void App::MouseDown( const SDL_MouseButtonEvent& mouse ) {
-    _view->MouseDown( mouse );
+    _current_view->MouseDown( mouse );
 }
 
 void App::MouseUp( const SDL_MouseButtonEvent& mouse ) {
-    _view->MouseUp( mouse );
+    _current_view->MouseUp( mouse );
 }
 
 void App::MouseWheel( const SDL_MouseWheelEvent& wheel ) {
-    _view->MouseWheel( wheel );
+    _current_view->MouseWheel( wheel );
 }
 
 void App::Resize( int w, int h ) {
     glViewport( 0, 0, w, h );
     _camera.SetAspect( w / (float) h );
 
-    _view->Resize( w, h );
+    _current_view->Resize( w, h );
 }
 
 void App::OtherEvent( const SDL_Event& event ) {
-    _view->OtherEvent( event );
+    _current_view->OtherEvent( event );
 }
 
 void App::SetupDebugCallback() {

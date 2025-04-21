@@ -9,8 +9,9 @@
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_opengl.h>
 
-#include "builder.hpp"
 #include "game_view.hpp"
+#include "menu_view.hpp"
+#include "view.hpp"
 
 #include "gl_utils/camera.hpp"
 #include "gl_utils/spherical_camera_manipulator.hpp"
@@ -41,13 +42,18 @@ public:
 
     void OtherEvent( const SDL_Event& event );
 
+    inline void SetQuit( std::function<void()> callback ) { _quit.SetCallback( callback ); }
+
 protected:
     float _elapsed = 0.0f;
 
-    GameView* _view = nullptr;
     Camera _camera;
 
-    Builder _builder;
+    View* _current_view = nullptr;
+    MenuView* _menu_view = nullptr;
+    GameView* _game_view = nullptr;
+
+    model::Event<> _quit;
 
     void SetupDebugCallback();
 

@@ -15,7 +15,7 @@
 
 namespace view
 {
-Builder::Builder( int seed ) : _random( seed ) {}
+Builder::Builder() : _random() {}
 
 Builder::~Builder() {
     if ( _model != nullptr )
@@ -26,6 +26,14 @@ Builder::~Builder() {
         delete _deck_provider;
     if ( _view != nullptr )
         delete _view;
+}
+
+Builder& Builder::SetSeed( unsigned int seed ) {
+    _random.seed( seed );
+
+    SDL_LogInfo( SDL_LOG_CATEGORY_APPLICATION, "Seed of the application: %d", seed );
+
+    return *this;
 }
 
 Builder& Builder::SoloGameModel() {

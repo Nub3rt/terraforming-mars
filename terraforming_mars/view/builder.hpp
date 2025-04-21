@@ -14,8 +14,10 @@ namespace view
 class Builder
 {
 public:
-    Builder( int seed );
+    Builder();
     ~Builder();
+
+    Builder& SetSeed( unsigned int seed );
 
     Builder& SoloGameModel();
     Builder& TharsisBoard();

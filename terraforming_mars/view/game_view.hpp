@@ -67,6 +67,7 @@ public:
     void Update( const UpdateInfo& update_info ) override;
     void Render() override;
     void RenderGUI() override;
+    void RenderMars();
 
     void KeyboardDown( const SDL_KeyboardEvent& key ) override;
     void KeyboardUp( const SDL_KeyboardEvent& key ) override;
@@ -240,6 +241,7 @@ protected:
     void CleanTextures();
 
     virtual const std::pair<float, float>& GetBoardOrigin();
+
 
     bool _debug = false;
 };

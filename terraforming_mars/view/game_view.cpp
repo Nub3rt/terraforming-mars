@@ -217,8 +217,8 @@ void GameView::Update( const UpdateInfo& update_info ) {
     } else
         _state->Update( update_info.delta );
 
-    _menu_button_hovered = _mouse_hover_stencil == STENCIL_MENU;
-    _end_button_hovered  = _mouse_hover_stencil == STENCIL_END;
+    _menu_button_hovered = _mouse_hover_stencil == STENCIL_TO_MENU_BUTTON;
+    _end_button_hovered  = _mouse_hover_stencil == STENCIL_END_BUTTON;
 }
 
 void GameView::Render() {
@@ -285,6 +285,12 @@ void GameView::RenderGUI() {
         }
         ImGui::End();
     }
+}
+
+void GameView::RenderMars() {
+    RenderBoard();
+
+    glClear( GL_DEPTH_BUFFER_BIT );
 }
 
 #pragma region Events
@@ -385,10 +391,10 @@ void GameView::MouseMotion( const SDL_MouseMotionEvent& mouse ) {
     _active_camera_manipulator->MouseMotion( mouse );
 }
 
-void GameView::MouseDown( const SDL_MouseButtonEvent& mouse )   {
+void GameView::MouseDown( const SDL_MouseButtonEvent& mouse ) {
     _mouse_down_stencil = GetStencilValue( mouse.x, mouse.y );
 
-    SDL_LogInfo( SDL_LOG_CATEGORY_APPLICATION, "GameView::MouseDown: Stencil value of mouse click: %d", _mouse_down_stencil );
+    SDL_LogInfo( SDL_LOG_CATEGORY_APPLICATION, "GameView::MouseDown: Stencil value: %d", _mouse_down_stencil );
 
     auto [x, y] = CalculateMousePos( mouse.x, mouse.y );
     int hovered_card_index = CalculateHoveredCardByPos( x, y );
@@ -429,10 +435,10 @@ void GameView::MouseUp( const SDL_MouseButtonEvent& mouse ) {
                 case 0x00:
                     SDL_LogError( SDL_LOG_CATEGORY_ERROR, "GameView::MouseUp: Invalid stencil value received : 0x00!" );
                     break;
-                case STENCIL_MENU:
+                case STENCIL_TO_MENU_BUTTON:
                     // TODO
                     break;
-                case STENCIL_END:
+                case STENCIL_END_BUTTON:
                     if ( _state->CanClickEndButton() )
                         _state->ClickedEndButton();
                     break;
@@ -1030,7 +1036,7 @@ void GameView::RenderMenuButton() {
     glm::mat4 world = glm::translate( glm::vec3( x, y, HUD_BASE_Z ) ) * glm::scale( scale );
     glUniformMatrix4fv( ul( "world" ), 1, GL_FALSE, glm::value_ptr( world ) );
 
-    SetStencilRef( STENCIL_MENU );
+    SetStencilRef( STENCIL_TO_MENU_BUTTON );
 
     glDrawElements( GL_TRIANGLES, _rectangle_gpu.count, GL_UNSIGNED_INT, nullptr );
 
@@ -1435,7 +1441,7 @@ void GameView::RenderEndButton() {
     glm::mat4 world = glm::translate( glm::vec3( x, y, HUD_BASE_Z ) ) * glm::scale( scale );
     glUniformMatrix4fv( ul( "world" ), 1, GL_FALSE, glm::value_ptr( world ) );
 
-    SetStencilRef( STENCIL_END );
+    SetStencilRef( STENCIL_END_BUTTON );
 
     glDrawElements( GL_TRIANGLES, _rectangle_gpu.count, GL_UNSIGNED_INT, nullptr );
 

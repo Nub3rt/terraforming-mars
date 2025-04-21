@@ -132,6 +132,8 @@ int main( int argc, char* argv[] ) {
         bool quit = false;
         bool show_imgui = true;
 
+        app.SetQuit( [ &quit ]() { quit = true; } );
+
         SDL_Event event;
 
         while ( !quit ) {

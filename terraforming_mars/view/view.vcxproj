@@ -145,11 +145,11 @@
     <ClCompile Include="gl_utils\tm_camera_manipulator.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="app.cpp" />
+    <ClCompile Include="menu_view.cpp" />
     <ClCompile Include="solo_game_view.cpp" />
     <ClCompile Include="text_renderer.cpp" />
     <ClCompile Include="tile_wrapper.cpp" />
     <ClCompile Include="game_view.cpp" />
-    <ClCompile Include="view.cpp" />
     <ClCompile Include="game_view_state.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -166,6 +166,7 @@
     <ClInclude Include="gl_utils\SDL_GLDebugMessageCallback.hpp" />
     <ClInclude Include="gl_utils\spherical_camera_manipulator.hpp" />
     <ClInclude Include="gl_utils\tm_camera_manipulator.hpp" />
+    <ClInclude Include="menu_view.hpp" />
     <ClInclude Include="panel.hpp" />
     <ClInclude Include="solo_game_view.hpp" />
     <ClInclude Include="text_renderer.hpp" />
@@ -240,6 +241,9 @@
     <Image Include="assets\city.png">
       <DeploymentContent>true</DeploymentContent>
     </Image>
+    <Image Include="assets\continue_pane.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
     <Image Include="assets\effect_closed.png">
       <DeploymentContent>true</DeploymentContent>
     </Image>
@@ -258,6 +262,9 @@
     <Image Include="assets\mars.png">
       <DeploymentContent>true</DeploymentContent>
     </Image>
+    <Image Include="assets\new_game_pane.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
     <Image Include="assets\ocean.png">
       <DeploymentContent>true</DeploymentContent>
     </Image>
@@ -268,6 +275,9 @@
       <DeploymentContent>true</DeploymentContent>
     </Image>
     <Image Include="assets\production_box.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="assets\quit_pane.png">
       <DeploymentContent>true</DeploymentContent>
     </Image>
     <Image Include="assets\resources.png">
@@ -292,6 +302,9 @@
       <DeploymentContent>true</DeploymentContent>
     </Image>
     <Image Include="assets\temperature.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="assets\tm_pane.png">
       <DeploymentContent>true</DeploymentContent>
     </Image>
     <Image Include="assets\tr.png">

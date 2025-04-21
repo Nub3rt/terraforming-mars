@@ -7,13 +7,15 @@
 #include "camera.hpp"
 #include "camera_manipulator.hpp"
 
+#include "../constants.hpp"
+
 namespace view
 {
 TMCameraManipulator::TMCameraManipulator( Camera& camera )
         : CameraManipulator( camera ) {
-    _center = _camera.GetAt();
+    _center = glm::vec3( CAMERA_X, CAMERA_Y, CAMERA_Z_GAME_AT );
 
-    _eye = _camera.GetEye();
+    _eye = glm::vec3( CAMERA_X, CAMERA_Y, CAMERA_Z_GAME_EYE );
 
     _distance = glm::length( _center - _eye );
     _default_distance = _distance;

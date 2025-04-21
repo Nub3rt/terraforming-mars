@@ -11,6 +11,23 @@ inline constexpr int STARTING_WINDOW_HEIGHT = 900;
 
 inline constexpr float SKYBOX_ROTATE_SPEED = 0.01f;
 
+inline constexpr float CAMERA_X = 0.0f;
+inline constexpr float CAMERA_Y = 0.0f;
+inline constexpr float CAMERA_Z_MENU_EYE = 100.0f;
+inline constexpr float CAMERA_Z_MENU_AT = 140.0f;
+inline constexpr float CAMERA_Z_GAME_EYE = 40.0f;
+inline constexpr float CAMERA_Z_GAME_AT = 0.0f;
+inline constexpr glm::vec3 CAMERA_WORLD_UP = glm::vec3( 0.0f, 1.0f, 0.0f );
+
+inline constexpr float MENU_X = 0.0f;
+inline constexpr float MENU_Z = 120.0f;
+inline constexpr float MENU_TM_Y = 3.2f;
+inline constexpr float MENU_CONTINUE_Y = 0.5f;
+inline constexpr float MENU_NEW_GAME_Y = -1.0f;
+inline constexpr float MENU_QUIT_Y = -2.5f;
+inline constexpr float MENU_BUTTON_SCALE = 0.5f;
+inline constexpr float TRANSITION_DURATION = 10.0f;
+
 inline constexpr glm::vec2 BASE_HINT_POS = glm::vec2( 0.0f, 0.8f );
 inline constexpr float BASE_TEXT_SCALE = 1.5f;
 inline constexpr float CREDIT_TEXT_SCALE = 1.0f;
@@ -19,6 +36,7 @@ inline constexpr glm::vec3 DARK_TEXT_COLOR = glm::vec3( 0x00, 0x00, 0x00 ) / 255
 inline constexpr glm::vec3 POSITIVE_TEXT_COLOR = glm::vec3( 0x0f, 0x86, 0x08 ) / 255.0f;
 inline constexpr glm::vec3 NEGATIVE_TEXT_COLOR = glm::vec3( 0xff, 0x08, 0x08 ) / 255.0f;
 inline constexpr glm::vec3 PRODUCTION_TEXT_COLOR = glm::vec3( 0xA8, 0x74, 0x4B ) / 255.0f;
+inline constexpr glm::vec3 BUTTON_TEXT_COLOR = glm::vec3( 128.f, 58.0f, 47.0f ) / 255.0f;
 
 inline constexpr glm::vec3 TILE_COLOR_EMPTY    = glm::vec3( 0xff, 0x55, 0x55 ) / 255.0f;
 inline constexpr glm::vec3 TILE_COLOR_OCEAN    = glm::vec3( 0x61, 0xa0, 0xcc ) / 255.0f;
@@ -60,8 +78,12 @@ inline constexpr float TEXT_FLOAT_DISTANCE = 0.5f;
 
 inline constexpr uint8_t STENCIL_NONE = 0xff;
 
-inline constexpr uint8_t STENCIL_MENU = 0x01;
-inline constexpr uint8_t STENCIL_END       = 0x02;
+inline constexpr uint8_t STENCIL_MENU_CONTINUE = 0x01;
+inline constexpr uint8_t STENCIL_MENU_NEW_GAME = 0x02;
+inline constexpr uint8_t STENCIL_MENU_QUIT = 0x03;
+
+inline constexpr uint8_t STENCIL_TO_MENU_BUTTON = 0x01;
+inline constexpr uint8_t STENCIL_END_BUTTON  = 0x02;
 inline constexpr uint8_t STENCIL_ACTIONS   = 0x03;
 inline constexpr uint8_t STENCIL_EVENTS    = 0x04;
 inline constexpr uint8_t STENCIL_AUTOMATED = 0x05;
@@ -91,7 +113,6 @@ inline constexpr int RESOURCE_TEXTURE_COLUMNS = 6;
 
 inline constexpr float HUD_BASE_Z = 0.8f;
 inline constexpr float MOUSE_HOVER_SIZE_MULTIPLIER = 1.1f;
-inline constexpr glm::vec3 BUTTON_TEXT_COLOR = glm::vec3( 1280.f, 58.0f, 47.0f ) / 255.0f;
 inline constexpr float PRODUCTION_RESOURCE_SHRINK = 0.6f;
 
 inline constexpr float PANEL_BASE_Z = HUD_BASE_Z - 0.1f;

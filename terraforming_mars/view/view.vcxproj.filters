@@ -40,8 +40,8 @@
     <ClCompile Include="gl_utils\tm_camera_manipulator.cpp">
       <Filter>gl_utils</Filter>
     </ClCompile>
-    <ClCompile Include="view.cpp" />
     <ClCompile Include="solo_game_view.cpp" />
+    <ClCompile Include="menu_view.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="app.hpp" />
@@ -78,6 +78,7 @@
     <ClInclude Include="panel.hpp" />
     <ClInclude Include="view.hpp" />
     <ClInclude Include="solo_game_view.hpp" />
+    <ClInclude Include="menu_view.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\skybox.frag">
@@ -197,6 +198,18 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="assets\player.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\continue_pane.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\new_game_pane.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\quit_pane.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\tm_pane.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
