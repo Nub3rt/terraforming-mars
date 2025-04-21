@@ -140,6 +140,7 @@ class CardDrawAnimation : public Animation
 public:
     CardDrawAnimation( CardWrapper* card );
     CardDrawAnimation( CardWrapper* card, float speed );
+    ~CardDrawAnimation();
 
     void Render( GameView* view ) override;
     bool IsOver() const noexcept override;
@@ -147,6 +148,7 @@ public:
     float elapsed = 0.0f;
     float speed = 1.0f;
     CardWrapper* card;
+    bool owns_card = true;
 
 protected:
     void DoUpdate( float delta ) override;

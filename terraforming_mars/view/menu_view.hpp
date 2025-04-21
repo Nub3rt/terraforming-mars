@@ -32,7 +32,9 @@ public:
 
     void Update( const UpdateInfo& update_info ) override;
     void Render() override;
+    void RenderGUI() override;
 
+    void KeyboardDown( const SDL_KeyboardEvent& key ) override;
     void MouseMotion( const SDL_MouseMotionEvent& mouse ) override;
     void MouseDown( const SDL_MouseButtonEvent& mouse ) override;
     void MouseUp( const SDL_MouseButtonEvent& mouse ) override;
@@ -95,6 +97,6 @@ protected:
 
 
     bool _debug = false;
-    unsigned int _seed = 42;
+    int _seed = 42;
 };
 }

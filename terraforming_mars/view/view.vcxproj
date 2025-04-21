@@ -229,7 +229,10 @@
     <Image Include="assets\automated_open.png">
       <DeploymentContent>true</DeploymentContent>
     </Image>
-    <Image Include="assets\button.png">
+    <Image Include="assets\button_long.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="assets\button_short.png">
       <DeploymentContent>true</DeploymentContent>
     </Image>
     <Image Include="assets\cards.png">

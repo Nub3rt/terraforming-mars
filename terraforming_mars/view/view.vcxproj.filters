@@ -119,7 +119,7 @@
     <Image Include="assets\cards.png">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="assets\button.png">
+    <Image Include="assets\button_long.png">
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="assets\card_cover.png">
@@ -210,6 +210,9 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="assets\tm_pane.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\button_short.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

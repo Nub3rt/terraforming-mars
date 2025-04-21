@@ -234,7 +234,8 @@ protected:
     static Texture _greenery_texture;
     static Texture _city_texture;
 
-    static Texture _button_texture;
+    static Texture _button_short_texture;
+    static Texture _button_long_texture;
     static Texture _production_box_texture;
     static Texture _arrow_texture;
     static Texture _player_icon_texture;

@@ -440,6 +440,7 @@ void GameView::MouseUp( const SDL_MouseButtonEvent& mouse ) {
                     break;
                 case STENCIL_TO_MENU_BUTTON:
                     _to_menu.Invoke();
+                    _mouse_hover_stencil = 0;
                     break;
                 case STENCIL_END_BUTTON:
                     if ( _state->CanClickEndButton() )
@@ -563,8 +564,9 @@ void GameView::Model_OnDrawCardSpeed( const model::decks::Card* card, float spee
     card_wrapper->state = CardWrapper::State::DRAWING;
 
     CardDrawAnimation* animation = new CardDrawAnimation( card_wrapper, speed );
-    animation->SetOnStart( [ this, card_wrapper ]() {
-        _hand.push_back( card_wrapper );
+    animation->SetOnStart( [ this, animation ]() {
+        _hand.push_back( animation->card );
+        animation->owns_card = false;
         RefreshHandPositions();
     } );
     animation->SetOnCompleted( [ this, card_wrapper ]() {
@@ -1019,14 +1021,13 @@ void GameView::RenderHUD() {
 }
 
 void GameView::RenderMenuButton() {
-    static const float button_ratio = (float)_button_texture.height / _temperature_texture.width;
-    static const float size = 0.048f;
-    static const float spacing = size * 3.0f;
-    static const float width_modifier = 0.8f;
+    static const float button_ratio = (float)_button_short_texture.width / _button_short_texture.height;
+    static const float size = 0.04f;
+    static const float spacing = 0.015f;
 
-    float x = -1.0f + (size + spacing / button_ratio) * width_modifier;
-    float y = 1.0f - size - spacing / button_ratio;
-    glm::vec3 scale( size * button_ratio * width_modifier, size * _width / _height, 1.0f );
+    float x = -1.0f + spacing + size * button_ratio;
+    float y = 1.0f - (spacing + size) * _width / _height;
+    glm::vec3 scale( size * button_ratio, size * _width / _height, 1.0f );
     if ( _menu_button_hovered && _state->CanClickMenuButton() )
         scale *= 1.1;
 
@@ -1036,7 +1037,7 @@ void GameView::RenderMenuButton() {
     glActiveTexture( GL_TEXTURE0 );
     glUniform1i( ul( "image" ), 0 );
 
-    glBindTexture( GL_TEXTURE_2D, _button_texture.id );
+    glBindTexture( GL_TEXTURE_2D, _button_short_texture.id );
 
     glm::mat4 world = glm::translate( glm::vec3( x, y, HUD_BASE_Z ) ) * glm::scale( scale );
     glUniformMatrix4fv( ul( "world" ), 1, GL_FALSE, glm::value_ptr( world ) );
@@ -1346,7 +1347,7 @@ void GameView::RenderSP() {
         glBindVertexArray( _rectangle_gpu.vao_id );
         glActiveTexture( GL_TEXTURE0 );
 
-        glBindTexture( GL_TEXTURE_2D, _button_texture.id );
+        glBindTexture( GL_TEXTURE_2D, _button_long_texture.id );
 
         for ( int i = 0; i < 8; ++i ) {
             auto [x, y, scale] = CalculateSPButtonPosition( i );
@@ -1422,16 +1423,15 @@ void GameView::RenderGlobalParameters() {
 }
 
 void GameView::RenderEndButton() {
-    static const float button_ratio = (float)_button_texture.height / _temperature_texture.width;
-    static const float size = 0.048f;
-    static const float spacing = size * 3.0f;
-    static const float width_modifier = 1.25f;
+    static const float button_ratio = (float)_button_long_texture.width / _button_long_texture.height;
+    static const float size = 0.04f;
+    static const float spacing = 0.018f;
 
     bool grow = _end_button_hovered && _state->CanClickEndButton();
 
-    float x = 1.0f - (size + spacing / button_ratio) * width_modifier;
+    float x = 1.0f - spacing - size * button_ratio;
     float y = 0.0f;
-    glm::vec3 scale( size * button_ratio * width_modifier, size * _width / _height, 1.0f );
+    glm::vec3 scale( size * button_ratio, size * _width / _height, 1.0f );
     if ( grow )
         scale *= 1.1;
 
@@ -1441,7 +1441,7 @@ void GameView::RenderEndButton() {
     glActiveTexture( GL_TEXTURE0 );
     glUniform1i( ul( "image" ), 0 );
 
-    glBindTexture( GL_TEXTURE_2D, _button_texture.id );
+    glBindTexture( GL_TEXTURE_2D, _button_long_texture.id );
 
     glm::mat4 world = glm::translate( glm::vec3( x, y, HUD_BASE_Z ) ) * glm::scale( scale );
     glUniformMatrix4fv( ul( "world" ), 1, GL_FALSE, glm::value_ptr( world ) );
@@ -1952,7 +1952,8 @@ Texture GameView::_ocean_texture = {};
 Texture GameView::_greenery_texture = {};
 Texture GameView::_city_texture = {};
 
-Texture GameView::_button_texture = {};
+Texture GameView::_button_short_texture = {};
+Texture GameView::_button_long_texture = {};
 Texture GameView::_production_box_texture = {};
 Texture GameView::_arrow_texture = {};
 Texture GameView::_player_icon_texture = {};
@@ -1979,7 +1980,8 @@ void GameView::InitTextures() {
     _greenery_texture = LoadTexture( "assets/greenery.png" );
     _city_texture = LoadTexture( "assets/city.png" );
 
-    _button_texture = LoadTexture( "assets/button.png" );
+    _button_short_texture = LoadTexture( "assets/button_short.png" );
+    _button_long_texture = LoadTexture( "assets/button_long.png" );
     _production_box_texture = LoadTexture( "assets/production_box.png" );
     _arrow_texture = LoadTexture( "assets/arrow.png" );
     _player_icon_texture = LoadTexture( "assets/player.png" );
@@ -2007,7 +2009,8 @@ void GameView::CleanTextures() {
     glDeleteTextures( 1, &_greenery_texture.id );
     glDeleteTextures( 1, &_city_texture.id );
 
-    glDeleteTextures( 1, &_button_texture.id );
+    glDeleteTextures( 1, &_button_short_texture.id );
+    glDeleteTextures( 1, &_button_long_texture.id );
     glDeleteTextures( 1, &_production_box_texture.id );
     glDeleteTextures( 1, &_arrow_texture.id );
     glDeleteTextures( 1, &_player_icon_texture.id );

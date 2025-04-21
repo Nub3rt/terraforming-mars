@@ -11,6 +11,10 @@
 
 #include <GL/glew.h>
 
+#include <SDL3/SDL.h>
+
+#include <imgui.h>
+
 #include "animatable.hpp"
 #include "constants.hpp"
 #include "view.hpp"
@@ -180,6 +184,24 @@ void MenuView::Render() {
         _game_view->RenderMars();
 }
 
+void MenuView::RenderGUI() {
+    if ( _debug && !_transitioning ) {
+        if ( ImGui::Begin( "Debug" ) ) {
+            ImGui::InputInt( "Seed", &_seed );
+        }
+        ImGui::End();
+    }
+}
+
+void MenuView::KeyboardDown( const SDL_KeyboardEvent& key ) {
+    if ( key.key == SDLK_D &&
+         key.mod & SDL_KMOD_CTRL &&
+         !(key.mod & (SDL_KMOD_SHIFT | SDL_KMOD_ALT | SDL_KMOD_GUI)) ) {
+        if ( !key.repeat )
+            _debug = !_debug;
+    }
+}
+
 void MenuView::MouseMotion( const SDL_MouseMotionEvent& mouse ) {
     _mouse_hover_stencil = GetStencilValue( mouse.x, mouse.y );
 }
@@ -239,6 +261,7 @@ void MenuView::TransitionFromMars() {
 }
 
 void MenuView::TransitionToMars() {
+    _mouse_hover_stencil = 0;
     _to_mars = true;
     Transition( CAMERA_Z_MENU_EYE, CAMERA_Z_GAME_EYE, CAMERA_Z_MENU_AT, CAMERA_Z_GAME_AT );
 }

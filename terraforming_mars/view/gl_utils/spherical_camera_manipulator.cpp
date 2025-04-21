@@ -7,13 +7,15 @@
 #include "camera.hpp"
 #include "camera_manipulator.hpp"
 
+#include "../constants.hpp"
+
 namespace view
 {
 SphericalCameraManipulator::SphericalCameraManipulator( Camera& camera )
     : CameraManipulator( camera ) {
-    _center = _camera.GetAt();
+    _center = glm::vec3( CAMERA_X, CAMERA_Y, CAMERA_Z_GAME_AT );
 
-    glm::vec3 to_aim = _center - _camera.GetEye();
+    glm::vec3 to_aim = _center - glm::vec3( CAMERA_X, CAMERA_Y, CAMERA_Z_GAME_EYE );
 
     _distance = glm::length( to_aim );
 

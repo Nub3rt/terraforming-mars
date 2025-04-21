@@ -181,6 +181,11 @@ CardDrawAnimation::CardDrawAnimation( CardWrapper* card, float speed )
     _lockout_time /= speed;
 }
 
+CardDrawAnimation::~CardDrawAnimation() {
+    if ( owns_card )
+        delete card;
+}
+
 void CardDrawAnimation::Render( GameView* view ) {
     view->RenderAnimation( this );
 }
