@@ -264,6 +264,9 @@
     <Image Include="assets\oxygen.png">
       <DeploymentContent>true</DeploymentContent>
     </Image>
+    <Image Include="assets\player.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
     <Image Include="assets\production_box.png">
       <DeploymentContent>true</DeploymentContent>
     </Image>

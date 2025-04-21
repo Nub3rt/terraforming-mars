@@ -224,6 +224,7 @@ protected:
     Texture _button_texture = {};
     Texture _production_box_texture = {};
     Texture _arrow_texture = {};
+    Texture _player_icon_texture = {};
     Texture _card_cover_texture = {};
 
     Texture _action_closed_texture = {};

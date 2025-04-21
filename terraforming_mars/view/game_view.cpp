@@ -874,22 +874,26 @@ void GameView::RenderHexagon( TileWrapper& tile, int id ) {
     glDrawElements( GL_TRIANGLES, _hexagon_gpu.count, GL_UNSIGNED_INT, nullptr );
 
 
-    if ( tile->IsEmpty() ) {
-        static const float d_x_1 = 0.0f;
-        static const float d_y_1 = 0.55f;
-        static const float d_x_2 = d_x_1 - 0.45f;
-        static const float d_y_2 = d_y_1 - 0.25f;
-        static const float d_z = 0.25f;
+    static const float d_x_1 = 0.0f;
+    static const float d_y_1 = 0.55f;
+    static const float d_x_2 = d_x_1 - 0.45f;
+    static const float d_y_2 = d_y_1 - 0.25f;
+    static const float d_z = 0.25f;
 
-        static const float size = 0.2f;
-        static const glm::mat4 scale = glm::scale( glm::vec3( size, size, 1.0f ) );
-        static const float card_ratio = (float)CARD_TEXTURE_WIDTH / CARD_TEXTURE_HEIGHT;
-        static const glm::mat4 card_scale = glm::scale( glm::vec3( size * card_ratio, size, 1.0f ) );
-        static const float stride_x = 1.0f / RESOURCE_TEXTURE_COLUMNS;
-        static const float stride_y = 1.0f / RESOURCE_TEXTURE_ROWS;
+    static const float size = 0.2f;
+    static const glm::mat4 scale = glm::scale( glm::vec3( size, size, 1.0f ) );
+    static const float card_ratio = (float)_card_cover_texture.width / _card_cover_texture.height;
+    static const glm::mat4 card_scale = glm::scale( glm::vec3( size * card_ratio, size, 1.0f ) );
+    static const float player_icon_ratio = (float)_player_icon_texture.width / _player_icon_texture.height;
+    static const glm::mat4 player_icon_scale = glm::scale( glm::vec3( size * player_icon_ratio, size, 1.0f ) );
+    static const glm::mat4 bonus_1_translate = glm::translate( glm::vec3( d_x_1, d_y_1, d_z ) );
+    static const glm::mat4 bonus_2_translate = glm::translate( glm::vec3( d_x_2, d_y_2, d_z ) );
+    static const float stride_x = 1.0f / RESOURCE_TEXTURE_COLUMNS;
+    static const float stride_y = 1.0f / RESOURCE_TEXTURE_ROWS;
+
+    if ( tile->IsEmpty() ) {
 
         if ( tile->get_bonus_1() ) {
-            static const glm::mat4 icon_translate = glm::translate( glm::vec3( d_x_1, d_y_1, d_z ) );
             model::Resource resource = *tile->get_bonus_1();
 
             if ( resource == model::Resource::CARD ) {
@@ -898,7 +902,7 @@ void GameView::RenderHexagon( TileWrapper& tile, int id ) {
 
                 glBindTexture( GL_TEXTURE_2D, _card_cover_texture.id );
 
-                glm::mat4 card_world = view_proj * icon_translate * world * card_scale;
+                glm::mat4 card_world = view_proj * bonus_1_translate * world * card_scale;
                 glUniformMatrix4fv( ul( "world" ), 1, GL_FALSE, glm::value_ptr( card_world ) );
 
                 glDrawElements( GL_TRIANGLES, _rectangle_gpu.count, GL_UNSIGNED_INT, nullptr );
@@ -911,7 +915,7 @@ void GameView::RenderHexagon( TileWrapper& tile, int id ) {
                 int index_x = +resource % RESOURCE_TEXTURE_COLUMNS;
                 int index_y = +resource / RESOURCE_TEXTURE_COLUMNS;
 
-                glm::mat4 resource_world = view_proj * icon_translate * world * scale;
+                glm::mat4 resource_world = view_proj * bonus_1_translate * world * scale;
                 glUniformMatrix4fv( ul( "world" ), 1, GL_FALSE, glm::value_ptr( resource_world ) );
 
                 glUniform1f( ul( "stride_x" ), stride_x );
@@ -924,7 +928,6 @@ void GameView::RenderHexagon( TileWrapper& tile, int id ) {
         }
 
         if ( tile->get_bonus_2() ) {
-            static const glm::mat4 icon_translate = glm::translate( glm::vec3( d_x_2, d_y_2, d_z ) );
             model::Resource resource = *tile->get_bonus_2();
 
             if ( resource == model::Resource::CARD ) {
@@ -933,7 +936,7 @@ void GameView::RenderHexagon( TileWrapper& tile, int id ) {
 
                 glBindTexture( GL_TEXTURE_2D, _card_cover_texture.id );
 
-                glm::mat4 card_world = view_proj * icon_translate * world * card_scale;
+                glm::mat4 card_world = view_proj * bonus_2_translate * world * card_scale;
                 glUniformMatrix4fv( ul( "world" ), 1, GL_FALSE, glm::value_ptr( card_world ) );
 
                 glDrawElements( GL_TRIANGLES, _rectangle_gpu.count, GL_UNSIGNED_INT, nullptr );
@@ -946,7 +949,7 @@ void GameView::RenderHexagon( TileWrapper& tile, int id ) {
                 int index_x = +resource % RESOURCE_TEXTURE_COLUMNS;
                 int index_y = +resource / RESOURCE_TEXTURE_COLUMNS;
 
-                glm::mat4 resource_world = view_proj * icon_translate * world * scale;
+                glm::mat4 resource_world = view_proj * bonus_2_translate * world * scale;
                 glUniformMatrix4fv( ul( "world" ), 1, GL_FALSE, glm::value_ptr( resource_world ) );
 
                 glUniform1f( ul( "stride_x" ), stride_x );
@@ -957,6 +960,16 @@ void GameView::RenderHexagon( TileWrapper& tile, int id ) {
                 glDrawElements( GL_TRIANGLES, _rectangle_gpu.count, GL_UNSIGNED_INT, nullptr );
             }
         }
+    } else if ( tile->get_owner() != nullptr ) {
+        glUseProgram( _program_rectangle_id );
+        glBindVertexArray( _rectangle_gpu.vao_id );
+
+        glBindTexture( GL_TEXTURE_2D, _player_icon_texture.id );
+
+        glm::mat4 player_icon_world = view_proj * bonus_1_translate * world * player_icon_scale;
+        glUniformMatrix4fv( ul( "world" ), 1, GL_FALSE, glm::value_ptr( player_icon_world ) );
+
+        glDrawElements( GL_TRIANGLES, _rectangle_gpu.count, GL_UNSIGNED_INT, nullptr );
     }
 
 
@@ -1919,6 +1932,7 @@ void GameView::InitTextures() {
     _button_texture = LoadTexture( "assets/button.png" );
     _production_box_texture = LoadTexture( "assets/production_box.png" );
     _arrow_texture = LoadTexture( "assets/arrow.png" );
+    _player_icon_texture = LoadTexture( "assets/player.png" );
     _card_cover_texture = LoadTexture( "assets/card_cover.png" );
 
     _action_closed_texture = LoadTexture( "assets/action_closed.png" );
@@ -1946,6 +1960,7 @@ void GameView::CleanTextures() {
     glDeleteTextures( 1, &_button_texture.id );
     glDeleteTextures( 1, &_production_box_texture.id );
     glDeleteTextures( 1, &_arrow_texture.id );
+    glDeleteTextures( 1, &_player_icon_texture.id );
     glDeleteTextures( 1, &_card_cover_texture.id );
 
     glDeleteTextures( 1, &_action_closed_texture.id );
