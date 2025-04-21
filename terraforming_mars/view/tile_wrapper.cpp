@@ -19,6 +19,8 @@ TileWrapper::TileWrapper( const model::boards::Tile& tile ) : _tile( tile ) {
         border_color = TILE_BORDER_COLOR_FOR_NOCTIS;
     else
         border_color = TILE_BORDER_COLOR_IDLE;
+
+    show_resources = _tile.IsEmpty();
 }
 
 TileWrapper::~TileWrapper() {}
