@@ -181,6 +181,8 @@ void GameModelState::Player_OnPlaceNoctisCity( Player* player ) {
         if ( oceans != 0 )
             _model->_local_player->GainResource( Resource::CREDIT, oceans * 2 );
 
+        _model->TileWasPlaced( boards::TileType::CITY );
+
         return;
     }
 
@@ -280,11 +282,11 @@ IdleState::~IdleState() {}
 bool IdleState::CanUsePowerPlantSP() { return _model->_local_player->GetResource( Resource::CREDIT ) >= POWER_PLANT_SP_COST; }
 bool IdleState::CanUseAsteroidSP() { return _model->_local_player->GetResource( Resource::CREDIT ) >= ASTEROID_SP_COST &&
                                             _model->Temperature() < MAX_TEMPERATURE; }
-bool IdleState::CanUseAquiferSP() { return _model->_local_player->GetResource( Resource::CREDIT ) >= POWER_PLANT_SP_COST &&
+bool IdleState::CanUseAquiferSP() { return _model->_local_player->GetResource( Resource::CREDIT ) >= AQUIFER_SP_COST &&
                                            _model->OceanCount() < MAX_OCEAN_COUNT; }
 bool IdleState::CanUseGreenerySP() { return _model->_local_player->GetResource( Resource::CREDIT ) >= GREENERY_SP_COST &&
                                             _model->_board->GetValidGreeneryTiles( _model->_local_player ).size() > 0; }
-bool IdleState::CanUseCitySP() { return _model->_local_player->GetResource( Resource::CREDIT ) >= POWER_PLANT_SP_COST &&
+bool IdleState::CanUseCitySP() { return _model->_local_player->GetResource( Resource::CREDIT ) >= CITY_SP_COST &&
                                         _model->_board->GetValidCityTiles( _model->_local_player ).size() > 0 ; }
 bool IdleState::CanConvertPlantsToGreenery() { return _model->_local_player->GetResource( Resource::PLANTS ) >= _model->_local_player->get_greenery_cost() &&
                                                       _model->_board->GetValidGreeneryTiles( _model->_local_player ).size() > 0; }
@@ -410,6 +412,8 @@ void PlacementConfirmationState::TilePlacementConfirmed( int q, int r ) {
 
     if ( _request->type == boards::TileType::GREENERY )
         _model->_local_player->RaiseOxygen();
+
+    _model->TileWasPlaced( _request->type );
 
     if ( _model->_queued_request.empty() ) {
         _model->RequestStateChange( _model->CreateIdleState() );
@@ -541,6 +545,8 @@ void PostLastGenerationPlacementConfirmationState::TilePlacementConfirmed( int q
         throw std::logic_error( std::format( "PostLastGenerationPlacementConfirmationState::TilePlacementConfirmed: indices q: {}, r: {} are not valid positions!", q, r ) );
 
     _model->_board->PlaceTile( q, r, _model->_local_player, boards::TileType::GREENERY );
+
+    _model->TileWasPlaced( boards::TileType::GREENERY );
 
     _model->RequestStateChange( _model->CreatePostLastGenerationState() );
 }

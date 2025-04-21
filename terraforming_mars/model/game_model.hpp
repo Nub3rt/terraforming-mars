@@ -193,6 +193,9 @@ protected:
 
     void RequestStateChange( GameModelState* state );
 
+    virtual void TileWasPlaced( boards::TileType type );
+    virtual void OnAnyoneEffect( std::function<void( decks::ActiveCardWithEffect* )> effect );
+
     virtual void EndGame();
 
     virtual void Player_OnDrawCard( Player* player );

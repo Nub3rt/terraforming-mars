@@ -28,6 +28,8 @@ void TileWrapper::OnTilePlaced() {
 
     if ( _tile.get_type() != model::boards::TileType::RESERVED_FOR_OCEAN )
         border_color = TILE_BORDER_COLOR_IDLE;
+
+    show_resources = false;
 }
 
 void TileWrapper::Update( float delta ) {

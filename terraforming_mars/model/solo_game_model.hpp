@@ -26,6 +26,8 @@ protected:
 
     IdleState* CreateIdleState() override;
     PostLastGenerationState* CreatePostLastGenerationState() override;
+
+    void OnAnyoneEffect( std::function<void( decks::ActiveCardWithEffect* )> effect ) override;
 };
 
 

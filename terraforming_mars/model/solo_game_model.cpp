@@ -65,6 +65,10 @@ PostLastGenerationState* SoloGameModel::CreatePostLastGenerationState() {
     return new SoloPostLastGenerationState( this );
 }
 
+void SoloGameModel::OnAnyoneEffect( std::function<void( decks::ActiveCardWithEffect* )> effect ) {
+    _local_player->OnEffect( effect );
+}
+
 void SoloGameModel::Player_OnDestroyResource( Player* player, Resource resource, int amount ) {}
 void SoloGameModel::Player_OnDestroyResourceProduction( Player* player, Resource resource, int amount ) {}
 

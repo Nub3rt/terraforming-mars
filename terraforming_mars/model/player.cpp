@@ -150,8 +150,8 @@ void Player::PlayCard( const decks::Card* card ) {
 }
 
 int Player::CalculateCardCost( const decks::Card* card, int base_cost ) const {
-    for ( decks::ActiveCardWithEffect* card : _effect_cards )
-        base_cost = card->ModifyCardCost( card, base_cost );
+    for ( decks::ActiveCardWithEffect* effect_card : _effect_cards )
+        base_cost = effect_card->ModifyCardCost( card, base_cost );
 
     return base_cost;
 }

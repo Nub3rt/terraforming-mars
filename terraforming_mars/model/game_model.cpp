@@ -2,14 +2,17 @@
 
 #include <stdexcept>
 
-#include "boards/board.hpp"
-#include "decks/card.hpp"
 #include "constants.hpp"
-#include "decks/active_card_with_action.hpp"
-#include "decks/deck.hpp"
 #include "event.hpp"
 #include "game_model_state.hpp"
 #include "player.hpp"
+
+#include "boards/board.hpp"
+
+#include "decks/active_card_with_effect.hpp"
+#include "decks/active_card_with_action.hpp"
+#include "decks/card.hpp"
+#include "decks/deck.hpp"
 
 namespace model
 {
@@ -206,6 +209,18 @@ void GameModel::RequestStateChange( GameModelState* state ) {
         _next_state = state;
     else
         throw std::logic_error( "GameModel::RequestStateChange: another state change was already requested!" );
+}
+
+void GameModel::TileWasPlaced( boards::TileType type ) {
+    if ( type == boards::TileType::CITY )
+        OnAnyoneEffect( &decks::ActiveCardWithEffect::AfterAnyonePlacesCity );
+
+    if ( type == boards::TileType::OCEAN )
+        OnAnyoneEffect( &decks::ActiveCardWithEffect::AfterAnyonePlacesOcean );
+}
+
+void GameModel::OnAnyoneEffect( std::function<void( decks::ActiveCardWithEffect* )> effect ) {
+    // TODO
 }
 
 void GameModel::Player_OnDrawCard( Player* player ) { _state->Player_OnDrawCard( player ); }

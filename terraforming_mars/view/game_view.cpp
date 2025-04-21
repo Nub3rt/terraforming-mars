@@ -891,7 +891,7 @@ void GameView::RenderHexagon( TileWrapper& tile, int id ) {
     static const float stride_x = 1.0f / RESOURCE_TEXTURE_COLUMNS;
     static const float stride_y = 1.0f / RESOURCE_TEXTURE_ROWS;
 
-    if ( tile->IsEmpty() ) {
+    if ( tile.show_resources ) {
 
         if ( tile->get_bonus_1() ) {
             model::Resource resource = *tile->get_bonus_1();

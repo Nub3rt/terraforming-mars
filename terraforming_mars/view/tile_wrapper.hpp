@@ -20,6 +20,7 @@ public:
     void Update( float delta );
 
     bool selectable = false;
+    bool show_resources = true;
     Animatable<glm::vec3> color;
     glm::vec3 border_color;
 
