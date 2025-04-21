@@ -21,6 +21,8 @@ bool OreProcessor::CanBeUsed() const {
 }
 
 void OreProcessor::DoUseAction() {
+    _owner->LoseResource( Resource::ENERGY, _action_energy_cost );
+
     _owner->GainResource( Resource::TITANIUM, 1 );
     _owner->RaiseOxygen();
 }

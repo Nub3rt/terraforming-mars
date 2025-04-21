@@ -21,6 +21,8 @@ bool Steelworks::CanBeUsed() const {
 }
 
 void Steelworks::DoUseAction() {
+    _owner->LoseResource( Resource::ENERGY, _action_energy_cost );
+
     _owner->GainResource( Resource::STEEL, 2 );
     _owner->RaiseOxygen();
 }

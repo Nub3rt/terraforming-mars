@@ -22,6 +22,8 @@ bool SpaceMirrors::CanBeUsed() const {
 }
 
 void SpaceMirrors::DoUseAction() {
+    _owner->LoseResource( Resource::CREDIT, _action_credit_cost );
+
     _owner->GainResourceProduction( Resource::ENERGY, 1 );
 }
 }
