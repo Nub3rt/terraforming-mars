@@ -121,14 +121,20 @@ static void invert_image_RGBA( ImageRGBA& image ) {
     }
 }
 
-GLsizei NumberOfMIPLevels( const ImageRGBA& image ) {
-    GLsizei targetlevel = 1;
-    unsigned int index = std::max( image.width, image.height );
+Texture LoadTexture( const std::filesystem::path& filename, GLint wrap_behaviour ) {
+    ImageRGBA cards = ImageFromFile( filename );
+    Texture tex = { 0, cards.width, cards.height };
 
-    while ( index >>= 1 )
-        ++targetlevel;
+    glGenTextures( 1, &tex.id );
+    glBindTexture( GL_TEXTURE_2D, tex.id );
+    glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, cards.width, cards.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, cards.data() );
+    glGenerateMipmap( GL_TEXTURE_2D );
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR );
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap_behaviour );
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap_behaviour );
 
-    return targetlevel;
+    return tex;
 }
 
 [[nodiscard]] ImageRGBA ImageFromFile( const std::filesystem::path& filename, bool needs_flip ) {
@@ -166,12 +172,22 @@ GLsizei NumberOfMIPLevels( const ImageRGBA& image ) {
     return img;
 }
 
-void CleanOGLObject( OGLObject& ObjectGPU ) {
-    glDeleteBuffers( 1, &ObjectGPU.vbo_id );
-    ObjectGPU.vbo_id = 0;
-    glDeleteBuffers( 1, &ObjectGPU.ibo_id );
-    ObjectGPU.ibo_id = 0;
-    glDeleteVertexArrays( 1, &ObjectGPU.vao_id );
-    ObjectGPU.vao_id = 0;
+GLsizei NumberOfMIPLevels( const ImageRGBA& image ) {
+    GLsizei targetlevel = 1;
+    unsigned int index = std::max( image.width, image.height );
+
+    while ( index >>= 1 )
+        ++targetlevel;
+
+    return targetlevel;
+}
+
+void CleanOGLObject( OGLObject& object_gpu ) {
+    glDeleteBuffers( 1, &object_gpu.vbo_id );
+    object_gpu.vbo_id = 0;
+    glDeleteBuffers( 1, &object_gpu.ibo_id );
+    object_gpu.ibo_id = 0;
+    glDeleteVertexArrays( 1, &object_gpu.vao_id );
+    object_gpu.vao_id = 0;
 }
 }

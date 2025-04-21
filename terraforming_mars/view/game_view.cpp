@@ -1893,7 +1893,7 @@ void GameView::InitGeometry() {
         hexagon_cpu.index_array.push_back( i % 6 + 1 );
     }
 
-    _hexagon_gpu = CreateGLObjectFromMesh( hexagon_cpu, _vertex_plus_attribute_list );
+    _hexagon_gpu = CreateGLObjectFromMesh( hexagon_cpu, vertex_plus_attribute_list );
 
 
     MeshObject<VertexPosTex> rectangle_cpu = {
@@ -1909,7 +1909,7 @@ void GameView::InitGeometry() {
         }
     };
 
-    _rectangle_gpu = CreateGLObjectFromMesh( rectangle_cpu, _vertex_pos_tex_attribute_list );
+    _rectangle_gpu = CreateGLObjectFromMesh( rectangle_cpu, vertex_pos_tex_attribute_list );
 }
 
 void GameView::CleanGeometry() {
@@ -1973,22 +1973,6 @@ void GameView::CleanTextures() {
     glDeleteTextures( 1, &_effect_open_texture.id );
 }
 
-Texture GameView::LoadTexture( const std::filesystem::path& filename, GLint wrap_behaviour ) {
-    ImageRGBA cards = ImageFromFile( filename );
-    Texture tex = { 0, cards.width, cards.height };
-
-    glGenTextures( 1, &tex.id );
-    glBindTexture( GL_TEXTURE_2D, tex.id );
-    glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, cards.width, cards.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, cards.data() );
-    glGenerateMipmap( GL_TEXTURE_2D );
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR );
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap_behaviour );
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap_behaviour );
-
-    return tex;
-}
-
 #pragma endregion Init and Clean
 
 #pragma region Constants
@@ -1997,27 +1981,5 @@ const std::pair<float, float>& GameView::GetBoardOrigin() {
     static const std::pair<float, float> origin( 4.0f, 4.0f );
     return origin;
 }
-
-const std::initializer_list<VertexAttributeDescriptor> GameView::_vertex_pos_tex_attribute_list =
-{
-    { 0, offsetof( VertexPosTex, position ), 3, GL_FLOAT },
-    { 1, offsetof( VertexPosTex, texcoord ), 2, GL_FLOAT },
-};
-
-const std::initializer_list<VertexAttributeDescriptor> GameView::_vertex_attribute_list =
-{
-    { 0, offsetof( Vertex, position ), 3, GL_FLOAT },
-    { 1, offsetof( Vertex, normal   ), 3, GL_FLOAT },
-    { 2, offsetof( Vertex, texcoord ), 2, GL_FLOAT },  
-};
-
-const std::initializer_list<VertexAttributeDescriptor> GameView::_vertex_plus_attribute_list =
-{
-    { 0, offsetof( VertexF, position ), 3, GL_FLOAT },
-    { 1, offsetof( VertexF, normal   ), 3, GL_FLOAT },
-    { 2, offsetof( VertexF, texcoord ), 2, GL_FLOAT },
-    { 3, offsetof( VertexF, plus     ), 1, GL_FLOAT },
-};
-
 #pragma endregion Constants
 }

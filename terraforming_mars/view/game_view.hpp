@@ -238,13 +238,8 @@ protected:
 
     void InitTextures();
     void CleanTextures();
-    Texture LoadTexture( const std::filesystem::path& filename, GLint wrap_behaviour = GL_CLAMP_TO_EDGE );
 
     virtual const std::pair<float, float>& GetBoardOrigin();
-
-    static const std::initializer_list<VertexAttributeDescriptor> _vertex_pos_tex_attribute_list;
-    static const std::initializer_list<VertexAttributeDescriptor> _vertex_attribute_list;
-    static const std::initializer_list<VertexAttributeDescriptor> _vertex_plus_attribute_list;
 
     bool _debug = false;
 };

@@ -161,8 +161,9 @@ template <typename VertexT>
     return mesh_gpu;
 }
 
-void CleanOGLObject( OGLObject& ObjectGPU );
+void CleanOGLObject( OGLObject& object_gpu );
 
+[[nodiscard]] Texture LoadTexture( const std::filesystem::path& filename, GLint wrap_behaviour = GL_CLAMP_TO_EDGE );
 [[nodiscard]] ImageRGBA ImageFromFile( const std::filesystem::path& filename, bool needs_flip = true );
 GLsizei NumberOfMIPLevels( const ImageRGBA& );
 
@@ -176,4 +177,25 @@ inline GLint ul( const GLchar* uniform_name ) noexcept {
     glGetIntegerv( GL_CURRENT_PROGRAM, &program_id );
     return ul( program_id, uniform_name );
 }
+
+const std::initializer_list<VertexAttributeDescriptor> vertex_pos_tex_attribute_list =
+{
+    { 0, offsetof( VertexPosTex, position ), 3, GL_FLOAT },
+    { 1, offsetof( VertexPosTex, texcoord ), 2, GL_FLOAT },
+};
+
+const std::initializer_list<VertexAttributeDescriptor> vertex_attribute_list =
+{
+    { 0, offsetof( Vertex, position ), 3, GL_FLOAT },
+    { 1, offsetof( Vertex, normal   ), 3, GL_FLOAT },
+    { 2, offsetof( Vertex, texcoord ), 2, GL_FLOAT },
+};
+
+const std::initializer_list<VertexAttributeDescriptor> vertex_plus_attribute_list =
+{
+    { 0, offsetof( VertexF, position ), 3, GL_FLOAT },
+    { 1, offsetof( VertexF, normal   ), 3, GL_FLOAT },
+    { 2, offsetof( VertexF, texcoord ), 2, GL_FLOAT },
+    { 3, offsetof( VertexF, plus     ), 1, GL_FLOAT },
+};
 }
