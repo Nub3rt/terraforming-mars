@@ -111,6 +111,18 @@ void GameView::Clean() {
     for ( CardWrapper* card : _hand )
         delete card;
 
+    for ( CardWrapper* card : _action_cards )
+        delete card;
+
+    for ( CardWrapper* card : _event_cards )
+        delete card;
+
+    for ( CardWrapper* card : _automated_cards )
+        delete card;
+
+    for ( CardWrapper* card : _effect_cards )
+        delete card;
+
     delete _tm_camera_manipulator;
     delete _editorial_camera_manipulator;
 
@@ -215,6 +227,7 @@ void GameView::Update( const UpdateInfo& update_info ) {
     _model->Update();
 
     if ( _next_state != nullptr && !_locking_animation ) {
+        _panel = Panel::NONE;
         delete _state;
         _state = _next_state;
         _next_state = nullptr;
@@ -234,6 +247,8 @@ void GameView::Render() {
     RenderHUD();
 
     _state->Render();
+
+    RenderPanels();
 
     RenderHand();
 
@@ -319,23 +334,23 @@ void GameView::KeyboardDown( const SDL_KeyboardEvent& key ) {
     if ( !(key.mod & (SDL_KMOD_CTRL | SDL_KMOD_SHIFT | SDL_KMOD_ALT | SDL_KMOD_GUI)) ) {
         switch ( key.key ) {
             case SDLK_U:
-                _state->ClickedAction();
+                ClickedAction();
                 break;
             case SDLK_I:
-                _state->ClickedEvent();
+                ClickedEvent();
                 break;
             case SDLK_O:
-                _state->ClickedAutomated();
+                ClickedAutomated();
                 break;
             case SDLK_P:
-                _state->ClickedEffect();
+                ClickedEffect();
                 break;
 
             case SDLK_LEFT:
-                _state->ClickedLeft();
+                ClickedLeft();
                 break;
             case SDLK_RIGHT:
-                _state->ClickedRight();
+                ClickedRight();
                 break;
         }
     }
@@ -447,16 +462,16 @@ void GameView::MouseUp( const SDL_MouseButtonEvent& mouse ) {
                         _state->ClickedEndButton();
                     break;
                 case STENCIL_ACTIONS:
-                    _state->ClickedAction();
+                    ClickedAction();
                     break;
                 case STENCIL_EVENTS:
-                    _state->ClickedEvent();
+                    ClickedEvent();
                     break;
                 case STENCIL_AUTOMATED:
-                    _state->ClickedAutomated();
+                    ClickedAutomated();
                     break;
                 case STENCIL_EFFECTS:
-                    _state->ClickedEffect();
+                    ClickedEffect();
                     break;
                 case STENCIL_SP_SELL_PATENTS:
                     if ( _state->CanUseSellPatentsSP() )
@@ -491,10 +506,10 @@ void GameView::MouseUp( const SDL_MouseButtonEvent& mouse ) {
                         _model->ConvertHeatToTemperature();
                     break;
                 case STENCIL_LEFT:
-                    _state->ClickedLeft();
+                    ClickedLeft();
                     break;
                 case STENCIL_RIGHT:
-                    _state->ClickedRight();
+                    ClickedRight();
                     break;
                 default: // research cards/tile/misc was clicked
                     if ( stencil < STENCIL_STARTING_BOARD ) {
@@ -546,6 +561,7 @@ void GameView::RequestStateChange( GameViewState* state ) {
 }
 
 void GameView::RequestInstantStateChange( GameViewState* state ) {
+    _panel = Panel::NONE;
     delete _state;
     _state = state;
     _state->Enter();
@@ -586,16 +602,16 @@ void GameView::Model_OnDrawCards( std::vector<const model::decks::Card*> cards )
 
 void GameView::Model_OnPlayCard( const model::decks::Card* card ) {
     if ( card->IsActiveWithAction() ) {
-        _action_cards.emplace_back( card );
+        _action_cards.push_back( new CardWrapper( card ) );
         SetPlayedCardParams( _action_cards );
     } else if ( card->IsEvent() ) {
-        _event_cards.emplace_back( card );
+        _event_cards.push_back( new CardWrapper( card ) );
         SetPlayedCardParams( _event_cards );
     } else if ( card->IsAutomated() ) {
-        _automated_cards.emplace_back( card );
+        _automated_cards.push_back( new CardWrapper( card ) );
         SetPlayedCardParams( _automated_cards );
     } else if ( card->IsActiveWithEffect() ) {
-        _effect_cards.emplace_back( card );
+        _effect_cards.push_back( new CardWrapper( card ) );
         SetPlayedCardParams( _effect_cards );
     } else
         throw std::logic_error( "GameView::Model_OnPlayCard: card was not of any of the four types! (This should never happen.)" );
@@ -1017,7 +1033,6 @@ void GameView::RenderHUD() {
     RenderGlobalParameters();
     RenderEndButton();
     RenderResources();
-    RenderPanels();
 }
 
 void GameView::RenderMenuButton() {
@@ -1541,12 +1556,12 @@ void GameView::RenderHand() {
         else if ( _hand[ i ]->state == CardWrapper::State::DRAGGING )
             dragging = { _hand[ i ], i };
         else
-            RenderCard( *_hand[ i ], i );
+            RenderCard( *_hand[ i ], i, HAND_BASE_Z );
     }
     if ( hovered )
-        RenderCard( *hovered->first, hovered->second );
+        RenderCard( *hovered->first, hovered->second, HAND_BASE_Z );
     if ( dragging )
-        RenderCard( *dragging->first, dragging->second );
+        RenderCard( *dragging->first, dragging->second, HAND_BASE_Z );
 
     glBindTexture( GL_TEXTURE_2D, 0 );
 
@@ -1563,12 +1578,15 @@ void GameView::RenderPanels() {
     glActiveTexture( GL_TEXTURE0 );
     glUniform1i( ul( "image" ), 0 );
 
-    Panel panel = _state->GetPanelStatus();
-    std::optional<std::reference_wrapper<std::vector<CardWrapper>>> cards;
+    std::optional<std::reference_wrapper<std::vector<CardWrapper*>>> cards;
+    int page_num_index = 0;
+    bool actions = false;
 
 
-    if ( panel == Panel::ACTION ) {
+    if ( _panel == Panel::ACTION ) {
         cards = _action_cards;
+        page_num_index = 0;
+        actions = true;
         glBindTexture( GL_TEXTURE_2D, _action_open_texture.id );
     } else
         glBindTexture( GL_TEXTURE_2D, _action_closed_texture.id );
@@ -1581,8 +1599,9 @@ void GameView::RenderPanels() {
     glDrawElements( GL_TRIANGLES, _rectangle_gpu.count, GL_UNSIGNED_INT, nullptr );
 
 
-    if ( panel == Panel::EVENT ) {
+    if ( _panel == Panel::EVENT ) {
         cards = _event_cards;
+        page_num_index = 1;
         glBindTexture( GL_TEXTURE_2D, _event_open_texture.id );
     } else
         glBindTexture( GL_TEXTURE_2D, _event_closed_texture.id );
@@ -1595,8 +1614,9 @@ void GameView::RenderPanels() {
     glDrawElements( GL_TRIANGLES, _rectangle_gpu.count, GL_UNSIGNED_INT, nullptr );
 
 
-    if ( panel == Panel::AUTOMATED ) {
+    if ( _panel == Panel::AUTOMATED ) {
         cards = _automated_cards;
+        page_num_index = 2;
         glBindTexture( GL_TEXTURE_2D, _automated_open_texture.id );
     } else
         glBindTexture( GL_TEXTURE_2D, _automated_closed_texture.id );
@@ -1609,8 +1629,9 @@ void GameView::RenderPanels() {
     glDrawElements( GL_TRIANGLES, _rectangle_gpu.count, GL_UNSIGNED_INT, nullptr );
 
 
-    if ( panel == Panel::EFFECT ) {
+    if ( _panel == Panel::EFFECT ) {
         cards = _effect_cards;
+        page_num_index = 3;
         glBindTexture( GL_TEXTURE_2D, _effect_open_texture.id );
     } else
         glBindTexture( GL_TEXTURE_2D, _effect_closed_texture.id );
@@ -1629,9 +1650,103 @@ void GameView::RenderPanels() {
 
     glBindVertexArray( 0 );
     glUseProgram( 0 );
+
+
+    if ( cards )
+        RenderPanelCards( *cards, _page_nums[ page_num_index ], actions );
 }
 
-void GameView::RenderCard( CardWrapper& card, int index ) {
+void GameView::RenderPanelCards( std::vector<CardWrapper*>& cards, int page_num, bool actions ) {
+    if ( cards.size() == 0 )
+        return;
+
+    glEnable( GL_BLEND );
+    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+
+    glUseProgram( _program_card_id );
+    glBindVertexArray( _rectangle_gpu.vao_id );
+
+    glActiveTexture( GL_TEXTURE0 );
+    glBindTexture( GL_TEXTURE_2D, _cards_texture.id );
+    glUniform1i( ul( "image" ), 0 );
+    glUniform1f( ul( "elapsed" ), _elapsed );
+
+    int from = page_num * PANEL_ITEMS;
+    int to = glm::min<int>( (int)cards.size(), from + PANEL_ITEMS );
+
+    for ( int i = from; i < to; ++i ) {
+        CardWrapper& card = *cards[ i ];
+        if ( actions ) {
+            switch ( _model->ActionStatus( *card ) ) {
+                case model::decks::Availability::NOT_USABLE:
+                    card.visual = CardWrapper::Visual::NONE;
+                    break;
+                case model::decks::Availability::CAN_BE_USED:
+                    card.visual = CardWrapper::Visual::ACTION_HIGHLIGHT;
+                    break;
+                case model::decks::Availability::USED:
+                    card.visual = CardWrapper::Visual::FADED;
+                    break;
+                default:
+                    throw std::logic_error( "IdleVState::RenderPanelCards: Unknown Availability received!" );
+            }
+
+            SetStencilRef( _stencil_starting_misc + i % PANEL_ITEMS );
+        }
+
+
+        RenderCard( card, i, HAND_BASE_Z + 0.05f );
+    }
+
+    glDisable( GL_BLEND );
+
+
+    glUseProgram( _program_rectangle_id );
+
+    glBindTexture( GL_TEXTURE_2D, _arrow_texture.id );
+
+    static const float arrow_ratio = (float)_arrow_texture.height / _arrow_texture.width;
+    auto [_1, _2, scale] = CalculateSPPosition( 0, 1 );
+    scale.x /= arrow_ratio;
+
+    glm::mat4 translate = glm::translate( glm::vec3( 0.725f, 0.0f, PANEL_BASE_Z - 0.1f ) );
+
+    if ( page_num > GetLeftmostPageNum( (int)cards.size() ) ) {
+        static const glm::mat4 mirror = glm::rotate( glm::pi<float>(), glm::vec3( 0.0f, 0.0f, 1.0f ) );
+
+        glm::vec3 left_scale = _mouse_hover_stencil == STENCIL_LEFT ?
+            scale * MOUSE_HOVER_SIZE_MULTIPLIER : scale;
+
+        glm::mat4 arrow_scale = glm::scale( left_scale );
+        glUniformMatrix4fv( ul( "world" ), 1, GL_FALSE, glm::value_ptr( mirror * translate * arrow_scale ) );
+
+        SetStencilRef( STENCIL_LEFT );
+
+        glDrawElements( GL_TRIANGLES, _rectangle_gpu.count, GL_UNSIGNED_INT, nullptr );
+    }
+
+    if ( page_num < GetRightmostPageNum( (int)cards.size() ) ) {
+        glm::vec3 right_scale = _mouse_hover_stencil == STENCIL_RIGHT ?
+            scale * MOUSE_HOVER_SIZE_MULTIPLIER : scale;
+
+        glm::mat4 arrow_scale = glm::scale( right_scale );
+        glUniformMatrix4fv( ul( "world" ), 1, GL_FALSE, glm::value_ptr( translate * arrow_scale ) );
+
+        SetStencilRef( STENCIL_RIGHT );
+
+        glDrawElements( GL_TRIANGLES, _rectangle_gpu.count, GL_UNSIGNED_INT, nullptr );
+    }
+
+
+    SetStencilRef();
+
+    glBindTexture( GL_TEXTURE_2D, 0 );
+
+    glBindVertexArray( 0 );
+    glUseProgram( 0 );
+}
+
+void GameView::RenderCard( CardWrapper& card, int index, float d_z ) {
     static const float stride_x = 1.0f / CARD_TEXTURE_COLUMNS;
     static const float stride_y = 1.0f / CARD_TEXTURE_ROWS;
     int corrected_card_id = +card->get_card_id() - 1;
@@ -1654,6 +1769,7 @@ void GameView::RenderCard( CardWrapper& card, int index ) {
     float z = card.state == CardWrapper::State::HOVERED ||
               card.state == CardWrapper::State::DRAGGING ?
         -0.1f : (index + 1) / -10000.0f;
+    z += d_z;
 
     glm::vec3 scale( *card.scale * card_width, *card.scale, 1.0f );
     glm::vec3 translate( *card.pos, z );
@@ -1713,6 +1829,50 @@ void GameView::RenderResourceProduction( float x, float y, glm::vec3 scale, int 
     scale *= PRODUCTION_RESOURCE_SHRINK;
 
     RenderResource( x, y, scale, +resource, -0.01f );
+}
+
+void GameView::TurnPanelPageLeft() {
+    switch ( _panel ) {
+        case Panel::ACTION:
+            DoTurnPanelPageLeft( (int)_action_cards.size(), _page_nums[ 0 ] );
+            break;
+        case Panel::EVENT:
+            DoTurnPanelPageLeft( (int)_event_cards.size(), _page_nums[ 1 ] );
+            break;
+        case Panel::AUTOMATED:
+            DoTurnPanelPageLeft( (int)_automated_cards.size(), _page_nums[ 2 ] );
+            break;
+        case Panel::EFFECT:
+            DoTurnPanelPageLeft( (int)_effect_cards.size(), _page_nums[ 3 ] );
+            break;
+    }
+}
+
+void GameView::TurnPanelPageRight() {
+    switch ( _panel ) {
+        case Panel::ACTION:
+            DoTurnPanelPageRight( (int)_action_cards.size(), _page_nums[ 0 ] );
+            break;
+        case Panel::EVENT:
+            DoTurnPanelPageRight( (int)_event_cards.size(), _page_nums[ 1 ] );
+            break;
+        case Panel::AUTOMATED:
+            DoTurnPanelPageRight( (int)_automated_cards.size(), _page_nums[ 2 ] );
+            break;
+        case Panel::EFFECT:
+            DoTurnPanelPageRight( (int)_effect_cards.size(), _page_nums[ 3 ] );
+            break;
+    }
+}
+
+void GameView::DoTurnPanelPageLeft( int card_count, int& page_num ) {
+    if ( page_num > GetLeftmostPageNum( card_count ) )
+        --page_num;
+}
+
+void GameView::DoTurnPanelPageRight( int card_count, int& page_num ) {
+    if ( page_num < GetRightmostPageNum( card_count ) )
+        ++page_num;
 }
 
 std::pair<float, float> GameView::CalculateMousePos( float mouse_x, float mouse_y ) {
@@ -1836,7 +1996,18 @@ const std::pair<float, float>& GameView::GetBoardOrigin() {
     return origin;
 }
 
-void GameView::SetPlayedCardParams( std::vector<CardWrapper>& cards ) {
+int GameView::GetLeftmostPageNum( int card_count ) {
+    return 0;
+}
+
+int GameView::GetRightmostPageNum( int card_count ) {
+    if ( card_count % PANEL_ITEMS == 0 )
+        return card_count / PANEL_ITEMS - 1;
+    else
+        return card_count / PANEL_ITEMS;
+}
+
+void GameView::SetPlayedCardParams( std::vector<CardWrapper*>& cards ) {
     static const float spacing_x = 0.35f;
     static const float length_x = spacing_x * (PANEL_COLUMNS - 1);
     static const float start_x = 0.0f - length_x / 2.0f;
@@ -1845,7 +2016,7 @@ void GameView::SetPlayedCardParams( std::vector<CardWrapper>& cards ) {
     static const float start_y = 0.0f + length_y / 2.0f;
 
     int index = static_cast<int>( cards.size() - 1 );
-    CardWrapper& card = cards[ index ];
+    CardWrapper& card = *cards[ index ];
 
     int x = index % PANEL_COLUMNS;
     int y = index / PANEL_COLUMNS % PANEL_ROWS;
@@ -1853,6 +2024,54 @@ void GameView::SetPlayedCardParams( std::vector<CardWrapper>& cards ) {
     card.pos.Set( glm::vec2( start_x + spacing_x * x, start_y - spacing_y * y ) );
     card.scale.Set( RESEARCH_CARD_SCALE );
     card.rotate.Set( RESEARCH_CARD_ROTATE );
+}
+
+void GameView::ClickedAction() {
+    if ( !_state->CanOpenPanels() )
+        return;
+
+    if ( _panel == Panel::ACTION )
+        _panel = Panel::NONE;
+    else
+        _panel = Panel::ACTION;
+}
+
+void GameView::ClickedEvent() {
+    if ( !_state->CanOpenPanels() )
+        return;
+
+    if ( _panel == Panel::EVENT )
+        _panel = Panel::NONE;
+    else
+        _panel = Panel::EVENT;
+}
+
+void GameView::ClickedAutomated() {
+    if ( !_state->CanOpenPanels() )
+        return;
+
+    if ( _panel == Panel::AUTOMATED )
+        _panel = Panel::NONE;
+    else
+        _panel = Panel::AUTOMATED;
+}
+
+void GameView::ClickedEffect() {
+    if ( !_state->CanOpenPanels() )
+        return;
+
+    if ( _panel == Panel::EFFECT )
+        _panel = Panel::NONE;
+    else
+        _panel = Panel::EFFECT;
+}
+
+void GameView::ClickedLeft() {
+    TurnPanelPageLeft();
+}
+
+void GameView::ClickedRight() {
+    TurnPanelPageRight();
 }
 
 #pragma endregion Rendering

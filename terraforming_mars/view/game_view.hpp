@@ -22,6 +22,7 @@
 #include "animatable.hpp"
 #include "card_wrapper.hpp"
 #include "constants.hpp"
+#include "panel.hpp"
 #include "view.hpp"
 #include "tile_wrapper.hpp"
 
@@ -123,12 +124,15 @@ protected:
     std::array<int, +model::Resource::MAX + 1> _resources;
     std::array<int, +model::Resource::MAX + 1> _resource_productions;
     std::vector<CardWrapper*> _hand;
-    std::vector<CardWrapper> _action_cards;
-    std::vector<CardWrapper> _event_cards;
-    std::vector<CardWrapper> _automated_cards;
-    std::vector<CardWrapper> _effect_cards;
+    std::vector<CardWrapper*> _action_cards;
+    std::vector<CardWrapper*> _event_cards;
+    std::vector<CardWrapper*> _automated_cards;
+    std::vector<CardWrapper*> _effect_cards;
     std::vector<TileWrapper> _tiles;
     std::vector<std::vector<TileWrapper*>> _indexable_tiles;
+
+    Panel _panel = Panel::NONE;
+    std::array<int, 4> _page_nums = { 0, 0, 0, 0 };
 
     int _stencil_starting_misc = 0;
     float _hand_start_x = 0.0f;
@@ -139,7 +143,6 @@ protected:
     uint8_t _mouse_down_stencil = 0;
     bool _menu_button_hovered = false;
     bool _end_button_hovered = false;
-    std::array<int, 4> _page_nums = { 0, 0, 0, 0 };
 
 
     void Model_OnDrawCard( const model::decks::Card* card );
@@ -186,11 +189,18 @@ protected:
     void RenderResources();
     void RenderHand();
     void RenderPanels();
+    void RenderPanelCards( std::vector<CardWrapper*>& cards, int page_num, bool actions );
 
-    void RenderCard( CardWrapper& card, int index );
+    void RenderCard( CardWrapper& card, int index, float d_z = 0.0f );
     void RenderDetail( float x, float y, glm::vec3 scale, float d_z = 0.0f );
     void RenderResource( float x, float y, glm::vec3 scale, int resource, float d_z = 0.0f );
     void RenderResourceProduction( float x, float y, glm::vec3 scale, int resource );
+
+    void TurnPanelPageLeft();
+    void TurnPanelPageRight();
+
+    void DoTurnPanelPageLeft( int card_count, int& page_num );
+    void DoTurnPanelPageRight( int card_count, int& page_num );
 
     std::pair<float, float> CalculateMousePos( float mouse_x, float mouse_y );
     int CalculateHoveredCardByPos( float x, float y );
@@ -201,9 +211,18 @@ protected:
 
     uint8_t GetStencilValue( float mouse_x, float mouse_y );
     virtual const std::pair<float, float>& GetBoardOrigin();
+    int GetLeftmostPageNum( int card_count );
+    int GetRightmostPageNum( int card_count );
 
     inline void SetStencilRef( GLint ref = STENCIL_NONE ) { glStencilFunc( GL_ALWAYS, ref, 0xff ); }
-    void SetPlayedCardParams( std::vector<CardWrapper>& cards );
+    void SetPlayedCardParams( std::vector<CardWrapper*>& cards );
+
+    void ClickedAction();
+    void ClickedEvent();
+    void ClickedAutomated();
+    void ClickedEffect();
+    void ClickedLeft();
+    void ClickedRight();
 
 
     bool _debug = false;

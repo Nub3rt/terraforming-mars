@@ -50,6 +50,7 @@ inline constexpr glm::vec3 TILE_BORDER_COLOR_SELECTABLE     = glm::vec3( 0xf0, 0
 inline constexpr float TILE_CHANGE_DURATION = 0.5f;
 
 inline constexpr float HAND_BASE_Y = -1.12f;
+inline constexpr float HAND_BASE_Z = -0.6f;
 inline constexpr float CARD_BASE_SCALE = 0.25f;
 inline constexpr float CARD_ADJUST_DURATION = 0.5;
 inline constexpr float CARD_DRAW_IN_DURATION = 2.0f;
@@ -115,7 +116,7 @@ inline constexpr float HUD_BASE_Z = 0.8f;
 inline constexpr float MOUSE_HOVER_SIZE_MULTIPLIER = 1.1f;
 inline constexpr float PRODUCTION_RESOURCE_SHRINK = 0.6f;
 
-inline constexpr float PANEL_BASE_Z = HUD_BASE_Z - 0.1f;
+inline constexpr float PANEL_BASE_Z = -0.5f;
 inline constexpr int PANEL_ROWS = 2;
 inline constexpr int PANEL_COLUMNS = 4;
 inline constexpr int PANEL_ITEMS = PANEL_ROWS * PANEL_COLUMNS;
