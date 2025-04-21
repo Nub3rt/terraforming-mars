@@ -64,6 +64,9 @@ public:
     bool Init( Camera* camera, model::GameModel* model );
     void Clean() override;
 
+    static bool StaticInit();
+    static void StaticClean();
+
     void Update( const UpdateInfo& update_info ) override;
     void Render() override;
     void RenderGUI() override;
@@ -185,7 +188,6 @@ protected:
     void RenderResource( float x, float y, glm::vec3 scale, int resource, float d_z = 0.0f );
     void RenderResourceProduction( float x, float y, glm::vec3 scale, int resource );
 
-    uint8_t GetStencilValue( float mouse_x, float mouse_y );
     std::pair<float, float> CalculateMousePos( float mouse_x, float mouse_y );
     int CalculateHoveredCardByPos( float x, float y );
     std::tuple<float, float, glm::vec3> CalculateParameterPosition( int parameter, int type );
@@ -193,56 +195,57 @@ protected:
     std::tuple<float, float, glm::vec3> CalculateSPPosition( int sp, int right );
     std::tuple<float, float, glm::vec3> CalculateSPButtonPosition( int sp );
 
+    uint8_t GetStencilValue( float mouse_x, float mouse_y );
+    virtual const std::pair<float, float>& GetBoardOrigin();
+
     inline void SetStencilRef( GLint ref = STENCIL_NONE ) { glStencilFunc( GL_ALWAYS, ref, 0xff ); }
     void SetPlayedCardParams( std::vector<CardWrapper>& cards );
 
 
-    GLuint _program_id = 0;
-    GLuint _program_card_id = 0;
-    GLuint _program_rectangle_id = 0;
-    GLuint _program_sprite_sheet_id = 0;
-
-    void InitShaders();
-    void CleanShaders();
-
-    OGLObject _hexagon_gpu = {};
-    OGLObject _rectangle_gpu = {};
-
-    void InitGeometry();
-    void CleanGeometry();
-
-    Texture _cards_texture = {};
-    Texture _resources_texture = {};
-
-    Texture _temperature_texture = {};
-    Texture _oxygen_texture = {};
-    Texture _tr_texture = {};
-
-    Texture _ocean_texture = {};
-    Texture _greenery_texture = {};
-    Texture _city_texture = {};
-
-    Texture _button_texture = {};
-    Texture _production_box_texture = {};
-    Texture _arrow_texture = {};
-    Texture _player_icon_texture = {};
-    Texture _card_cover_texture = {};
-
-    Texture _action_closed_texture = {};
-    Texture _action_open_texture = {};
-    Texture _event_closed_texture = {};
-    Texture _event_open_texture = {};
-    Texture _automated_closed_texture = {};
-    Texture _automated_open_texture = {};
-    Texture _effect_closed_texture = {};
-    Texture _effect_open_texture = {};
-
-    void InitTextures();
-    void CleanTextures();
-
-    virtual const std::pair<float, float>& GetBoardOrigin();
-
-
     bool _debug = false;
+
+
+    static GLuint _program_id;
+    static GLuint _program_card_id;
+    static GLuint _program_rectangle_id;
+    static GLuint _program_sprite_sheet_id;
+
+    static void InitShaders();
+    static void CleanShaders();
+
+    static OGLObject _hexagon_gpu;
+    static OGLObject _rectangle_gpu;
+
+    static void InitGeometry();
+    static void CleanGeometry();
+
+    static Texture _cards_texture;
+    static Texture _resources_texture;
+
+    static Texture _temperature_texture;
+    static Texture _oxygen_texture;
+    static Texture _tr_texture;
+
+    static Texture _ocean_texture;
+    static Texture _greenery_texture;
+    static Texture _city_texture;
+
+    static Texture _button_texture;
+    static Texture _production_box_texture;
+    static Texture _arrow_texture;
+    static Texture _player_icon_texture;
+    static Texture _card_cover_texture;
+
+    static Texture _action_closed_texture;
+    static Texture _action_open_texture;
+    static Texture _event_closed_texture;
+    static Texture _event_open_texture;
+    static Texture _automated_closed_texture;
+    static Texture _automated_open_texture;
+    static Texture _effect_closed_texture;
+    static Texture _effect_open_texture;
+
+    static void InitTextures();
+    static void CleanTextures();
 };
 }

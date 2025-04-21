@@ -28,11 +28,6 @@ GameView::GameView() : _resources(), _resource_productions() {}
 GameView::~GameView() {}
 
 bool GameView::Init( Camera* camera, model::GameModel* model ) {
-    InitShaders();
-    InitGeometry();
-    InitTextures();
-
-
     _camera = camera;
 
     _tm_camera_manipulator = new TMCameraManipulator( *camera );
@@ -98,10 +93,6 @@ bool GameView::Init( Camera* camera, model::GameModel* model ) {
 }
 
 void GameView::Clean() {
-    CleanShaders();
-    CleanGeometry();
-    CleanTextures();
-
     while ( !_animation_queue.empty() ) {
         Animation* animation = _animation_queue.front();
         _animation_queue.pop();
@@ -128,6 +119,20 @@ void GameView::Clean() {
         delete _next_state;
 
     delete _model;
+}
+
+bool GameView::StaticInit() {
+    InitShaders();
+    InitGeometry();
+    InitTextures();
+
+    return true;
+}
+
+void GameView::StaticClean() {
+    CleanShaders();
+    CleanGeometry();
+    CleanTextures();
 }
 
 void GameView::Update( const UpdateInfo& update_info ) {
@@ -1710,12 +1715,6 @@ void GameView::RenderResourceProduction( float x, float y, glm::vec3 scale, int 
     RenderResource( x, y, scale, +resource, -0.01f );
 }
 
-uint8_t GameView::GetStencilValue( float mouse_x, float mouse_y ) {
-    uint8_t value;
-    glReadPixels( (GLint)mouse_x, _height - (GLint)mouse_y, 1, 1, GL_STENCIL_INDEX, GL_UNSIGNED_BYTE, &value );
-    return value;
-}
-
 std::pair<float, float> GameView::CalculateMousePos( float mouse_x, float mouse_y ) {
     return {
                    mouse_x  / _width  * 2.0f - 1.0f,
@@ -1826,6 +1825,17 @@ std::tuple<float, float, glm::vec3> GameView::CalculateSPButtonPosition( int sp 
     };
 }
 
+uint8_t GameView::GetStencilValue( float mouse_x, float mouse_y ) {
+    uint8_t value;
+    glReadPixels( (GLint)mouse_x, _height - (GLint)mouse_y, 1, 1, GL_STENCIL_INDEX, GL_UNSIGNED_BYTE, &value );
+    return value;
+}
+
+const std::pair<float, float>& GameView::GetBoardOrigin() {
+    static const std::pair<float, float> origin( 4.0f, 4.0f );
+    return origin;
+}
+
 void GameView::SetPlayedCardParams( std::vector<CardWrapper>& cards ) {
     static const float spacing_x = 0.35f;
     static const float length_x = spacing_x * (PANEL_COLUMNS - 1);
@@ -1847,7 +1857,12 @@ void GameView::SetPlayedCardParams( std::vector<CardWrapper>& cards ) {
 
 #pragma endregion Rendering
 
-#pragma region Init and Clean
+#pragma region Static Init and Clean
+
+GLuint GameView::_program_id = 0;
+GLuint GameView::_program_card_id = 0;
+GLuint GameView::_program_rectangle_id = 0;
+GLuint GameView::_program_sprite_sheet_id = 0;
 
 void GameView::InitShaders() {
     _program_id = glCreateProgram();
@@ -1877,6 +1892,9 @@ void GameView::CleanShaders() {
     glDeleteProgram( _program_rectangle_id );
     glDeleteProgram( _program_sprite_sheet_id );
 }
+
+OGLObject GameView::_hexagon_gpu = {};
+OGLObject GameView::_rectangle_gpu = {};
 
 void GameView::InitGeometry() {
     MeshObject<VertexF> hexagon_cpu;
@@ -1922,6 +1940,32 @@ void GameView::CleanGeometry() {
     CleanOGLObject( _hexagon_gpu );
     CleanOGLObject( _rectangle_gpu );
 }
+
+Texture GameView::_cards_texture = {};
+Texture GameView::_resources_texture = {};
+
+Texture GameView::_temperature_texture = {};
+Texture GameView::_oxygen_texture = {};
+Texture GameView::_tr_texture = {};
+
+Texture GameView::_ocean_texture = {};
+Texture GameView::_greenery_texture = {};
+Texture GameView::_city_texture = {};
+
+Texture GameView::_button_texture = {};
+Texture GameView::_production_box_texture = {};
+Texture GameView::_arrow_texture = {};
+Texture GameView::_player_icon_texture = {};
+Texture GameView::_card_cover_texture = {};
+
+Texture GameView::_action_closed_texture = {};
+Texture GameView::_action_open_texture = {};
+Texture GameView::_event_closed_texture = {};
+Texture GameView::_event_open_texture = {};
+Texture GameView::_automated_closed_texture = {};
+Texture GameView::_automated_open_texture = {};
+Texture GameView::_effect_closed_texture = {};
+Texture GameView::_effect_open_texture = {};
 
 void GameView::InitTextures() {
     _cards_texture = LoadTexture( "assets/cards.png" );
@@ -1979,13 +2023,5 @@ void GameView::CleanTextures() {
     glDeleteTextures( 1, &_effect_open_texture.id );
 }
 
-#pragma endregion Init and Clean
-
-#pragma region Constants
-
-const std::pair<float, float>& GameView::GetBoardOrigin() {
-    static const std::pair<float, float> origin( 4.0f, 4.0f );
-    return origin;
-}
-#pragma endregion Constants
+#pragma endregion Static Init and Clean
 }

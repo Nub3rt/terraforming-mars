@@ -29,6 +29,8 @@ bool App::Init() {
     InitSkyboxGeometry();
     InitSkyboxTextures();
 
+    GameView::StaticInit();
+
 
 #ifdef _DEBUG
     glPolygonMode( GL_FRONT, GL_FILL );
@@ -71,6 +73,7 @@ void App::Clean() {
     CleanSkyboxGeometry();
     CleanSkyboxTextures();
 
+    GameView::StaticClean();
 
     _menu_view->Clean();
     delete _menu_view;
