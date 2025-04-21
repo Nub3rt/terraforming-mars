@@ -200,6 +200,30 @@ void CardDrawAnimation::DoUpdate( float delta ) {
 
 #pragma endregion CardDrawAnimation
 
+#pragma region CardPlayAnimation
+
+CardPlayAnimation::CardPlayAnimation( CardWrapper* card, glm::vec2 start_pos, glm::vec2 end_pos )
+    : Animation( CARD_PLAY_LOCKOUT_DURATION ), card( card ), start_pos( start_pos ), end_pos( end_pos ) {}
+
+CardPlayAnimation::~CardPlayAnimation() {
+    if ( owns_card )
+        delete card;
+}
+
+void CardPlayAnimation::Render( GameView* view ) {
+    view->RenderAnimation( this );
+}
+
+bool CardPlayAnimation::IsOver() const noexcept {
+    return elapsed >= CARD_PLAY_TOTAL_DURATION;
+}
+
+void CardPlayAnimation::DoUpdate( float delta ) {
+    elapsed = fminf( elapsed + delta, CARD_PLAY_TOTAL_DURATION );
+}
+
+#pragma endregion CardPlayAnimation
+
 #pragma region SequentialAnimation
 
 SequentialAnimation::SequentialAnimation( Animation* first, Animation* second )

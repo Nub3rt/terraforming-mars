@@ -7,5 +7,6 @@ class InstantAnimation;
 class TextAnimation;
 class CardAnimation;
 class CardDrawAnimation;
+class CardPlayAnimation;
 class SequentialAnimation;
 }

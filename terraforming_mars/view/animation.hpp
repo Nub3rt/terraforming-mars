@@ -27,7 +27,7 @@ public:
         this->on_start = on_start;
         return this;
     }
-    inline Animation* SetOnCompleted( std::function<void()> on_end ) {
+    inline Animation* SetOnEnd( std::function<void()> on_end ) {
         this->on_end = on_end;
         return this;
     }
@@ -147,6 +147,25 @@ public:
 
     float elapsed = 0.0f;
     float speed = 1.0f;
+    CardWrapper* card;
+    bool owns_card = true;
+
+protected:
+    void DoUpdate( float delta ) override;
+};
+
+class CardPlayAnimation : public Animation
+{
+public:
+    CardPlayAnimation( CardWrapper* card, glm::vec2 start_pos, glm::vec2 end_pos );
+    ~CardPlayAnimation();
+
+    void Render( GameView* view ) override;
+    bool IsOver() const noexcept override;
+
+    float elapsed = 0.0f;
+    glm::vec2 start_pos;
+    glm::vec2 end_pos;
     CardWrapper* card;
     bool owns_card = true;
 

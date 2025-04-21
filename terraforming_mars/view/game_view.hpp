@@ -57,6 +57,7 @@ class GameView : public View
     friend class TextAnimation;
     friend class CardAnimation;
     friend class CardDrawAnimation;
+    friend class CardPlayAnimation;
 
 public:
     GameView();
@@ -134,6 +135,8 @@ protected:
     Panel _panel = Panel::NONE;
     std::array<int, 4> _page_nums = { 0, 0, 0, 0 };
 
+    std::queue<glm::vec2> _card_play_positions;
+
     int _stencil_starting_misc = 0;
     float _hand_start_x = 0.0f;
     float _hand_end_x = 0.0f;
@@ -174,6 +177,7 @@ protected:
     void RenderAnimation( TextAnimation* animation );
     void RenderAnimation( CardAnimation* animation );
     void RenderAnimation( CardDrawAnimation* animation );
+    void RenderAnimation( CardPlayAnimation* animation );
 
 
     void RefreshHandPositions();

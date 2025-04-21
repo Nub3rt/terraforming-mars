@@ -65,6 +65,20 @@ inline constexpr float CARD_DRAW_SCALE_MIDDLE = CARD_BASE_SCALE * 1.8f;
 inline constexpr float CARD_DRAW_ROTATE_MIDDLE = 0.0f;
 inline constexpr float CARD_DRAG_OUT_LINE_Y = -0.2f;
 
+inline constexpr float CARD_PLAY_LOCKOUT_DURATION = 1.5f;
+inline constexpr float CARD_PLAY_IN_DURATION = 1.0f;
+inline constexpr float CARD_PLAY_STILL_DURATION = 2.5f;
+inline constexpr float CARD_PLAY_OUT_DURATION = 2.0f;
+inline constexpr float CARD_PLAY_TOTAL_DURATION = CARD_PLAY_IN_DURATION + CARD_PLAY_STILL_DURATION + CARD_PLAY_OUT_DURATION;
+inline constexpr float CARD_PLAY_IN_SCALE = 0.0f;
+inline constexpr glm::vec2 CARD_PLAY_STILL_POS = glm::vec2( -0.6f, 0.0f );
+inline constexpr float CARD_PLAY_STILL_SCALE = CARD_DRAW_SCALE_MIDDLE;
+inline constexpr float CARD_PLAY_OUT_SCALE = CARD_PLAY_STILL_SCALE;
+inline constexpr glm::vec2 CARD_PLAY_ACTION_POS = glm::vec2( -1.2f, -0.8f );
+inline constexpr glm::vec2 CARD_PLAY_EVENT_POS = glm::vec2( -0.6f, 1.5f );
+inline constexpr glm::vec2 CARD_PLAY_AUTOMATED_POS = glm::vec2( 0.1f, 1.5f );
+inline constexpr glm::vec2 CARD_PLAY_EFFECT_POS = glm::vec2( 1.0f, 1.5f );
+
 inline constexpr glm::vec3 CARD_HIGHLIGHT_COLOR        = glm::vec3( 0x00, 0xff, 0x30 ) / 255.0f;
 inline constexpr glm::vec3 CARD_ACTION_HIGHLIGHT_COLOR = glm::vec3( 0x00, 0x80, 0xff ) / 255.0f;
 inline constexpr glm::vec3 CARD_SELL_HIGHLIGHT_COLOR   = glm::vec3( 0xa0, 0x00, 0x00 ) / 255.0f;

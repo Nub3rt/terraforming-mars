@@ -442,6 +442,7 @@ void GameView::MouseUp( const SDL_MouseButtonEvent& mouse ) {
 
             _dragged_card_index = -1;
         } else {
+            _card_play_positions.emplace( x, y );
             _state->PlayCard( _dragged_card_index );
             _dragged_card_index = -1;
         }
@@ -585,7 +586,7 @@ void GameView::Model_OnDrawCardSpeed( const model::decks::Card* card, float spee
         animation->owns_card = false;
         RefreshHandPositions();
     } );
-    animation->SetOnCompleted( [ this, card_wrapper ]() {
+    animation->SetOnEnd( [ this, card_wrapper ]() {
         card_wrapper->state = CardWrapper::State::IDLE;
     } );
 
@@ -601,20 +602,64 @@ void GameView::Model_OnDrawCards( std::vector<const model::decks::Card*> cards )
 }
 
 void GameView::Model_OnPlayCard( const model::decks::Card* card ) {
+    CardWrapper* card_wrapper = new CardWrapper( card );
+
     if ( card->IsActiveWithAction() ) {
-        _action_cards.push_back( new CardWrapper( card ) );
-        SetPlayedCardParams( _action_cards );
+        CardPlayAnimation* animation = new CardPlayAnimation(
+            card_wrapper,
+            _card_play_positions.front(),
+            CARD_PLAY_ACTION_POS
+        );
+        animation->SetOnStart( [ animation ]() { animation->owns_card = false; } );
+        animation->SetOnEnd( [ this, card_wrapper ]() {
+            _action_cards.push_back( card_wrapper );
+            SetPlayedCardParams( _action_cards );
+        } );
+
+        _animation_queue.push( animation );
     } else if ( card->IsEvent() ) {
-        _event_cards.push_back( new CardWrapper( card ) );
-        SetPlayedCardParams( _event_cards );
+        CardPlayAnimation* animation = new CardPlayAnimation(
+            card_wrapper,
+            _card_play_positions.front(),
+            CARD_PLAY_EVENT_POS
+        );
+        animation->SetOnStart( [ animation ]() { animation->owns_card = false; } );
+        animation->SetOnEnd( [ this, card_wrapper ]() {
+            _event_cards.push_back( card_wrapper );
+            SetPlayedCardParams( _event_cards );
+        } );
+
+        _animation_queue.push( animation );
     } else if ( card->IsAutomated() ) {
-        _automated_cards.push_back( new CardWrapper( card ) );
-        SetPlayedCardParams( _automated_cards );
+        CardPlayAnimation* animation = new CardPlayAnimation(
+            card_wrapper,
+            _card_play_positions.front(),
+            CARD_PLAY_AUTOMATED_POS
+        );
+        animation->SetOnStart( [ animation ]() { animation->owns_card = false; } );
+        animation->SetOnEnd( [ this, card_wrapper ]() {
+            _automated_cards.push_back( card_wrapper );
+            SetPlayedCardParams( _automated_cards );
+        } );
+
+        _animation_queue.push( animation );
     } else if ( card->IsActiveWithEffect() ) {
-        _effect_cards.push_back( new CardWrapper( card ) );
-        SetPlayedCardParams( _effect_cards );
+        CardPlayAnimation* animation = new CardPlayAnimation(
+            card_wrapper,
+            _card_play_positions.front(),
+            CARD_PLAY_EFFECT_POS
+        );
+        animation->SetOnStart( [ animation ]() { animation->owns_card = false; } );
+        animation->SetOnEnd( [ this, card_wrapper ]() {
+            _effect_cards.push_back( card_wrapper );
+            SetPlayedCardParams( _effect_cards );
+        } );
+
+        _animation_queue.push( animation );
     } else
         throw std::logic_error( "GameView::Model_OnPlayCard: card was not of any of the four types! (This should never happen.)" );
+
+    _card_play_positions.pop();
 }
 
 void GameView::Model_OnRaiseTR( int amount ) {
@@ -798,6 +843,47 @@ void GameView::RenderAnimation( CardDrawAnimation* animation ) {
         animation->card->rotate.Set( CARD_DRAW_ROTATE_MIDDLE +
             (animation->card->base_rotate - CARD_DRAW_ROTATE_MIDDLE) * ease( t ) );
     }
+}
+
+void GameView::RenderAnimation( CardPlayAnimation* animation ) {
+    static const std::function<float( float )> ease = glm::sineEaseInOut<float>;
+    if ( animation->elapsed < CARD_PLAY_IN_DURATION ) {
+        float t = animation->elapsed / CARD_PLAY_IN_DURATION;
+        animation->card->pos.Set( animation->start_pos +
+            (CARD_PLAY_STILL_POS - animation->start_pos) * ease( t ) );
+        animation->card->scale.Set( CARD_PLAY_IN_SCALE +
+            (CARD_PLAY_STILL_SCALE - CARD_PLAY_IN_SCALE) * ease( t ) );
+    } else if ( animation->elapsed < CARD_PLAY_IN_DURATION + CARD_PLAY_STILL_DURATION ) {
+        animation->card->pos.Set( CARD_PLAY_STILL_POS );
+        animation->card->scale.Set( CARD_PLAY_STILL_SCALE );
+    } else {
+        float t = (animation->elapsed - CARD_PLAY_IN_DURATION - CARD_PLAY_STILL_DURATION) / CARD_PLAY_OUT_DURATION;
+        animation->card->pos.Set( CARD_PLAY_STILL_POS +
+            (animation->end_pos - CARD_PLAY_STILL_POS) * ease( t ) );
+        animation->card->scale.Set( CARD_PLAY_STILL_SCALE +
+            (CARD_PLAY_OUT_SCALE - CARD_PLAY_STILL_SCALE) * ease( t ) );
+    }
+
+
+    glEnable( GL_BLEND );
+    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+
+    glUseProgram( _program_card_id );
+    glBindVertexArray( _rectangle_gpu.vao_id );
+
+    glActiveTexture( GL_TEXTURE0 );
+    glBindTexture( GL_TEXTURE_2D, _cards_texture.id );
+    glUniform1i( ul( "image" ), 0 );
+    glUniform1f( ul( "elapsed" ), _elapsed );
+
+    RenderCard( *animation->card, 0, PANEL_BASE_Z + 0.5f );
+
+    glBindTexture( GL_TEXTURE_2D, 0 );
+
+    glBindVertexArray( 0 );
+    glUseProgram( 0 );
+
+    glDisable( GL_BLEND );
 }
 
 #pragma endregion Animation Queue
