@@ -26,7 +26,7 @@ inline constexpr float MENU_CONTINUE_Y = 0.5f;
 inline constexpr float MENU_NEW_GAME_Y = -1.0f;
 inline constexpr float MENU_QUIT_Y = -2.5f;
 inline constexpr float MENU_BUTTON_SCALE = 0.5f;
-inline constexpr float TRANSITION_DURATION = 10.0f;
+inline constexpr float TRANSITION_DURATION = 4.0f;
 
 inline constexpr glm::vec2 BASE_HINT_POS = glm::vec2( 0.0f, 0.8f );
 inline constexpr float BASE_TEXT_SCALE = 1.5f;

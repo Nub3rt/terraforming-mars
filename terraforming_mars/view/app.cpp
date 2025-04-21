@@ -55,6 +55,10 @@ bool App::Init() {
             delete _game_view;
         }
         _game_view = game_view;
+        _game_view->SetToMenu( [ this ]() {
+            _menu_view->TransitionFromMars();
+            _current_view = _menu_view;
+        } );
     } );
     _menu_view->SetEnterGame( [ this ]() {
         _current_view = _game_view;
@@ -77,6 +81,11 @@ void App::Clean() {
 
     _menu_view->Clean();
     delete _menu_view;
+
+    if ( _game_view != nullptr ) {
+        _game_view->Clean();
+        delete _game_view;
+    }
 }
 
 void App::Update( const UpdateInfo& update_info ) {

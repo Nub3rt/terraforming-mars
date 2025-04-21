@@ -82,6 +82,8 @@ public:
 
     void OtherEvent( const SDL_Event& event ) override;
 
+    inline void SetToMenu( std::function<void()> callback ) { _to_menu.SetCallback( callback ); }
+
 protected:
     int _width = 0;
     int _height = 0;
@@ -107,6 +109,8 @@ protected:
 
     void RequestStateChange( GameViewState* state );
     void RequestInstantStateChange( GameViewState* state );
+
+    model::Event<> _to_menu;
 
 
     model::GameModel* _model = nullptr;
@@ -171,8 +175,8 @@ protected:
 
     void RefreshHandPositions();
 
-    void RenderBoard();
-    void RenderHexagon( TileWrapper& tile, int id );
+    void RenderBoard( bool clickable = true );
+    void RenderHexagon( TileWrapper& tile, int id, bool clickable );
 
     void RenderHUD();
     void RenderMenuButton();

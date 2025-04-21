@@ -33,8 +33,6 @@ public:
     void Update( const UpdateInfo& update_info ) override;
     void Render() override;
 
-    void KeyboardDown( const SDL_KeyboardEvent& key ) override;
-    void KeyboardUp( const SDL_KeyboardEvent& key ) override;
     void MouseMotion( const SDL_MouseMotionEvent& mouse ) override;
     void MouseDown( const SDL_MouseButtonEvent& mouse ) override;
     void MouseUp( const SDL_MouseButtonEvent& mouse ) override;
@@ -57,6 +55,7 @@ protected:
 
     bool _can_continue = false;
     bool _transitioning = false;
+    bool _to_mars = true;
     uint8_t _mouse_hover_stencil = 0;
     uint8_t _mouse_down_stencil = 0;
 

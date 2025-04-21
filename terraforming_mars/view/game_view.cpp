@@ -293,9 +293,7 @@ void GameView::RenderGUI() {
 }
 
 void GameView::RenderMars() {
-    RenderBoard();
-
-    glClear( GL_DEPTH_BUFFER_BIT );
+    RenderBoard( false );
 }
 
 #pragma region Events
@@ -441,7 +439,7 @@ void GameView::MouseUp( const SDL_MouseButtonEvent& mouse ) {
                     SDL_LogError( SDL_LOG_CATEGORY_ERROR, "GameView::MouseUp: Invalid stencil value received : 0x00!" );
                     break;
                 case STENCIL_TO_MENU_BUTTON:
-                    // TODO
+                    _to_menu.Invoke();
                     break;
                 case STENCIL_END_BUTTON:
                     if ( _state->CanClickEndButton() )
@@ -843,13 +841,13 @@ void GameView::RefreshHandPositions() {
 
 #pragma region Rendering
 
-void GameView::RenderBoard() {
+void GameView::RenderBoard( bool clickable ) {
     for ( int i = 0; i < _tiles.size(); ++i) {
-        RenderHexagon( _tiles[i], STENCIL_STARTING_BOARD + i );
+        RenderHexagon( _tiles[i], STENCIL_STARTING_BOARD + i, clickable );
     }
 }
 
-void GameView::RenderHexagon( TileWrapper& tile, int id ) {
+void GameView::RenderHexagon( TileWrapper& tile, int id, bool clickable ) {
     /*
     *  *----> q         Ʌ y
     *   \               |
@@ -880,7 +878,8 @@ void GameView::RenderHexagon( TileWrapper& tile, int id ) {
     glUniform3f( ul( "color" ), tile.color->r, tile.color->g, tile.color->b );
     glUniform3f( ul( "border_color" ), tile.border_color.r, tile.border_color.g, tile.border_color.b );
 
-    SetStencilRef( id );
+    if ( clickable )
+        SetStencilRef( id );
 
     glDrawElements( GL_TRIANGLES, _hexagon_gpu.count, GL_UNSIGNED_INT, nullptr );
 
@@ -984,7 +983,8 @@ void GameView::RenderHexagon( TileWrapper& tile, int id ) {
     }
 
 
-    SetStencilRef();
+    if ( clickable )
+        SetStencilRef();
 
     glBindTexture( GL_TEXTURE_2D, 0 );
 

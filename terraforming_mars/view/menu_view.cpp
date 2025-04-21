@@ -21,13 +21,15 @@
 namespace view
 {
 MenuView::MenuView() : View(), _builder() {
-    static const std::function<float( float )> ease = []( float t ) {
-        return 4.0f * (t - 0.5f) * (t - 0.5f);
+    static const std::function<float( float )> ease = glm::cubicEaseInOut<float>;
+    static const std::function<float( float )> quad_out_back_ease = []( float t ) {
+        t = ease( t );
+        return -4.0f * (t - 0.5f) * (t - 0.5f) + 1.0f;
     };
-    _eye.x.SetEase( ease );
-    _eye.z.SetEase( glm::linearInterpolation<float> );
-    _at.x.SetEase( ease );
-    _at.z.SetEase( glm::linearInterpolation<float> );
+    _eye.x.SetEase( quad_out_back_ease );
+    _eye.z.SetEase( ease );
+    _at.x.SetEase( quad_out_back_ease );
+    _at.z.SetEase( ease );
 }
 
 MenuView::~MenuView() {}
@@ -54,20 +56,31 @@ void MenuView::Clean() {
 }
 
 void MenuView::Update( const UpdateInfo& update_info ) {
-    if ( _transitioning && !_eye.Animating() ) {
-        _transitioning = false;
-        _can_continue = _game_view != nullptr;
-        _enter_game.Invoke();
+    if ( _transitioning ) {
+        _eye.Update( update_info.delta );
+        _at.Update( update_info.delta );
+
+        if ( !_eye.Animating() ) {
+            _transitioning = false;
+
+            if ( _to_mars ) {
+                _eye.Set( glm::vec3( CAMERA_X, CAMERA_Y, CAMERA_Z_GAME_EYE ) );
+                _at.Set( glm::vec3( CAMERA_X, CAMERA_Y, CAMERA_Z_GAME_AT ) );
+
+                _can_continue = true;
+                _enter_game.Invoke();
+            } else {
+                _eye.Set( glm::vec3( CAMERA_X, CAMERA_Y, CAMERA_Z_MENU_EYE ) );
+                _at.Set( glm::vec3( CAMERA_X, CAMERA_Y, CAMERA_Z_MENU_AT ) );
+            }
+        }
+
+        _camera->SetView(
+            *_eye,
+            *_at,
+            CAMERA_WORLD_UP
+        );
     }
-
-    _eye.Update( update_info.delta );
-    _at.Update( update_info.delta );
-
-    _camera->SetView(
-        *_eye,
-        *_at,
-        CAMERA_WORLD_UP
-    );
 }
 
 void MenuView::Render() {
@@ -167,12 +180,6 @@ void MenuView::Render() {
         _game_view->RenderMars();
 }
 
-void MenuView::KeyboardDown( const SDL_KeyboardEvent& key ) {
-}
-
-void MenuView::KeyboardUp( const SDL_KeyboardEvent& key ) {
-}
-
 void MenuView::MouseMotion( const SDL_MouseMotionEvent& mouse ) {
     _mouse_hover_stencil = GetStencilValue( mouse.x, mouse.y );
 }
@@ -226,7 +233,13 @@ void MenuView::Resize( int w, int h ) {
     _height = h;
 }
 
+void MenuView::TransitionFromMars() {
+    _to_mars = false;
+    Transition( CAMERA_Z_GAME_EYE, CAMERA_Z_MENU_EYE, CAMERA_Z_GAME_AT, CAMERA_Z_MENU_AT );
+}
+
 void MenuView::TransitionToMars() {
+    _to_mars = true;
     Transition( CAMERA_Z_MENU_EYE, CAMERA_Z_GAME_EYE, CAMERA_Z_MENU_AT, CAMERA_Z_GAME_AT );
 }
 
