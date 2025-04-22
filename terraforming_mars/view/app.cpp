@@ -134,7 +134,9 @@ void App::Resize( int w, int h ) {
     glViewport( 0, 0, w, h );
     _camera.SetAspect( w / (float) h );
 
-    _current_view->Resize( w, h );
+    _menu_view->Resize( w, h );
+    if ( _game_view != nullptr )
+        _game_view->Resize( w, h );
 }
 
 void App::OtherEvent( const SDL_Event& event ) {
