@@ -10,7 +10,7 @@ namespace view
 class SoloGameView : public GameView
 {
 public:
-    SoloGameView();
+    SoloGameView( int seed );
     virtual ~SoloGameView();
 
 protected:

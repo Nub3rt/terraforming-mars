@@ -25,6 +25,7 @@ public:
     glm::vec3 border_color;
 
     glm::mat4 pos_translate;
+    glm::vec4 tex_ranges; // start_u, end_u, start_v, end_v
 
 private:
     const model::boards::Tile& _tile;

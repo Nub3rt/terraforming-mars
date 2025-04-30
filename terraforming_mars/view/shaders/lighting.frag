@@ -8,8 +8,10 @@ in float vs_out_on_edge;
 
 out vec4 fs_out_col;
 
-uniform sampler2D image;
-uniform vec3 color;
+uniform vec4 tex_ranges;
+uniform sampler2D terrain_mars;
+uniform vec4 mars_ranges;
+uniform sampler2D terrain_special;
 uniform vec3 border_color;
 
 ivec2 axial_round( vec2 qr ) {
@@ -36,8 +38,16 @@ ivec2 axial_round( vec2 qr ) {
 }
 
 void main() {
-//    vec4 tex = texture( image, vs_out_tex );
-    vec4 tex = vec4( color, 1.0 );
+    vec2 uv = vec2(
+        mix( tex_ranges.x, tex_ranges.y, 1.0 - vs_out_tex.x ),
+        mix( tex_ranges.z, tex_ranges.w, 1.0 - vs_out_tex.y )
+    );
+    uv = vec2(
+        mix( mars_ranges.x, mars_ranges.y, uv.x ),
+        mix( mars_ranges.z, mars_ranges.w, uv.y )
+    );
+    vec4 tex = texture( terrain_mars, uv );
+
 
     vec2 xy = vs_orig_pos.xz;
     mat2 pixel_to_hex = mat2( sqrt( 3.0 ) / 3.0, 0.0, -1.0 / 3.0, 2.0 / 3.0 );

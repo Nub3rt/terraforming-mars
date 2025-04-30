@@ -108,6 +108,13 @@ void App::RenderGUI() {
 }
 
 void App::KeyboardDown( const SDL_KeyboardEvent& key ) {
+    if ( key.key == SDLK_F1 &&
+        !(key.mod & (SDL_KMOD_CTRL | SDL_KMOD_SHIFT | SDL_KMOD_ALT | SDL_KMOD_GUI)) ) {
+        if ( !key.repeat )
+            SDL_LogInfo( SDL_LOG_CATEGORY_APPLICATION, "Reloading shaders..." );
+            TexStore::CleanShaders();
+            TexStore::InitShaders();
+    } else
     _current_view->KeyboardDown( key );
 }
 

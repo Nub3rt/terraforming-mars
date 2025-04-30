@@ -7,6 +7,7 @@
 #include <array>
 #include <optional>
 #include <queue>
+#include <random>
 #include <utility>
 #include <vector>
 
@@ -60,7 +61,7 @@ class GameView : public View
     friend class CardPlayAnimation;
 
 public:
-    GameView();
+    GameView( int seed );
     virtual ~GameView();
 
     bool Init( Camera* camera, model::GameModel* model );
@@ -88,6 +89,8 @@ protected:
     int _height = 0;
 
     float _elapsed = 0.0f;
+
+    std::mt19937 _random;
 
     Camera* _camera = nullptr;
     CameraManipulator* _active_camera_manipulator = nullptr;
@@ -143,6 +146,7 @@ protected:
     uint8_t _mouse_down_stencil = 0;
     bool _menu_button_hovered = false;
     bool _end_button_hovered = false;
+    glm::vec4 _mars_terrain_ranges = {};
 
 
     void Model_OnDrawCard( const model::decks::Card* card );

@@ -130,7 +130,6 @@ int main( int argc, char* argv[] ) {
 
     try {
         bool quit = false;
-        bool show_imgui = true;
 
         app.SetQuit( [ &quit ]() { quit = true; } );
 
@@ -152,14 +151,6 @@ int main( int argc, char* argv[] ) {
                             if ( !event.key.repeat ) {
                                 SDL_WindowFlags in_fullscreen = SDL_GetWindowFlags( window ) & SDL_WINDOW_FULLSCREEN;
                                 SDL_SetWindowFullscreen( window, !in_fullscreen );
-                            }
-                            was_keyboard_captured = true;
-                        }
-                        if ( event.key.key == SDLK_F1 &&
-                             event.key.mod & SDL_KMOD_CTRL &&
-                             !(event.key.mod & (SDL_KMOD_SHIFT | SDL_KMOD_ALT | SDL_KMOD_GUI)) ) {
-                            if ( !event.key.repeat ) {
-                                show_imgui = !show_imgui;
                             }
                             was_keyboard_captured = true;
                         }
@@ -213,8 +204,7 @@ int main( int argc, char* argv[] ) {
             ImGui_ImplSDL3_NewFrame();
 
             ImGui::NewFrame();
-            if ( show_imgui )
-                app.RenderGUI();
+            app.RenderGUI();
             ImGui::Render();
 
             ImGui_ImplOpenGL3_RenderDrawData( ImGui::GetDrawData() );

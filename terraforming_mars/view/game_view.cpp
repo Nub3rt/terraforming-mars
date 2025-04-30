@@ -25,7 +25,8 @@
 
 namespace view
 {
-GameView::GameView() : _resources(), _resource_productions() {}
+GameView::GameView( int seed ) : _resources(), _resource_productions(), _random( seed ) {}
+
 GameView::~GameView() {}
 
 bool GameView::Init( Camera* camera, model::GameModel* model ) {
@@ -66,6 +67,19 @@ bool GameView::Init( Camera* camera, model::GameModel* model ) {
     _tr = _model->get_local_player()->get_tr();
     _resources = std::array<int, +model::Resource::MAX + 1>( _model->get_local_player()->get_resources() );
     _resource_productions = std::array<int, +model::Resource::MAX + 1>( _model->get_local_player()->get_resource_productions() );
+
+    static const float mars_aspect = (float)TexStore::terrain_mars_texture.width / TexStore::terrain_mars_texture.height;
+    static const float v_start = 0.2f;
+    static const float v_end = 1.0f - v_start;
+    static const float u_diff = (0.5f - v_start) / mars_aspect;
+    static const float u_start = 0.5f - u_diff;
+    static const float u_end = 0.5f + u_diff;
+    static const float u_space = 0.5f - (0.5f - v_start) / mars_aspect;
+    static std::uniform_real_distribution<float> urdu( -u_space, u_space );
+    float d_u = urdu( _random );
+    static std::uniform_real_distribution<float> urdv( -0.1f, 0.1f );
+    float d_v = urdv( _random );
+    _mars_terrain_ranges = glm::vec4( u_start + d_u, u_end + d_u, v_start + d_v, v_end + d_v );
 
     _model->Start();
 
@@ -928,6 +942,7 @@ void GameView::RenderHexagon( TileWrapper& tile, int id, bool clickable ) {
     glBindVertexArray( TexStore::tile_top.vao_id );
 
     glActiveTexture( GL_TEXTURE0 );
+    glBindTexture( GL_TEXTURE_2D, TexStore::terrain_mars_texture.id );
 
     glm::mat4 world = tile.pos_translate * initial_rotate;
     glm::mat4 view_proj = _camera->GetViewProj();
@@ -936,8 +951,10 @@ void GameView::RenderHexagon( TileWrapper& tile, int id, bool clickable ) {
     glUniformMatrix4fv( ul( "world_it" ), 1, GL_FALSE, glm::value_ptr( glm::transpose( glm::inverse( world ) ) ) );
     glUniformMatrix4fv( ul( "view_proj" ), 1, GL_FALSE, glm::value_ptr( view_proj ) );
 
-    glUniform1i( ul( "image" ), 0 );
-    glUniform3f( ul( "color" ), tile.color->r, tile.color->g, tile.color->b );
+    glUniform4f( ul( "tex_ranges" ), tile.tex_ranges.x, tile.tex_ranges.y, tile.tex_ranges.z, tile.tex_ranges.w );
+    glUniform1i( ul( "terrain_mars" ), 0 );
+    glUniform4f( ul( "mars_ranges" ), _mars_terrain_ranges.x, _mars_terrain_ranges.y, _mars_terrain_ranges.z, _mars_terrain_ranges.w );
+    glUniform1i( ul( "terrain_special" ), 1 );
     glUniform3f( ul( "border_color" ), tile.border_color.r, tile.border_color.g, tile.border_color.b );
 
     if ( clickable )
@@ -2142,6 +2159,13 @@ void GameView::InitBoard() {
     }
     _stencil_starting_misc = STENCIL_STARTING_BOARD + (int)_tiles.size();
 
+    float tex_u_stride = 1.0f / (max_q + 1);
+    float tex_u_correction = ((max_r + 1) / 4) * tex_u_stride;
+    int tex_v_quarter_count = (max_r + 1) * 3 + 1;
+    float tex_v_quarter_length = 1.0f / tex_v_quarter_count;
+    float tex_v_length = tex_v_quarter_length * 4.0f;
+    float tex_v_stride = tex_v_quarter_length * 3.0f;
+
     _indexable_tiles = std::vector<std::vector<TileWrapper*>>( max_r + 1,
         std::vector<TileWrapper*>( max_q + 1, nullptr )
     );
@@ -2149,12 +2173,22 @@ void GameView::InitBoard() {
         auto [q, r] = tile->get_indices();
         _indexable_tiles[ r ][ q ] = &tile;
 
+        // translate
         float render_q = q - q_o;
         float render_r = r - r_o;
 
         float x = glm::root_three<float>() * render_q + glm::root_three<float>() / 2.0f * render_r;
         float y = 3.0f / 2.0f * -render_r;
         tile.pos_translate = glm::translate( glm::vec3( x, y, 0.0f ) );
+
+        // texture coordinates
+        float u_correction = r * tex_u_stride / 2.0f;
+        tile.tex_ranges = glm::vec4(
+            q * tex_u_stride + u_correction - tex_u_correction,
+            (q + 1) * tex_u_stride + u_correction - tex_u_correction,
+            1.0f - r * tex_v_stride - tex_v_length,
+            1.0f - r * tex_v_stride
+        );
     }
 }
 
