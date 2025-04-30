@@ -934,17 +934,13 @@ void GameView::RenderBoard( bool clickable ) {
 }
 
 void GameView::RenderHexagon( TileWrapper& tile, int id, bool clickable ) {
-    static const glm::mat4 initial_rotate =
-        glm::rotate( glm::pi<float>(), glm::vec3( 0.0, 1.0, 0.0 ) ) *
-        glm::rotate( glm::three_over_two_pi<float>(), glm::vec3( 1.0, 0.0, 0.0 ) );
-
     glUseProgram( TexStore::program_id );
     glBindVertexArray( TexStore::tile_top.vao_id );
 
     glActiveTexture( GL_TEXTURE0 );
     glBindTexture( GL_TEXTURE_2D, TexStore::terrain_mars_texture.id );
 
-    glm::mat4 world = tile.pos_translate * initial_rotate;
+    glm::mat4 world = tile.pos_translate;
     glm::mat4 view_proj = _camera->GetViewProj();
 
     glUniformMatrix4fv( ul( "world" ), 1, GL_FALSE, glm::value_ptr( world ) );

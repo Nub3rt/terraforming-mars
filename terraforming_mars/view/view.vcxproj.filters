@@ -239,38 +239,29 @@
     </Font>
   </ItemGroup>
   <ItemGroup>
-    <Object Include="objects\dunes.obj">
+    <Text Include="objects\dunes.obj">
       <Filter>Resource Files</Filter>
-    </Object>
-    <Object Include="objects\dunes_city.obj">
+    </Text>
+    <Text Include="objects\dunes_city.obj">
       <Filter>Resource Files</Filter>
-    </Object>
-    <Object Include="objects\dunes_greenery.obj">
+    </Text>
+    <Text Include="objects\mountains.obj">
       <Filter>Resource Files</Filter>
-    </Object>
-    <Object Include="objects\mountains.obj">
+    </Text>
+    <Text Include="objects\mountains_city.obj">
       <Filter>Resource Files</Filter>
-    </Object>
-    <Object Include="objects\mountains_city.obj">
+    </Text>
+    <Text Include="objects\plains.obj">
       <Filter>Resource Files</Filter>
-    </Object>
-    <Object Include="objects\mountains_greenery.obj">
+    </Text>
+    <Text Include="objects\plains_city.obj">
       <Filter>Resource Files</Filter>
-    </Object>
-    <Object Include="objects\plains.obj">
+    </Text>
+    <Text Include="objects\tile_bottom.obj">
       <Filter>Resource Files</Filter>
-    </Object>
-    <Object Include="objects\plains_city.obj">
+    </Text>
+    <Text Include="objects\tile.obj">
       <Filter>Resource Files</Filter>
-    </Object>
-    <Object Include="objects\plains_greenery.obj">
-      <Filter>Resource Files</Filter>
-    </Object>
-    <Object Include="objects\tile_bottom.obj">
-      <Filter>Resource Files</Filter>
-    </Object>
-    <Object Include="objects\tile_empty_top.obj">
-      <Filter>Resource Files</Filter>
-    </Object>
+    </Text>
   </ItemGroup>
 </Project>

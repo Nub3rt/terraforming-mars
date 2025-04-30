@@ -39,8 +39,8 @@ ivec2 axial_round( vec2 qr ) {
 
 void main() {
     vec2 uv = vec2(
-        mix( tex_ranges.x, tex_ranges.y, 1.0 - vs_out_tex.x ),
-        mix( tex_ranges.z, tex_ranges.w, 1.0 - vs_out_tex.y )
+        mix( tex_ranges.x, tex_ranges.y, vs_out_tex.x ),
+        mix( tex_ranges.z, tex_ranges.w, vs_out_tex.y )
     );
     uv = vec2(
         mix( mars_ranges.x, mars_ranges.y, uv.x ),
@@ -49,7 +49,7 @@ void main() {
     vec4 tex = texture( terrain_mars, uv );
 
 
-    vec2 xy = vs_orig_pos.xz;
+    vec2 xy = vs_orig_pos.xy;
     mat2 pixel_to_hex = mat2( sqrt( 3.0 ) / 3.0, 0.0, -1.0 / 3.0, 2.0 / 3.0 );
     vec2 qr = pixel_to_hex * xy / 0.95;
     ivec2 iqr = axial_round( qr );
