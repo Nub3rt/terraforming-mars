@@ -212,40 +212,42 @@ void MenuView::MouseDown( const SDL_MouseButtonEvent& mouse ) {
 }
 
 void MenuView::MouseUp( const SDL_MouseButtonEvent& mouse ) {
-    uint8_t stencil = GetStencilValue( mouse.x, mouse.y );
-    if ( stencil == _mouse_down_stencil ) {
-        switch ( stencil ) {
-            case STENCIL_NONE: break;
-            case 0x00:
-                SDL_LogError( SDL_LOG_CATEGORY_ERROR, "MenuView::MouseUp: Invalid stencil value received : 0x00!" );
-                break;
-            case STENCIL_MENU_CONTINUE:
-                TransitionToMars();
-                break;
-            case STENCIL_MENU_NEW_GAME:
-                if ( _debug )
-                    _builder.SetSeed( _seed );
-                else
-                    _builder.SetSeed( rand() );
+    if ( !_transitioning ) {
+        uint8_t stencil = GetStencilValue( mouse.x, mouse.y );
+        if ( stencil == _mouse_down_stencil ) {
+            switch ( stencil ) {
+                case STENCIL_NONE: break;
+                case 0x00:
+                    SDL_LogError( SDL_LOG_CATEGORY_ERROR, "MenuView::MouseUp: Invalid stencil value received : 0x00!" );
+                    break;
+                case STENCIL_MENU_CONTINUE:
+                    TransitionToMars();
+                    break;
+                case STENCIL_MENU_NEW_GAME:
+                    if ( _debug )
+                        _builder.SetSeed( _seed );
+                    else
+                        _builder.SetSeed( rand() );
 
-                _game_view = _builder.SoloGameModel()
-                                     .TharsisBoard()
-                                     .ReducedBasicDeck()
-                                     .SoloGameView()
-                                     .GetResult( _camera );
+                    _game_view = _builder.SoloGameModel()
+                                         .TharsisBoard()
+                                         .ReducedBasicDeck()
+                                         .SoloGameView()
+                                         .GetResult( _camera );
 
-                _game_view->Resize( _width, _height );
+                    _game_view->Resize( _width, _height );
 
-                _new_game.Invoke( _game_view );
+                    _new_game.Invoke( _game_view );
 
-                TransitionToMars();
-                break;
-            case STENCIL_MENU_QUIT:
-                _quit.Invoke();
-                break;
-            default:
-                SDL_LogError( SDL_LOG_CATEGORY_ERROR, "MenuView::MouseUp: Invalid stencil value received : %#x!", stencil );
-                break;
+                    TransitionToMars();
+                    break;
+                case STENCIL_MENU_QUIT:
+                    _quit.Invoke();
+                    break;
+                default:
+                    SDL_LogError( SDL_LOG_CATEGORY_ERROR, "MenuView::MouseUp: Invalid stencil value received : %#x!", stencil );
+                    break;
+            }
         }
     }
 }

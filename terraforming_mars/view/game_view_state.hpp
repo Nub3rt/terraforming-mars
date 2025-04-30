@@ -53,6 +53,8 @@ public:
     virtual bool CanConvertPlants();
     virtual bool CanConvertHeat();
 
+    virtual bool InIdleState();
+
     void ClickedEndButton();
     virtual void ClickedOnTile( TileWrapper& tile );
     virtual void ClickedMisc( int index );
@@ -124,6 +126,8 @@ public:
     bool CanUseCitySP() override;
     bool CanConvertPlants() override;
     bool CanConvertHeat() override;
+
+    bool InIdleState() override;
 
     void ClickedMisc( int index ) override;
 

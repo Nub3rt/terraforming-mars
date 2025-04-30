@@ -52,6 +52,8 @@ bool GameViewState::CanUseCitySP() { return false; }
 bool GameViewState::CanConvertPlants() { return false; }
 bool GameViewState::CanConvertHeat() { return false; }
 
+bool GameViewState::InIdleState() { return false; }
+
 void GameViewState::PlayCard( int index_in_hand ) {
     throw std::logic_error( "GameViewState::PlayCard: GameView was in an invalid state!" );
 }
@@ -269,11 +271,13 @@ bool IdleVState::CanUseCitySP() { return _view._model->CanUseCitySP(); }
 bool IdleVState::CanConvertPlants() { return _view._model->CanConvertPlantsToGreenery(); }
 bool IdleVState::CanConvertHeat() { return _view._model->CanConvertHeatToTemperature(); }
 
+bool IdleVState::InIdleState() { return true; }
+
 void IdleVState::ClickedMisc( int index ) {
     if ( _view._panel != Panel::ACTION )
         throw std::logic_error( "IdleState::ClickedMisc: actions panel was not shown!" );
 
-    const model::decks::Card* card = **_view._action_cards[ index ];
+    const model::decks::Card* card = **_view._action_cards[ index + 8 * _view._page_nums[ 0 ] ];
     if ( _view._model->CanUseActions() &&
          _view._model->ActionStatus( card ) == model::decks::Availability::CAN_BE_USED ) {
         _view._panel = Panel::NONE;
@@ -291,6 +295,7 @@ void IdleVState::PlayCard( int index_in_hand ) {
 void IdleVState::DoClickedEndButton() {
     _view._panel = Panel::NONE;
 
+    if ( !_view._model->InPostLastGenerationState() )
     _view._animation_queue.push( new TextAnimation(
         DEFAULT_LOCKOUT_DURATION,
         ATTRIBUTE_CHANGED_DURATION,

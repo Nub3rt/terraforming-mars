@@ -250,13 +250,13 @@ void GameView::Render() {
 
     RenderPanels();
 
-    RenderHand();
-
     for ( Animation* animation : _ongoing_animations )
         animation->Render( this );
 
     if ( _locking_animation )
         (*_locking_animation)->Render( this );
+
+    RenderHand();
 }
 
 void GameView::RenderGUI() {
@@ -1000,13 +1000,13 @@ void GameView::RenderHexagon( TileWrapper& tile, int id, bool clickable ) {
     static const glm::mat4 card_scale = glm::scale( glm::vec3( size * card_ratio, size, 1.0f ) );
     static const float player_icon_ratio = (float)_player_icon_texture.width / _player_icon_texture.height;
     static const glm::mat4 player_icon_scale = glm::scale( glm::vec3( size * player_icon_ratio, size, 1.0f ) );
+    static const glm::mat4 player_translate = glm::translate( glm::vec3( d_x_1, -d_y_1, d_z ) );
     static const glm::mat4 bonus_1_translate = glm::translate( glm::vec3( d_x_1, d_y_1, d_z ) );
     static const glm::mat4 bonus_2_translate = glm::translate( glm::vec3( d_x_2, d_y_2, d_z ) );
     static const float stride_x = 1.0f / RESOURCE_TEXTURE_COLUMNS;
     static const float stride_y = 1.0f / RESOURCE_TEXTURE_ROWS;
 
     if ( tile.show_resources ) {
-
         if ( tile->get_bonus_1() ) {
             model::Resource resource = *tile->get_bonus_1();
 
@@ -1080,7 +1080,7 @@ void GameView::RenderHexagon( TileWrapper& tile, int id, bool clickable ) {
 
         glBindTexture( GL_TEXTURE_2D, _player_icon_texture.id );
 
-        glm::mat4 player_icon_world = view_proj * bonus_1_translate * world * player_icon_scale;
+        glm::mat4 player_icon_world = view_proj * player_translate * world * player_icon_scale;
         glUniformMatrix4fv( ul( "world" ), 1, GL_FALSE, glm::value_ptr( player_icon_world ) );
 
         glDrawElements( GL_TRIANGLES, _rectangle_gpu.count, GL_UNSIGNED_INT, nullptr );
