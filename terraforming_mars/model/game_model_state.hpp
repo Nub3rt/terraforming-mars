@@ -188,7 +188,7 @@ public:
 
     bool InPostLastGenerationState() override;
 
-    virtual void ConvertPlantsToGreenery();
+    void ConvertPlantsToGreenery() override;
 
     bool CanEndTurn() override;
     void EndTurn() override;

@@ -35,7 +35,7 @@ void SoloGameOverVState::Render() {
         );
     else
         TextRenderer::RenderTextCentered(
-            "You could not terraform the Mars in 14 generations...",
+            "You could not terraform Mars in 14 generations...",
             0.0f, 0.2f,
             BASE_TEXT_SCALE,
             LIGHT_TEXT_COLOR

@@ -65,6 +65,12 @@ bool Card::CanBePlayed() const {
 }
 
 void Card::Play() {
+    if ( _holder == nullptr )
+        throw std::logic_error( "Card::Play: card has no holder!" );
+
+    if ( _owner != nullptr )
+        throw std::logic_error( "Card::Play: card was already played!" );
+
     _owner = _holder;
     ApplyImmediateEffects();
 }

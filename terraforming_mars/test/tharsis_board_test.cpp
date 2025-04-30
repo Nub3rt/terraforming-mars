@@ -168,7 +168,7 @@ TEST_F( TharsisBoardTest, MiddleGetNeighboursTest ) {
     EXPECT_EQ( expected_ns, actual_ns );
 }
 
-TEST_F( TharsisBoardTest, Test ) {
+TEST_F( TharsisBoardTest, NeighbouringTilesOfTypeTest ) {
     std::set<std::pair<int, int>> expected_ns = { { 6, 3 }, { 7, 3 }, { 7, 4 } };
     std::vector<std::pair<int, int>> neighbours = tharsis_board.GetNeighbouringTilesOfType( 6, 4, TileType::EMPTY );
     std::set<std::pair<int, int>> actual_ns( neighbours.begin(), neighbours.end() );
