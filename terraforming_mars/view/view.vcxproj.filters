@@ -42,6 +42,9 @@
     </ClCompile>
     <ClCompile Include="solo_game_view.cpp" />
     <ClCompile Include="menu_view.cpp" />
+    <ClCompile Include="gl_utils\obj_parser.cpp">
+      <Filter>gl_utils</Filter>
+    </ClCompile>
     <ClCompile Include="tex_store.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -80,6 +83,9 @@
     <ClInclude Include="view.hpp" />
     <ClInclude Include="solo_game_view.hpp" />
     <ClInclude Include="menu_view.hpp" />
+    <ClInclude Include="gl_utils\obj_parser.hpp">
+      <Filter>gl_utils</Filter>
+    </ClInclude>
     <ClInclude Include="tex_store.hpp" />
   </ItemGroup>
   <ItemGroup>
@@ -217,10 +223,54 @@
     <Image Include="assets\button_short.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="assets\terrain_greenery.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\terrain_mars.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\terrain_ocean.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Font Include="fonts\prototype.ttf">
       <Filter>fonts</Filter>
     </Font>
+  </ItemGroup>
+  <ItemGroup>
+    <Object Include="objects\dunes.obj">
+      <Filter>Resource Files</Filter>
+    </Object>
+    <Object Include="objects\dunes_city.obj">
+      <Filter>Resource Files</Filter>
+    </Object>
+    <Object Include="objects\dunes_greenery.obj">
+      <Filter>Resource Files</Filter>
+    </Object>
+    <Object Include="objects\mountains.obj">
+      <Filter>Resource Files</Filter>
+    </Object>
+    <Object Include="objects\mountains_city.obj">
+      <Filter>Resource Files</Filter>
+    </Object>
+    <Object Include="objects\mountains_greenery.obj">
+      <Filter>Resource Files</Filter>
+    </Object>
+    <Object Include="objects\plains.obj">
+      <Filter>Resource Files</Filter>
+    </Object>
+    <Object Include="objects\plains_city.obj">
+      <Filter>Resource Files</Filter>
+    </Object>
+    <Object Include="objects\plains_greenery.obj">
+      <Filter>Resource Files</Filter>
+    </Object>
+    <Object Include="objects\tile_bottom.obj">
+      <Filter>Resource Files</Filter>
+    </Object>
+    <Object Include="objects\tile_empty_top.obj">
+      <Filter>Resource Files</Filter>
+    </Object>
   </ItemGroup>
 </Project>

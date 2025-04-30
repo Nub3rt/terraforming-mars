@@ -20,6 +20,18 @@ void CleanShaders();
 inline OGLObject hexagon_gpu = {};
 inline OGLObject rectangle_gpu = {};
 
+inline OGLObject tile_bottom = {};
+inline OGLObject tile_top = {};
+inline OGLObject plains = {};
+inline OGLObject plains_greenery = {};
+inline OGLObject plains_city = {};
+inline OGLObject dunes = {};
+inline OGLObject dunes_greenery = {};
+inline OGLObject dunes_city = {};
+inline OGLObject mountains = {};
+inline OGLObject mountains_greenery = {};
+inline OGLObject mountains_city = {};
+
 void InitGeometry();
 void CleanGeometry();
 
@@ -49,6 +61,10 @@ inline Texture automated_closed_texture = {};
 inline Texture automated_open_texture = {};
 inline Texture effect_closed_texture = {};
 inline Texture effect_open_texture = {};
+
+inline Texture terrain_mars_texture = {};
+inline Texture terrain_greenery_texture = {};
+inline Texture terrain_ocean_texture = {};
 
 void InitTextures();
 void CleanTextures();

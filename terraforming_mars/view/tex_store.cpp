@@ -4,6 +4,7 @@
 #include <glm/gtx/transform.hpp>
 
 #include "gl_utils/gl_utils.hpp"
+#include "gl_utils/obj_parser.hpp"
 
 namespace view
 {
@@ -89,11 +90,48 @@ void TexStore::InitGeometry() {
     };
 
     rectangle_gpu = CreateGLObjectFromMesh( rectangle_cpu, vertex_pos_tex_attribute_list );
+
+
+    MeshObject<Vertex> tile_bottom_mesh = ObjParser::Parse( "objects/tile_bottom.obj" );
+    MeshObject<Vertex> tile_top_mesh = ObjParser::Parse( "objects/tile_empty_top.obj" );
+    MeshObject<Vertex> planes_mesh = ObjParser::Parse( "objects/plains.obj" );
+    MeshObject<Vertex> planes_greenery_mesh = ObjParser::Parse( "objects/plains_greenery.obj" );
+    MeshObject<Vertex> planes_city_mesh = ObjParser::Parse( "objects/plains_city.obj" );
+    MeshObject<Vertex> dunes_mesh = ObjParser::Parse( "objects/dunes.obj" );
+    MeshObject<Vertex> dunes_greenery_mesh = ObjParser::Parse( "objects/dunes_greenery.obj" );
+    MeshObject<Vertex> dunes_city_mesh = ObjParser::Parse( "objects/dunes_city.obj" );
+    MeshObject<Vertex> mountains_mesh = ObjParser::Parse( "objects/mountains.obj" );
+    MeshObject<Vertex> mountains_greenery_mesh = ObjParser::Parse( "objects/mountains_greenery.obj" );
+    MeshObject<Vertex> mountains_city_mesh = ObjParser::Parse( "objects/mountains_city.obj" );
+
+    tile_bottom = CreateGLObjectFromMesh( tile_bottom_mesh, vertex_attribute_list );
+    tile_top = CreateGLObjectFromMesh( tile_top_mesh, vertex_attribute_list );
+    plains = CreateGLObjectFromMesh( planes_mesh, vertex_attribute_list );
+    plains_greenery = CreateGLObjectFromMesh( planes_greenery_mesh, vertex_attribute_list );
+    plains_city = CreateGLObjectFromMesh( planes_city_mesh, vertex_attribute_list );
+    dunes = CreateGLObjectFromMesh( dunes_mesh, vertex_attribute_list );
+    dunes_greenery = CreateGLObjectFromMesh( dunes_greenery_mesh, vertex_attribute_list );
+    dunes_city = CreateGLObjectFromMesh( dunes_city_mesh, vertex_attribute_list );
+    mountains = CreateGLObjectFromMesh( mountains_mesh, vertex_attribute_list );
+    mountains_greenery = CreateGLObjectFromMesh( mountains_greenery_mesh, vertex_attribute_list );
+    mountains_city = CreateGLObjectFromMesh( mountains_city_mesh, vertex_attribute_list );
 }
 
 void TexStore::CleanGeometry() {
     CleanOGLObject( hexagon_gpu );
     CleanOGLObject( rectangle_gpu );
+
+    CleanOGLObject( tile_bottom );
+    CleanOGLObject( tile_top );
+    CleanOGLObject( plains );
+    CleanOGLObject( plains_greenery );
+    CleanOGLObject( plains_city );
+    CleanOGLObject( dunes );
+    CleanOGLObject( dunes_greenery );
+    CleanOGLObject( dunes_city );
+    CleanOGLObject( mountains );
+    CleanOGLObject( mountains_greenery );
+    CleanOGLObject( mountains_city );
 }
 
 void TexStore::InitTextures() {
@@ -123,6 +161,10 @@ void TexStore::InitTextures() {
     automated_open_texture = LoadTexture( "assets/automated_open.png" );
     effect_closed_texture = LoadTexture( "assets/effect_closed.png" );
     effect_open_texture = LoadTexture( "assets/effect_open.png" );
+
+    terrain_mars_texture = LoadTexture( "assets/terrain_mars.png" );
+    terrain_greenery_texture = LoadTexture( "assets/terrain_greenery.jpg" );
+    terrain_ocean_texture = LoadTexture( "assets/terrain_ocean.jpg" );
 }
 
 void TexStore::CleanTextures() {
