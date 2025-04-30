@@ -225,6 +225,8 @@ protected:
     void ClickedLeft();
     void ClickedRight();
 
+    void InitBoard();
+
 
     bool _debug = false;
 };

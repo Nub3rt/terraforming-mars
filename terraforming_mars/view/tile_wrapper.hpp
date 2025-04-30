@@ -24,6 +24,8 @@ public:
     Animatable<glm::vec3> color;
     glm::vec3 border_color;
 
+    glm::mat4 pos_translate;
+
 private:
     const model::boards::Tile& _tile;
 

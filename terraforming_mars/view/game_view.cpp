@@ -69,26 +69,7 @@ bool GameView::Init( Camera* camera, model::GameModel* model ) {
 
     _model->Start();
 
-    int max_q = 0;
-    int max_r = 0;
-    for ( const model::boards::Tile& tile : *_model->get_board() ) {
-        auto [q, r] = tile.get_indices();
-        if ( q > max_q )
-            max_q = q;
-        if ( r > max_r )
-            max_r = r;
-
-        _tiles.emplace_back( tile );
-    }
-    _stencil_starting_misc = STENCIL_STARTING_BOARD + (int)_tiles.size();
-
-    _indexable_tiles = std::vector<std::vector<TileWrapper*>>( max_r + 1,
-        std::vector<TileWrapper*>( max_q + 1, nullptr )
-    );
-    for ( TileWrapper& tile : _tiles ) {
-        auto [q, r] = tile->get_indices();
-        _indexable_tiles[ r ][ q ] = &tile;
-    }
+    InitBoard();
 
     return true;
 }
@@ -939,26 +920,16 @@ void GameView::RenderBoard( bool clickable ) {
 }
 
 void GameView::RenderHexagon( TileWrapper& tile, int id, bool clickable ) {
-    /*
-    *  *----> q         Ʌ y
-    *   \               |
-    *    \      ----->  |
-    *     \             |
-    *      V r          *----> x
-    */
+    static const glm::mat4 initial_rotate =
+        glm::rotate( glm::pi<float>(), glm::vec3( 0.0, 1.0, 0.0 ) ) *
+        glm::rotate( glm::three_over_two_pi<float>(), glm::vec3( 1.0, 0.0, 0.0 ) );
 
     glUseProgram( TexStore::program_id );
-    glBindVertexArray( TexStore::hexagon_gpu.vao_id );
+    glBindVertexArray( TexStore::tile_top.vao_id );
 
     glActiveTexture( GL_TEXTURE0 );
 
-    auto& [q_o, r_o] = GetBoardOrigin();
-    float q = tile->q - q_o;
-    float r = tile->r - r_o;
-
-    float x = glm::root_three<float>() * q + glm::root_three<float>() / 2.0f * r;
-    float y = 3.0f / 2.0f * -r;
-    glm::mat4 world = glm::translate( glm::vec3( x, y, 0.0f ) );
+    glm::mat4 world = tile.pos_translate * initial_rotate;
     glm::mat4 view_proj = _camera->GetViewProj();
 
     glUniformMatrix4fv( ul( "world" ), 1, GL_FALSE, glm::value_ptr( world ) );
@@ -1003,7 +974,7 @@ void GameView::RenderHexagon( TileWrapper& tile, int id, bool clickable ) {
 
                 glBindTexture( GL_TEXTURE_2D, TexStore::card_cover_texture.id );
 
-                glm::mat4 card_world = view_proj * bonus_1_translate * world * card_scale;
+                glm::mat4 card_world = view_proj * bonus_1_translate * tile.pos_translate * card_scale;
                 glUniformMatrix4fv( ul( "world" ), 1, GL_FALSE, glm::value_ptr( card_world ) );
 
                 glDrawElements( GL_TRIANGLES, TexStore::rectangle_gpu.count, GL_UNSIGNED_INT, nullptr );
@@ -1016,7 +987,7 @@ void GameView::RenderHexagon( TileWrapper& tile, int id, bool clickable ) {
                 int index_x = +resource % RESOURCE_TEXTURE_COLUMNS;
                 int index_y = +resource / RESOURCE_TEXTURE_COLUMNS;
 
-                glm::mat4 resource_world = view_proj * bonus_1_translate * world * scale;
+                glm::mat4 resource_world = view_proj * bonus_1_translate * tile.pos_translate * scale;
                 glUniformMatrix4fv( ul( "world" ), 1, GL_FALSE, glm::value_ptr( resource_world ) );
 
                 glUniform1f( ul( "stride_x" ), stride_x );
@@ -1037,7 +1008,7 @@ void GameView::RenderHexagon( TileWrapper& tile, int id, bool clickable ) {
 
                 glBindTexture( GL_TEXTURE_2D, TexStore::card_cover_texture.id );
 
-                glm::mat4 card_world = view_proj * bonus_2_translate * world * card_scale;
+                glm::mat4 card_world = view_proj * bonus_2_translate * tile.pos_translate * card_scale;
                 glUniformMatrix4fv( ul( "world" ), 1, GL_FALSE, glm::value_ptr( card_world ) );
 
                 glDrawElements( GL_TRIANGLES, TexStore::rectangle_gpu.count, GL_UNSIGNED_INT, nullptr );
@@ -1050,7 +1021,7 @@ void GameView::RenderHexagon( TileWrapper& tile, int id, bool clickable ) {
                 int index_x = +resource % RESOURCE_TEXTURE_COLUMNS;
                 int index_y = +resource / RESOURCE_TEXTURE_COLUMNS;
 
-                glm::mat4 resource_world = view_proj * bonus_2_translate * world * scale;
+                glm::mat4 resource_world = view_proj * bonus_2_translate * tile.pos_translate * scale;
                 glUniformMatrix4fv( ul( "world" ), 1, GL_FALSE, glm::value_ptr( resource_world ) );
 
                 glUniform1f( ul( "stride_x" ), stride_x );
@@ -2145,6 +2116,46 @@ void GameView::ClickedLeft() {
 
 void GameView::ClickedRight() {
     TurnPanelPageRight();
+}
+
+void GameView::InitBoard() {
+    /*
+    *  *----> q         Ʌ y
+    *   \               |
+    *    \      ----->  |
+    *     \             |
+    *      V r          *----> x
+    */
+
+    int max_q = 0;
+    int max_r = 0;
+
+    auto& [q_o, r_o] = GetBoardOrigin();
+
+    for ( const model::boards::Tile& tile : *_model->get_board() ) {
+        auto [q, r] = tile.get_indices();
+        if ( q > max_q )
+            max_q = q;
+        if ( r > max_r )
+            max_r = r;
+        _tiles.emplace_back( tile );
+    }
+    _stencil_starting_misc = STENCIL_STARTING_BOARD + (int)_tiles.size();
+
+    _indexable_tiles = std::vector<std::vector<TileWrapper*>>( max_r + 1,
+        std::vector<TileWrapper*>( max_q + 1, nullptr )
+    );
+    for ( TileWrapper& tile : _tiles ) {
+        auto [q, r] = tile->get_indices();
+        _indexable_tiles[ r ][ q ] = &tile;
+
+        float render_q = q - q_o;
+        float render_r = r - r_o;
+
+        float x = glm::root_three<float>() * render_q + glm::root_three<float>() / 2.0f * render_r;
+        float y = 3.0f / 2.0f * -render_r;
+        tile.pos_translate = glm::translate( glm::vec3( x, y, 0.0f ) );
+    }
 }
 
 #pragma endregion Rendering
