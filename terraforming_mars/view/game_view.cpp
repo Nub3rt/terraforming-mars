@@ -16,6 +16,7 @@
 #include "animatable.hpp"
 #include "constants.hpp"
 #include "panel.hpp"
+#include "tex_store.hpp"
 #include "text_renderer.hpp"
 #include "game_view_state.hpp"
 
@@ -131,20 +132,6 @@ void GameView::Clean() {
         delete _next_state;
 
     delete _model;
-}
-
-bool GameView::StaticInit() {
-    InitShaders();
-    InitGeometry();
-    InitTextures();
-
-    return true;
-}
-
-void GameView::StaticClean() {
-    CleanShaders();
-    CleanGeometry();
-    CleanTextures();
 }
 
 void GameView::Update( const UpdateInfo& update_info ) {
@@ -868,11 +855,11 @@ void GameView::RenderAnimation( CardPlayAnimation* animation ) {
     glEnable( GL_BLEND );
     glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
-    glUseProgram( _program_card_id );
-    glBindVertexArray( _rectangle_gpu.vao_id );
+    glUseProgram( TexStore::program_card_id );
+    glBindVertexArray( TexStore::rectangle_gpu.vao_id );
 
     glActiveTexture( GL_TEXTURE0 );
-    glBindTexture( GL_TEXTURE_2D, _cards_texture.id );
+    glBindTexture( GL_TEXTURE_2D, TexStore::cards_texture.id );
     glUniform1i( ul( "image" ), 0 );
     glUniform1f( ul( "elapsed" ), _elapsed );
 
@@ -960,8 +947,8 @@ void GameView::RenderHexagon( TileWrapper& tile, int id, bool clickable ) {
     *      V r          *----> x
     */
 
-    glUseProgram( _program_id );
-    glBindVertexArray( _hexagon_gpu.vao_id );
+    glUseProgram( TexStore::program_id );
+    glBindVertexArray( TexStore::hexagon_gpu.vao_id );
 
     glActiveTexture( GL_TEXTURE0 );
 
@@ -985,7 +972,7 @@ void GameView::RenderHexagon( TileWrapper& tile, int id, bool clickable ) {
     if ( clickable )
         SetStencilRef( id );
 
-    glDrawElements( GL_TRIANGLES, _hexagon_gpu.count, GL_UNSIGNED_INT, nullptr );
+    glDrawElements( GL_TRIANGLES, TexStore::hexagon_gpu.count, GL_UNSIGNED_INT, nullptr );
 
 
     static const float d_x_1 = 0.0f;
@@ -996,9 +983,9 @@ void GameView::RenderHexagon( TileWrapper& tile, int id, bool clickable ) {
 
     static const float size = 0.2f;
     static const glm::mat4 scale = glm::scale( glm::vec3( size, size, 1.0f ) );
-    static const float card_ratio = (float)_card_cover_texture.width / _card_cover_texture.height;
+    static const float card_ratio = (float)TexStore::card_cover_texture.width / TexStore::card_cover_texture.height;
     static const glm::mat4 card_scale = glm::scale( glm::vec3( size * card_ratio, size, 1.0f ) );
-    static const float player_icon_ratio = (float)_player_icon_texture.width / _player_icon_texture.height;
+    static const float player_icon_ratio = (float)TexStore::player_icon_texture.width / TexStore::player_icon_texture.height;
     static const glm::mat4 player_icon_scale = glm::scale( glm::vec3( size * player_icon_ratio, size, 1.0f ) );
     static const glm::mat4 player_translate = glm::translate( glm::vec3( d_x_1, -d_y_1, d_z ) );
     static const glm::mat4 bonus_1_translate = glm::translate( glm::vec3( d_x_1, d_y_1, d_z ) );
@@ -1011,20 +998,20 @@ void GameView::RenderHexagon( TileWrapper& tile, int id, bool clickable ) {
             model::Resource resource = *tile->get_bonus_1();
 
             if ( resource == model::Resource::CARD ) {
-                glUseProgram( _program_rectangle_id );
-                glBindVertexArray( _rectangle_gpu.vao_id );
+                glUseProgram( TexStore::program_rectangle_id );
+                glBindVertexArray( TexStore::rectangle_gpu.vao_id );
 
-                glBindTexture( GL_TEXTURE_2D, _card_cover_texture.id );
+                glBindTexture( GL_TEXTURE_2D, TexStore::card_cover_texture.id );
 
                 glm::mat4 card_world = view_proj * bonus_1_translate * world * card_scale;
                 glUniformMatrix4fv( ul( "world" ), 1, GL_FALSE, glm::value_ptr( card_world ) );
 
-                glDrawElements( GL_TRIANGLES, _rectangle_gpu.count, GL_UNSIGNED_INT, nullptr );
+                glDrawElements( GL_TRIANGLES, TexStore::rectangle_gpu.count, GL_UNSIGNED_INT, nullptr );
             } else {
-                glUseProgram( _program_sprite_sheet_id );
-                glBindVertexArray( _rectangle_gpu.vao_id );
+                glUseProgram( TexStore::program_sprite_sheet_id );
+                glBindVertexArray( TexStore::rectangle_gpu.vao_id );
 
-                glBindTexture( GL_TEXTURE_2D, _resources_texture.id );
+                glBindTexture( GL_TEXTURE_2D, TexStore::resources_texture.id );
 
                 int index_x = +resource % RESOURCE_TEXTURE_COLUMNS;
                 int index_y = +resource / RESOURCE_TEXTURE_COLUMNS;
@@ -1037,7 +1024,7 @@ void GameView::RenderHexagon( TileWrapper& tile, int id, bool clickable ) {
                 glUniform1i( ul( "index_x" ), index_x );
                 glUniform1i( ul( "index_y" ), index_y );
 
-                glDrawElements( GL_TRIANGLES, _rectangle_gpu.count, GL_UNSIGNED_INT, nullptr );
+                glDrawElements( GL_TRIANGLES, TexStore::rectangle_gpu.count, GL_UNSIGNED_INT, nullptr );
             }
         }
 
@@ -1045,20 +1032,20 @@ void GameView::RenderHexagon( TileWrapper& tile, int id, bool clickable ) {
             model::Resource resource = *tile->get_bonus_2();
 
             if ( resource == model::Resource::CARD ) {
-                glUseProgram( _program_rectangle_id );
-                glBindVertexArray( _rectangle_gpu.vao_id );
+                glUseProgram( TexStore::program_rectangle_id );
+                glBindVertexArray( TexStore::rectangle_gpu.vao_id );
 
-                glBindTexture( GL_TEXTURE_2D, _card_cover_texture.id );
+                glBindTexture( GL_TEXTURE_2D, TexStore::card_cover_texture.id );
 
                 glm::mat4 card_world = view_proj * bonus_2_translate * world * card_scale;
                 glUniformMatrix4fv( ul( "world" ), 1, GL_FALSE, glm::value_ptr( card_world ) );
 
-                glDrawElements( GL_TRIANGLES, _rectangle_gpu.count, GL_UNSIGNED_INT, nullptr );
+                glDrawElements( GL_TRIANGLES, TexStore::rectangle_gpu.count, GL_UNSIGNED_INT, nullptr );
             } else {
-                glUseProgram( _program_sprite_sheet_id );
-                glBindVertexArray( _rectangle_gpu.vao_id );
+                glUseProgram( TexStore::program_sprite_sheet_id );
+                glBindVertexArray( TexStore::rectangle_gpu.vao_id );
 
-                glBindTexture( GL_TEXTURE_2D, _resources_texture.id );
+                glBindTexture( GL_TEXTURE_2D, TexStore::resources_texture.id );
 
                 int index_x = +resource % RESOURCE_TEXTURE_COLUMNS;
                 int index_y = +resource / RESOURCE_TEXTURE_COLUMNS;
@@ -1071,19 +1058,19 @@ void GameView::RenderHexagon( TileWrapper& tile, int id, bool clickable ) {
                 glUniform1i( ul( "index_x" ), index_x );
                 glUniform1i( ul( "index_y" ), index_y );
 
-                glDrawElements( GL_TRIANGLES, _rectangle_gpu.count, GL_UNSIGNED_INT, nullptr );
+                glDrawElements( GL_TRIANGLES, TexStore::rectangle_gpu.count, GL_UNSIGNED_INT, nullptr );
             }
         }
     } else if ( tile->get_owner() != nullptr ) {
-        glUseProgram( _program_rectangle_id );
-        glBindVertexArray( _rectangle_gpu.vao_id );
+        glUseProgram( TexStore::program_rectangle_id );
+        glBindVertexArray( TexStore::rectangle_gpu.vao_id );
 
-        glBindTexture( GL_TEXTURE_2D, _player_icon_texture.id );
+        glBindTexture( GL_TEXTURE_2D, TexStore::player_icon_texture.id );
 
         glm::mat4 player_icon_world = view_proj * player_translate * world * player_icon_scale;
         glUniformMatrix4fv( ul( "world" ), 1, GL_FALSE, glm::value_ptr( player_icon_world ) );
 
-        glDrawElements( GL_TRIANGLES, _rectangle_gpu.count, GL_UNSIGNED_INT, nullptr );
+        glDrawElements( GL_TRIANGLES, TexStore::rectangle_gpu.count, GL_UNSIGNED_INT, nullptr );
     }
 
 
@@ -1122,7 +1109,7 @@ void GameView::RenderHUD() {
 }
 
 void GameView::RenderMenuButton() {
-    static const float button_ratio = (float)_button_short_texture.width / _button_short_texture.height;
+    static const float button_ratio = (float)TexStore::button_short_texture.width / TexStore::button_short_texture.height;
     static const float size = 0.04f;
     static const float spacing = 0.015f;
 
@@ -1132,20 +1119,20 @@ void GameView::RenderMenuButton() {
     if ( _menu_button_hovered && _state->CanClickMenuButton() )
         scale *= 1.1;
 
-    glUseProgram( _program_rectangle_id );
-    glBindVertexArray( _rectangle_gpu.vao_id );
+    glUseProgram( TexStore::program_rectangle_id );
+    glBindVertexArray( TexStore::rectangle_gpu.vao_id );
 
     glActiveTexture( GL_TEXTURE0 );
     glUniform1i( ul( "image" ), 0 );
 
-    glBindTexture( GL_TEXTURE_2D, _button_short_texture.id );
+    glBindTexture( GL_TEXTURE_2D, TexStore::button_short_texture.id );
 
     glm::mat4 world = glm::translate( glm::vec3( x, y, HUD_BASE_Z ) ) * glm::scale( scale );
     glUniformMatrix4fv( ul( "world" ), 1, GL_FALSE, glm::value_ptr( world ) );
 
     SetStencilRef( STENCIL_TO_MENU_BUTTON );
 
-    glDrawElements( GL_TRIANGLES, _rectangle_gpu.count, GL_UNSIGNED_INT, nullptr );
+    glDrawElements( GL_TRIANGLES, TexStore::rectangle_gpu.count, GL_UNSIGNED_INT, nullptr );
 
     SetStencilRef();
 
@@ -1164,8 +1151,8 @@ void GameView::RenderMenuButton() {
 }
 
 void GameView::RenderSP() {
-    glUseProgram( _program_rectangle_id );
-    glBindVertexArray( _rectangle_gpu.vao_id );
+    glUseProgram( TexStore::program_rectangle_id );
+    glBindVertexArray( TexStore::rectangle_gpu.vao_id );
 
     glActiveTexture( GL_TEXTURE0 );
     glUniform1i( ul( "image" ), 0 );
@@ -1183,8 +1170,8 @@ void GameView::RenderSP() {
 
     // arrows
 
-    static const float arrow_ratio = (float)_arrow_texture.height / _arrow_texture.width;
-    glBindTexture( GL_TEXTURE_2D, _arrow_texture.id );
+    static const float arrow_ratio = (float)TexStore::arrow_texture.height / TexStore::arrow_texture.width;
+    glBindTexture( GL_TEXTURE_2D, TexStore::arrow_texture.id );
     for ( int i = 0; i < 8; ++i ) {
         auto [x, y, scale] = CalculateSPPosition( i, 1 );
         scale.x /= arrow_ratio;
@@ -1200,19 +1187,19 @@ void GameView::RenderSP() {
         float size_multiplier = size_multipliers[ vertical_index ] ?
             MOUSE_HOVER_SIZE_MULTIPLIER : 1.0f;
 
-        glBindTexture( GL_TEXTURE_2D, _card_cover_texture.id );
+        glBindTexture( GL_TEXTURE_2D, TexStore::card_cover_texture.id );
 
-        static const float card_ratio = (float)_card_cover_texture.height / _card_cover_texture.width;
+        static const float card_ratio = (float)TexStore::card_cover_texture.height / TexStore::card_cover_texture.width;
         auto [x, y, scale] = CalculateSPPosition( vertical_index, 0 );
         scale.x /= card_ratio;
         scale *= size_multiplier;
 
         RenderDetail( x, y, scale );
 
-        glBindTexture( GL_TEXTURE_2D, _resources_texture.id );
+        glBindTexture( GL_TEXTURE_2D, TexStore::resources_texture.id );
         std::tie( x, y, scale ) = CalculateSPPosition( vertical_index, 2 );
 
-        glUseProgram( _program_sprite_sheet_id );
+        glUseProgram( TexStore::program_sprite_sheet_id );
         RenderResource( x, y, scale * size_multiplier, +model::Resource::CREDIT );
 
 
@@ -1228,11 +1215,11 @@ void GameView::RenderSP() {
     static const std::vector<std::string> costs = { "0", "11", "14", "18", "23", "25" };
 
     for ( int i = 1; i < 6; ++i ) {
-        glUseProgram( _program_sprite_sheet_id );
-        glBindVertexArray( _rectangle_gpu.vao_id );
+        glUseProgram( TexStore::program_sprite_sheet_id );
+        glBindVertexArray( TexStore::rectangle_gpu.vao_id );
         glActiveTexture( GL_TEXTURE0 );
 
-        glBindTexture( GL_TEXTURE_2D, _resources_texture.id );
+        glBindTexture( GL_TEXTURE_2D, TexStore::resources_texture.id );
 
         float size_multiplier = size_multipliers[ i ] ?
             MOUSE_HOVER_SIZE_MULTIPLIER : 1.0f;
@@ -1265,13 +1252,13 @@ void GameView::RenderSP() {
     // asteroid
     {
         static const int vertical_index = 2;
-        static const float temperature_ratio = (float)_temperature_texture.height / _temperature_texture.width;
+        static const float temperature_ratio = (float)TexStore::temperature_texture.height / TexStore::temperature_texture.width;
 
-        glUseProgram( _program_rectangle_id );
-        glBindVertexArray( _rectangle_gpu.vao_id );
+        glUseProgram( TexStore::program_rectangle_id );
+        glBindVertexArray( TexStore::rectangle_gpu.vao_id );
         glActiveTexture( GL_TEXTURE0 );
 
-        glBindTexture( GL_TEXTURE_2D, _temperature_texture.id );
+        glBindTexture( GL_TEXTURE_2D, TexStore::temperature_texture.id );
 
         auto [x, y, scale] = CalculateSPPosition( vertical_index, 2 );
         scale.x /= temperature_ratio * 0.8f;
@@ -1284,9 +1271,9 @@ void GameView::RenderSP() {
     // aquifer
     {
         static const int vertical_index = 3;
-        static const float ocean_ratio = (float)_ocean_texture.height / _ocean_texture.width;
+        static const float ocean_ratio = (float)TexStore::ocean_texture.height / TexStore::ocean_texture.width;
 
-        glBindTexture( GL_TEXTURE_2D, _ocean_texture.id );
+        glBindTexture( GL_TEXTURE_2D, TexStore::ocean_texture.id );
 
         auto [x, y, scale] = CalculateSPPosition( vertical_index, 2 );
         scale.y *= ocean_ratio;
@@ -1299,9 +1286,9 @@ void GameView::RenderSP() {
     // greenery
     {
         static const int vertical_index = 4;
-        static const float greenery_ratio = (float)_greenery_texture.height / _greenery_texture.width;
+        static const float greenery_ratio = (float)TexStore::greenery_texture.height / TexStore::greenery_texture.width;
 
-        glBindTexture( GL_TEXTURE_2D, _greenery_texture.id );
+        glBindTexture( GL_TEXTURE_2D, TexStore::greenery_texture.id );
 
         auto [x, y, scale] = CalculateSPPosition( vertical_index, 2 );
         scale.y *= greenery_ratio;
@@ -1314,12 +1301,12 @@ void GameView::RenderSP() {
     // city
     {
         static const int vertical_index = 5;
-        static const float city_ratio = (float)_city_texture.height / _city_texture.width;
+        static const float city_ratio = (float)TexStore::city_texture.height / TexStore::city_texture.width;
 
         float size_multiplier = size_multipliers[ vertical_index ] ?
             MOUSE_HOVER_SIZE_MULTIPLIER : 1.0f;
 
-        glBindTexture( GL_TEXTURE_2D, _city_texture.id );
+        glBindTexture( GL_TEXTURE_2D, TexStore::city_texture.id );
 
         auto [x, y, scale] = CalculateSPPosition( vertical_index, 2 );
         scale.y *= city_ratio;
@@ -1343,16 +1330,16 @@ void GameView::RenderSP() {
     // convert greenery
     {
         static const int vertical_index = 6;
-        static const float greenery_ratio = (float)_greenery_texture.height / _greenery_texture.width;
+        static const float greenery_ratio = (float)TexStore::greenery_texture.height / TexStore::greenery_texture.width;
 
         float size_multiplier = size_multipliers[ vertical_index ] ?
             MOUSE_HOVER_SIZE_MULTIPLIER : 1.0f;
 
-        glUseProgram( _program_sprite_sheet_id );
-        glBindVertexArray( _rectangle_gpu.vao_id );
+        glUseProgram( TexStore::program_sprite_sheet_id );
+        glBindVertexArray( TexStore::rectangle_gpu.vao_id );
         glActiveTexture( GL_TEXTURE0 );
 
-        glBindTexture( GL_TEXTURE_2D, _resources_texture.id );
+        glBindTexture( GL_TEXTURE_2D, TexStore::resources_texture.id );
 
         auto [x, y, scale] = CalculateSPPosition( vertical_index, 0 );
         scale *= size_multiplier;
@@ -1367,11 +1354,11 @@ void GameView::RenderSP() {
         );
 
 
-        glUseProgram( _program_rectangle_id );
-        glBindVertexArray( _rectangle_gpu.vao_id );
+        glUseProgram( TexStore::program_rectangle_id );
+        glBindVertexArray( TexStore::rectangle_gpu.vao_id );
         glActiveTexture( GL_TEXTURE0 );
 
-        glBindTexture( GL_TEXTURE_2D, _greenery_texture.id );
+        glBindTexture( GL_TEXTURE_2D, TexStore::greenery_texture.id );
 
         std::tie( x, y, scale ) = CalculateSPPosition( vertical_index, 2 );
         scale.y *= greenery_ratio;
@@ -1384,16 +1371,16 @@ void GameView::RenderSP() {
     // convert heat
     {
         static const int vertical_index = 7;
-        static const float temperature_ratio = (float)_temperature_texture.height / _temperature_texture.width;
+        static const float temperature_ratio = (float)TexStore::temperature_texture.height / TexStore::temperature_texture.width;
 
         float size_multiplier = size_multipliers[ vertical_index ] ?
             MOUSE_HOVER_SIZE_MULTIPLIER : 1.0f;
 
-        glUseProgram( _program_sprite_sheet_id );
-        glBindVertexArray( _rectangle_gpu.vao_id );
+        glUseProgram( TexStore::program_sprite_sheet_id );
+        glBindVertexArray( TexStore::rectangle_gpu.vao_id );
         glActiveTexture( GL_TEXTURE0 );
 
-        glBindTexture( GL_TEXTURE_2D, _resources_texture.id );
+        glBindTexture( GL_TEXTURE_2D, TexStore::resources_texture.id );
 
         auto [x, y, scale] = CalculateSPPosition( vertical_index, 0 );
         scale *= size_multiplier;
@@ -1408,11 +1395,11 @@ void GameView::RenderSP() {
         );
 
 
-        glUseProgram( _program_rectangle_id );
-        glBindVertexArray( _rectangle_gpu.vao_id );
+        glUseProgram( TexStore::program_rectangle_id );
+        glBindVertexArray( TexStore::rectangle_gpu.vao_id );
         glActiveTexture( GL_TEXTURE0 );
 
-        glBindTexture( GL_TEXTURE_2D, _temperature_texture.id );
+        glBindTexture( GL_TEXTURE_2D, TexStore::temperature_texture.id );
 
         std::tie( x, y, scale ) = CalculateSPPosition( vertical_index, 2 );
         scale.x /= temperature_ratio * 0.8f;
@@ -1444,11 +1431,11 @@ void GameView::RenderSP() {
 
 
         // draw
-        glUseProgram( _program_rectangle_id );
-        glBindVertexArray( _rectangle_gpu.vao_id );
+        glUseProgram( TexStore::program_rectangle_id );
+        glBindVertexArray( TexStore::rectangle_gpu.vao_id );
         glActiveTexture( GL_TEXTURE0 );
 
-        glBindTexture( GL_TEXTURE_2D, _button_long_texture.id );
+        glBindTexture( GL_TEXTURE_2D, TexStore::button_long_texture.id );
 
         for ( int i = 0; i < 8; ++i ) {
             auto [x, y, scale] = CalculateSPButtonPosition( i );
@@ -1476,18 +1463,18 @@ void GameView::RenderSP() {
 }
 
 void GameView::RenderGlobalParameters() {
-    glUseProgram( _program_rectangle_id );
-    glBindVertexArray( _rectangle_gpu.vao_id );
+    glUseProgram( TexStore::program_rectangle_id );
+    glBindVertexArray( TexStore::rectangle_gpu.vao_id );
 
     glActiveTexture( GL_TEXTURE0 );
     glUniform1i( ul( "image" ), 0 );
 
 
     std::array<GLuint, 4> to_draw = {
-        _temperature_texture.id,
-        _ocean_texture.id,
-        _oxygen_texture.id,
-        _tr_texture.id,
+        TexStore::temperature_texture.id,
+        TexStore::ocean_texture.id,
+        TexStore::oxygen_texture.id,
+        TexStore::tr_texture.id,
     };
     for ( int i = 0; i < to_draw.size(); ++i ) {
         glBindTexture( GL_TEXTURE_2D, to_draw[ i ] );
@@ -1524,7 +1511,7 @@ void GameView::RenderGlobalParameters() {
 }
 
 void GameView::RenderEndButton() {
-    static const float button_ratio = (float)_button_long_texture.width / _button_long_texture.height;
+    static const float button_ratio = (float)TexStore::button_long_texture.width / TexStore::button_long_texture.height;
     static const float size = 0.04f;
     static const float spacing = 0.018f;
 
@@ -1536,20 +1523,20 @@ void GameView::RenderEndButton() {
     if ( grow )
         scale *= 1.1;
 
-    glUseProgram( _program_rectangle_id );
-    glBindVertexArray( _rectangle_gpu.vao_id );
+    glUseProgram( TexStore::program_rectangle_id );
+    glBindVertexArray( TexStore::rectangle_gpu.vao_id );
 
     glActiveTexture( GL_TEXTURE0 );
     glUniform1i( ul( "image" ), 0 );
 
-    glBindTexture( GL_TEXTURE_2D, _button_long_texture.id );
+    glBindTexture( GL_TEXTURE_2D, TexStore::button_long_texture.id );
 
     glm::mat4 world = glm::translate( glm::vec3( x, y, HUD_BASE_Z ) ) * glm::scale( scale );
     glUniformMatrix4fv( ul( "world" ), 1, GL_FALSE, glm::value_ptr( world ) );
 
     SetStencilRef( STENCIL_END_BUTTON );
 
-    glDrawElements( GL_TRIANGLES, _rectangle_gpu.count, GL_UNSIGNED_INT, nullptr );
+    glDrawElements( GL_TRIANGLES, TexStore::rectangle_gpu.count, GL_UNSIGNED_INT, nullptr );
 
     SetStencilRef();
 
@@ -1568,13 +1555,13 @@ void GameView::RenderEndButton() {
 }
 
 void GameView::RenderResources() {
-    glUseProgram( _program_rectangle_id );
-    glBindVertexArray( _rectangle_gpu.vao_id );
+    glUseProgram( TexStore::program_rectangle_id );
+    glBindVertexArray( TexStore::rectangle_gpu.vao_id );
 
     glActiveTexture( GL_TEXTURE0 );
     glUniform1i( ul( "image" ), 0 );
 
-    glBindTexture( GL_TEXTURE_2D, _production_box_texture.id );
+    glBindTexture( GL_TEXTURE_2D, TexStore::production_box_texture.id );
     for ( int i = 0; i <= +model::Resource::MAX; ++i ) {
         auto [x, y, scale] = CalculateResourcePosition( i, 0 );
 
@@ -1582,11 +1569,11 @@ void GameView::RenderResources() {
     }
 
 
-    glUseProgram( _program_sprite_sheet_id );
+    glUseProgram( TexStore::program_sprite_sheet_id );
 
     glUniform1i( ul( "image" ), 0 );
 
-    glBindTexture( GL_TEXTURE_2D, _resources_texture.id );
+    glBindTexture( GL_TEXTURE_2D, TexStore::resources_texture.id );
     for ( int i = 0; i <= +model::Resource::MAX; ++i ) {
         auto [x, y, scale] = CalculateResourcePosition( i, 1 );
 
@@ -1625,11 +1612,11 @@ void GameView::RenderHand() {
     glEnable( GL_BLEND );
     glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
-    glUseProgram( _program_card_id );
-    glBindVertexArray( _rectangle_gpu.vao_id );
+    glUseProgram( TexStore::program_card_id );
+    glBindVertexArray( TexStore::rectangle_gpu.vao_id );
 
     glActiveTexture( GL_TEXTURE0 );
-    glBindTexture( GL_TEXTURE_2D, _cards_texture.id );
+    glBindTexture( GL_TEXTURE_2D, TexStore::cards_texture.id );
     glUniform1i( ul( "image" ), 0 );
     glUniform1f( ul( "elapsed" ), _elapsed );
 
@@ -1658,8 +1645,8 @@ void GameView::RenderHand() {
 }
 
 void GameView::RenderPanels() {
-    glUseProgram( _program_rectangle_id );
-    glBindVertexArray( _rectangle_gpu.vao_id );
+    glUseProgram( TexStore::program_rectangle_id );
+    glBindVertexArray( TexStore::rectangle_gpu.vao_id );
 
     glActiveTexture( GL_TEXTURE0 );
     glUniform1i( ul( "image" ), 0 );
@@ -1673,61 +1660,61 @@ void GameView::RenderPanels() {
         cards = _action_cards;
         page_num_index = 0;
         actions = true;
-        glBindTexture( GL_TEXTURE_2D, _action_open_texture.id );
+        glBindTexture( GL_TEXTURE_2D, TexStore::action_open_texture.id );
     } else
-        glBindTexture( GL_TEXTURE_2D, _action_closed_texture.id );
+        glBindTexture( GL_TEXTURE_2D, TexStore::action_closed_texture.id );
 
     glm::mat4 world = glm::translate( glm::vec3( 0.0f, 0.0f, PANEL_BASE_Z - 0.01f ) );
     glUniformMatrix4fv( ul( "world" ), 1, GL_FALSE, glm::value_ptr( world ) );
 
     SetStencilRef( STENCIL_ACTIONS );
 
-    glDrawElements( GL_TRIANGLES, _rectangle_gpu.count, GL_UNSIGNED_INT, nullptr );
+    glDrawElements( GL_TRIANGLES, TexStore::rectangle_gpu.count, GL_UNSIGNED_INT, nullptr );
 
 
     if ( _panel == Panel::EVENT ) {
         cards = _event_cards;
         page_num_index = 1;
-        glBindTexture( GL_TEXTURE_2D, _event_open_texture.id );
+        glBindTexture( GL_TEXTURE_2D, TexStore::event_open_texture.id );
     } else
-        glBindTexture( GL_TEXTURE_2D, _event_closed_texture.id );
+        glBindTexture( GL_TEXTURE_2D, TexStore::event_closed_texture.id );
 
     world = glm::translate( glm::vec3( 0.0f, 0.0f, PANEL_BASE_Z - 0.02f ) );
     glUniformMatrix4fv( ul( "world" ), 1, GL_FALSE, glm::value_ptr( world ) );
 
     SetStencilRef( STENCIL_EVENTS );
 
-    glDrawElements( GL_TRIANGLES, _rectangle_gpu.count, GL_UNSIGNED_INT, nullptr );
+    glDrawElements( GL_TRIANGLES, TexStore::rectangle_gpu.count, GL_UNSIGNED_INT, nullptr );
 
 
     if ( _panel == Panel::AUTOMATED ) {
         cards = _automated_cards;
         page_num_index = 2;
-        glBindTexture( GL_TEXTURE_2D, _automated_open_texture.id );
+        glBindTexture( GL_TEXTURE_2D, TexStore::automated_open_texture.id );
     } else
-        glBindTexture( GL_TEXTURE_2D, _automated_closed_texture.id );
+        glBindTexture( GL_TEXTURE_2D, TexStore::automated_closed_texture.id );
 
     world = glm::translate( glm::vec3( 0.0f, 0.0f, PANEL_BASE_Z - 0.03f ) );
     glUniformMatrix4fv( ul( "world" ), 1, GL_FALSE, glm::value_ptr( world ) );
 
     SetStencilRef( STENCIL_AUTOMATED );
 
-    glDrawElements( GL_TRIANGLES, _rectangle_gpu.count, GL_UNSIGNED_INT, nullptr );
+    glDrawElements( GL_TRIANGLES, TexStore::rectangle_gpu.count, GL_UNSIGNED_INT, nullptr );
 
 
     if ( _panel == Panel::EFFECT ) {
         cards = _effect_cards;
         page_num_index = 3;
-        glBindTexture( GL_TEXTURE_2D, _effect_open_texture.id );
+        glBindTexture( GL_TEXTURE_2D, TexStore::effect_open_texture.id );
     } else
-        glBindTexture( GL_TEXTURE_2D, _effect_closed_texture.id );
+        glBindTexture( GL_TEXTURE_2D, TexStore::effect_closed_texture.id );
 
     world = glm::translate( glm::vec3( 0.0f, 0.0f, PANEL_BASE_Z - 0.04f ) );
     glUniformMatrix4fv( ul( "world" ), 1, GL_FALSE, glm::value_ptr( world ) );
 
     SetStencilRef( STENCIL_EFFECTS );
 
-    glDrawElements( GL_TRIANGLES, _rectangle_gpu.count, GL_UNSIGNED_INT, nullptr );
+    glDrawElements( GL_TRIANGLES, TexStore::rectangle_gpu.count, GL_UNSIGNED_INT, nullptr );
 
 
     SetStencilRef();
@@ -1749,11 +1736,11 @@ void GameView::RenderPanelCards( std::vector<CardWrapper*>& cards, int page_num,
     glEnable( GL_BLEND );
     glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
-    glUseProgram( _program_card_id );
-    glBindVertexArray( _rectangle_gpu.vao_id );
+    glUseProgram( TexStore::program_card_id );
+    glBindVertexArray( TexStore::rectangle_gpu.vao_id );
 
     glActiveTexture( GL_TEXTURE0 );
-    glBindTexture( GL_TEXTURE_2D, _cards_texture.id );
+    glBindTexture( GL_TEXTURE_2D, TexStore::cards_texture.id );
     glUniform1i( ul( "image" ), 0 );
     glUniform1f( ul( "elapsed" ), _elapsed );
 
@@ -1787,11 +1774,11 @@ void GameView::RenderPanelCards( std::vector<CardWrapper*>& cards, int page_num,
     glDisable( GL_BLEND );
 
 
-    glUseProgram( _program_rectangle_id );
+    glUseProgram( TexStore::program_rectangle_id );
 
-    glBindTexture( GL_TEXTURE_2D, _arrow_texture.id );
+    glBindTexture( GL_TEXTURE_2D, TexStore::arrow_texture.id );
 
-    static const float arrow_ratio = (float)_arrow_texture.height / _arrow_texture.width;
+    static const float arrow_ratio = (float)TexStore::arrow_texture.height / TexStore::arrow_texture.width;
     auto [_1, _2, scale] = CalculateSPPosition( 0, 1 );
     scale.x /= arrow_ratio;
 
@@ -1808,7 +1795,7 @@ void GameView::RenderPanelCards( std::vector<CardWrapper*>& cards, int page_num,
 
         SetStencilRef( STENCIL_LEFT );
 
-        glDrawElements( GL_TRIANGLES, _rectangle_gpu.count, GL_UNSIGNED_INT, nullptr );
+        glDrawElements( GL_TRIANGLES, TexStore::rectangle_gpu.count, GL_UNSIGNED_INT, nullptr );
     }
 
     if ( page_num < GetRightmostPageNum( (int)cards.size() ) ) {
@@ -1820,7 +1807,7 @@ void GameView::RenderPanelCards( std::vector<CardWrapper*>& cards, int page_num,
 
         SetStencilRef( STENCIL_RIGHT );
 
-        glDrawElements( GL_TRIANGLES, _rectangle_gpu.count, GL_UNSIGNED_INT, nullptr );
+        glDrawElements( GL_TRIANGLES, TexStore::rectangle_gpu.count, GL_UNSIGNED_INT, nullptr );
     }
 
 
@@ -1872,14 +1859,14 @@ void GameView::RenderCard( CardWrapper& card, int index, float d_z ) {
     glUniform1i( ul( "highlight" ), highlight );
     glUniform3f( ul( "highlight_color" ), highlight_color.r, highlight_color.g, highlight_color.b );
 
-    glDrawElements( GL_TRIANGLES, _rectangle_gpu.count, GL_UNSIGNED_INT, nullptr );
+    glDrawElements( GL_TRIANGLES, TexStore::rectangle_gpu.count, GL_UNSIGNED_INT, nullptr );
 }
 
 void GameView::RenderDetail( float x, float y, glm::vec3 scale, float d_z ) {
     glm::mat4 world = glm::translate( glm::vec3( x, y, HUD_BASE_Z + d_z ) ) * glm::scale( scale );
     glUniformMatrix4fv( ul( "world" ), 1, GL_FALSE, glm::value_ptr( world ) );
 
-    glDrawElements( GL_TRIANGLES, _rectangle_gpu.count, GL_UNSIGNED_INT, nullptr );
+    glDrawElements( GL_TRIANGLES, TexStore::rectangle_gpu.count, GL_UNSIGNED_INT, nullptr );
 }
 
 void GameView::RenderResource( float x, float y, glm::vec3 scale, int resource, float d_z ) {
@@ -1896,21 +1883,21 @@ void GameView::RenderResource( float x, float y, glm::vec3 scale, int resource, 
     glUniform1i( ul( "index_x" ), index_x );
     glUniform1i( ul( "index_y" ), index_y );
 
-    glDrawElements( GL_TRIANGLES, _rectangle_gpu.count, GL_UNSIGNED_INT, nullptr );
+    glDrawElements( GL_TRIANGLES, TexStore::rectangle_gpu.count, GL_UNSIGNED_INT, nullptr );
 }
 
 void GameView::RenderResourceProduction( float x, float y, glm::vec3 scale, int resource ) {
-    glUseProgram( _program_rectangle_id );
-    glBindVertexArray( _rectangle_gpu.vao_id );
+    glUseProgram( TexStore::program_rectangle_id );
+    glBindVertexArray( TexStore::rectangle_gpu.vao_id );
     glActiveTexture( GL_TEXTURE0 );
 
-    glBindTexture( GL_TEXTURE_2D, _production_box_texture.id );
+    glBindTexture( GL_TEXTURE_2D, TexStore::production_box_texture.id );
 
     RenderDetail( x, y, scale );
 
 
-    glUseProgram( _program_sprite_sheet_id );
-    glBindTexture( GL_TEXTURE_2D, _resources_texture.id );
+    glUseProgram( TexStore::program_sprite_sheet_id );
+    glBindTexture( GL_TEXTURE_2D, TexStore::resources_texture.id );
 
     scale *= PRODUCTION_RESOURCE_SHRINK;
 
@@ -1983,10 +1970,10 @@ int view::GameView::CalculateHoveredCardByPos( float x, float y ) {
 }
 
 std::tuple<float, float, glm::vec3> GameView::CalculateParameterPosition( int parameter, int type ) {
-    static const float temperature_ratio = (float)_temperature_texture.height / _temperature_texture.width;
-    static const float ocean_ratio = (float)_ocean_texture.height / _ocean_texture.width;
-    static const float oxygen_ratio = (float)_oxygen_texture.height / _oxygen_texture.width;
-    static const float tr_ratio = (float)_tr_texture.height / _tr_texture.width;
+    static const float temperature_ratio = (float)TexStore::temperature_texture.height / TexStore::temperature_texture.width;
+    static const float ocean_ratio = (float)TexStore::ocean_texture.height / TexStore::ocean_texture.width;
+    static const float oxygen_ratio = (float)TexStore::oxygen_texture.height / TexStore::oxygen_texture.width;
+    static const float tr_ratio = (float)TexStore::tr_texture.height / TexStore::tr_texture.width;
     static const float size = 0.06f;
     static const float spacing = size * 2.5f;
     static const float padding = size * 0.5f;
@@ -2040,7 +2027,7 @@ std::tuple<float, float, glm::vec3> GameView::CalculateSPPosition( int sp, int r
     static const float start = 0.2f;
     static const float size = 0.055f;
     static const float spacing = size * 3.0f;
-    static const float arrow_ratio = (float)_arrow_texture.height / _arrow_texture.width;
+    static const float arrow_ratio = (float)TexStore::arrow_texture.height / TexStore::arrow_texture.width;
 
     float x_adjust = 0.0f;
     if ( right == 1 )
@@ -2161,175 +2148,4 @@ void GameView::ClickedRight() {
 }
 
 #pragma endregion Rendering
-
-#pragma region Static Init and Clean
-
-GLuint GameView::_program_id = 0;
-GLuint GameView::_program_card_id = 0;
-GLuint GameView::_program_rectangle_id = 0;
-GLuint GameView::_program_sprite_sheet_id = 0;
-
-void GameView::InitShaders() {
-    _program_id = glCreateProgram();
-    AttachShader( _program_id, GL_VERTEX_SHADER, "shaders/pos_norm_tex.vert" );
-    AttachShader( _program_id, GL_FRAGMENT_SHADER, "shaders/lighting.frag" );
-    LinkProgram( _program_id );
-
-    _program_card_id = glCreateProgram();
-    AttachShader( _program_card_id, GL_VERTEX_SHADER, "shaders/sprite_sheet.vert" );
-    AttachShader( _program_card_id, GL_FRAGMENT_SHADER, "shaders/card.frag" );
-    LinkProgram( _program_card_id );
-
-    _program_rectangle_id = glCreateProgram();
-    AttachShader( _program_rectangle_id, GL_VERTEX_SHADER, "shaders/rectangle.vert" );
-    AttachShader( _program_rectangle_id, GL_FRAGMENT_SHADER, "shaders/rectangle.frag" );
-    LinkProgram( _program_rectangle_id );
-
-    _program_sprite_sheet_id = glCreateProgram();
-    AttachShader( _program_sprite_sheet_id, GL_VERTEX_SHADER, "shaders/sprite_sheet.vert" );
-    AttachShader( _program_sprite_sheet_id, GL_FRAGMENT_SHADER, "shaders/sprite_sheet.frag" );
-    LinkProgram( _program_sprite_sheet_id );
-}
-
-void GameView::CleanShaders() {
-    glDeleteProgram( _program_id );
-    glDeleteProgram( _program_card_id );
-    glDeleteProgram( _program_rectangle_id );
-    glDeleteProgram( _program_sprite_sheet_id );
-}
-
-OGLObject GameView::_hexagon_gpu = {};
-OGLObject GameView::_rectangle_gpu = {};
-
-void GameView::InitGeometry() {
-    MeshObject<VertexF> hexagon_cpu;
-
-    glm::vec3 position( 0.0f, 1.0f, 0.0f );
-    glm::vec3 normal( 0.0f, 0.0f, 1.0f );
-    glm::vec2 texcoord( 0.0f, 0.0f );
-    float on_edge = 1.0f;
-    hexagon_cpu.vertex_array.emplace_back( glm::vec3( 0.0f ), normal, texcoord, 0.0f );
-
-    for ( int i = 0; i < 6; ++i ) {
-        hexagon_cpu.vertex_array.emplace_back( position, normal, texcoord, on_edge );
-
-        static const glm::mat4 rotate_sixth = glm::rotate( glm::pi<float>() / 3.0f, glm::vec3( 0.0f, 0.0f, 1.0f ) );
-        position = (rotate_sixth * glm::vec4( position, 1.0f )).xyz;
-    }
-    for ( int i = 1; i <= 6; ++i ) {
-        hexagon_cpu.index_array.push_back( 0 );
-        hexagon_cpu.index_array.push_back( i );
-        hexagon_cpu.index_array.push_back( i % 6 + 1 );
-    }
-
-    _hexagon_gpu = CreateGLObjectFromMesh( hexagon_cpu, vertex_plus_attribute_list );
-
-
-    MeshObject<VertexPosTex> rectangle_cpu = {
-        std::vector<VertexPosTex> {
-            { { -1.0f, -1.0f, 0.0f }, { 0.0f, 0.0f } },
-            { {  1.0f, -1.0f, 0.0f }, { 1.0f, 0.0f } },
-            { { -1.0f,  1.0f, 0.0f }, { 0.0f, 1.0f } },
-            { {  1.0f,  1.0f, 0.0f }, { 1.0f, 1.0f } },
-        },
-        std::vector<GLuint> {
-            0, 1, 2,
-            2, 1, 3,
-        }
-    };
-
-    _rectangle_gpu = CreateGLObjectFromMesh( rectangle_cpu, vertex_pos_tex_attribute_list );
-}
-
-void GameView::CleanGeometry() {
-    CleanOGLObject( _hexagon_gpu );
-    CleanOGLObject( _rectangle_gpu );
-}
-
-Texture GameView::_cards_texture = {};
-Texture GameView::_resources_texture = {};
-
-Texture GameView::_temperature_texture = {};
-Texture GameView::_oxygen_texture = {};
-Texture GameView::_tr_texture = {};
-
-Texture GameView::_ocean_texture = {};
-Texture GameView::_greenery_texture = {};
-Texture GameView::_city_texture = {};
-
-Texture GameView::_button_short_texture = {};
-Texture GameView::_button_long_texture = {};
-Texture GameView::_production_box_texture = {};
-Texture GameView::_arrow_texture = {};
-Texture GameView::_player_icon_texture = {};
-Texture GameView::_card_cover_texture = {};
-
-Texture GameView::_action_closed_texture = {};
-Texture GameView::_action_open_texture = {};
-Texture GameView::_event_closed_texture = {};
-Texture GameView::_event_open_texture = {};
-Texture GameView::_automated_closed_texture = {};
-Texture GameView::_automated_open_texture = {};
-Texture GameView::_effect_closed_texture = {};
-Texture GameView::_effect_open_texture = {};
-
-void GameView::InitTextures() {
-    _cards_texture = LoadTexture( "assets/cards.png" );
-    _resources_texture = LoadTexture( "assets/resources.png" );
-
-    _temperature_texture = LoadTexture( "assets/temperature.png" );
-    _oxygen_texture = LoadTexture( "assets/oxygen.png" );
-    _tr_texture = LoadTexture( "assets/tr.png" );
-
-    _ocean_texture = LoadTexture( "assets/ocean.png" );
-    _greenery_texture = LoadTexture( "assets/greenery.png" );
-    _city_texture = LoadTexture( "assets/city.png" );
-
-    _button_short_texture = LoadTexture( "assets/button_short.png" );
-    _button_long_texture = LoadTexture( "assets/button_long.png" );
-    _production_box_texture = LoadTexture( "assets/production_box.png" );
-    _arrow_texture = LoadTexture( "assets/arrow.png" );
-    _player_icon_texture = LoadTexture( "assets/player.png" );
-    _card_cover_texture = LoadTexture( "assets/card_cover.png" );
-
-    _action_closed_texture = LoadTexture( "assets/action_closed.png" );
-    _action_open_texture = LoadTexture( "assets/action_open.png" );
-    _event_closed_texture = LoadTexture( "assets/event_closed.png" );
-    _event_open_texture = LoadTexture( "assets/event_open.png" );
-    _automated_closed_texture = LoadTexture( "assets/automated_closed.png" );
-    _automated_open_texture = LoadTexture( "assets/automated_open.png" );
-    _effect_closed_texture = LoadTexture( "assets/effect_closed.png" );
-    _effect_open_texture = LoadTexture( "assets/effect_open.png" );
-}
-
-void GameView::CleanTextures() {
-    glDeleteTextures( 1, &_cards_texture.id );
-    glDeleteTextures( 1, &_resources_texture.id );
-
-    glDeleteTextures( 1, &_temperature_texture.id );
-    glDeleteTextures( 1, &_oxygen_texture.id );
-    glDeleteTextures( 1, &_tr_texture.id );
-
-    glDeleteTextures( 1, &_ocean_texture.id );
-    glDeleteTextures( 1, &_greenery_texture.id );
-    glDeleteTextures( 1, &_city_texture.id );
-
-    glDeleteTextures( 1, &_button_short_texture.id );
-    glDeleteTextures( 1, &_button_long_texture.id );
-    glDeleteTextures( 1, &_production_box_texture.id );
-    glDeleteTextures( 1, &_arrow_texture.id );
-    glDeleteTextures( 1, &_player_icon_texture.id );
-    glDeleteTextures( 1, &_card_cover_texture.id );
-
-    glDeleteTextures( 1, &_action_closed_texture.id );
-    glDeleteTextures( 1, &_action_open_texture.id );
-    glDeleteTextures( 1, &_event_closed_texture.id );
-    glDeleteTextures( 1, &_event_open_texture.id );
-    glDeleteTextures( 1, &_automated_closed_texture.id );
-    glDeleteTextures( 1, &_automated_open_texture.id );
-    glDeleteTextures( 1, &_effect_closed_texture.id );
-    glDeleteTextures( 1, &_effect_open_texture.id );
-}
-
-#pragma endregion Static Init and Clean
 }

@@ -147,6 +147,7 @@
     <ClCompile Include="app.cpp" />
     <ClCompile Include="menu_view.cpp" />
     <ClCompile Include="solo_game_view.cpp" />
+    <ClCompile Include="tex_store.cpp" />
     <ClCompile Include="text_renderer.cpp" />
     <ClCompile Include="tile_wrapper.cpp" />
     <ClCompile Include="game_view.cpp" />
@@ -170,6 +171,7 @@
     <ClInclude Include="panel.hpp" />
     <ClInclude Include="solo_game_view.hpp" />
     <ClInclude Include="text_renderer.hpp" />
+    <ClInclude Include="tex_store.hpp" />
     <ClInclude Include="tile_wrapper.hpp" />
     <ClInclude Include="game_view.fwd.hpp" />
     <ClInclude Include="game_view.hpp" />

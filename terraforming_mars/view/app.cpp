@@ -4,6 +4,7 @@
 
 #include "constants.hpp"
 #include "game_view.hpp"
+#include "tex_store.hpp"
 
 #include "gl_utils/gl_utils.hpp"
 #include "gl_utils/SDL_GLDebugMessageCallback.hpp"
@@ -29,7 +30,7 @@ bool App::Init() {
     InitSkyboxGeometry();
     InitSkyboxTextures();
 
-    GameView::StaticInit();
+    TexStore::Init();
 
 
 #ifdef _DEBUG
@@ -77,7 +78,7 @@ void App::Clean() {
     CleanSkyboxGeometry();
     CleanSkyboxTextures();
 
-    GameView::StaticClean();
+    TexStore::Clean();
 
     _menu_view->Clean();
     delete _menu_view;
