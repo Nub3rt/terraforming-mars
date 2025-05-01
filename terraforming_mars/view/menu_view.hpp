@@ -47,6 +47,8 @@ public:
     inline void SetQuit( std::function<void()> callback ) { _quit.SetCallback( callback ); }
 
 protected:
+    float _elapsed = 0.0f;;
+
     int _width = 0;
     int _height = 0;
 

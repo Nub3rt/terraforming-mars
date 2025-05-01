@@ -222,8 +222,6 @@ void GameView::Update( const UpdateInfo& update_info ) {
 }
 
 void GameView::Render() {
-    SetLightUniforms();
-
     RenderBoard();
 
     glClear( GL_DEPTH_BUFFER_BIT );
@@ -286,12 +284,18 @@ void GameView::RenderGUI() {
 
             if ( ImGui::Button( "Place City" ) )
                 player->PlaceCity();
+
+            ImGui::Separator();
+
+            ImGui::SliderFloat( "Light Speed", &_debug_light_speed, 1.0f, 100.0f );
         }
         ImGui::End();
     }
 }
 
-void GameView::RenderMars() {
+void GameView::RenderMars( float elapsed ) {
+    _elapsed = elapsed;
+
     RenderBoard( false );
 }
 
@@ -936,7 +940,9 @@ void GameView::RenderBoard( bool clickable ) {
 }
 
 void GameView::RenderHexagon( TileWrapper& tile, int id, bool clickable ) {
-    glUseProgram( TexStore::program_id );
+    glUseProgram( TexStore::program_mars_id );
+
+    SetLightUniforms();
 
     OGLObject* mesh;
     switch ( tile.mesh ) {
@@ -972,7 +978,7 @@ void GameView::RenderHexagon( TileWrapper& tile, int id, bool clickable ) {
     glUniformMatrix4fv( ul( "view_proj" ), 1, GL_FALSE, glm::value_ptr( view_proj ) );
 
     glUniform1i( ul( "special" ), !tile->IsEmpty() );
-    glUniform1i( ul( "ocean" ), tile.special == TileWrapper::Special::OCEAN );
+    glUniform1i( ul( "ocean" ), false );
     glUniform1f( ul( "elapsed" ), _elapsed );
     glUniform1f( ul( "mars_to_special" ), *tile.mars_to_special );
     glUniform4f( ul( "tex_ranges" ), tile.tex_ranges.x, tile.tex_ranges.y, tile.tex_ranges.z, tile.tex_ranges.w );
@@ -988,6 +994,11 @@ void GameView::RenderHexagon( TileWrapper& tile, int id, bool clickable ) {
 
 
     if ( tile.special == TileWrapper::Special::OCEAN ) {
+        GLint prev_depth_func;
+        glGetIntegerv( GL_DEPTH_FUNC, &prev_depth_func );
+
+        glDepthFunc( GL_LEQUAL );
+
         mesh = &TexStore::tile_top;
         glBindVertexArray( mesh->vao_id );
 
@@ -999,7 +1010,12 @@ void GameView::RenderHexagon( TileWrapper& tile, int id, bool clickable ) {
         glUniformMatrix4fv( ul( "world" ), 1, GL_FALSE, glm::value_ptr( special_world ) );
         glUniformMatrix4fv( ul( "world_it" ), 1, GL_FALSE, glm::value_ptr( glm::transpose( glm::inverse( special_world ) ) ) );
 
+        glUniform1i( ul( "ocean" ), true );
+
         glDrawElements( GL_TRIANGLES, mesh->count, GL_UNSIGNED_INT, nullptr );
+
+        glDepthFunc( prev_depth_func );
+
     } else if ( tile.special == TileWrapper::Special::CITY ) {
         switch ( tile.mesh ) {
             case TileWrapper::MeshType::PLAINS:
@@ -1137,16 +1153,21 @@ void GameView::RenderHexagon( TileWrapper& tile, int id, bool clickable ) {
     glUseProgram( 0 );
 }
 
-void View::SetLightUniforms() {
-    glm::vec4 sun_pos = glm::rotate( _elapsed * SKYBOX_ROTATE_SPEED, glm::vec3( 0.0f, 1.0f, 0.0f ) ) * SUN_STARTING_POSITION;
-    glProgramUniform3fv( _program_id, ul( _program_id, "camera_pos" ), 1, glm::value_ptr( _camera->GetEye() ) );
-    glProgramUniform4fv( _program_id, ul( _program_id, "light_pos" ), 1, glm::value_ptr( sun_pos ) );
+void GameView::SetLightUniforms() {
+    float speed = SKYBOX_ROTATE_SPEED;
+    if ( _debug )
+        speed *= _debug_light_speed;
 
-    glProgramUniform3fv( _program_id, ul( _program_id, "la" ), 1, glm::value_ptr( _la ) );
-    glProgramUniform3fv( _program_id, ul( _program_id, "ld" ), 1, glm::value_ptr( _ld ) );
-    glProgramUniform3fv( _program_id, ul( _program_id, "ls" ), 1, glm::value_ptr( _ls ) );
+    glm::vec4 sun_pos = glm::rotate( _elapsed * speed, glm::vec3( 0.0f, 1.0f, 0.0f ) ) * SUN_STARTING_POSITION;
 
-    glProgramUniform1f( _program_id, ul( _program_id, "shininess" ), _shininess );
+    glUniform3fv( ul( "camera_pos" ), 1, glm::value_ptr( _camera->GetEye() ) );
+    glUniform4fv( ul( "light_pos" ), 1, glm::value_ptr( sun_pos ) );
+
+    glUniform3fv( ul( "la" ), 1, glm::value_ptr( _la ) );
+    glUniform3fv( ul( "ld" ), 1, glm::value_ptr( _ld ) );
+    glUniform3fv( ul( "ls" ), 1, glm::value_ptr( _ls ) );
+
+    glUniform1f( ul( "shininess" ), _shininess );
 }
 
 void GameView::RenderHUD() {

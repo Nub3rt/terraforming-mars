@@ -70,7 +70,7 @@ public:
     void Update( const UpdateInfo& update_info ) override;
     void Render() override;
     void RenderGUI() override;
-    void RenderMars();
+    void RenderMars( float elapsed );
 
     void KeyboardDown( const SDL_KeyboardEvent& key ) override;
     void KeyboardUp( const SDL_KeyboardEvent& key ) override;
@@ -240,5 +240,6 @@ protected:
 
 
     bool _debug = false;
+    float _debug_light_speed = 1.0f;
 };
 }
