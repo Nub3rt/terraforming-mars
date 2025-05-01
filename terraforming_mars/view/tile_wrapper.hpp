@@ -34,9 +34,12 @@ public:
     glm::vec3 border_color;
 
     MeshType mesh = MeshType::DUNES;
+    int rotation = 0;
+
     Special special = Special::NONE;
     Animatable<float> mars_to_special = 0.0f;
     Animatable<float> special_z;
+
     glm::mat4 pos_translate = {};
     glm::vec4 tex_ranges = {}; // start_u, end_u, start_v, end_v
 

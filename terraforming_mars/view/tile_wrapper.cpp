@@ -33,7 +33,7 @@ TileWrapper::TileWrapper( const model::boards::Tile& tile ) : _tile( tile ) {
             mars_to_special.Set( 1.0f );
 
         else if ( special == Special::OCEAN )
-            special_z.Set( -0.005f );
+            special_z.Set( -0.01f );
 
         else if ( special == Special::CITY )
             special_z.Set( 0.0f );

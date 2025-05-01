@@ -9,7 +9,11 @@
 #include <tuple>
 
 #include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/transform.hpp>
+
 #include <SDL3/SDL.h>
+
 #include <imgui.h>
 
 #include "animation.hpp"
@@ -940,6 +944,16 @@ void GameView::RenderBoard( bool clickable ) {
 }
 
 void GameView::RenderHexagon( TileWrapper& tile, int id, bool clickable ) {
+    static const float pi_over_three = glm::pi<float>() * glm::third<float>();
+    static const std::array<glm::mat4, 6> rotations = {
+        glm::identity<glm::mat4>(),
+        glm::rotate( 1.0f * pi_over_three, glm::vec3( 0.0f, 0.0f, 1.0f ) ),
+        glm::rotate( 2.0f * pi_over_three, glm::vec3( 0.0f, 0.0f, 1.0f ) ),
+        glm::rotate( 3.0f * pi_over_three, glm::vec3( 0.0f, 0.0f, 1.0f ) ),
+        glm::rotate( 4.0f * pi_over_three, glm::vec3( 0.0f, 0.0f, 1.0f ) ),
+        glm::rotate( 5.0f * pi_over_three, glm::vec3( 0.0f, 0.0f, 1.0f ) ),
+    };
+
     glUseProgram( TexStore::program_mars_id );
 
     SetLightUniforms();
@@ -964,23 +978,29 @@ void GameView::RenderHexagon( TileWrapper& tile, int id, bool clickable ) {
     glBindTexture( GL_TEXTURE_2D, TexStore::terrain_mars_texture.id );
 
     if ( tile.special != TileWrapper::Special::NONE ) {
+        glActiveTexture( GL_TEXTURE1 );
+        if ( tile.special == TileWrapper::Special::OCEAN ) {
+            glBindTexture( GL_TEXTURE_2D, TexStore::terrain_ocean_texture.id );
+        }
         if ( tile.special == TileWrapper::Special::GREENERY ) {
-            glActiveTexture( GL_TEXTURE1 );
             glBindTexture( GL_TEXTURE_2D, TexStore::terrain_greenery_texture.id );
         }
     }
 
-    glm::mat4 world = tile.pos_translate;
+    glm::mat4 world = tile.pos_translate * rotations[ tile.rotation ];
     glm::mat4 view_proj = _camera->GetViewProj();
 
     glUniformMatrix4fv( ul( "world" ), 1, GL_FALSE, glm::value_ptr( world ) );
     glUniformMatrix4fv( ul( "world_it" ), 1, GL_FALSE, glm::value_ptr( glm::transpose( glm::inverse( world ) ) ) );
     glUniformMatrix4fv( ul( "view_proj" ), 1, GL_FALSE, glm::value_ptr( view_proj ) );
 
+    glUniformMatrix4fv( ul( "rotation" ), 1, GL_FALSE, glm::value_ptr( rotations[ tile.rotation ] ) );
+
     glUniform1i( ul( "special" ), !tile->IsEmpty() );
-    glUniform1i( ul( "ocean" ), false );
+    glUniform1i( ul( "ocean" ), tile.special == TileWrapper::Special::OCEAN );
     glUniform1f( ul( "elapsed" ), _elapsed );
     glUniform1f( ul( "mars_to_special" ), *tile.mars_to_special );
+    glUniform1f( ul( "special_z" ), *tile.special_z );
     glUniform4f( ul( "tex_ranges" ), tile.tex_ranges.x, tile.tex_ranges.y, tile.tex_ranges.z, tile.tex_ranges.w );
     glUniform1i( ul( "terrain_mars" ), 0 );
     glUniform4f( ul( "mars_ranges" ), _mars_terrain_ranges.x, _mars_terrain_ranges.y, _mars_terrain_ranges.z, _mars_terrain_ranges.w );
@@ -993,30 +1013,7 @@ void GameView::RenderHexagon( TileWrapper& tile, int id, bool clickable ) {
     glDrawElements( GL_TRIANGLES, mesh->count, GL_UNSIGNED_INT, nullptr );
 
 
-    if ( tile.special == TileWrapper::Special::OCEAN ) {
-        GLint prev_depth_func;
-        glGetIntegerv( GL_DEPTH_FUNC, &prev_depth_func );
-
-        glDepthFunc( GL_LEQUAL );
-
-        mesh = &TexStore::tile_top;
-        glBindVertexArray( mesh->vao_id );
-
-        glActiveTexture( GL_TEXTURE0 );
-        glBindTexture( GL_TEXTURE_2D, TexStore::terrain_ocean_texture.id );
-
-        glm::mat4 special_world = glm::translate( glm::vec3( 0.0f, 0.0f, *tile.special_z ) ) * world;
-
-        glUniformMatrix4fv( ul( "world" ), 1, GL_FALSE, glm::value_ptr( special_world ) );
-        glUniformMatrix4fv( ul( "world_it" ), 1, GL_FALSE, glm::value_ptr( glm::transpose( glm::inverse( special_world ) ) ) );
-
-        glUniform1i( ul( "ocean" ), true );
-
-        glDrawElements( GL_TRIANGLES, mesh->count, GL_UNSIGNED_INT, nullptr );
-
-        glDepthFunc( prev_depth_func );
-
-    } else if ( tile.special == TileWrapper::Special::CITY ) {
+    if ( tile.special == TileWrapper::Special::CITY ) {
         switch ( tile.mesh ) {
             case TileWrapper::MeshType::PLAINS:
                 mesh = &TexStore::plains_city;
@@ -1048,7 +1045,7 @@ void GameView::RenderHexagon( TileWrapper& tile, int id, bool clickable ) {
     static const float d_y_1 = 0.55f;
     static const float d_x_2 = d_x_1 - 0.45f;
     static const float d_y_2 = d_y_1 - 0.25f;
-    static const float d_z = 0.5f;
+    static const float d_z = 0.25f;
 
     static const float size = 0.2f;
     static const glm::mat4 scale = glm::scale( glm::vec3( size, size, 1.0f ) );
@@ -1061,6 +1058,11 @@ void GameView::RenderHexagon( TileWrapper& tile, int id, bool clickable ) {
     static const glm::mat4 bonus_2_translate = glm::translate( glm::vec3( d_x_2, d_y_2, d_z ) );
     static const float stride_x = 1.0f / RESOURCE_TEXTURE_COLUMNS;
     static const float stride_y = 1.0f / RESOURCE_TEXTURE_ROWS;
+
+    GLint prev_depth_func;
+    glGetIntegerv( GL_DEPTH_FUNC, &prev_depth_func );
+
+    glDepthFunc( GL_ALWAYS );
 
     glActiveTexture( GL_TEXTURE0 );
     if ( tile.show_resources ) {
@@ -1137,11 +1139,13 @@ void GameView::RenderHexagon( TileWrapper& tile, int id, bool clickable ) {
 
         glBindTexture( GL_TEXTURE_2D, TexStore::player_icon_texture.id );
 
-        glm::mat4 player_icon_world = view_proj * player_translate * world * player_icon_scale;
+        glm::mat4 player_icon_world = view_proj * player_translate * tile.pos_translate * player_icon_scale;
         glUniformMatrix4fv( ul( "world" ), 1, GL_FALSE, glm::value_ptr( player_icon_world ) );
 
         glDrawElements( GL_TRIANGLES, TexStore::rectangle_gpu.count, GL_UNSIGNED_INT, nullptr );
     }
+
+    glDepthFunc( prev_depth_func );
 
 
     if ( clickable )
@@ -2276,6 +2280,8 @@ void GameView::InitBoard() {
             else
                 tile.mesh = TileWrapper::MeshType::MOUNTAINS;
         }
+
+        tile.rotation = _random() % 6;
 
         // translate
         float render_q = q - origin_q;
