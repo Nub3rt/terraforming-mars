@@ -8,6 +8,20 @@ in float vs_out_on_edge;
 
 out vec4 fs_out_col;
 
+uniform vec3 camera_pos;
+uniform vec4 light_pos;
+
+uniform vec3 la;
+uniform vec3 ld;
+uniform vec3 ls;
+
+uniform vec3 ka = vec3( 1.0 );
+uniform vec3 kd = vec3( 1.0 );
+uniform vec3 ks = vec3( 1.0 );
+
+uniform float shininess;
+
+
 uniform bool special;
 uniform bool ocean;
 uniform float elapsed;
@@ -74,5 +88,20 @@ void main() {
         }
     }
 
-    fs_out_col = tex;
+    vec3 normal = normalize( vs_out_norm );
+
+    vec3 ambient = la * ka;
+
+    vec3 to_light = light_pos.xyz;
+
+    float diffuse_factor = max( dot( to_light, normal ), 0.0 );
+    vec3 diffuse = diffuse_factor * ld * kd;
+
+    vec3 view_dir = normalize( camera_pos - vs_out_pos );
+    vec3 reflect_dir = reflect( -to_light, normal );
+
+    float specular_factor = pow( max( dot( view_dir, reflect_dir ), 0.0), shininess);
+    vec3 specular = specular_factor * ls * ks;
+
+    fs_out_col = vec4( ambient + diffuse + specular, 1.0 ) * tex;
 }

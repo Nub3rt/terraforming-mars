@@ -222,6 +222,8 @@ void GameView::Update( const UpdateInfo& update_info ) {
 }
 
 void GameView::Render() {
+    SetLightUniforms();
+
     RenderBoard();
 
     glClear( GL_DEPTH_BUFFER_BIT );
@@ -1133,6 +1135,18 @@ void GameView::RenderHexagon( TileWrapper& tile, int id, bool clickable ) {
 
     glBindVertexArray( 0 );
     glUseProgram( 0 );
+}
+
+void View::SetLightUniforms() {
+    glm::vec4 sun_pos = glm::rotate( _elapsed * SKYBOX_ROTATE_SPEED, glm::vec3( 0.0f, 1.0f, 0.0f ) ) * SUN_STARTING_POSITION;
+    glProgramUniform3fv( _program_id, ul( _program_id, "camera_pos" ), 1, glm::value_ptr( _camera->GetEye() ) );
+    glProgramUniform4fv( _program_id, ul( _program_id, "light_pos" ), 1, glm::value_ptr( sun_pos ) );
+
+    glProgramUniform3fv( _program_id, ul( _program_id, "la" ), 1, glm::value_ptr( _la ) );
+    glProgramUniform3fv( _program_id, ul( _program_id, "ld" ), 1, glm::value_ptr( _ld ) );
+    glProgramUniform3fv( _program_id, ul( _program_id, "ls" ), 1, glm::value_ptr( _ls ) );
+
+    glProgramUniform1f( _program_id, ul( _program_id, "shininess" ), _shininess );
 }
 
 void GameView::RenderHUD() {

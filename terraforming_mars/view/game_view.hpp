@@ -186,6 +186,13 @@ protected:
     void RenderBoard( bool clickable = true );
     void RenderHexagon( TileWrapper& tile, int id, bool clickable );
 
+    glm::vec3 _la = glm::vec3( 0.0, 0.0, 0.0 );
+    glm::vec3 _ld = glm::vec3( 1.0, 1.0, 1.0 );
+    glm::vec3 _ls = glm::vec3( 1.0, 1.0, 1.0 );
+    float _shininess = 1.0f;
+
+    void SetLightUniforms();
+
     void RenderHUD();
     void RenderMenuButton();
     void RenderSP();
