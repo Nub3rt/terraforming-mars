@@ -9,7 +9,7 @@ namespace view::TexStore
 bool Init();
 void Clean();
 
-inline GLuint program_id = 0;
+inline GLuint program_mars_id = 0;
 inline GLuint program_card_id = 0;
 inline GLuint program_rectangle_id = 0;
 inline GLuint program_sprite_sheet_id = 0;

@@ -24,10 +24,10 @@ void TexStore::Clean() {
 }
 
 void TexStore::InitShaders() {
-    program_id = glCreateProgram();
-    AttachShader( program_id, GL_VERTEX_SHADER, "shaders/pos_norm_tex.vert" );
-    AttachShader( program_id, GL_FRAGMENT_SHADER, "shaders/lighting.frag" );
-    LinkProgram( program_id );
+    program_mars_id = glCreateProgram();
+    AttachShader( program_mars_id, GL_VERTEX_SHADER, "shaders/pos_norm_tex.vert" );
+    AttachShader( program_mars_id, GL_FRAGMENT_SHADER, "shaders/lighting.frag" );
+    LinkProgram( program_mars_id );
 
     program_card_id = glCreateProgram();
     AttachShader( program_card_id, GL_VERTEX_SHADER, "shaders/sprite_sheet.vert" );
@@ -46,7 +46,7 @@ void TexStore::InitShaders() {
 }
 
 void TexStore::CleanShaders() {
-    glDeleteProgram( program_id );
+    glDeleteProgram( program_mars_id );
     glDeleteProgram( program_card_id );
     glDeleteProgram( program_rectangle_id );
     glDeleteProgram( program_sprite_sheet_id );
@@ -153,9 +153,9 @@ void TexStore::InitTextures() {
     effect_closed_texture = LoadTexture( "assets/effect_closed.png" );
     effect_open_texture = LoadTexture( "assets/effect_open.png" );
 
-    terrain_mars_texture = LoadTexture( "assets/terrain_mars.png" );
-    terrain_greenery_texture = LoadTexture( "assets/terrain_greenery.jpg" );
-    terrain_ocean_texture = LoadTexture( "assets/terrain_ocean.jpg" );
+    terrain_mars_texture = LoadTexture( "assets/terrain_mars.png", GL_REPEAT );
+    terrain_greenery_texture = LoadTexture( "assets/terrain_greenery.jpg", GL_REPEAT );
+    terrain_ocean_texture = LoadTexture( "assets/terrain_ocean.jpg", GL_MIRRORED_REPEAT );
 
     glGenTextures( 1, &city_special_texture.id );
     glBindTexture( GL_TEXTURE_2D, city_special_texture.id );

@@ -10,6 +10,7 @@ inline constexpr int STARTING_WINDOW_WIDTH = 1600;
 inline constexpr int STARTING_WINDOW_HEIGHT = 900;
 
 inline constexpr float SKYBOX_ROTATE_SPEED = 0.01f;
+inline const glm::vec4 SUN_STARTING_POSITION = glm::normalize( glm::vec4( -33.0f, 23.1f, 3.3f, 0.0f ) );
 
 inline constexpr float CAMERA_X = 0.0f;
 inline constexpr float CAMERA_Y = 0.0f;

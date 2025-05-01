@@ -60,6 +60,8 @@ void MenuView::Clean() {
 }
 
 void MenuView::Update( const UpdateInfo& update_info ) {
+    _elapsed = update_info.elapsed;
+
     if ( _transitioning ) {
         _eye.Update( update_info.delta );
         _at.Update( update_info.delta );
@@ -181,7 +183,7 @@ void MenuView::Render() {
 
 
     if ( _transitioning )
-        _game_view->RenderMars();
+        _game_view->RenderMars( _elapsed );
 }
 
 void MenuView::RenderGUI() {
