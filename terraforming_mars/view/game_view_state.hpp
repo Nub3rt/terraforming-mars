@@ -69,11 +69,11 @@ protected:
     GameView& _view;
 };
 
-class ResearchVState : public GameViewState
+class ResearchState : public GameViewState
 {
 public:
-    ResearchVState( GameView& view, std::array<const model::decks::Card*, model::RESEARCH_CARD_NUM> cards );
-    virtual ~ResearchVState();
+    ResearchState( GameView& view, std::array<const model::decks::Card*, model::RESEARCH_CARD_NUM> cards );
+    virtual ~ResearchState();
 
     void Enter() override;
 
@@ -101,11 +101,11 @@ protected:
     void DoClickedEndButton() override;
 };
 
-class IdleVState : public GameViewState
+class IdleState : public GameViewState
 {
 public:
-    IdleVState( GameView& view );
-    virtual ~IdleVState();
+    IdleState( GameView& view );
+    virtual ~IdleState();
 
     void Update( float delta ) override;
 
@@ -135,11 +135,11 @@ protected:
     void DoClickedEndButton() override;
 };
 
-class SellVState : public GameViewState
+class SellState : public GameViewState
 {
 public:
-    SellVState( GameView& view );
-    virtual ~SellVState();
+    SellState( GameView& view );
+    virtual ~SellState();
 
     virtual void Enter();
     virtual void Render();
@@ -157,11 +157,11 @@ public:
     void DoClickedEndButton() override;
 };
 
-class PlacementConfirmationVState : public GameViewState
+class PlacementConfirmationState : public GameViewState
 {
 public:
-    PlacementConfirmationVState( GameView& view, model::boards::TileType tile_type, std::vector<std::pair<int, int>> valid_positions );
-    virtual ~PlacementConfirmationVState();
+    PlacementConfirmationState( GameView& view, model::boards::TileType tile_type, std::vector<std::pair<int, int>> valid_positions );
+    virtual ~PlacementConfirmationState();
 
     void Enter() override;
     void Render() override;
@@ -178,11 +178,11 @@ protected:
     void ColorBordersSelectable();
 };
 
-class PaymentConfirmationVState : public GameViewState
+class PaymentConfirmationState : public GameViewState
 {
 public:
-    PaymentConfirmationVState( GameView& view, int amount, model::Resource resource, int resource_value );
-    virtual ~PaymentConfirmationVState();
+    PaymentConfirmationState( GameView& view, int amount, model::Resource resource, int resource_value );
+    virtual ~PaymentConfirmationState();
 
     void Enter() override;
 
@@ -206,18 +206,18 @@ protected:
     static int CalculateCreditNeeded( int resource, int amount, int resource_value );
 };
 
-class PostLastGenerationVState : public GameViewState
+class PostLastGenerationState : public GameViewState
 {
 public:
-    PostLastGenerationVState( GameView& view );
-    virtual ~PostLastGenerationVState();
+    PostLastGenerationState( GameView& view );
+    virtual ~PostLastGenerationState();
 };
 
-class GameOverVState : public GameViewState
+class GameOverState : public GameViewState
 {
 public:
-    GameOverVState( GameView& view );
-    virtual ~GameOverVState();
+    GameOverState( GameView& view );
+    virtual ~GameOverState();
 
     bool CanHoverHand() override;
 };

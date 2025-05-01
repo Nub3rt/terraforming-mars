@@ -83,14 +83,14 @@ void GameViewState::DoClickedEndButton() {}
 
 #pragma region ResearchState
 
-ResearchVState::ResearchVState( GameView& view, std::array<const model::decks::Card*, model::RESEARCH_CARD_NUM> cards )
+ResearchState::ResearchState( GameView& view, std::array<const model::decks::Card*, model::RESEARCH_CARD_NUM> cards )
     : GameViewState( view ), _cards(), _to_buy() {
     for ( int i = 0; i < model::RESEARCH_CARD_NUM; ++i ) {
         _cards[ i ] = new CardWrapper( cards[ i ] );
         _to_buy[ i ] = true;
     }
 }
-ResearchVState::~ResearchVState() {
+ResearchState::~ResearchState() {
     if ( !_non_boughts ) {
         for ( CardWrapper* card : _cards )
             delete card;
@@ -100,7 +100,7 @@ ResearchVState::~ResearchVState() {
     }
 }
 
-void ResearchVState::Enter() {
+void ResearchState::Enter() {
     static const float spacing = 0.35f;
     static const float length = spacing * (model::RESEARCH_CARD_NUM - 1);
     static const float start_x = 0.0f - length / 2.0f;
@@ -123,7 +123,7 @@ void ResearchVState::Enter() {
     }
 }
 
-void ResearchVState::Update( float delta ) {
+void ResearchState::Update( float delta ) {
     _elapsed += delta;
     static const float delay = 0.5f;
 
@@ -153,7 +153,7 @@ void ResearchVState::Update( float delta ) {
     }
 }
 
-void ResearchVState::Render() {
+void ResearchState::Render() {
     glEnable( GL_BLEND );
     glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
@@ -190,21 +190,21 @@ void ResearchVState::Render() {
         );
 }
 
-std::string ResearchVState::GetEndButtonText() {
+std::string ResearchState::GetEndButtonText() {
     return "Confirm";
 }
 
-bool ResearchVState::CanClickEndButton() { return _in_animation_over && !_non_boughts; }
-bool ResearchVState::CanHoverHand() { return true; }
+bool ResearchState::CanClickEndButton() { return _in_animation_over && !_non_boughts; }
+bool ResearchState::CanHoverHand() { return true; }
 
-void ResearchVState::ToggleToBuyCard( int index ) {
+void ResearchState::ToggleToBuyCard( int index ) {
     _view._model->ToggleToBuyCard( index );
     _to_buy[ index ] = !_to_buy[ index ];
     _cards[ index ]->visual = _to_buy[index] ? CardWrapper::Visual::ACTION_HIGHLIGHT
                                              : CardWrapper::Visual::FADED;
 }
 
-void ResearchVState::Model_OnResearchConfirmed( std::array<bool, model::RESEARCH_CARD_NUM> selected ) {
+void ResearchState::Model_OnResearchConfirmed( std::array<bool, model::RESEARCH_CARD_NUM> selected ) {
     _non_boughts = std::vector<CardWrapper*>();
     size_t index = _view._hand.size();
 
@@ -230,7 +230,7 @@ void ResearchVState::Model_OnResearchConfirmed( std::array<bool, model::RESEARCH
     _elapsed = 0.0f;
 }
 
-void ResearchVState::DoClickedEndButton() {
+void ResearchState::DoClickedEndButton() {
     _view._model->ConfirmPurchases();
 }
 
@@ -238,10 +238,10 @@ void ResearchVState::DoClickedEndButton() {
 
 #pragma region IdleState
 
-IdleVState::IdleVState( GameView& view ) : GameViewState( view ) {}
-IdleVState::~IdleVState() {}
+IdleState::IdleState( GameView& view ) : GameViewState( view ) {}
+IdleState::~IdleState() {}
 
-void IdleVState::Update( float delta ) {
+void IdleState::Update( float delta ) {
     for ( CardWrapper* card : _view._hand ) {
         if ( card->state != CardWrapper::State::DRAGGING )
             card->visual = CanDragCardsOut() && (*card)->CanBePlayed() ?
@@ -249,32 +249,32 @@ void IdleVState::Update( float delta ) {
     }
 }
 
-bool IdleVState::CanClickEndButton() { return _view._model->InIdleState() || _view._model->InPostLastGenerationState() && _view._model->CanEndTurn(); }
-bool IdleVState::CanHoverHand() { return true; }
-bool IdleVState::CanDragCardsOut() { return _view._model->CanPlayCards(); }
-bool IdleVState::CanPlayCard( CardWrapper* card ) { return (*card)->CanBePlayed(); }
+bool IdleState::CanClickEndButton() { return _view._model->InIdleState() || _view._model->InPostLastGenerationState() && _view._model->CanEndTurn(); }
+bool IdleState::CanHoverHand() { return true; }
+bool IdleState::CanDragCardsOut() { return _view._model->CanPlayCards(); }
+bool IdleState::CanPlayCard( CardWrapper* card ) { return (*card)->CanBePlayed(); }
 
-CardWrapper::Visual IdleVState::GetCardUnderPlayLineVisual( CardWrapper* card ) {
+CardWrapper::Visual IdleState::GetCardUnderPlayLineVisual( CardWrapper* card ) {
     return (*card)->CanBePlayed() ? CardWrapper::Visual::HIGHLIGHT
                                   : CardWrapper::Visual::NONE;
 }
 
-CardWrapper::Visual IdleVState::GetCardOverPlayLineVisual( CardWrapper* card ) {
+CardWrapper::Visual IdleState::GetCardOverPlayLineVisual( CardWrapper* card ) {
     return CardWrapper::Visual::ACTION_HIGHLIGHT;
 }
 
-bool IdleVState::CanUseSellPatentsSP() { return _view._model->InIdleState(); }
-bool IdleVState::CanUsePowerPlantSP() { return _view._model->CanUsePowerPlantSP(); }
-bool IdleVState::CanUseAsteroidSP() { return _view._model->CanUseAsteroidSP(); }
-bool IdleVState::CanUseAquiferSP() { return _view._model->CanUseAquiferSP(); }
-bool IdleVState::CanUseGreenerySP() { return _view._model->CanUseGreenerySP(); }
-bool IdleVState::CanUseCitySP() { return _view._model->CanUseCitySP(); }
-bool IdleVState::CanConvertPlants() { return _view._model->CanConvertPlantsToGreenery(); }
-bool IdleVState::CanConvertHeat() { return _view._model->CanConvertHeatToTemperature(); }
+bool IdleState::CanUseSellPatentsSP() { return _view._model->InIdleState(); }
+bool IdleState::CanUsePowerPlantSP() { return _view._model->CanUsePowerPlantSP(); }
+bool IdleState::CanUseAsteroidSP() { return _view._model->CanUseAsteroidSP(); }
+bool IdleState::CanUseAquiferSP() { return _view._model->CanUseAquiferSP(); }
+bool IdleState::CanUseGreenerySP() { return _view._model->CanUseGreenerySP(); }
+bool IdleState::CanUseCitySP() { return _view._model->CanUseCitySP(); }
+bool IdleState::CanConvertPlants() { return _view._model->CanConvertPlantsToGreenery(); }
+bool IdleState::CanConvertHeat() { return _view._model->CanConvertHeatToTemperature(); }
 
-bool IdleVState::InIdleState() { return true; }
+bool IdleState::InIdleState() { return true; }
 
-void IdleVState::ClickedMisc( int index ) {
+void IdleState::ClickedMisc( int index ) {
     if ( _view._panel != Panel::ACTION )
         throw std::logic_error( "IdleState::ClickedMisc: actions panel was not shown!" );
 
@@ -286,14 +286,14 @@ void IdleVState::ClickedMisc( int index ) {
     }
 }
 
-void IdleVState::PlayCard( int index_in_hand ) {
+void IdleState::PlayCard( int index_in_hand ) {
     _view._model->PlayCard( **_view._hand[ index_in_hand ] );
 
     _view._hand.erase( _view._hand.begin() + index_in_hand );
     _view.RefreshHandPositions();
 }
 
-void IdleVState::DoClickedEndButton() {
+void IdleState::DoClickedEndButton() {
     _view._panel = Panel::NONE;
 
     if ( !_view._model->InPostLastGenerationState() )
@@ -314,15 +314,15 @@ void IdleVState::DoClickedEndButton() {
 
 #pragma region SellState
 
-SellVState::SellVState( GameView& view ) : GameViewState( view ) {}
-SellVState::~SellVState() {}
+SellState::SellState( GameView& view ) : GameViewState( view ) {}
+SellState::~SellState() {}
 
-void SellVState::Enter() {
+void SellState::Enter() {
     for ( CardWrapper* card : _view._hand )
         card->visual = CardWrapper::Visual::SELL_HIGHLIGHT;
 }
 
-void SellVState::Render() {
+void SellState::Render() {
     TextRenderer::RenderTextCentered(
         std::format( "Selling Patents" ),
         BASE_HINT_POS.x, BASE_HINT_POS.y,
@@ -331,29 +331,29 @@ void SellVState::Render() {
     );
 }
 
-std::string SellVState::GetEndButtonText() { return "Done"; }
+std::string SellState::GetEndButtonText() { return "Done"; }
 
-CardWrapper::Visual SellVState::GetCardUnderPlayLineVisual( CardWrapper* card ) {
+CardWrapper::Visual SellState::GetCardUnderPlayLineVisual( CardWrapper* card ) {
     return CardWrapper::Visual::SELL_HIGHLIGHT;
 }
 
-CardWrapper::Visual SellVState::GetCardOverPlayLineVisual( CardWrapper* card ) {
+CardWrapper::Visual SellState::GetCardOverPlayLineVisual( CardWrapper* card ) {
     return CardWrapper::Visual::FADED;
 }
 
-bool SellVState::CanClickEndButton() { return true; }
-bool SellVState::CanHoverHand() { return true; }
-bool SellVState::CanDragCardsOut() { return true; }
-bool SellVState::CanPlayCard( CardWrapper* card ) { return true; }
+bool SellState::CanClickEndButton() { return true; }
+bool SellState::CanHoverHand() { return true; }
+bool SellState::CanDragCardsOut() { return true; }
+bool SellState::CanPlayCard( CardWrapper* card ) { return true; }
 
-void SellVState::PlayCard( int index_in_hand ) {
+void SellState::PlayCard( int index_in_hand ) {
     _view._model->SellCardSP( **_view._hand[ index_in_hand ] );
 
     _view._hand.erase( _view._hand.begin() + index_in_hand );
     _view.RefreshHandPositions();
 }
 
-void SellVState::DoClickedEndButton() {
+void SellState::DoClickedEndButton() {
     _view.RequestInstantStateChange( _view.CreateIdleState() );
 }
 
@@ -361,16 +361,16 @@ void SellVState::DoClickedEndButton() {
 
 #pragma region PlacementConfirmationState
 
-PlacementConfirmationVState::PlacementConfirmationVState( GameView& view, model::boards::TileType tile_type, std::vector<std::pair<int, int>> valid_positions )
+PlacementConfirmationState::PlacementConfirmationState( GameView& view, model::boards::TileType tile_type, std::vector<std::pair<int, int>> valid_positions )
     : GameViewState( view ), _tile_type( tile_type ), _valid_positions( valid_positions ) {}
 
-PlacementConfirmationVState::~PlacementConfirmationVState() {}
+PlacementConfirmationState::~PlacementConfirmationState() {}
 
-void PlacementConfirmationVState::Enter() {
+void PlacementConfirmationState::Enter() {
     ColorBordersSelectable();
 }
 
-void PlacementConfirmationVState::Render() {
+void PlacementConfirmationState::Render() {
     std::string name;
     switch ( _tile_type ) {
         case model::boards::TileType::OCEAN:
@@ -393,11 +393,11 @@ void PlacementConfirmationVState::Render() {
     );
 }
 
-bool PlacementConfirmationVState::CanHoverHand() {
+bool PlacementConfirmationState::CanHoverHand() {
     return true;
 }
 
-void PlacementConfirmationVState::ClickedOnTile( TileWrapper& tile ) {
+void PlacementConfirmationState::ClickedOnTile( TileWrapper& tile ) {
     if ( tile.selectable ) {
         ColorBordersIdle();
         auto [q, r] = tile->get_indices();
@@ -406,7 +406,7 @@ void PlacementConfirmationVState::ClickedOnTile( TileWrapper& tile ) {
     }
 }
 
-void PlacementConfirmationVState::ColorBordersIdle() {
+void PlacementConfirmationState::ColorBordersIdle() {
     for ( TileWrapper& tile : _view._tiles ) {
         tile.selectable = false;
         if ( tile->get_type() == model::boards::TileType::RESERVED_FOR_OCEAN )
@@ -418,7 +418,7 @@ void PlacementConfirmationVState::ColorBordersIdle() {
     }
 }
 
-void PlacementConfirmationVState::ColorBordersSelectable() {
+void PlacementConfirmationState::ColorBordersSelectable() {
     for ( TileWrapper& tile : _view._tiles )
         tile.border_color = TILE_BORDER_COLOR_NON_SELECTABLE;
 
@@ -432,7 +432,7 @@ void PlacementConfirmationVState::ColorBordersSelectable() {
 
 #pragma region PaymentConfirmationState
 
-PaymentConfirmationVState::PaymentConfirmationVState( GameView& view, int amount, model::Resource resource, int resource_value )
+PaymentConfirmationState::PaymentConfirmationState( GameView& view, int amount, model::Resource resource, int resource_value )
     : GameViewState( view ), _amount( amount ), _resource_value( resource_value ) {
     switch ( resource ) {
         case model::Resource::STEEL:
@@ -442,7 +442,7 @@ PaymentConfirmationVState::PaymentConfirmationVState( GameView& view, int amount
             _resource = "TITANIUM";
             break;
         default:
-            throw std::logic_error( "PaymentConfirmationVState::ctor: resource type was not supported!" );
+            throw std::logic_error( "PaymentConfirmationState::ctor: resource type was not supported!" );
     }
 
     int credits = _view._model->get_local_player()->GetResource( model::Resource::CREDIT );
@@ -466,14 +466,14 @@ PaymentConfirmationVState::PaymentConfirmationVState( GameView& view, int amount
     }
 }
 
-PaymentConfirmationVState::~PaymentConfirmationVState() {}
+PaymentConfirmationState::~PaymentConfirmationState() {}
 
-void PaymentConfirmationVState::Enter() {
+void PaymentConfirmationState::Enter() {
     for ( CardWrapper* card : _view._hand )
         card->visual = CardWrapper::Visual::NONE;
 }
 
-void PaymentConfirmationVState::RenderGUI() {
+void PaymentConfirmationState::RenderGUI() {
     ImGui::SetNextWindowSize( ImVec2( 560, 0 ) );
     if ( ImGui::Begin( "Confirm Payment", NULL, ImGuiWindowFlags_NoCollapse ) ) {
         ImGui::SetWindowFontScale( 1.5f );
@@ -505,13 +505,13 @@ void PaymentConfirmationVState::RenderGUI() {
     ImGui::End();
 }
 
-bool PaymentConfirmationVState::CanHoverHand() { return true; }
+bool PaymentConfirmationState::CanHoverHand() { return true; }
 
-int PaymentConfirmationVState::CalculateResourceNeeded( int credit, int amount, int resource_value ) {
+int PaymentConfirmationState::CalculateResourceNeeded( int credit, int amount, int resource_value ) {
     return (glm::max( amount - credit, 0 ) + resource_value - 1) / resource_value;
 }
 
-int PaymentConfirmationVState::CalculateCreditNeeded( int resource, int amount, int resource_value ) {
+int PaymentConfirmationState::CalculateCreditNeeded( int resource, int amount, int resource_value ) {
     return glm::max( amount - resource * resource_value, 0 );
 }
 
@@ -519,17 +519,17 @@ int PaymentConfirmationVState::CalculateCreditNeeded( int resource, int amount, 
 
 #pragma region PostLastGenerationState
 
-PostLastGenerationVState::PostLastGenerationVState( GameView& view ) : GameViewState( view ) {}
-PostLastGenerationVState::~PostLastGenerationVState() {}
+PostLastGenerationState::PostLastGenerationState( GameView& view ) : GameViewState( view ) {}
+PostLastGenerationState::~PostLastGenerationState() {}
 
 #pragma endregion PostLastGenerationState
 
 #pragma region GameOverState
 
-GameOverVState::GameOverVState( GameView& view ) : GameViewState( view ) {}
-GameOverVState::~GameOverVState() {}
+GameOverState::GameOverState( GameView& view ) : GameViewState( view ) {}
+GameOverState::~GameOverState() {}
 
-bool GameOverVState::CanHoverHand() { return true; }
+bool GameOverState::CanHoverHand() { return true; }
 
 #pragma endregion GameOverState
 }

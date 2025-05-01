@@ -538,13 +538,13 @@ void GameView::OtherEvent( const SDL_Event& event ) {
 
 #pragma region State
 
-ResearchVState* GameView::CreateResearchState( std::array<const model::decks::Card*, model::RESEARCH_CARD_NUM> cards ) { return new ResearchVState( *this, std::move( cards ) ); }
-IdleVState* GameView::CreateIdleState() { return new IdleVState( *this ); }
-SellVState* GameView::CreateSellState() { return new SellVState( *this ); }
-PlacementConfirmationVState* GameView::CreatePlacementConfirmationState( model::boards::TileType tile_type, std::vector<std::pair<int, int>> valid_positions ) { return new PlacementConfirmationVState( *this, tile_type, std::move( valid_positions ) ); }
-PaymentConfirmationVState* GameView::CreatePaymentConfirmationState( int amount, model::Resource resource, int resource_value ) { return new PaymentConfirmationVState( *this, amount, resource, resource_value ); }
-PostLastGenerationVState* GameView::CreatePostLastGenerationState() { return new PostLastGenerationVState( *this ); }
-GameOverVState* GameView::CreateGameOverState() { return new GameOverVState( *this ); }
+ResearchState* GameView::CreateResearchState( std::array<const model::decks::Card*, model::RESEARCH_CARD_NUM> cards ) { return new ResearchState( *this, std::move( cards ) ); }
+IdleState* GameView::CreateIdleState() { return new IdleState( *this ); }
+SellState* GameView::CreateSellState() { return new SellState( *this ); }
+PlacementConfirmationState* GameView::CreatePlacementConfirmationState( model::boards::TileType tile_type, std::vector<std::pair<int, int>> valid_positions ) { return new PlacementConfirmationState( *this, tile_type, std::move( valid_positions ) ); }
+PaymentConfirmationState* GameView::CreatePaymentConfirmationState( int amount, model::Resource resource, int resource_value ) { return new PaymentConfirmationState( *this, amount, resource, resource_value ); }
+PostLastGenerationState* GameView::CreatePostLastGenerationState() { return new PostLastGenerationState( *this ); }
+GameOverState* GameView::CreateGameOverState() { return new GameOverState( *this ); }
 
 void GameView::RequestStateChange( GameViewState* state ) {
     if ( _next_state == nullptr )
@@ -1852,7 +1852,7 @@ void GameView::RenderPanelCards( std::vector<CardWrapper*>& cards, int page_num,
                     card.visual = CardWrapper::Visual::FADED;
                     break;
                 default:
-                    throw std::logic_error( "IdleVState::RenderPanelCards: Unknown Availability received!" );
+                    throw std::logic_error( "IdleState::RenderPanelCards: Unknown Availability received!" );
             }
 
             SetStencilRef( _stencil_starting_misc + i % PANEL_ITEMS );

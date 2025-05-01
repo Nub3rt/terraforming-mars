@@ -14,10 +14,10 @@ public:
     virtual ~SoloGameView();
 
 protected:
-    GameOverVState* CreateGameOverState() override;
+    GameOverState* CreateGameOverState() override;
 };
 
-class SoloGameOverVState : public GameOverVState
+class SoloGameOverVState : public GameOverState
 {
 public:
     SoloGameOverVState( GameView& view );

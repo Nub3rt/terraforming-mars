@@ -10,12 +10,12 @@ namespace view
 SoloGameView::SoloGameView( int seed ) : GameView( seed ) {}
 SoloGameView::~SoloGameView() {}
 
-GameOverVState* SoloGameView::CreateGameOverState() {
+GameOverState* SoloGameView::CreateGameOverState() {
     return new SoloGameOverVState( *this );
 }
 
 
-SoloGameOverVState::SoloGameOverVState( GameView& view ) : GameOverVState( view ) {
+SoloGameOverVState::SoloGameOverVState( GameView& view ) : GameOverState( view ) {
     _won = _view._model->AreGlobalParametersFulfilled();
 
     _vps = _view._model->GetLocalPlayerVPs();

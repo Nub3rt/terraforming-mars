@@ -43,13 +43,13 @@ namespace view
 class GameView : public View
 {
     friend class GameViewState;
-    friend class ResearchVState;
-    friend class IdleVState;
-    friend class SellVState;
-    friend class PlacementConfirmationVState;
-    friend class PaymentConfirmationVState;
-    friend class PostLastGenerationVState;
-    friend class GameOverVState;
+    friend class ResearchState;
+    friend class IdleState;
+    friend class SellState;
+    friend class PlacementConfirmationState;
+    friend class PaymentConfirmationState;
+    friend class PostLastGenerationState;
+    friend class GameOverState;
 
     friend class SoloGameOverVState;
 
@@ -101,13 +101,13 @@ protected:
     GameViewState* _state = nullptr;
     GameViewState* _next_state = nullptr;
 
-    virtual ResearchVState* CreateResearchState( std::array<const model::decks::Card*, model::RESEARCH_CARD_NUM> cards );
-    virtual IdleVState* CreateIdleState();
-    virtual SellVState* CreateSellState();
-    virtual PlacementConfirmationVState* CreatePlacementConfirmationState( model::boards::TileType tile_type, std::vector<std::pair<int, int>> valid_positions );
-    virtual PaymentConfirmationVState* CreatePaymentConfirmationState( int amount, model::Resource resource, int resource_value );
-    virtual PostLastGenerationVState* CreatePostLastGenerationState();
-    virtual GameOverVState* CreateGameOverState();
+    virtual ResearchState* CreateResearchState( std::array<const model::decks::Card*, model::RESEARCH_CARD_NUM> cards );
+    virtual IdleState* CreateIdleState();
+    virtual SellState* CreateSellState();
+    virtual PlacementConfirmationState* CreatePlacementConfirmationState( model::boards::TileType tile_type, std::vector<std::pair<int, int>> valid_positions );
+    virtual PaymentConfirmationState* CreatePaymentConfirmationState( int amount, model::Resource resource, int resource_value );
+    virtual PostLastGenerationState* CreatePostLastGenerationState();
+    virtual GameOverState* CreateGameOverState();
 
     void RequestStateChange( GameViewState* state );
     void RequestInstantStateChange( GameViewState* state );
