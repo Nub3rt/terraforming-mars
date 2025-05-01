@@ -11,15 +11,16 @@ namespace test
 std::function<void( Player* )> null = []( Player* player ) {};
 
 TEST( TileTest, ConstructorTest ) {
-    Tile tile1( 4, 4, null );
+    Tile tile1( 4, 4, true, null );
     EXPECT_EQ( 4, tile1.q );
     EXPECT_EQ( 4, tile1.r );
+    EXPECT_TRUE( tile1.is_volcano() );
     std::pair<int, int> p1( 4, 4 );
     EXPECT_EQ( p1, tile1.get_indices() );
     EXPECT_EQ( nullptr, tile1.get_owner() );
     EXPECT_EQ( TileType::NONE, tile1.get_type() );
 
-    Tile tile2( 3, 7, null, TileType::RESERVED_FOR_OCEAN );
+    Tile tile2( 3, 7, false, null, TileType::RESERVED_FOR_OCEAN );
     std::pair<int, int> p2( 3, 7 );
     EXPECT_EQ( p2, tile2.get_indices() );
     EXPECT_EQ( 3, tile2.q );
@@ -29,7 +30,7 @@ TEST( TileTest, ConstructorTest ) {
 }
 
 TEST( TileTest, GettersSettersTest ) {
-    Tile tile( 4, 4, null, TileType::EMPTY );
+    Tile tile( 4, 4, false, null, TileType::EMPTY );
     Player player( 20, 0 );
 
     EXPECT_EQ( nullptr, tile.get_owner() );
@@ -55,7 +56,7 @@ TEST( TileTest, GettersSettersTest ) {
 TEST( TileTest, ApplyPlacementBonusTest ) {
     bool flag = false;
     std::function<void( Player* )> callback = [ &flag ]( Player* player ) { flag = true; };
-    Tile tile( 4, 4, callback );
+    Tile tile( 4, 4, false, callback );
     Player player( 20, 0 );
 
     EXPECT_THROW( { tile.ApplyPlacementBonuses( nullptr ); }, std::logic_error );

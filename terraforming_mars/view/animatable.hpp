@@ -52,6 +52,7 @@ public:
     }
 
     inline void SetAnim( T start, T end, float duration ) {
+        _value = start;
         _a = { start, end, 0.0f, duration };
     }
 

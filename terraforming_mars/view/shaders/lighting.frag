@@ -8,6 +8,10 @@ in float vs_out_on_edge;
 
 out vec4 fs_out_col;
 
+uniform bool special;
+uniform bool ocean;
+uniform float elapsed;
+uniform float mars_to_special;
 uniform vec4 tex_ranges;
 uniform sampler2D terrain_mars;
 uniform vec4 mars_ranges;
@@ -46,16 +50,28 @@ void main() {
         mix( mars_ranges.x, mars_ranges.y, uv.x ),
         mix( mars_ranges.z, mars_ranges.w, uv.y )
     );
-    vec4 tex = texture( terrain_mars, uv );
+    vec4 tex;
+    if ( mars_to_special == 0.0 )
+        tex = texture( terrain_mars, uv );
+    else if ( mars_to_special == 1.0 )
+        tex = texture( terrain_special, uv );
+    else
+        tex = mix(
+            texture( terrain_mars, uv ),
+            texture( terrain_special, uv ),
+            mars_to_special
+        );
 
 
-    vec2 xy = vs_orig_pos.xy;
-    mat2 pixel_to_hex = mat2( sqrt( 3.0 ) / 3.0, 0.0, -1.0 / 3.0, 2.0 / 3.0 );
-    vec2 qr = pixel_to_hex * xy / 0.95;
-    ivec2 iqr = axial_round( qr );
+    if ( !special ) {
+        vec2 xy = vs_orig_pos.xy;
+        mat2 pixel_to_hex = mat2( sqrt( 3.0 ) / 3.0, 0.0, -1.0 / 3.0, 2.0 / 3.0 );
+        vec2 qr = pixel_to_hex * xy / 0.95;
+        ivec2 iqr = axial_round( qr );
 
-    if ( iqr.x != 0 || iqr.y != 0 ) {
-        tex = vec4( border_color, 1.0 );
+        if ( iqr.x != 0 || iqr.y != 0 ) {
+            tex = vec4( border_color, 1.0 );
+        }
     }
 
     fs_out_col = tex;

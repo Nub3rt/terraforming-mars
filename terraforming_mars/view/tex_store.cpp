@@ -156,6 +156,20 @@ void TexStore::InitTextures() {
     terrain_mars_texture = LoadTexture( "assets/terrain_mars.png" );
     terrain_greenery_texture = LoadTexture( "assets/terrain_greenery.jpg" );
     terrain_ocean_texture = LoadTexture( "assets/terrain_ocean.jpg" );
+
+    glGenTextures( 1, &city_special_texture.id );
+    glBindTexture( GL_TEXTURE_2D, city_special_texture.id );
+
+    unsigned char data[ 3 ] = { 0xaa, 0xaa, 0xaa };
+
+    glTexImage2D( GL_TEXTURE_2D, 0, GL_RGB, 1, 1, 0, GL_RGB, GL_UNSIGNED_BYTE, data );
+
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
+
+    glBindTexture( GL_TEXTURE_2D, 0 );
 }
 
 void TexStore::CleanTextures() {
@@ -185,5 +199,7 @@ void TexStore::CleanTextures() {
     glDeleteTextures( 1, &automated_open_texture.id );
     glDeleteTextures( 1, &effect_closed_texture.id );
     glDeleteTextures( 1, &effect_open_texture.id );
+
+    glDeleteTextures( 1, &city_special_texture.id );
 }
 }

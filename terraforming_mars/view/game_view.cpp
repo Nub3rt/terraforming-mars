@@ -935,10 +935,32 @@ void GameView::RenderBoard( bool clickable ) {
 
 void GameView::RenderHexagon( TileWrapper& tile, int id, bool clickable ) {
     glUseProgram( TexStore::program_id );
-    glBindVertexArray( TexStore::tile_top.vao_id );
+
+    OGLObject* mesh;
+    switch ( tile.mesh ) {
+        case TileWrapper::MeshType::PLAINS:
+            mesh = &TexStore::plains;
+            break;
+        case TileWrapper::MeshType::DUNES:
+            mesh = &TexStore::dunes;
+            break;
+        case TileWrapper::MeshType::MOUNTAINS:
+            mesh = &TexStore::mountains;
+            break;
+        default:
+            throw std::logic_error( "GameView::RenderHexagon: invalid MeshType value in tile!" );
+    }
+    glBindVertexArray( mesh->vao_id );
 
     glActiveTexture( GL_TEXTURE0 );
     glBindTexture( GL_TEXTURE_2D, TexStore::terrain_mars_texture.id );
+
+    if ( tile.special != TileWrapper::Special::NONE ) {
+        if ( tile.special == TileWrapper::Special::GREENERY ) {
+            glActiveTexture( GL_TEXTURE1 );
+            glBindTexture( GL_TEXTURE_2D, TexStore::terrain_greenery_texture.id );
+        }
+    }
 
     glm::mat4 world = tile.pos_translate;
     glm::mat4 view_proj = _camera->GetViewProj();
@@ -947,6 +969,10 @@ void GameView::RenderHexagon( TileWrapper& tile, int id, bool clickable ) {
     glUniformMatrix4fv( ul( "world_it" ), 1, GL_FALSE, glm::value_ptr( glm::transpose( glm::inverse( world ) ) ) );
     glUniformMatrix4fv( ul( "view_proj" ), 1, GL_FALSE, glm::value_ptr( view_proj ) );
 
+    glUniform1i( ul( "special" ), !tile->IsEmpty() );
+    glUniform1i( ul( "ocean" ), tile.special == TileWrapper::Special::OCEAN );
+    glUniform1f( ul( "elapsed" ), _elapsed );
+    glUniform1f( ul( "mars_to_special" ), *tile.mars_to_special );
     glUniform4f( ul( "tex_ranges" ), tile.tex_ranges.x, tile.tex_ranges.y, tile.tex_ranges.z, tile.tex_ranges.w );
     glUniform1i( ul( "terrain_mars" ), 0 );
     glUniform4f( ul( "mars_ranges" ), _mars_terrain_ranges.x, _mars_terrain_ranges.y, _mars_terrain_ranges.z, _mars_terrain_ranges.w );
@@ -956,14 +982,55 @@ void GameView::RenderHexagon( TileWrapper& tile, int id, bool clickable ) {
     if ( clickable )
         SetStencilRef( id );
 
-    glDrawElements( GL_TRIANGLES, TexStore::hexagon_gpu.count, GL_UNSIGNED_INT, nullptr );
+    glDrawElements( GL_TRIANGLES, mesh->count, GL_UNSIGNED_INT, nullptr );
+
+
+    if ( tile.special == TileWrapper::Special::OCEAN ) {
+        mesh = &TexStore::tile_top;
+        glBindVertexArray( mesh->vao_id );
+
+        glActiveTexture( GL_TEXTURE0 );
+        glBindTexture( GL_TEXTURE_2D, TexStore::terrain_ocean_texture.id );
+
+        glm::mat4 special_world = glm::translate( glm::vec3( 0.0f, 0.0f, *tile.special_z ) ) * world;
+
+        glUniformMatrix4fv( ul( "world" ), 1, GL_FALSE, glm::value_ptr( special_world ) );
+        glUniformMatrix4fv( ul( "world_it" ), 1, GL_FALSE, glm::value_ptr( glm::transpose( glm::inverse( special_world ) ) ) );
+
+        glDrawElements( GL_TRIANGLES, mesh->count, GL_UNSIGNED_INT, nullptr );
+    } else if ( tile.special == TileWrapper::Special::CITY ) {
+        switch ( tile.mesh ) {
+            case TileWrapper::MeshType::PLAINS:
+                mesh = &TexStore::plains_city;
+                break;
+            case TileWrapper::MeshType::DUNES:
+                mesh = &TexStore::dunes_city;
+                break;
+            case TileWrapper::MeshType::MOUNTAINS:
+                mesh = &TexStore::mountains_city;
+                break;
+            default:
+                throw std::logic_error( "GameView::RenderHexagon: invalid MeshType value in tile!" );
+        }
+        glBindVertexArray( mesh->vao_id );
+
+        glActiveTexture( GL_TEXTURE0 );
+        glBindTexture( GL_TEXTURE_2D, TexStore::city_special_texture.id );
+
+        glm::mat4 special_world = glm::translate( glm::vec3( 0.0f, 0.0f, *tile.special_z ) ) * world;
+
+        glUniformMatrix4fv( ul( "world" ), 1, GL_FALSE, glm::value_ptr( special_world ) );
+        glUniformMatrix4fv( ul( "world_it" ), 1, GL_FALSE, glm::value_ptr( glm::transpose( glm::inverse( special_world ) ) ) );
+
+        glDrawElements( GL_TRIANGLES, mesh->count, GL_UNSIGNED_INT, nullptr );
+    }
 
 
     static const float d_x_1 = 0.0f;
     static const float d_y_1 = 0.55f;
     static const float d_x_2 = d_x_1 - 0.45f;
     static const float d_y_2 = d_y_1 - 0.25f;
-    static const float d_z = 0.25f;
+    static const float d_z = 0.5f;
 
     static const float size = 0.2f;
     static const glm::mat4 scale = glm::scale( glm::vec3( size, size, 1.0f ) );
@@ -977,6 +1044,7 @@ void GameView::RenderHexagon( TileWrapper& tile, int id, bool clickable ) {
     static const float stride_x = 1.0f / RESOURCE_TEXTURE_COLUMNS;
     static const float stride_y = 1.0f / RESOURCE_TEXTURE_ROWS;
 
+    glActiveTexture( GL_TEXTURE0 );
     if ( tile.show_resources ) {
         if ( tile->get_bonus_1() ) {
             model::Resource resource = *tile->get_bonus_1();
@@ -2140,38 +2208,43 @@ void GameView::InitBoard() {
     *      V r          *----> x
     */
 
-    int max_q = 0;
-    int max_r = 0;
+    auto& [origin_q, origin_r] = GetBoardOrigin();
+    auto [max_q, max_r] = _model->get_board()->Dimensions();
 
-    auto& [q_o, r_o] = GetBoardOrigin();
-
-    for ( const model::boards::Tile& tile : *_model->get_board() ) {
-        auto [q, r] = tile.get_indices();
-        if ( q > max_q )
-            max_q = q;
-        if ( r > max_r )
-            max_r = r;
-        _tiles.emplace_back( tile );
-    }
-    _stencil_starting_misc = STENCIL_STARTING_BOARD + (int)_tiles.size();
-
-    float tex_u_stride = 1.0f / (max_q + 1);
-    float tex_u_correction = ((max_r + 1) / 4) * tex_u_stride;
-    int tex_v_quarter_count = (max_r + 1) * 3 + 1;
+    float tex_u_stride = 1.0f / max_q;
+    float tex_u_correction = (max_r / 4) * tex_u_stride;
+    int tex_v_quarter_count = max_r * 3 + 1;
     float tex_v_quarter_length = 1.0f / tex_v_quarter_count;
     float tex_v_length = tex_v_quarter_length * 4.0f;
     float tex_v_stride = tex_v_quarter_length * 3.0f;
 
-    _indexable_tiles = std::vector<std::vector<TileWrapper*>>( max_r + 1,
-        std::vector<TileWrapper*>( max_q + 1, nullptr )
+    for ( const model::boards::Tile& tile : *_model->get_board() ) {
+        _tiles.emplace_back( tile );
+    }
+    _stencil_starting_misc = STENCIL_STARTING_BOARD + static_cast<int>( _tiles.size() );
+
+    _indexable_tiles = std::vector<std::vector<TileWrapper*>>( max_r,
+        std::vector<TileWrapper*>( max_q, nullptr )
     );
     for ( TileWrapper& tile : _tiles ) {
         auto [q, r] = tile->get_indices();
         _indexable_tiles[ r ][ q ] = &tile;
 
+        if ( tile->is_volcano() ) {
+            tile.mesh = TileWrapper::MeshType::MOUNTAINS;
+        } else {
+            int r = _random() % 100;
+            if ( r < 35 )
+                tile.mesh = TileWrapper::MeshType::PLAINS;
+            else if ( r < 95 )
+                tile.mesh = TileWrapper::MeshType::DUNES;
+            else
+                tile.mesh = TileWrapper::MeshType::MOUNTAINS;
+        }
+
         // translate
-        float render_q = q - q_o;
-        float render_r = r - r_o;
+        float render_q = q - origin_q;
+        float render_r = r - origin_r;
 
         float x = glm::root_three<float>() * render_q + glm::root_three<float>() / 2.0f * render_r;
         float y = 3.0f / 2.0f * -render_r;

@@ -62,6 +62,7 @@ inline Texture effect_open_texture = {};
 inline Texture terrain_mars_texture = {};
 inline Texture terrain_greenery_texture = {};
 inline Texture terrain_ocean_texture = {};
+inline Texture city_special_texture = { 0, 1, 1 };
 
 void InitTextures();
 void CleanTextures();

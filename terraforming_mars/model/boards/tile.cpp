@@ -7,16 +7,16 @@
 
 namespace model::boards
 {
-Tile::Tile( int q, int r, const std::function<void( Player* )>& apply_placement_bonuses, TileType type ) noexcept
-    : q( q ), r( r ), _type( type ), _owner( nullptr ), _apply_placement_bonuses( apply_placement_bonuses ) {}
+Tile::Tile( int q, int r, bool volcano, const std::function<void( Player* )>& apply_placement_bonuses, TileType type ) noexcept
+    : q( q ), r( r ), _volcano( volcano ), _type( type ), _owner( nullptr ), _apply_placement_bonuses( apply_placement_bonuses ) {}
 
-Tile::Tile( int q, int r, const std::function<void( Player* )>& apply_placement_bonuses, TileType type, Resource bonus_1 ) noexcept
-    : Tile( q, r, apply_placement_bonuses, type ) {
+Tile::Tile( int q, int r, bool volcano, const std::function<void( Player* )>& apply_placement_bonuses, TileType type, Resource bonus_1 ) noexcept
+    : Tile( q, r, volcano, apply_placement_bonuses, type ) {
     _bonus_1 = bonus_1;
 }
 
-Tile::Tile( int q, int r, const std::function<void( Player* )>& apply_placement_bonuses, TileType type, Resource bonus_1, Resource bonus_2 ) noexcept
-    : Tile( q, r, apply_placement_bonuses, type, bonus_1 ) {
+Tile::Tile( int q, int r, bool volcano, const std::function<void( Player* )>& apply_placement_bonuses, TileType type, Resource bonus_1, Resource bonus_2 ) noexcept
+    : Tile( q, r, volcano, apply_placement_bonuses, type, bonus_1 ) {
     _bonus_2 = bonus_2;
 }
 
