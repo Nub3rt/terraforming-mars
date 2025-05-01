@@ -79,6 +79,8 @@ public:
     inline const Tile& operator()( int q, int r ) const noexcept { return _concrete_board->get_tile( q, r ); }
     inline const Tile& get_tile( int q, int r ) const noexcept { return _concrete_board->get_tile( q, r ); }
 
+    inline std::pair<int, int> Dimensions() const { return _concrete_board->Dimensions(); }
+
     inline std::vector<std::pair<int, int>> GetNeighbouringTiles( int q, int r ) const { return _concrete_board->GetNeighbouringTiles( q, r ); }
     inline std::vector<std::pair<int, int>> GetNeighbouringTilesOfType( int q, int r, TileType type ) const { return _concrete_board->GetNeighbouringTilesOfType( q, r, type ); }
     inline std::vector<std::pair<int, int>> GetNeighbouringTilesOfTypeRange( int q, int r, TileType min, TileType max ) const { return _concrete_board->GetNeighbouringTilesOfTypeRange( q, r, min, max ); }

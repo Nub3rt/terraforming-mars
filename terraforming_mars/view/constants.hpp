@@ -47,7 +47,7 @@ inline constexpr glm::vec3 TILE_BORDER_COLOR_FOR_OCEAN      = glm::vec3( 0x08, 0
 inline constexpr glm::vec3 TILE_BORDER_COLOR_FOR_NOCTIS     = glm::vec3( 0xbb, 0xbb, 0xbb ) / 255.0f;
 inline constexpr glm::vec3 TILE_BORDER_COLOR_NON_SELECTABLE = glm::vec3( 0x60, 0x60, 0x60 ) / 255.0f;
 inline constexpr glm::vec3 TILE_BORDER_COLOR_SELECTABLE     = glm::vec3( 0xf0, 0xf0, 0xf0 ) / 255.0f;
-inline constexpr float TILE_CHANGE_DURATION = 0.5f;
+inline constexpr float TILE_CHANGE_DURATION = 1.5f;
 
 inline constexpr float HAND_BASE_Y = -1.12f;
 inline constexpr float HAND_BASE_Z = -0.6f;

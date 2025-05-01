@@ -10,6 +10,7 @@
 #include "card_wrapper.hpp"
 #include "constants.hpp"
 #include "panel.hpp"
+#include "tex_store.hpp"
 #include "text_renderer.hpp"
 #include "tile_wrapper.hpp"
 #include "game_view.hpp"
@@ -156,11 +157,11 @@ void ResearchVState::Render() {
     glEnable( GL_BLEND );
     glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
-    glUseProgram( _view._program_card_id );
-    glBindVertexArray( _view._rectangle_gpu.vao_id );
+    glUseProgram( TexStore::program_card_id );
+    glBindVertexArray( TexStore::rectangle_gpu.vao_id );
 
     glActiveTexture( GL_TEXTURE0 );
-    glBindTexture( GL_TEXTURE_2D, _view._cards_texture.id );
+    glBindTexture( GL_TEXTURE_2D, TexStore::cards_texture.id );
     glUniform1i( ul( "image" ), 0 );
 
     for ( int i = 0; i < model::RESEARCH_CARD_NUM; ++i ) {

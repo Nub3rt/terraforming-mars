@@ -67,7 +67,7 @@ Builder& Builder::SoloGameView() {
     if ( _view != nullptr )
         delete _view;
 
-    _view = new view::SoloGameView();
+    _view = new view::SoloGameView( _random() );
 
     return *this;
 }

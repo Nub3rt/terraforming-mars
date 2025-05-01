@@ -19,6 +19,8 @@ public:
     inline Tile& get_tile( int q, int r ) noexcept { return _board[ r ][ q ]; }
     const Tile& get_tile( int q, int r ) const noexcept override;
 
+    std::pair<int, int> Dimensions() const override;
+
     std::vector<std::pair<int, int>> GetNeighbouringTiles( int q, int r ) const override;
     const std::pair<int, int>* NoctisCityIndex() const override;
 

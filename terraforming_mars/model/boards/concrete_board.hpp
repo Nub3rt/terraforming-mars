@@ -16,6 +16,8 @@ public:
 
     virtual const Tile& get_tile( int q, int r ) const noexcept = 0;
 
+    virtual std::pair<int, int> Dimensions() const = 0;
+
     virtual std::vector<std::pair<int, int>> GetNeighbouringTiles( int q, int r ) const = 0;
     virtual std::vector<std::pair<int, int>> GetNeighbouringTilesOfType( int q, int r, TileType type ) const;
     virtual std::vector<std::pair<int, int>> GetNeighbouringTilesOfTypeRange( int q, int r, TileType min, TileType max ) const;

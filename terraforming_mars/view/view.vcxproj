@@ -140,6 +140,7 @@
     <ClCompile Include="card_wrapper.cpp" />
     <ClCompile Include="gl_utils\camera.cpp" />
     <ClCompile Include="gl_utils\gl_utils.cpp" />
+    <ClCompile Include="gl_utils\obj_parser.cpp" />
     <ClCompile Include="gl_utils\SDL_GLDebugMessageCallback.cpp" />
     <ClCompile Include="gl_utils\spherical_camera_manipulator.cpp" />
     <ClCompile Include="gl_utils\tm_camera_manipulator.cpp" />
@@ -147,6 +148,7 @@
     <ClCompile Include="app.cpp" />
     <ClCompile Include="menu_view.cpp" />
     <ClCompile Include="solo_game_view.cpp" />
+    <ClCompile Include="tex_store.cpp" />
     <ClCompile Include="text_renderer.cpp" />
     <ClCompile Include="tile_wrapper.cpp" />
     <ClCompile Include="game_view.cpp" />
@@ -163,6 +165,7 @@
     <ClInclude Include="gl_utils\camera.hpp" />
     <ClInclude Include="gl_utils\camera_manipulator.hpp" />
     <ClInclude Include="gl_utils\gl_utils.hpp" />
+    <ClInclude Include="gl_utils\obj_parser.hpp" />
     <ClInclude Include="gl_utils\SDL_GLDebugMessageCallback.hpp" />
     <ClInclude Include="gl_utils\spherical_camera_manipulator.hpp" />
     <ClInclude Include="gl_utils\tm_camera_manipulator.hpp" />
@@ -170,6 +173,7 @@
     <ClInclude Include="panel.hpp" />
     <ClInclude Include="solo_game_view.hpp" />
     <ClInclude Include="text_renderer.hpp" />
+    <ClInclude Include="tex_store.hpp" />
     <ClInclude Include="tile_wrapper.hpp" />
     <ClInclude Include="game_view.fwd.hpp" />
     <ClInclude Include="game_view.hpp" />
@@ -307,6 +311,15 @@
     <Image Include="assets\temperature.png">
       <DeploymentContent>true</DeploymentContent>
     </Image>
+    <Image Include="assets\terrain_greenery.jpg">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="assets\terrain_mars.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="assets\terrain_ocean.jpg">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
     <Image Include="assets\tm_pane.png">
       <DeploymentContent>true</DeploymentContent>
     </Image>
@@ -323,6 +336,40 @@
     <Font Include="fonts\prototype.ttf">
       <DeploymentContent>true</DeploymentContent>
     </Font>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="objects\dunes.obj">
+      <DeploymentContent>true</DeploymentContent>
+      <FileType>Document</FileType>
+    </Text>
+    <Text Include="objects\dunes_city.obj">
+      <DeploymentContent>true</DeploymentContent>
+      <FileType>Document</FileType>
+    </Text>
+    <Text Include="objects\mountains.obj">
+      <DeploymentContent>true</DeploymentContent>
+      <FileType>Document</FileType>
+    </Text>
+    <Text Include="objects\mountains_city.obj">
+      <DeploymentContent>true</DeploymentContent>
+      <FileType>Document</FileType>
+    </Text>
+    <Text Include="objects\plains.obj">
+      <DeploymentContent>true</DeploymentContent>
+      <FileType>Document</FileType>
+    </Text>
+    <Text Include="objects\plains_city.obj">
+      <DeploymentContent>true</DeploymentContent>
+      <FileType>Document</FileType>
+    </Text>
+    <Text Include="objects\tile_bottom.obj">
+      <DeploymentContent>true</DeploymentContent>
+      <FileType>Document</FileType>
+    </Text>
+    <Text Include="objects\tile.obj">
+      <DeploymentContent>true</DeploymentContent>
+      <FileType>Document</FileType>
+    </Text>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

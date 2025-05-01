@@ -7,7 +7,7 @@
 
 namespace view
 {
-SoloGameView::SoloGameView() {}
+SoloGameView::SoloGameView( int seed ) : GameView( seed ) {}
 SoloGameView::~SoloGameView() {}
 
 GameOverVState* SoloGameView::CreateGameOverState() {

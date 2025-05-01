@@ -7,6 +7,7 @@
 #include <array>
 #include <optional>
 #include <queue>
+#include <random>
 #include <utility>
 #include <vector>
 
@@ -60,14 +61,11 @@ class GameView : public View
     friend class CardPlayAnimation;
 
 public:
-    GameView();
+    GameView( int seed );
     virtual ~GameView();
 
     bool Init( Camera* camera, model::GameModel* model );
     void Clean() override;
-
-    static bool StaticInit();
-    static void StaticClean();
 
     void Update( const UpdateInfo& update_info ) override;
     void Render() override;
@@ -91,6 +89,8 @@ protected:
     int _height = 0;
 
     float _elapsed = 0.0f;
+
+    std::mt19937 _random;
 
     Camera* _camera = nullptr;
     CameraManipulator* _active_camera_manipulator = nullptr;
@@ -146,6 +146,7 @@ protected:
     uint8_t _mouse_down_stencil = 0;
     bool _menu_button_hovered = false;
     bool _end_button_hovered = false;
+    glm::vec4 _mars_terrain_ranges = {};
 
 
     void Model_OnDrawCard( const model::decks::Card* card );
@@ -228,52 +229,9 @@ protected:
     void ClickedLeft();
     void ClickedRight();
 
+    void InitBoard();
+
 
     bool _debug = false;
-
-
-    static GLuint _program_id;
-    static GLuint _program_card_id;
-    static GLuint _program_rectangle_id;
-    static GLuint _program_sprite_sheet_id;
-
-    static void InitShaders();
-    static void CleanShaders();
-
-    static OGLObject _hexagon_gpu;
-    static OGLObject _rectangle_gpu;
-
-    static void InitGeometry();
-    static void CleanGeometry();
-
-    static Texture _cards_texture;
-    static Texture _resources_texture;
-
-    static Texture _temperature_texture;
-    static Texture _oxygen_texture;
-    static Texture _tr_texture;
-
-    static Texture _ocean_texture;
-    static Texture _greenery_texture;
-    static Texture _city_texture;
-
-    static Texture _button_short_texture;
-    static Texture _button_long_texture;
-    static Texture _production_box_texture;
-    static Texture _arrow_texture;
-    static Texture _player_icon_texture;
-    static Texture _card_cover_texture;
-
-    static Texture _action_closed_texture;
-    static Texture _action_open_texture;
-    static Texture _event_closed_texture;
-    static Texture _event_open_texture;
-    static Texture _automated_closed_texture;
-    static Texture _automated_open_texture;
-    static Texture _effect_closed_texture;
-    static Texture _effect_open_texture;
-
-    static void InitTextures();
-    static void CleanTextures();
 };
 }
