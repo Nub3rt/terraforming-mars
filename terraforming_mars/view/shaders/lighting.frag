@@ -92,15 +92,14 @@ void main() {
         }
     }
 
-    vec3 l_a = ocean ? vec3( 0.5 ) : vec3( 0.7 );
-    vec3 l_d = ocean ? vec3( 1.0 ) : vec3( 0.8 );
+
+    vec3 l_a = ocean ? vec3( 0.5 ) : vec3( 1.2 );
+    vec3 l_d = ocean ? vec3( 1.0 ) : vec3( 1.0 );
     vec3 l_s = ocean ? vec3( 1.0 ) : vec3( 0.8 );
     vec3 k_a = ocean ? vec3( tex ) : vec3( tex );
     vec3 k_d = ocean ? vec3( tex ) : vec3( tex );
     vec3 k_s = ocean ? vec3( 1.0 ) : vec3( 0.2 );
     float shininess = ocean ? 35 : 4;
-
-
 
     vec3 normal = normalize( vs_out_norm );
 
