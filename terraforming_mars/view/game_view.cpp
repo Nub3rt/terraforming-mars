@@ -2151,7 +2151,7 @@ std::tuple<float, float, glm::vec3> GameView::CalculateSPButtonPosition( int sp 
 
 uint8_t GameView::GetStencilValue( float mouse_x, float mouse_y ) {
     uint8_t value;
-    glReadPixels( (GLint)mouse_x, _height - (GLint)mouse_y, 1, 1, GL_STENCIL_INDEX, GL_UNSIGNED_BYTE, &value );
+    glReadPixels( (GLint)mouse_x, _height - (GLint)mouse_y - 1.0f, 1, 1, GL_STENCIL_INDEX, GL_UNSIGNED_BYTE, &value );
     return value;
 }
 
